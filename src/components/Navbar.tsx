@@ -48,7 +48,7 @@ const Navbar = () => {
           className="flex items-center gap-2 text-xl font-semibold slide-in-right"
         >
           <Heart className="text-primary h-6 w-6" />
-          <span>MindfulCare</span>
+          <span>Sanad</span>
         </Link>
 
         {/* Desktop Navigation */}

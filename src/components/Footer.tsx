@@ -12,7 +12,7 @@ const Footer = () => {
           <div>
             <Link to="/" className="flex items-center gap-2 text-xl font-semibold mb-4">
               <Heart className="text-primary h-6 w-6" />
-              <span>MindfulCare</span>
+              <span>Sanad</span>
             </Link>
             <p className="text-muted-foreground mb-6">
               Providing compassionate mental health care and resources to support your wellbeing journey.
@@ -95,7 +95,7 @@ const Footer = () => {
                 <svg className="h-5 w-5 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
-                <span>contact@mindfulcare.com</span>
+                <span>contact@sanad.com</span>
               </li>
               <li className="flex items-start space-x-3 text-muted-foreground">
                 <svg className="h-5 w-5 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -116,7 +116,7 @@ const Footer = () => {
         
         <div className="border-t border-border/50 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground mb-4 md:mb-0">
-            © {currentYear} MindfulCare. All rights reserved.
+            © {currentYear} Sanad. All rights reserved.
           </p>
           <div className="flex space-x-6">
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-custom">
