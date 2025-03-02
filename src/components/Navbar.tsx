@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -33,13 +32,18 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mobile menu when changing routes
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
   const isActive = (path: string) => location.pathname === path;
   const isRTL = language === 'ar';
+
+  const navLinks = [
+    { href: "/", label: t('Home') },
+    { href: "/blog", label: t('Blog') },
+    { href: "/psychological-tests", label: t('Psychological Tests') },
+  ];
 
   return (
     <header 
@@ -57,20 +61,16 @@ const Navbar = () => {
           <span>Sanad</span>
         </Link>
 
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-6">
-          <Link 
-            to="/" 
-            className={`transition-custom px-2 ${isActive('/') ? 'text-primary font-medium' : 'hover:text-primary'}`}
-          >
-            {t('home')}
-          </Link>
-          <Link 
-            to="/blog" 
-            className={`transition-custom px-2 ${isActive('/blog') ? 'text-primary font-medium' : 'hover:text-primary'}`}
-          >
-            {t('blog')}
-          </Link>
+          {navLinks.map((link) => (
+            <Link 
+              key={link.href} 
+              to={link.href} 
+              className={`transition-custom px-2 ${isActive(link.href) ? 'text-primary font-medium' : 'hover:text-primary'}`}
+            >
+              {link.label}
+            </Link>
+          ))}
           
           <div className="flex items-center gap-2">
             <ThemeToggle />
@@ -124,7 +124,6 @@ const Navbar = () => {
           )}
         </nav>
 
-        {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center gap-2">
           <ThemeToggle />
           <LanguageToggle />
@@ -138,22 +137,18 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-background/95 backdrop-blur-md border-t">
           <div className="container-custom py-4 flex flex-col gap-4">
-            <Link 
-              to="/" 
-              className={`py-2 ${isActive('/') ? 'text-primary font-medium' : ''}`}
-            >
-              {t('home')}
-            </Link>
-            <Link 
-              to="/blog" 
-              className={`py-2 ${isActive('/blog') ? 'text-primary font-medium' : ''}`}
-            >
-              {t('blog')}
-            </Link>
+            {navLinks.map((link) => (
+              <Link 
+                key={link.href} 
+                to={link.href} 
+                className={`py-2 ${isActive(link.href) ? 'text-primary font-medium' : ''}`}
+              >
+                {link.label}
+              </Link>
+            ))}
             {user ? (
               <>
                 {isAdmin() && (
