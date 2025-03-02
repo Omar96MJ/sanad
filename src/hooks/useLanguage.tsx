@@ -68,7 +68,32 @@ const translations: Record<Language, Record<string, string>> = {
     'doctors': 'Doctors',
     'patients': 'Patients',
     'manage_users': 'Manage Users',
-    'system_settings': 'System Settings'
+    'system_settings': 'System Settings',
+    // Hero Section
+    'mental_health_matters': 'Mental Health Matters',
+    'journey_better_mental_health': 'Your Journey To Better Mental Health Starts Here',
+    'connect_with_therapists': 'Connect with licensed therapists, track your progress, and access resources for your mental wellbeing in one trusted platform.',
+    'get_started': 'Get Started',
+    'explore_resources': 'Explore Resources',
+    'go_to_dashboard': 'Go to Dashboard',
+    'browse_articles': 'Browse Articles',
+    'peaceful_scene': 'Peaceful natural scene',
+    'peace_of_mind': 'Peace of Mind',
+    'find_your_calm': 'Find your calm',
+    'expert_support': 'Expert Support',
+    'professional_care': 'Professional care',
+    // Featured Content
+    'latest_resources': 'Latest Resources',
+    'featured_mental_health_articles': 'Featured Mental Health Articles',
+    'explore_latest_articles': 'Explore our latest articles written by mental health professionals to help you understand and improve your mental wellbeing.',
+    'view_all_articles': 'View All Articles',
+    // Blog Page
+    'mental_health_resources': 'Mental Health Resources',
+    'explore_mental_health_blog': 'Explore Our Mental Health Blog',
+    'discover_insights': 'Discover insights, advice, and the latest research on mental health from our expert professionals.',
+    'search_articles': 'Search articles...',
+    'no_articles_found': 'No articles found',
+    'try_adjusting_search': 'Try adjusting your search or filter to find what you\'re looking for.'
   },
   ar: {
     // Navbar
@@ -125,7 +150,32 @@ const translations: Record<Language, Record<string, string>> = {
     'doctors': 'الأطباء',
     'patients': 'المرضى',
     'manage_users': 'إدارة المستخدمين',
-    'system_settings': 'إعدادات النظام'
+    'system_settings': 'إعدادات النظام',
+    // Hero Section
+    'mental_health_matters': 'الصحة النفسية مهمة',
+    'journey_better_mental_health': 'رحلتك نحو صحة نفسية أفضل تبدأ هنا',
+    'connect_with_therapists': 'تواصل مع معالجين مرخصين، وتتبع تقدمك، واحصل على موارد لرفاهيتك النفسية في منصة موثوقة واحدة.',
+    'get_started': 'ابدأ الآن',
+    'explore_resources': 'استكشف المصادر',
+    'go_to_dashboard': 'انتقل إلى لوحة التحكم',
+    'browse_articles': 'تصفح المقالات',
+    'peaceful_scene': 'مشهد طبيعي هادئ',
+    'peace_of_mind': 'راحة البال',
+    'find_your_calm': 'اعثر على هدوئك',
+    'expert_support': 'دعم متخصص',
+    'professional_care': 'رعاية احترافية',
+    // Featured Content
+    'latest_resources': 'أحدث الموارد',
+    'featured_mental_health_articles': 'مقالات مميزة عن الصحة النفسية',
+    'explore_latest_articles': 'استكشف أحدث مقالاتنا التي كتبها متخصصون في الصحة النفسية لمساعدتك على فهم وتحسين صحتك النفسية.',
+    'view_all_articles': 'عرض جميع المقالات',
+    // Blog Page
+    'mental_health_resources': 'موارد الصحة النفسية',
+    'explore_mental_health_blog': 'استكشف مدونة الصحة النفسية لدينا',
+    'discover_insights': 'اكتشف الرؤى والنصائح وأحدث الأبحاث حول الصحة النفسية من خبرائنا المحترفين.',
+    'search_articles': 'ابحث عن المقالات...',
+    'no_articles_found': 'لم يتم العثور على مقالات',
+    'try_adjusting_search': 'حاول تعديل البحث أو الفلتر للعثور على ما تبحث عنه.'
   }
 };
 

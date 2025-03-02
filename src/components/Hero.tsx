@@ -3,9 +3,11 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const Hero = () => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -31,26 +33,25 @@ const Hero = () => {
           }`}
         >
           <div className="inline-block bg-primary/10 text-primary font-medium rounded-full px-4 py-1 mb-6">
-            Mental Health Matters
+            {t('mental_health_matters')}
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            Your Journey To <span className="text-primary">Better Mental Health</span> Starts Here
+            {t('journey_better_mental_health')}
           </h1>
           <p className="text-lg text-muted-foreground mb-8 max-w-xl">
-            Connect with licensed therapists, track your progress, and access resources 
-            for your mental wellbeing in one trusted platform.
+            {t('connect_with_therapists')}
           </p>
           <div className="flex flex-wrap gap-4">
             {!user ? (
               <>
                 <Link to="/register">
                   <Button className="btn-primary" size="lg">
-                    Get Started
+                    {t('get_started')}
                   </Button>
                 </Link>
                 <Link to="/blog">
                   <Button variant="outline" size="lg" className="rounded-full">
-                    Explore Resources
+                    {t('explore_resources')}
                   </Button>
                 </Link>
               </>
@@ -58,12 +59,12 @@ const Hero = () => {
               <>
                 <Link to={user.role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard'}>
                   <Button className="btn-primary" size="lg">
-                    Go to Dashboard
+                    {t('go_to_dashboard')}
                   </Button>
                 </Link>
                 <Link to="/blog">
                   <Button variant="outline" size="lg" className="rounded-full">
-                    Browse Articles
+                    {t('browse_articles')}
                   </Button>
                 </Link>
               </>
@@ -81,7 +82,7 @@ const Hero = () => {
             <div className="relative bg-background rounded-3xl p-2 shadow-custom">
               <img 
                 src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" 
-                alt="Peaceful natural scene" 
+                alt={t('peaceful_scene')}
                 className="w-full h-[500px] object-cover rounded-2xl"
                 loading="lazy"
               />
@@ -97,8 +98,8 @@ const Hero = () => {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-medium">Peace of Mind</p>
-                  <p className="text-sm text-muted-foreground">Find your calm</p>
+                  <p className="font-medium">{t('peace_of_mind')}</p>
+                  <p className="text-sm text-muted-foreground">{t('find_your_calm')}</p>
                 </div>
               </div>
             </div>
@@ -113,8 +114,8 @@ const Hero = () => {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-medium">Expert Support</p>
-                  <p className="text-sm text-muted-foreground">Professional care</p>
+                  <p className="font-medium">{t('expert_support')}</p>
+                  <p className="text-sm text-muted-foreground">{t('professional_care')}</p>
                 </div>
               </div>
             </div>

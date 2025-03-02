@@ -4,12 +4,14 @@ import { Link } from 'react-router-dom';
 import { BlogPost } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { useLanguage } from '@/hooks/useLanguage';
 
 interface BlogCardProps {
   blog: BlogPost;
 }
 
 const BlogCard = ({ blog }: BlogCardProps) => {
+  const { language } = useLanguage();
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const formatDate = (dateString: string) => {
@@ -18,7 +20,7 @@ const BlogCard = ({ blog }: BlogCardProps) => {
       month: 'long', 
       day: 'numeric' 
     };
-    return new Date(dateString).toLocaleDateString('en-US', options);
+    return new Date(dateString).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', options);
   };
 
   return (

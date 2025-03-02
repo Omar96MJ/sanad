@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { BlogPost } from '@/lib/types';
 import BlogCard from './BlogCard';
+import { useLanguage } from '@/hooks/useLanguage';
 
 // Mock blog data
 const mockBlogs: BlogPost[] = [
@@ -46,6 +47,7 @@ const mockBlogs: BlogPost[] = [
 ];
 
 const FeaturedContent = () => {
+  const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -77,14 +79,13 @@ const FeaturedContent = () => {
             }`}
           >
             <div className="inline-block bg-secondary/10 text-secondary-foreground font-medium rounded-full px-4 py-1 mb-4">
-              Latest Resources
+              {t('latest_resources')}
             </div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Featured Mental Health Articles
+              {t('featured_mental_health_articles')}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Explore our latest articles written by mental health professionals to help you 
-              understand and improve your mental wellbeing.
+              {t('explore_latest_articles')}
             </p>
           </div>
         </div>
@@ -112,7 +113,7 @@ const FeaturedContent = () => {
         >
           <Link to="/blog">
             <Button variant="outline" size="lg" className="rounded-full">
-              View All Articles
+              {t('view_all_articles')}
             </Button>
           </Link>
         </div>

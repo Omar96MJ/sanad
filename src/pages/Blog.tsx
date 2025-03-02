@@ -7,6 +7,7 @@ import BlogCard from "@/components/BlogCard";
 import { BlogPost } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/hooks/useLanguage";
 
 // Mock blog data
 const mockBlogs: BlogPost[] = [
@@ -85,6 +86,7 @@ const mockBlogs: BlogPost[] = [
 ];
 
 const Blog = () => {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [filteredBlogs, setFilteredBlogs] = useState<BlogPost[]>(mockBlogs);
@@ -138,17 +140,17 @@ const Blog = () => {
           <div className="container-custom">
             <div className="max-w-3xl mx-auto text-center slide-up">
               <div className="inline-block bg-primary/10 text-primary font-medium rounded-full px-4 py-1 mb-4">
-                Mental Health Resources
+                {t('mental_health_resources')}
               </div>
               <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Explore Our Mental Health Blog
+                {t('explore_mental_health_blog')}
               </h1>
               <p className="text-muted-foreground text-lg mb-8">
-                Discover insights, advice, and the latest research on mental health from our expert professionals.
+                {t('discover_insights')}
               </p>
               <Input
                 type="search"
-                placeholder="Search articles..."
+                placeholder={t('search_articles')}
                 className="max-w-md mx-auto"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -189,9 +191,9 @@ const Blog = () => {
             </div>
           ) : (
             <div className="text-center py-12">
-              <h3 className="text-xl font-medium mb-4">No articles found</h3>
+              <h3 className="text-xl font-medium mb-4">{t('no_articles_found')}</h3>
               <p className="text-muted-foreground">
-                Try adjusting your search or filter to find what you're looking for.
+                {t('try_adjusting_search')}
               </p>
             </div>
           )}
