@@ -1,6 +1,6 @@
 
 import { useState, useEffect, createContext, useContext } from 'react';
-import { User, UserRole } from '@/lib/types';
+import { User, UserRole, Admin } from '@/lib/types';
 import { toast } from "sonner";
 
 type AuthContextType = {
@@ -9,6 +9,7 @@ type AuthContextType = {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, role: UserRole) => Promise<void>;
   logout: () => void;
+  isAdmin: () => boolean;
 };
 
 // Mock users for demo
@@ -26,6 +27,13 @@ const mockUsers: User[] = [
     email: 'patient@example.com',
     role: 'patient',
     profileImage: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=256'
+  },
+  {
+    id: '3',
+    name: 'Admin User',
+    email: 'admin@example.com',
+    role: 'admin',
+    profileImage: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256'
   }
 ];
 
@@ -57,7 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.setItem('user', JSON.stringify(foundUser));
         toast.success("Logged in successfully!");
       } else {
-        toast.error("Invalid credentials. Try 'doctor@example.com' or 'patient@example.com' with password 'password'");
+        toast.error("Invalid credentials. Try 'doctor@example.com', 'patient@example.com' or 'admin@example.com' with password 'password'");
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -97,8 +105,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     toast.info("Logged out successfully");
   };
 
+  const isAdmin = () => {
+    return user?.role === 'admin';
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isLoading, login, register, logout, isAdmin }}>
       {children}
     </AuthContext.Provider>
   );

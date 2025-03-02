@@ -2,6 +2,7 @@
 import { useState, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
@@ -24,7 +25,10 @@ const Register = () => {
   const [role, setRole] = useState<UserRole>("patient");
   const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
+  
+  const isRTL = language === 'ar';
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -41,7 +45,7 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
       <Navbar />
       <main className="flex-grow mt-16 md:mt-20 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8 fade-in">
@@ -49,16 +53,16 @@ const Register = () => {
             <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
               <Heart className="h-6 w-6 text-primary" />
             </div>
-            <h2 className="mt-6 text-3xl font-bold">Create an account</h2>
+            <h2 className="mt-6 text-3xl font-bold">{t('create_account')}</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Join us to begin your mental health journey
+              {t('join_us')}
             </p>
           </div>
           
           <div className="mt-8 bg-card border border-border/50 rounded-lg p-6 shadow-sm">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-2">
-                <Label htmlFor="name">Full name</Label>
+                <Label htmlFor="name">{t('full_name')}</Label>
                 <Input 
                   id="name" 
                   name="name" 
@@ -67,12 +71,13 @@ const Register = () => {
                   required 
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Enter your full name"
+                  placeholder={t('full_name')}
+                  className={isRTL ? 'text-right' : 'text-left'}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email address</Label>
+                <Label htmlFor="email">{t('email_address')}</Label>
                 <Input 
                   id="email" 
                   name="email" 
@@ -81,12 +86,13 @@ const Register = () => {
                   required 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
+                  placeholder={t('email_address')}
+                  className={isRTL ? 'text-right' : 'text-left'}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t('password')}</Label>
                 <Input 
                   id="password" 
                   name="password" 
@@ -95,22 +101,23 @@ const Register = () => {
                   required 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Create a password"
+                  placeholder={t('create_password')}
+                  className={isRTL ? 'text-right' : 'text-left'}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="role">I am a</Label>
+                <Label htmlFor="role">{t('i_am_a')}</Label>
                 <Select 
                   value={role} 
                   onValueChange={(value) => setRole(value as UserRole)}
                 >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select role" />
+                  <SelectTrigger className={isRTL ? 'text-right' : 'text-left'}>
+                    <SelectValue placeholder={t('i_am_a')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="patient">Patient seeking help</SelectItem>
-                    <SelectItem value="doctor">Mental health professional</SelectItem>
+                    <SelectItem value="patient">{t('patient_seeking_help')}</SelectItem>
+                    <SelectItem value="doctor">{t('mental_health_professional')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -120,16 +127,16 @@ const Register = () => {
                 className="w-full btn-primary" 
                 disabled={isLoading}
               >
-                {isLoading ? "Creating account..." : "Create account"}
+                {isLoading ? t('creating_account') : t('create_account')}
               </Button>
             </form>
           </div>
 
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Already have an account?{" "}
+              {t('already_have_account')}{" "}
               <Link to="/login" className="font-medium text-primary hover:underline">
-                Sign in
+                {t('login')}
               </Link>
             </p>
           </div>

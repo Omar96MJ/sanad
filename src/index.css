@@ -85,6 +85,19 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+  /* RTL Support */
+  [dir="rtl"] .rtl-flip {
+    transform: scaleX(-1);
+  }
+
+  [dir="rtl"] .rtl-mirror {
+    @apply space-x-reverse;
+  }
+
+  [dir="rtl"] .dropdown-menu-content {
+    text-align: right;
+  }
 }
 
 @layer components {
@@ -150,4 +163,32 @@
     opacity: 1;
     transform: translateX(0);
   }
+}
+
+/* RTL Adjustments */
+[dir="rtl"] .slide-in-right {
+  animation: slideInLeft 0.5s ease-in-out;
+}
+
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Dark Mode Transition */
+html {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+/* Admin styles */
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
 }

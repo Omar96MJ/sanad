@@ -34,3 +34,19 @@ export interface Patient extends User {
   lastAppointment?: string;
   upcomingAppointment?: string;
 }
+
+export interface Admin extends User {
+  permissions: {
+    manageUsers: boolean;
+    manageContent: boolean;
+    manageSettings: boolean;
+  };
+  lastLogin?: string;
+}
+
+export interface SystemSettings {
+  language: 'en' | 'ar';
+  theme: 'light' | 'dark';
+  enableRegistration: boolean;
+  maintenanceMode: boolean;
+}

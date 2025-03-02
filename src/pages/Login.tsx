@@ -2,6 +2,7 @@
 import { useState, FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Input } from "@/components/ui/input";
@@ -14,7 +15,10 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
+  
+  const isRTL = language === 'ar';
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -31,7 +35,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
       <Navbar />
       <main className="flex-grow mt-16 md:mt-20 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8 fade-in">
@@ -39,12 +43,12 @@ const Login = () => {
             <div className="mx-auto h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
               <Heart className="h-6 w-6 text-primary" />
             </div>
-            <h2 className="mt-6 text-3xl font-bold">Welcome back</h2>
+            <h2 className="mt-6 text-3xl font-bold">{t('welcome_back')}</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              Sign in to your account to continue
+              {t('sign_in_to_continue')}
             </p>
             <div className="mt-3 text-xs text-muted-foreground">
-              <p>For demo purposes: use <span className="font-medium">doctor@example.com</span></p>
+              <p>For demo purposes: use <span className="font-medium">doctor@example.com</span> or <span className="font-medium">admin@example.com</span></p>
               <p>or <span className="font-medium">patient@example.com</span> with password <span className="font-medium">password</span></p>
             </div>
           </div>
@@ -52,7 +56,7 @@ const Login = () => {
           <div className="mt-8 bg-card border border-border/50 rounded-lg p-6 shadow-sm">
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-2">
-                <Label htmlFor="email">Email address</Label>
+                <Label htmlFor="email">{t('email_address')}</Label>
                 <Input 
                   id="email" 
                   name="email" 
@@ -61,15 +65,16 @@ const Login = () => {
                   required 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter your email"
+                  placeholder={t('email_address')}
+                  className={isRTL ? 'text-right' : 'text-left'}
                 />
               </div>
 
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password">{t('password')}</Label>
                   <Link to="/forgot-password" className="text-xs text-primary hover:underline">
-                    Forgot password?
+                    {t('forgot_password')}
                   </Link>
                 </div>
                 <Input 
@@ -80,7 +85,8 @@ const Login = () => {
                   required 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your password"
+                  placeholder={t('password')}
+                  className={isRTL ? 'text-right' : 'text-left'}
                 />
               </div>
 
@@ -89,16 +95,16 @@ const Login = () => {
                 className="w-full btn-primary" 
                 disabled={isLoading}
               >
-                {isLoading ? "Signing in..." : "Sign in"}
+                {isLoading ? t('signing_in') : t('sign_in')}
               </Button>
             </form>
           </div>
 
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              {t('dont_have_account')}{" "}
               <Link to="/register" className="font-medium text-primary hover:underline">
-                Sign up
+                {t('signup')}
               </Link>
             </p>
           </div>
