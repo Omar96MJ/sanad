@@ -8,7 +8,7 @@ type SettingsContextType = {
 };
 
 const defaultSettings: SystemSettings = {
-  language: 'en',
+  language: 'ar', // Changed default from 'en' to 'ar'
   theme: 'light',
   enableRegistration: true,
   maintenanceMode: false
