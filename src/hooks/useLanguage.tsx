@@ -226,8 +226,7 @@ const translations = {
     "my_account": "My Account",
     "admin_panel": "Admin Panel",
     "profile": "Profile",
-    "logout": "Log out",
-    "Psychological Tests": "Psychological Tests"
+    "logout": "Log out"
   },
   ar: {
     "Home": "الرئيسية",
@@ -320,8 +319,6 @@ const translations = {
     "Assigned Doctor": "الطبيب المعين",
     "Upcoming Appointment": "الموعد القادم",
     "Last Login": "آخر تسجيل دخول",
-    "Manage Users": "إدارة المستخدمين",
-    "Manage Content": "إدارة المحتوى",
     "Manage Settings": "إدارة الإعدادات",
     "Permissions": "أذونات",
     "Enable": "تمكين",
