@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
-import { Menu, X, Heart, ShieldAlert } from 'lucide-react';
+import { Menu, X, Helping Hand, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -57,8 +58,8 @@ const Navbar = () => {
           to="/" 
           className="flex items-center gap-2 text-xl font-semibold slide-in-right"
         >
-          <Heart className="text-primary h-6 w-6" />
-          <span>Sanad</span>
+          <Helping Hand className="text-primary h-6 w-6" />
+          <span>سند</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">

@@ -226,7 +226,13 @@ const translations = {
     "my_account": "My Account",
     "admin_panel": "Admin Panel",
     "profile": "Profile",
-    "logout": "Log out"
+    "logout": "Log out",
+    "mental_health_resources": "Mental Health Resources",
+    "explore_mental_health_blog": "Explore Our Mental Health Blog",
+    "discover_insights": "Discover insights, tips, and information to support your mental wellbeing journey",
+    "search_articles": "Search articles...",
+    "no_articles_found": "No articles found",
+    "try_adjusting_search": "Try adjusting your search or removing filters"
   },
   ar: {
     "Home": "الرئيسية",
@@ -432,7 +438,13 @@ const translations = {
     "my_account": "حسابي",
     "admin_panel": "لوحة الإدارة",
     "profile": "الملف الشخصي",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "mental_health_resources": "موارد الصحة النفسية",
+    "explore_mental_health_blog": "استكشف مدونة الصحة النفسية",
+    "discover_insights": "اكتشف الرؤى والنصائح والمعلومات لدعم رحلة صحتك النفسية",
+    "search_articles": "البحث في المقالات...",
+    "no_articles_found": "لم يتم العثور على مقالات",
+    "try_adjusting_search": "حاول تعديل البحث أو إزالة الفلاتر"
   },
 };
 
