@@ -11,7 +11,11 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  const [language, setLanguage] = useState<'en' | 'ar'>((typeof window !== 'undefined' && localStorage.getItem('language')) || 'ar');
+  // Fixed: Add type checking for the localStorage value
+  const storedLanguage = typeof window !== 'undefined' ? localStorage.getItem('language') : null;
+  const initialLanguage: 'en' | 'ar' = (storedLanguage === 'en' || storedLanguage === 'ar') ? storedLanguage : 'ar';
+  
+  const [language, setLanguage] = useState<'en' | 'ar'>(initialLanguage);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
