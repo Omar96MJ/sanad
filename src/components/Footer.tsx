@@ -1,21 +1,24 @@
 
-import { Heart } from 'lucide-react';
+import { HelpingHand } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const Footer = () => {
+  const { t, language } = useLanguage();
   const currentYear = new Date().getFullYear();
+  const isRTL = language === 'ar';
 
   return (
-    <footer className="bg-muted/40 border-t border-border/50 py-12">
+    <footer className="bg-muted/40 border-t border-border/50 py-12" dir={isRTL ? 'rtl' : 'ltr'}>
       <div className="container-custom">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
             <Link to="/" className="flex items-center gap-2 text-xl font-semibold mb-4">
-              <Heart className="text-primary h-6 w-6" />
-              <span>Sanad</span>
+              <HelpingHand className="text-primary h-6 w-6" />
+              <span>سند</span>
             </Link>
             <p className="text-muted-foreground mb-6">
-              Providing compassionate mental health care and resources to support your wellbeing journey.
+              {t('providing_mental_health_care')}
             </p>
             <div className="flex space-x-4">
               <a href="#" className="text-muted-foreground hover:text-primary transition-custom" aria-label="Twitter">
@@ -37,59 +40,59 @@ const Footer = () => {
           </div>
           
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('quick_links')}</h3>
             <ul className="space-y-3">
               <li>
                 <Link to="/" className="text-muted-foreground hover:text-primary transition-custom">
-                  Home
+                  {t('Home')}
                 </Link>
               </li>
               <li>
                 <Link to="/blog" className="text-muted-foreground hover:text-primary transition-custom">
-                  Blog
+                  {t('Blog')}
                 </Link>
               </li>
               <li>
                 <Link to="/login" className="text-muted-foreground hover:text-primary transition-custom">
-                  Login
+                  {t('login')}
                 </Link>
               </li>
               <li>
                 <Link to="/register" className="text-muted-foreground hover:text-primary transition-custom">
-                  Register
+                  {t('signup')}
                 </Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="text-lg font-semibold mb-4">Resources</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('resources')}</h3>
             <ul className="space-y-3">
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-custom">
-                  Mental Health Guide
+                  {t('mental_health_guide')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-custom">
-                  Crisis Support
+                  {t('crisis_support')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-custom">
-                  Self-Care Tips
+                  {t('self_care_tips')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-custom">
-                  FAQ
+                  {t('faq')}
                 </a>
               </li>
             </ul>
           </div>
           
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact</h3>
+            <h3 className="text-lg font-semibold mb-4">{t('contact')}</h3>
             <ul className="space-y-3">
               <li className="flex items-start space-x-3 text-muted-foreground">
                 <svg className="h-5 w-5 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -108,7 +111,7 @@ const Footer = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
-                <span>123 Wellness Street, Mindful City, MC 12345</span>
+                <span>{t('address')}</span>
               </li>
             </ul>
           </div>
@@ -116,17 +119,17 @@ const Footer = () => {
         
         <div className="border-t border-border/50 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground mb-4 md:mb-0">
-            © {currentYear} Sanad. All rights reserved.
+            © {currentYear} {t('sanad_copyright')}
           </p>
           <div className="flex space-x-6">
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-custom">
-              Privacy Policy
+              {t('privacy_policy')}
             </a>
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-custom">
-              Terms of Service
+              {t('terms_of_service')}
             </a>
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-custom">
-              Cookie Policy
+              {t('cookie_policy')}
             </a>
           </div>
         </div>
