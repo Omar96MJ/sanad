@@ -15,9 +15,9 @@ const LanguageToggle = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full">
+        <Button variant="ghost" size="sm" className="flex items-center gap-2 px-3">
           <Languages className="h-[1.2rem] w-[1.2rem]" />
-          <span className="sr-only">Toggle language</span>
+          <span className="hidden sm:inline-block">{language === 'ar' ? 'العربية' : 'English'}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -25,11 +25,13 @@ const LanguageToggle = () => {
           <span className={language === 'en' ? 'font-medium' : ''}>
             {t('english')}
           </span>
+          {language === 'en' && <span className="ml-2">✓</span>}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setLanguage('ar')}>
           <span className={language === 'ar' ? 'font-medium' : ''}>
             {t('arabic')}
           </span>
+          {language === 'ar' && <span className="mr-2">✓</span>}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

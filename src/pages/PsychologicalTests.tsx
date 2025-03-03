@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
 import Navbar from '@/components/Navbar';
@@ -18,75 +17,84 @@ const PsychologicalTests = () => {
   const [testStarted, setTestStarted] = useState(false);
   const [testCompleted, setTestCompleted] = useState(false);
   const [result, setResult] = useState('');
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    
+    // Trigger animation after component mounts
+    setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+  }, []);
 
   const tests = [
-    { id: 'depression', name: t('Depression Test'), icon: '😔' },
-    { id: 'anxiety', name: t('Anxiety Test'), icon: '😰' },
-    { id: 'personality', name: t('Personality Test'), icon: '🧠' },
-    { id: 'adhd', name: t('ADHD Test'), icon: '🔄' },
-    { id: 'children', name: t('Psychological State Test for Children'), icon: '👶' },
-    { id: 'jealousy', name: t('Jealousy Test'), icon: '😠' },
-    { id: 'love', name: t('Love Test'), icon: '❤️' },
-    { id: 'passion', name: t('Passion Test'), icon: '🔥' },
+    { id: 'depression', name: t('depression_test'), icon: '😔' },
+    { id: 'anxiety', name: t('anxiety_test'), icon: '😰' },
+    { id: 'personality', name: t('personality_test'), icon: '🧠' },
+    { id: 'adhd', name: t('adhd_test'), icon: '🔄' },
+    { id: 'children', name: t('children_test'), icon: '👶' },
+    { id: 'jealousy', name: t('jealousy_test'), icon: '😠' },
+    { id: 'love', name: t('love_test'), icon: '❤️' },
+    { id: 'passion', name: t('passion_test'), icon: '🔥' },
   ];
 
-  // Example questions for depression test (would need proper questions for each test)
   const testQuestions = {
     depression: [
-      t('I feel sad or down most of the day'),
-      t('I have lost interest in activities I used to enjoy'),
-      t('I have trouble sleeping or sleep too much'),
-      t('I feel tired or have little energy'),
-      t('I have poor appetite or am overeating'),
+      t('depression_q1'),
+      t('depression_q2'),
+      t('depression_q3'),
+      t('depression_q4'),
+      t('depression_q5'),
     ],
     anxiety: [
-      t('I feel nervous or anxious'),
-      t('I worry too much about different things'),
-      t('I have trouble relaxing'),
-      t('I feel restless and have trouble sitting still'),
-      t('I am easily annoyed or irritable'),
+      t('anxiety_q1'),
+      t('anxiety_q2'),
+      t('anxiety_q3'),
+      t('anxiety_q4'),
+      t('anxiety_q5'),
     ],
     personality: [
-      t('I enjoy being the center of attention'),
-      t('I prefer quiet, solitary activities'),
-      t('I consider myself organized and detail-oriented'),
-      t('I am comfortable in new social situations'),
-      t('I am more practical than creative'),
+      t('personality_q1'),
+      t('personality_q2'),
+      t('personality_q3'),
+      t('personality_q4'),
+      t('personality_q5'),
     ],
     adhd: [
-      t('I have difficulty maintaining attention'),
-      t('I am easily distracted'),
-      t('I struggle to follow through on tasks'),
-      t('I frequently lose things necessary for tasks'),
-      t('I often fidget or feel restless'),
+      t('adhd_q1'),
+      t('adhd_q2'),
+      t('adhd_q3'),
+      t('adhd_q4'),
+      t('adhd_q5'),
     ],
     children: [
-      t('The child has difficulty concentrating'),
-      t('The child seems worried or anxious'),
-      t('The child has frequent mood swings'),
-      t('The child has trouble making friends'),
-      t('The child has lost interest in activities they used to enjoy'),
+      t('children_q1'),
+      t('children_q2'),
+      t('children_q3'),
+      t('children_q4'),
+      t('children_q5'),
     ],
     jealousy: [
-      t('I often worry about my partner being unfaithful'),
-      t('I check my partner\'s phone or social media'),
-      t('I feel uncomfortable when my partner talks to others'),
-      t('I get upset when my partner gives attention to others'),
-      t('I often need reassurance from my partner'),
+      t('jealousy_q1'),
+      t('jealousy_q2'),
+      t('jealousy_q3'),
+      t('jealousy_q4'),
+      t('jealousy_q5'),
     ],
     love: [
-      t('I think about this person constantly'),
-      t('I feel happy when I\'m with this person'),
-      t('I prioritize this person\'s needs over my own'),
-      t('I can see a future with this person'),
-      t('I accept this person\'s flaws'),
+      t('love_q1'),
+      t('love_q2'),
+      t('love_q3'),
+      t('love_q4'),
+      t('love_q5'),
     ],
     passion: [
-      t('I lose track of time when engaged in this activity'),
-      t('I feel energized when doing this activity'),
-      t('I constantly want to improve in this area'),
-      t('I think about this activity even when not doing it'),
-      t('I would do this activity even if I wasn\'t paid or recognized for it'),
+      t('passion_q1'),
+      t('passion_q2'),
+      t('passion_q3'),
+      t('passion_q4'),
+      t('passion_q5'),
     ],
   };
 
@@ -114,36 +122,33 @@ const PsychologicalTests = () => {
     if (selectedTest && currentQuestion < testQuestions[selectedTest as keyof typeof testQuestions].length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      // Test completed
       calculateResult(newAnswers);
     }
   };
 
   const calculateResult = (finalAnswers: number[]) => {
-    // Simple calculation (would need proper scoring for each test)
     const sum = finalAnswers.reduce((a, b) => a + b, 0);
-    const max = finalAnswers.length * 4; // max possible score
+    const max = finalAnswers.length * 4;
     const percentage = (sum / max) * 100;
 
     let resultText = '';
     if (selectedTest === 'depression') {
-      if (percentage < 25) resultText = t('Minimal or no depression');
-      else if (percentage < 50) resultText = t('Mild depression');
-      else if (percentage < 75) resultText = t('Moderate depression');
-      else resultText = t('Severe depression');
+      if (percentage < 25) resultText = t('depression_result_minimal');
+      else if (percentage < 50) resultText = t('depression_result_mild');
+      else if (percentage < 75) resultText = t('depression_result_moderate');
+      else resultText = t('depression_result_severe');
     } else if (selectedTest === 'anxiety') {
-      if (percentage < 25) resultText = t('Minimal or no anxiety');
-      else if (percentage < 50) resultText = t('Mild anxiety');
-      else if (percentage < 75) resultText = t('Moderate anxiety');
-      else resultText = t('Severe anxiety');
+      if (percentage < 25) resultText = t('anxiety_result_minimal');
+      else if (percentage < 50) resultText = t('anxiety_result_mild');
+      else if (percentage < 75) resultText = t('anxiety_result_moderate');
+      else resultText = t('anxiety_result_severe');
     } else {
-      // Generic result for other tests
-      resultText = t('Your score is') + ` ${percentage.toFixed(1)}%. ` + t('Please consult with a professional for interpretation.');
+      resultText = t('your_score_is') + ` ${percentage.toFixed(1)}%. ` + t('consult_professional');
     }
 
     setResult(resultText);
     setTestCompleted(true);
-    toast.success(t('Test completed!'));
+    toast.success(t('test_completed'));
   };
 
   const restartTest = () => {
@@ -260,9 +265,9 @@ const PsychologicalTests = () => {
       <Navbar />
       <main className="flex-grow container mx-auto px-4 py-8 mt-16 md:mt-20">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold mb-2">{t('Psychological Tests')}</h1>
+          <h1 className="text-3xl font-bold mb-2">{t('psychological_tests')}</h1>
           <p className="text-muted-foreground">
-            {t('Take one of our psychological tests to learn more about yourself.')}
+            {t('take_test_description')}
           </p>
         </div>
 
