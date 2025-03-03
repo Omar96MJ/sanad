@@ -1,3 +1,4 @@
+
 import { createContext, useContext } from 'react';
 import { useState, useEffect } from 'react';
 
@@ -10,7 +11,7 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  const [language, setLanguage] = useState<'en' | 'ar'>((typeof window !== 'undefined' && localStorage.getItem('language')) === 'ar' ? 'ar' : 'en');
+  const [language, setLanguage] = useState<'en' | 'ar'>((typeof window !== 'undefined' && localStorage.getItem('language')) || 'ar');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

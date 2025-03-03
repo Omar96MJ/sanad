@@ -13,75 +13,75 @@ import { useLanguage } from "@/hooks/useLanguage";
 const mockBlogs: BlogPost[] = [
   {
     id: '1',
-    title: 'Understanding Anxiety: Causes, Symptoms, and Treatments',
-    excerpt: 'Anxiety disorders are the most common mental health concern in the United States. Learn about the causes, symptoms, and effective treatments.',
+    title: 'فهم القلق: الأسباب والأعراض والعلاجات',
+    excerpt: 'اضطرابات القلق هي أكثر مشاكل الصحة النفسية شيوعًا. تعرف على الأسباب والأعراض والعلاجات الفعالة.',
     content: '',
-    author: 'Dr. Sarah Johnson',
+    author: 'د. سارة جونسون',
     authorId: '1',
     authorRole: 'doctor',
     publishedDate: '2023-10-15',
     imageUrl: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9',
-    tags: ['Anxiety', 'Mental Health', 'Therapy']
+    tags: ['القلق', 'الصحة النفسية', 'العلاج']
   },
   {
     id: '2',
-    title: 'The Power of Mindfulness in Daily Life',
-    excerpt: 'Discover how practicing mindfulness can reduce stress, improve focus, and enhance your overall mental wellbeing.',
+    title: 'قوة اليقظة الذهنية في الحياة اليومية',
+    excerpt: 'اكتشف كيف يمكن لممارسة اليقظة الذهنية أن تقلل التوتر وتحسن التركيز وتعزز صحتك النفسية بشكل عام.',
     content: '',
-    author: 'Dr. Michael Lee',
+    author: 'د. ميشيل لي',
     authorId: '3',
     authorRole: 'doctor',
     publishedDate: '2023-10-10',
     imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-    tags: ['Mindfulness', 'Meditation', 'Stress Management']
+    tags: ['اليقظة الذهنية', 'التأمل', 'إدارة التوتر']
   },
   {
     id: '3',
-    title: 'Depression in the Digital Age: Navigating Mental Health Online',
-    excerpt: 'How social media and digital technology impact depression, and strategies for healthy online engagement.',
+    title: 'الاكتئاب في العصر الرقمي: التنقل في الصحة النفسية عبر الإنترنت',
+    excerpt: 'كيف تؤثر وسائل التواصل الاجتماعي والتكنولوجيا الرقمية على الاكتئاب، واستراتيجيات للمشاركة الصحية عبر الإنترنت.',
     content: '',
-    author: 'Dr. Emily Wong',
+    author: 'د. إيميلي وونغ',
     authorId: '4',
     authorRole: 'doctor',
     publishedDate: '2023-10-05',
     imageUrl: 'https://images.unsplash.com/photo-1470813740244-df37b8c1edcb',
-    tags: ['Depression', 'Digital Wellbeing', 'Social Media']
+    tags: ['الاكتئاب', 'الرفاهية الرقمية', 'وسائل التواصل الاجتماعي']
   },
   {
     id: '4',
-    title: 'Building Resilience: How to Bounce Back from Adversity',
-    excerpt: 'Learn practical strategies to build emotional resilience and adapt in the face of trauma, tragedy, and significant stress.',
+    title: 'بناء المرونة: كيفية التعافي من المحن',
+    excerpt: 'تعلم استراتيجيات عملية لبناء المرونة العاطفية والتكيف في مواجهة الصدمات والمآسي والضغوط الكبيرة.',
     content: '',
-    author: 'Dr. Sarah Johnson',
+    author: 'د. سارة جونسون',
     authorId: '1',
     authorRole: 'doctor',
     publishedDate: '2023-09-28',
     imageUrl: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04',
-    tags: ['Resilience', 'Coping Skills', 'Mental Health']
+    tags: ['المرونة', 'مهارات التأقلم', 'الصحة النفسية']
   },
   {
     id: '5',
-    title: 'Sleep and Mental Health: The Critical Connection',
-    excerpt: 'Understand the bidirectional relationship between sleep and mental health, and how improving one can positively impact the other.',
+    title: 'النوم والصحة النفسية: الارتباط الحاسم',
+    excerpt: 'افهم العلاقة المتبادلة بين النوم والصحة النفسية، وكيف يمكن لتحسين أحدهما أن يؤثر إيجابًا على الآخر.',
     content: '',
-    author: 'Dr. Michael Lee',
+    author: 'د. ميشيل لي',
     authorId: '3',
     authorRole: 'doctor',
     publishedDate: '2023-09-20',
     imageUrl: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9',
-    tags: ['Sleep', 'Mental Health', 'Wellbeing']
+    tags: ['النوم', 'الصحة النفسية', 'الرفاهية']
   },
   {
     id: '6',
-    title: 'Teenage Mental Health: Signs Parents Should Watch For',
-    excerpt: 'A guide for parents on recognizing signs of mental health issues in teenagers and how to provide support.',
+    title: 'الصحة النفسية للمراهقين: علامات يجب على الآباء مراقبتها',
+    excerpt: 'دليل للآباء حول التعرف على علامات مشاكل الصحة النفسية لدى المراهقين وكيفية تقديم الدعم.',
     content: '',
-    author: 'Dr. Emily Wong',
+    author: 'د. إيميلي وونغ',
     authorId: '4',
     authorRole: 'doctor',
     publishedDate: '2023-09-15',
     imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-    tags: ['Parenting', 'Teen Mental Health', 'Support']
+    tags: ['الأبوة والأمومة', 'الصحة النفسية للمراهقين', 'الدعم']
   }
 ];
 

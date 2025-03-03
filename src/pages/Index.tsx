@@ -11,10 +11,14 @@ const Index = () => {
   
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    // Force Arabic language on home page
+    document.documentElement.setAttribute('dir', 'rtl');
+    document.documentElement.setAttribute('lang', 'ar');
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen flex flex-col" dir="rtl">
       <Navbar />
       <main className="flex-grow mt-16 md:mt-20">
         <Hero />

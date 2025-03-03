@@ -10,39 +10,39 @@ import { useLanguage } from '@/hooks/useLanguage';
 const mockBlogs: BlogPost[] = [
   {
     id: '1',
-    title: 'Understanding Anxiety: Causes, Symptoms, and Treatments',
-    excerpt: 'Anxiety disorders are the most common mental health concern in the United States. Learn about the causes, symptoms, and effective treatments.',
+    title: 'فهم القلق: الأسباب والأعراض والعلاجات',
+    excerpt: 'اضطرابات القلق هي أكثر مشاكل الصحة النفسية شيوعًا. تعرف على الأسباب والأعراض والعلاجات الفعالة.',
     content: '',
-    author: 'Dr. Sarah Johnson',
+    author: 'د. سارة جونسون',
     authorId: '1',
     authorRole: 'doctor',
     publishedDate: '2023-10-15',
     imageUrl: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9',
-    tags: ['Anxiety', 'Mental Health', 'Therapy']
+    tags: ['القلق', 'الصحة النفسية', 'العلاج']
   },
   {
     id: '2',
-    title: 'The Power of Mindfulness in Daily Life',
-    excerpt: 'Discover how practicing mindfulness can reduce stress, improve focus, and enhance your overall mental wellbeing.',
+    title: 'قوة اليقظة الذهنية في الحياة اليومية',
+    excerpt: 'اكتشف كيف يمكن لممارسة اليقظة الذهنية أن تقلل التوتر وتحسن التركيز وتعزز صحتك النفسية بشكل عام.',
     content: '',
-    author: 'Dr. Michael Lee',
+    author: 'د. ميشيل لي',
     authorId: '3',
     authorRole: 'doctor',
     publishedDate: '2023-10-10',
     imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-    tags: ['Mindfulness', 'Meditation', 'Stress Management']
+    tags: ['اليقظة الذهنية', 'التأمل', 'إدارة التوتر']
   },
   {
     id: '3',
-    title: 'Depression in the Digital Age: Navigating Mental Health Online',
-    excerpt: 'How social media and digital technology impact depression, and strategies for healthy online engagement.',
+    title: 'الاكتئاب في العصر الرقمي: التنقل في الصحة النفسية عبر الإنترنت',
+    excerpt: 'كيف تؤثر وسائل التواصل الاجتماعي والتكنولوجيا الرقمية على الاكتئاب، واستراتيجيات للمشاركة الصحية عبر الإنترنت.',
     content: '',
-    author: 'Dr. Emily Wong',
+    author: 'د. إيميلي وونغ',
     authorId: '4',
     authorRole: 'doctor',
     publishedDate: '2023-10-05',
     imageUrl: 'https://images.unsplash.com/photo-1470813740244-df37b8c1edcb',
-    tags: ['Depression', 'Digital Wellbeing', 'Social Media']
+    tags: ['الاكتئاب', 'الرفاهية الرقمية', 'وسائل التواصل الاجتماعي']
   }
 ];
 
@@ -79,13 +79,13 @@ const FeaturedContent = () => {
             }`}
           >
             <div className="inline-block bg-secondary/10 text-secondary-foreground font-medium rounded-full px-4 py-1 mb-4">
-              {t('latest_resources')}
+              أحدث الموارد
             </div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              {t('featured_mental_health_articles')}
+              مقالات مميزة في الصحة النفسية
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              {t('explore_latest_articles')}
+              استكشف أحدث المقالات والموارد لدعم رحلة الصحة النفسية الخاصة بك
             </p>
           </div>
         </div>
@@ -113,7 +113,7 @@ const FeaturedContent = () => {
         >
           <Link to="/blog">
             <Button variant="outline" size="lg" className="rounded-full">
-              {t('view_all_articles')}
+              عرض جميع المقالات
             </Button>
           </Link>
         </div>

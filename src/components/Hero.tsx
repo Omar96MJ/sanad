@@ -33,25 +33,25 @@ const Hero = () => {
           }`}
         >
           <div className="inline-block bg-primary/10 text-primary font-medium rounded-full px-4 py-1 mb-6">
-            {t('mental_health_matters')}
+            الصحة النفسية مهمة
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            {t('journey_better_mental_health')}
+            رحلتك نحو صحة نفسية أفضل
           </h1>
           <p className="text-lg text-muted-foreground mb-8 max-w-xl">
-            {t('connect_with_therapists')}
+            تواصل مع المعالجين المؤهلين واكتشف موارد الصحة النفسية لدعم رفاهيتك
           </p>
           <div className="flex flex-wrap gap-4">
             {!user ? (
               <>
                 <Link to="/register">
                   <Button className="btn-primary" size="lg">
-                    {t('get_started')}
+                    ابدأ الآن
                   </Button>
                 </Link>
                 <Link to="/blog">
                   <Button variant="outline" size="lg" className="rounded-full">
-                    {t('explore_resources')}
+                    استكشف الموارد
                   </Button>
                 </Link>
               </>
@@ -59,12 +59,12 @@ const Hero = () => {
               <>
                 <Link to={user.role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard'}>
                   <Button className="btn-primary" size="lg">
-                    {t('go_to_dashboard')}
+                    الذهاب إلى لوحة التحكم
                   </Button>
                 </Link>
                 <Link to="/blog">
                   <Button variant="outline" size="lg" className="rounded-full">
-                    {t('browse_articles')}
+                    تصفح المقالات
                   </Button>
                 </Link>
               </>
@@ -82,7 +82,7 @@ const Hero = () => {
             <div className="relative bg-background rounded-3xl p-2 shadow-custom">
               <img 
                 src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" 
-                alt={t('peaceful_scene')}
+                alt="مشهد هادئ"
                 className="w-full h-[500px] object-cover rounded-2xl"
                 loading="lazy"
               />
@@ -98,8 +98,8 @@ const Hero = () => {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-medium">{t('peace_of_mind')}</p>
-                  <p className="text-sm text-muted-foreground">{t('find_your_calm')}</p>
+                  <p className="font-medium">راحة البال</p>
+                  <p className="text-sm text-muted-foreground">اعثر على هدوئك</p>
                 </div>
               </div>
             </div>
@@ -114,8 +114,8 @@ const Hero = () => {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-medium">{t('expert_support')}</p>
-                  <p className="text-sm text-muted-foreground">{t('professional_care')}</p>
+                  <p className="font-medium">دعم الخبراء</p>
+                  <p className="text-sm text-muted-foreground">رعاية محترفة</p>
                 </div>
               </div>
             </div>
