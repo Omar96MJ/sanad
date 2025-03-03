@@ -5,6 +5,8 @@ import FeaturedContent from "@/components/FeaturedContent";
 import Footer from "@/components/Footer";
 import { useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
+import MentalHealthInfo from "@/components/MentalHealthInfo";
+import QuoteSection from "@/components/QuoteSection";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -22,6 +24,8 @@ const Index = () => {
       <Navbar />
       <main className="flex-grow mt-16 md:mt-20">
         <Hero />
+        <MentalHealthInfo />
+        <QuoteSection />
         <FeaturedContent />
       </main>
       <Footer />

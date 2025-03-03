@@ -33,25 +33,25 @@ const Hero = () => {
           }`}
         >
           <div className="inline-block bg-primary/10 text-primary font-medium rounded-full px-4 py-1 mb-6">
-            الصحة النفسية مهمة
+            رعاية الصحة النفسية
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            رحلتك نحو صحة نفسية أفضل
+            صحتك النفسية أولويتنا
           </h1>
           <p className="text-lg text-muted-foreground mb-8 max-w-xl">
-            تواصل مع المعالجين المؤهلين واكتشف موارد الصحة النفسية لدعم رفاهيتك
+            في سند، نؤمن أن الصحة النفسية جزء أساسي من صحتك العامة. نقدم الدعم والموارد لمساعدتك في رحلتك نحو الرفاهية النفسية
           </p>
           <div className="flex flex-wrap gap-4">
             {!user ? (
               <>
                 <Link to="/register">
                   <Button className="btn-primary" size="lg">
-                    ابدأ الآن
+                    ابدأ رحلتك اليوم
                   </Button>
                 </Link>
                 <Link to="/blog">
                   <Button variant="outline" size="lg" className="rounded-full">
-                    استكشف الموارد
+                    استكشف موارد الصحة النفسية
                   </Button>
                 </Link>
               </>
@@ -64,7 +64,7 @@ const Hero = () => {
                 </Link>
                 <Link to="/blog">
                   <Button variant="outline" size="lg" className="rounded-full">
-                    تصفح المقالات
+                    تصفح المقالات والموارد
                   </Button>
                 </Link>
               </>
@@ -81,8 +81,8 @@ const Hero = () => {
             <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-3xl blur-xl opacity-50"></div>
             <div className="relative bg-background rounded-3xl p-2 shadow-custom">
               <img 
-                src="https://images.unsplash.com/photo-1506744038136-46273834b3fb" 
-                alt="مشهد هادئ"
+                src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
+                alt="الصحة النفسية"
                 className="w-full h-[500px] object-cover rounded-2xl"
                 loading="lazy"
               />
@@ -99,7 +99,7 @@ const Hero = () => {
                 </div>
                 <div>
                   <p className="font-medium">راحة البال</p>
-                  <p className="text-sm text-muted-foreground">اعثر على هدوئك</p>
+                  <p className="text-sm text-muted-foreground">خطوة بخطوة نحو التوازن النفسي</p>
                 </div>
               </div>
             </div>
@@ -115,7 +115,7 @@ const Hero = () => {
                 </div>
                 <div>
                   <p className="font-medium">دعم الخبراء</p>
-                  <p className="text-sm text-muted-foreground">رعاية محترفة</p>
+                  <p className="text-sm text-muted-foreground">خبراء مؤهلين لمساعدتك</p>
                 </div>
               </div>
             </div>
