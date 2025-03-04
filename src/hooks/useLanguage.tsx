@@ -1,4 +1,3 @@
-
 import { createContext, useContext } from 'react';
 import { useState, useEffect } from 'react';
 
@@ -11,7 +10,6 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: React.ReactNode }) => {
-  // Fixed: Add type checking for the localStorage value
   const storedLanguage = typeof window !== 'undefined' ? localStorage.getItem('language') : null;
   const initialLanguage: 'en' | 'ar' = (storedLanguage === 'en' || storedLanguage === 'ar') ? storedLanguage : 'ar';
   
@@ -178,7 +176,6 @@ const translations = {
     "passion_q5": "I would do this activity even if I wasn't paid or recognized for it",
   },
   ar: {
-    // General UI elements
     "Home": "الرئيسية",
     "Blog": "مدونة",
     "Login": "تسجيل الدخول",
@@ -211,7 +208,6 @@ const translations = {
     "terms_of_service": "شروط الخدمة",
     "cookie_policy": "سياسة ملفات تعريف الارتباط",
     
-    // Blog and articles
     "mental_health_resources": "موارد الصحة النفسية",
     "explore_mental_health_blog": "استكشف مدونة الصحة النفسية",
     "discover_insights": "اكتشف الرؤى والنصائح والمعلومات لدعم رحلة صحتك النفسية",
@@ -223,12 +219,10 @@ const translations = {
     "explore_latest_articles": "استكشف أحدث المقالات والموارد لدعم رحلة الصحة النفسية الخاصة بك",
     "view_all_articles": "عرض جميع المقالات",
     
-    // Psychological tests
     "psychological_tests": "الاختبارات النفسية",
     "take_test_description": "قم بإجراء أحد اختباراتنا النفسية لمعرفة المزيد عن نفسك.",
     "test_completed": "تم إكمال الاختبار!",
     
-    // Test names
     "depression_test": "اختبار الاكتئاب",
     "anxiety_test": "اختبار القلق",
     "personality_test": "اختبار الشخصية",
@@ -238,7 +232,6 @@ const translations = {
     "love_test": "اختبار الحب",
     "passion_test": "اختبار الشغف",
     
-    // Test interface
     "question": "سؤال",
     "of": "من",
     "test_results": "نتائج الاختبار",
@@ -260,73 +253,63 @@ const translations = {
     "your_score_is": "درجتك هي",
     "consult_professional": "يرجى استشارة متخصص للتفسير.",
     
-    // Depression test questions
     "depression_q1": "أشعر بالحزن أو الاكتئاب معظم اليوم",
     "depression_q2": "فقدت الاهتمام بالأنشطة التي كنت أستمتع بها",
     "depression_q3": "أعاني من صعوبة في النوم أو أنام كثيرًا",
     "depression_q4": "أشعر بالتعب أو قلة الطاقة",
     "depression_q5": "لدي شهية ضعيفة أو أفرط في تناول الطعام",
     
-    // Depression results
     "depression_result_minimal": "اكتئاب بسيط أو لا يوجد",
     "depression_result_mild": "اكتئاب خفيف",
     "depression_result_moderate": "اكتئاب متوسط",
     "depression_result_severe": "اكتئاب شديد",
     
-    // Anxiety test questions
     "anxiety_q1": "أشعر بالتوتر أو القلق",
     "anxiety_q2": "أقلق كثيرًا بشأن أمور مختلفة",
     "anxiety_q3": "أواجه صعوبة في الاسترخاء",
     "anxiety_q4": "أشعر بعدم الراحة وصعوبة في الجلوس ساكنًا",
     "anxiety_q5": "أنزعج أو أستفز بسهولة",
     
-    // Anxiety results
     "anxiety_result_minimal": "قلق بسيط أو لا يوجد",
     "anxiety_result_mild": "قلق خفيف",
     "anxiety_result_moderate": "قلق متوسط",
     "anxiety_result_severe": "قلق شديد",
     
-    // Personality test questions
     "personality_q1": "أستمتع بكوني محور الاهتمام",
     "personality_q2": "أفضل الأنشطة الهادئة والمنعزلة",
     "personality_q3": "أعتبر نفسي منظمًا ومهتمًا بالتفاصيل",
     "personality_q4": "أشعر بالراحة في المواقف الاجتماعية الجديدة",
     "personality_q5": "أنا أكثر عملية من إبداعية",
     
-    // ADHD test questions
     "adhd_q1": "أواجه صعوبة في الحفاظ على التركيز",
     "adhd_q2": "أتشتت بسهولة",
     "adhd_q3": "أكافح لإتمام المهام",
     "adhd_q4": "غالبًا ما أفقد الأشياء الضرورية للمهام",
     "adhd_q5": "غالبًا ما أتململ أو أشعر بعدم الراحة",
     
-    // Children test questions
     "children_q1": "يواجه الطفل صعوبة في التركيز",
     "children_q2": "يبدو الطفل قلقًا أو متوترًا",
     "children_q3": "يعاني الطفل من تقلبات مزاجية متكررة",
     "children_q4": "يواجه الطفل صعوبة في تكوين صداقات",
     "children_q5": "فقد الطفل الاهتمام بالأنشطة التي كان يستمتع بها",
     
-    // Jealousy test questions
     "jealousy_q1": "أقلق كثيرًا بشأن خيانة شريكي لي",
     "jealousy_q2": "أتفقد هاتف شريكي أو وسائل التواصل الاجتماعي الخاصة به",
     "jealousy_q3": "أشعر بعدم الارتياح عندما يتحدث شريكي مع الآخرين",
     "jealousy_q4": "أغضب عندما يعطي شريكي اهتمامًا للآخرين",
     "jealousy_q5": "غالبًا ما أحتاج إلى تطمين من شريكي",
     
-    // Love test questions
     "love_q1": "أفكر في هذا الشخص باستمرار",
     "love_q2": "أشعر بالسعادة عندما أكون مع هذا الشخص",
     "love_q3": "أعطي أولوية لاحتياجات هذا الشخص على احتياجاتي",
     "love_q4": "أستطيع أن أرى مستقبلًا مع هذا الشخص",
     "love_q5": "أتقبل عيوب هذا الشخص",
     
-    // Passion test questions
     "passion_q1": "أفقد الإحساس بالوقت عندما أنشغل بهذا النشاط",
     "passion_q2": "أشعر بالنشاط عند ممارسة هذا النشاط",
     "passion_q3": "أرغب باستمرار في التحسن في هذا المجال",
     "passion_q4": "أفكر في هذا النشاط حتى عندما لا أمارسه",
-    "passion_q5": "سأمارس هذا النشاط حتى لو لم أتلق أجرًا أو تقديرًا عليه",
+    "passion_q5": "سأمارس هذا النشاط حتى لو لم أتلقى أجرًا أو تقديرًا عليه",
   },
 };
 

@@ -44,6 +44,7 @@ const Navbar = () => {
     { href: "/", label: t('Home') },
     { href: "/blog", label: t('Blog') },
     { href: "/psychological-tests", label: t('Psychological Tests') },
+    { href: "/doctors", label: t('Our Doctors') },
   ];
 
   return (
