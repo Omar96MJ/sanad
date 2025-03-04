@@ -1,3 +1,4 @@
+
 import { createContext, useContext } from 'react';
 import { useState, useEffect } from 'react';
 
@@ -49,7 +50,7 @@ const translations = {
     "resources": "Resources",
     "mental_health_guide": "Mental Health Guide",
     "crisis_support": "Crisis Support",
-    "self_care_tips": "Self-Care Tips",
+    "self_care_tips": "Self Care Tips",
     "faq": "FAQ",
     "contact": "Contact",
     "address": "123 Wellness Street, Mindful City, MC 12345",
