@@ -29,6 +29,7 @@ const translations = {
     // General UI elements
     "Home": "Home",
     "Blog": "Blog",
+    "Psychological Tests": "Psychological Tests",
     "Login": "Login",
     "Register": "Register",
     "Patient Dashboard": "Patient Dashboard",
@@ -179,6 +180,7 @@ const translations = {
   ar: {
     "Home": "الرئيسية",
     "Blog": "مدونة",
+    "Psychological Tests": "الاختبارات النفسية",
     "Login": "تسجيل الدخول",
     "Register": "تسجيل",
     "Patient Dashboard": "لوحة معلومات المريض",
