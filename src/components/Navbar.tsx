@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -58,7 +59,7 @@ const Navbar = () => {
           className="flex items-center gap-2 text-xl font-semibold slide-in-right"
         >
           <HelpingHand className="text-primary h-6 w-6" />
-          <span>سند</span>
+          <span>{isRTL ? 'سند' : 'Sanad'}</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-6">
@@ -153,7 +154,7 @@ const Navbar = () => {
               <>
                 {isAdmin() && (
                   <Link to="/admin-dashboard" className="py-2 flex items-center">
-                    <ShieldAlert className="mr-2 h-4 w-4" />
+                    <ShieldAlert className={`${isRTL ? 'ml-2' : 'mr-2'} h-4 w-4`} />
                     {t('admin_panel')}
                   </Link>
                 )}

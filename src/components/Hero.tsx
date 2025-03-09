@@ -7,8 +7,9 @@ import { useLanguage } from '@/hooks/useLanguage';
 
 const Hero = () => {
   const { user } = useAuth();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [isVisible, setIsVisible] = useState(false);
+  const isRTL = language === 'ar';
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -33,25 +34,27 @@ const Hero = () => {
           }`}
         >
           <div className="inline-block bg-primary/10 text-primary font-medium rounded-full px-4 py-1 mb-6">
-            رعاية الصحة النفسية
+            {isRTL ? 'رعاية الصحة النفسية' : 'Mental Health Care'}
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            صحتك النفسية أولويتنا
+            {isRTL ? 'صحتك النفسية أولويتنا' : 'Your Mental Health is Our Priority'}
           </h1>
           <p className="text-lg text-muted-foreground mb-8 max-w-xl">
-            في سند، نؤمن أن الصحة النفسية جزء أساسي من صحتك العامة. نقدم الدعم والموارد لمساعدتك في رحلتك نحو الرفاهية النفسية
+            {isRTL 
+              ? 'في سند، نؤمن أن الصحة النفسية جزء أساسي من صحتك العامة. نقدم الدعم والموارد لمساعدتك في رحلتك نحو الرفاهية النفسية'
+              : 'At Sanad, we believe mental health is a vital part of your overall wellbeing. We provide support and resources to help you on your journey to mental wellness.'}
           </p>
           <div className="flex flex-wrap gap-4">
             {!user ? (
               <>
                 <Link to="/register">
                   <Button className="btn-primary" size="lg">
-                    ابدأ رحلتك اليوم
+                    {isRTL ? 'ابدأ رحلتك اليوم' : 'Start Your Journey Today'}
                   </Button>
                 </Link>
                 <Link to="/blog">
                   <Button variant="outline" size="lg" className="rounded-full">
-                    استكشف موارد الصحة النفسية
+                    {isRTL ? 'استكشف موارد الصحة النفسية' : 'Explore Mental Health Resources'}
                   </Button>
                 </Link>
               </>
@@ -59,12 +62,12 @@ const Hero = () => {
               <>
                 <Link to={user.role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard'}>
                   <Button className="btn-primary" size="lg">
-                    الذهاب إلى لوحة التحكم
+                    {isRTL ? 'الذهاب إلى لوحة التحكم' : 'Go to Dashboard'}
                   </Button>
                 </Link>
                 <Link to="/blog">
                   <Button variant="outline" size="lg" className="rounded-full">
-                    تصفح المقالات والموارد
+                    {isRTL ? 'تصفح المقالات والموارد' : 'Browse Articles and Resources'}
                   </Button>
                 </Link>
               </>
@@ -82,7 +85,7 @@ const Hero = () => {
             <div className="relative bg-background rounded-3xl p-2 shadow-custom">
               <img 
                 src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
-                alt="الصحة النفسية"
+                alt={isRTL ? "الصحة النفسية" : "Mental Health"}
                 className="w-full h-[500px] object-cover rounded-2xl"
                 loading="lazy"
               />
@@ -98,8 +101,8 @@ const Hero = () => {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-medium">راحة البال</p>
-                  <p className="text-sm text-muted-foreground">خطوة بخطوة نحو التوازن النفسي</p>
+                  <p className="font-medium">{isRTL ? 'راحة البال' : 'Peace of Mind'}</p>
+                  <p className="text-sm text-muted-foreground">{isRTL ? 'خطوة بخطوة نحو التوازن النفسي' : 'Step by step toward mental balance'}</p>
                 </div>
               </div>
             </div>
@@ -114,8 +117,8 @@ const Hero = () => {
                   </svg>
                 </div>
                 <div>
-                  <p className="font-medium">دعم الخبراء</p>
-                  <p className="text-sm text-muted-foreground">خبراء مؤهلين لمساعدتك</p>
+                  <p className="font-medium">{isRTL ? 'دعم الخبراء' : 'Expert Support'}</p>
+                  <p className="text-sm text-muted-foreground">{isRTL ? 'خبراء مؤهلين لمساعدتك' : 'Qualified experts to help you'}</p>
                 </div>
               </div>
             </div>

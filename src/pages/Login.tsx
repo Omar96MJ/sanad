@@ -48,8 +48,8 @@ const Login = () => {
               {t('sign_in_to_continue')}
             </p>
             <div className="mt-3 text-xs text-muted-foreground">
-              <p>For demo purposes: use <span className="font-medium">doctor@example.com</span> or <span className="font-medium">admin@example.com</span></p>
-              <p>or <span className="font-medium">patient@example.com</span> with password <span className="font-medium">password</span></p>
+              <p>{isRTL ? 'للتجربة التوضيحية: استخدم' : 'For demo purposes: use'} <span className="font-medium">doctor@example.com</span> {isRTL ? 'أو' : 'or'} <span className="font-medium">admin@example.com</span></p>
+              <p>{isRTL ? 'أو' : 'or'} <span className="font-medium">patient@example.com</span> {isRTL ? 'مع كلمة المرور' : 'with password'} <span className="font-medium">password</span></p>
             </div>
           </div>
           

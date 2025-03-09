@@ -1,8 +1,53 @@
 
 import { useState, useEffect } from 'react';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const QuoteSection = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const { language } = useLanguage();
+  const isRTL = language === 'ar';
+
+  const arabicQuotes = [
+    {
+      quote: "صحتك النفسية ليست وجهة تصل إليها، بل هي رحلة مستمرة. تذكر أن تأخذ كل يوم خطوة للأمام، حتى لو كانت صغيرة.",
+      author: "د. سارة الخليفي، أخصائية نفسية"
+    },
+    {
+      quote: "ليس من العيب طلب المساعدة. الشجاعة الحقيقية تكمن في الاعتراف بأنك تحتاج إلى دعم.",
+      author: "د. أحمد الشمري"
+    },
+    {
+      quote: "الصحة النفسية ليست مجرد غياب المرض النفسي، بل هي وجود رفاهية عاطفية ونفسية واجتماعية.",
+      author: "منظمة الصحة العالمية"
+    },
+    {
+      quote: "العناية بنفسك ليست أنانية. لا يمكنك سكب من كأس فارغة.",
+      author: "د. نورة العتيبي"
+    }
+  ];
+
+  const englishQuotes = [
+    {
+      quote: "Your mental health is not a destination, but a continuous journey. Remember to take a step forward each day, even if small.",
+      author: "Dr. Sarah Al-Khalifi, Psychologist"
+    },
+    {
+      quote: "There is no shame in asking for help. True courage lies in acknowledging that you need support.",
+      author: "Dr. Ahmed Al-Shamri"
+    },
+    {
+      quote: "Mental health is not just the absence of mental illness, but the presence of emotional, psychological, and social well-being.",
+      author: "World Health Organization"
+    },
+    {
+      quote: "Taking care of yourself is not selfish. You cannot pour from an empty cup.",
+      author: "Dr. Noura Al-Otaibi"
+    }
+  ];
+
+  const quotes = isRTL ? arabicQuotes : englishQuotes;
+  const mainQuote = quotes[0];
+  const secondaryQuotes = quotes.slice(1);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -44,28 +89,15 @@ const QuoteSection = () => {
             </svg>
             
             <blockquote className="text-2xl md:text-3xl font-medium mb-8 leading-relaxed">
-              صحتك النفسية ليست وجهة تصل إليها، بل هي رحلة مستمرة. تذكر أن تأخذ كل يوم خطوة للأمام، حتى لو كانت صغيرة.
+              {mainQuote.quote}
             </blockquote>
             
-            <p className="text-muted-foreground">— د. سارة الخليفي، أخصائية نفسية</p>
+            <p className="text-muted-foreground">{mainQuote.author}</p>
           </div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-16">
-          {[
-            {
-              quote: "ليس من العيب طلب المساعدة. الشجاعة الحقيقية تكمن في الاعتراف بأنك تحتاج إلى دعم.",
-              author: "د. أحمد الشمري"
-            },
-            {
-              quote: "الصحة النفسية ليست مجرد غياب المرض النفسي، بل هي وجود رفاهية عاطفية ونفسية واجتماعية.",
-              author: "منظمة الصحة العالمية"
-            },
-            {
-              quote: "العناية بنفسك ليست أنانية. لا يمكنك سكب من كأس فارغة.",
-              author: "د. نورة العتيبي"
-            }
-          ].map((item, index) => (
+          {secondaryQuotes.map((item, index) => (
             <div 
               key={index}
               className={`bg-accent/10 rounded-lg p-6 border border-accent/20 transition-all duration-700 ${
