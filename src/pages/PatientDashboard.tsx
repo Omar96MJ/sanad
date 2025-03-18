@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -16,8 +15,8 @@ import BlogCard from "@/components/BlogCard";
 import { BlogPost } from "@/lib/types";
 import { DoctorCard } from "@/components/UserCard";
 import { toast } from "sonner";
+import MessagingLayout from "@/components/MessagingLayout";
 
-// Mock data
 const mockDoctor: Doctor = {
   id: '1',
   name: 'Dr. Sarah Johnson',
@@ -96,7 +95,6 @@ const PatientDashboard = () => {
     }, 100);
   }, []);
 
-  // Redirect if not logged in or not a patient
   if (!user) {
     return <Navigate to="/login" />;
   } else if (user.role !== 'patient') {
@@ -151,10 +149,11 @@ const PatientDashboard = () => {
 
         <div className="container-custom mt-8">
           <Tabs defaultValue="overview" className="space-y-8">
-            <TabsList className="grid grid-cols-3 sm:w-[400px]">
+            <TabsList className="grid grid-cols-1 sm:grid-cols-4 gap-2">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="appointments">Appointments</TabsTrigger>
               <TabsTrigger value="resources">Resources</TabsTrigger>
+              <TabsTrigger value="messaging">Messaging</TabsTrigger>
             </TabsList>
             
             <TabsContent value="overview" className="space-y-8">
@@ -441,6 +440,12 @@ const PatientDashboard = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+            
+            <TabsContent value="messaging" className="space-y-6">
+              <div className="mt-4">
+                <MessagingLayout isTherapist={false} />
+              </div>
             </TabsContent>
           </Tabs>
         </div>

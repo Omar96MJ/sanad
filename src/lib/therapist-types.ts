@@ -95,3 +95,21 @@ export interface Notification {
   isRead: boolean;
   createdAt: string;
 }
+
+export interface Message {
+  id: string;
+  senderId: string;
+  senderName: string;
+  senderRole: UserRole;
+  recipientId: string;
+  content: string;
+  timestamp: string;
+  isRead: boolean;
+}
+
+export interface Conversation {
+  id: string;
+  participantIds: string[];
+  lastMessageTimestamp: string;
+  unreadCount: number;
+}

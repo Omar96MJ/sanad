@@ -11,7 +11,8 @@ import PatientManagement from "@/components/therapist/PatientManagement";
 import SessionManagement from "@/components/therapist/SessionManagement";
 import EvaluationForms from "@/components/therapist/EvaluationForms";
 import AvailabilityManagement from "@/components/therapist/AvailabilityManagement";
-import { Bell } from "lucide-react";
+import MessagingLayout from "@/components/messaging/MessagingLayout";
+import { Bell, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const TherapistDashboard = () => {
@@ -38,23 +39,32 @@ const TherapistDashboard = () => {
               <p className="text-muted-foreground mt-1">{t('welcome_back')}, {user.name}</p>
             </div>
             
-            <Button variant="outline" className="relative">
-              <Bell className="h-5 w-5" />
-              {notificationsCount > 0 && (
+            <div className="flex gap-2">
+              <Button variant="outline" className="relative">
+                <MessageCircle className="h-5 w-5" />
                 <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  {notificationsCount}
+                  2
                 </span>
-              )}
-            </Button>
+              </Button>
+              <Button variant="outline" className="relative">
+                <Bell className="h-5 w-5" />
+                {notificationsCount > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {notificationsCount}
+                  </span>
+                )}
+              </Button>
+            </div>
           </div>
           
           <Tabs defaultValue="profile" className="w-full">
-            <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-8">
+            <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-8">
               <TabsTrigger value="profile">{t('profile')}</TabsTrigger>
               <TabsTrigger value="patients">{t('patients')}</TabsTrigger>
               <TabsTrigger value="sessions">{t('sessions')}</TabsTrigger>
               <TabsTrigger value="evaluations">{t('evaluations')}</TabsTrigger>
               <TabsTrigger value="availability">{t('availability')}</TabsTrigger>
+              <TabsTrigger value="messaging">{t('messaging')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="profile">
@@ -75,6 +85,10 @@ const TherapistDashboard = () => {
             
             <TabsContent value="availability">
               <AvailabilityManagement />
+            </TabsContent>
+            
+            <TabsContent value="messaging">
+              <MessagingLayout isTherapist={true} />
             </TabsContent>
           </Tabs>
         </div>
