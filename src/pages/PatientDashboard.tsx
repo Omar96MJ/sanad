@@ -15,7 +15,7 @@ import BlogCard from "@/components/BlogCard";
 import { BlogPost } from "@/lib/types";
 import { DoctorCard } from "@/components/UserCard";
 import { toast } from "sonner";
-import MessagingLayout from "@/components/MessagingLayout";
+import MessagingLayout from "@/components/messaging/MessagingLayout";
 
 const mockDoctor: Doctor = {
   id: '1',
