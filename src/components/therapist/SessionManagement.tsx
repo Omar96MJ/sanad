@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { 
@@ -31,7 +30,6 @@ import { Appointment } from "@/lib/therapist-types";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Clock, FileText, Bell } from "lucide-react";
 
-// Mock appointments
 const mockAppointments: Appointment[] = [
   {
     id: '1',
@@ -65,7 +63,6 @@ const mockAppointments: Appointment[] = [
   }
 ];
 
-// Mock patients for selection
 const mockPatients = [
   { id: '1', name: 'John Smith' },
   { id: '2', name: 'Emma Johnson' },
@@ -84,7 +81,6 @@ const SessionManagement = () => {
   const [sessionNotes, setSessionNotes] = useState("");
   const [showAddAppointment, setShowAddAppointment] = useState(false);
   
-  // New appointment state
   const [newAppointmentPatient, setNewAppointmentPatient] = useState("");
   const [newAppointmentTime, setNewAppointmentTime] = useState("09:00");
   const [newAppointmentDuration, setNewAppointmentDuration] = useState("60");
@@ -101,7 +97,6 @@ const SessionManagement = () => {
       return;
     }
     
-    // In a real app, send to backend
     toast.success(t('session_notes_submitted'));
     setSessionNotes("");
     setShowSessionNotes(false);
@@ -113,11 +108,9 @@ const SessionManagement = () => {
       return;
     }
     
-    // In a real app, send to backend
     toast.success(t('appointment_added'));
     setShowAddAppointment(false);
     
-    // Reset form
     setNewAppointmentPatient("");
     setNewAppointmentTime("09:00");
     setNewAppointmentDuration("60");
@@ -198,7 +191,7 @@ const SessionManagement = () => {
                             variant="outline" 
                             size="sm"
                             onClick={() => {
-                              toast.success(t('notification_sent', { patient: appointment.patientName }));
+                              toast.success(t('notification_sent'));
                             }}
                           >
                             <Bell className="h-4 w-4 mr-1" />
@@ -215,7 +208,6 @@ const SessionManagement = () => {
         </Card>
       </div>
       
-      {/* Session Notes Dialog */}
       {selectedAppointment && (
         <Dialog open={showSessionNotes} onOpenChange={setShowSessionNotes}>
           <DialogContent>
@@ -245,7 +237,6 @@ const SessionManagement = () => {
         </Dialog>
       )}
       
-      {/* Add Appointment Dialog */}
       <Dialog open={showAddAppointment} onOpenChange={setShowAddAppointment}>
         <DialogContent>
           <DialogHeader>
