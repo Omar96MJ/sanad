@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -6,6 +7,8 @@ import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import PsyToolkitTests from '@/components/PsyToolkitTests';
 import { toast } from "sonner";
 
 const PsychologicalTests = () => {
@@ -18,6 +21,7 @@ const PsychologicalTests = () => {
   const [testCompleted, setTestCompleted] = useState(false);
   const [result, setResult] = useState('');
   const [isVisible, setIsVisible] = useState(false);
+  const [activeTab, setActiveTab] = useState("internal");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -271,11 +275,24 @@ const PsychologicalTests = () => {
           </p>
         </div>
 
-        <div className="flex flex-col items-center justify-center w-full">
-          {renderTestSelection()}
-          {renderQuestions()}
-          {renderResult()}
-        </div>
+        <Tabs defaultValue="internal" value={activeTab} onValueChange={setActiveTab} className="mb-6">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
+            <TabsTrigger value="internal">{t('self_assessment')}</TabsTrigger>
+            <TabsTrigger value="psytoolkit">{t('professional_tests')}</TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="internal" className="mt-6">
+            <div className="flex flex-col items-center justify-center w-full">
+              {renderTestSelection()}
+              {renderQuestions()}
+              {renderResult()}
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="psytoolkit" className="mt-6">
+            <PsyToolkitTests />
+          </TabsContent>
+        </Tabs>
       </main>
       <Footer />
     </div>
