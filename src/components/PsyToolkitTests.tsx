@@ -37,49 +37,49 @@ const PsyToolkitTests = () => {
       id: "stroop",
       name: "Stroop Test",
       description: "The Stroop test measures your ability to focus on relevant information and ignore irrelevant information.",
-      embedUrl: "https://www.psytoolkit.org/cgi-bin/psy2.8.1/survey?s=vxHEA6",
+      embedUrl: "https://www.psytoolkit.org/experiment-library/stroop.html",
       category: "cognitive"
     },
     {
       id: "memory",
       name: "Visual Memory Test",
       description: "Test your visual memory capacity and recall abilities.",
-      embedUrl: "https://www.psytoolkit.org/cgi-bin/psy2.8.1/survey?s=C6Qv9s",
+      embedUrl: "https://www.psytoolkit.org/experiment-library/memory.html",
       category: "cognitive"
     },
     {
       id: "reaction",
       name: "Reaction Time Test",
       description: "Measure your reaction time to visual stimuli.",
-      embedUrl: "https://www.psytoolkit.org/cgi-bin/psy2.8.1/survey?s=QXajxJ",
+      embedUrl: "https://www.psytoolkit.org/experiment-library/simple-rt.html",
       category: "cognitive"
     },
     {
       id: "bigfive",
       name: "Big Five Personality Test",
       description: "Assess your personality across five major dimensions: openness, conscientiousness, extraversion, agreeableness, and neuroticism.",
-      embedUrl: "https://www.psytoolkit.org/cgi-bin/psy2.8.1/survey?s=TPFK8d",
+      embedUrl: "https://www.psytoolkit.org/survey-library/big5.html",
       category: "personality"
     },
     {
       id: "anxiety",
-      name: "Anxiety Assessment",
+      name: "Anxiety Assessment (GAD-7)",
       description: "Evaluate your current anxiety levels with this standardized assessment.",
-      embedUrl: "https://www.psytoolkit.org/cgi-bin/psy2.8.1/survey?s=LRNuAP",
+      embedUrl: "https://www.psytoolkit.org/survey-library/anxiety-gad7.html",
       category: "clinical"
     },
     {
       id: "depression",
       name: "Depression Questionnaire (PHQ-9)",
       description: "A standardized screening tool for depression symptoms.",
-      embedUrl: "https://www.psytoolkit.org/cgi-bin/psy2.8.1/survey?s=Z9kXE7",
+      embedUrl: "https://www.psytoolkit.org/survey-library/depression-phq9.html",
       category: "clinical"
     },
     {
       id: "stress",
       name: "Perceived Stress Scale",
       description: "Measure your perception of stress in your life.",
-      embedUrl: "https://www.psytoolkit.org/cgi-bin/psy2.8.1/survey?s=8SrFGQ",
+      embedUrl: "https://www.psytoolkit.org/survey-library/stress-pss.html",
       category: "clinical"
     }
   ];
@@ -104,6 +104,18 @@ const PsyToolkitTests = () => {
   const handleIframeLoad = () => {
     setIframeLoading(false);
     toast.success(t('test_loaded'));
+  };
+
+  const handleIframeError = () => {
+    setIframeLoading(false);
+    toast.error(t('test_load_error') || 'Failed to load test. Please try again later.');
+  };
+
+  const openExternalTest = () => {
+    if (!activeTest) return;
+    
+    window.open(activeTest.embedUrl, '_blank', 'noopener,noreferrer');
+    toast.info(t('opening_external_test') || 'Opening test in a new tab');
   };
 
   return (
@@ -151,7 +163,13 @@ const PsyToolkitTests = () => {
         <div className="space-y-4">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-bold">{activeTest.name}</h2>
-            <Button variant="outline" onClick={handleBackToTests}>{t('back_to_tests')}</Button>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={openExternalTest}>
+                <ExternalLink size={16} className="mr-1" />
+                {t('open_in_new_tab') || 'Open in new tab'}
+              </Button>
+              <Button variant="outline" onClick={handleBackToTests}>{t('back_to_tests')}</Button>
+            </div>
           </div>
           
           <Card>
@@ -164,16 +182,19 @@ const PsyToolkitTests = () => {
                   </div>
                 </div>
               )}
-              <iframe
-                src={activeTest.embedUrl}
-                title={activeTest.name}
-                width="100%"
-                height="100%"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                onLoad={handleIframeLoad}
-              ></iframe>
+              <div className="h-full flex items-center justify-center">
+                <iframe
+                  src={activeTest.embedUrl}
+                  title={activeTest.name}
+                  width="100%"
+                  height="100%"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  onLoad={handleIframeLoad}
+                  onError={handleIframeError}
+                ></iframe>
+              </div>
             </CardContent>
           </Card>
           
