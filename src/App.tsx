@@ -3,8 +3,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "@/hooks/useAuth";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ThemeProvider } from "@/hooks/useTheme";
 import { LanguageProvider } from "@/hooks/useLanguage";
 import { SettingsProvider } from "@/hooks/useSettings";
@@ -22,6 +22,45 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
+// Protected route component
+const ProtectedRoute = ({ children, allowedRoles }: { children: JSX.Element, allowedRoles: string[] }) => {
+  const { user } = useAuth();
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    // If user doesn't have the required role, redirect to their dashboard
+    if (user.role === 'doctor') {
+      return <Navigate to="/therapist-dashboard" replace />;
+    } else if (user.role === 'admin') {
+      return <Navigate to="/admin-dashboard" replace />;
+    } else {
+      return <Navigate to="/patient-dashboard" replace />;
+    }
+  }
+  
+  return children;
+};
+
+// Dashboard selector route
+const DashboardRoute = () => {
+  const { user } = useAuth();
+  
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+  
+  if (user.role === 'doctor') {
+    return <Navigate to="/therapist-dashboard" replace />;
+  } else if (user.role === 'admin') {
+    return <Navigate to="/admin-dashboard" replace />;
+  } else {
+    return <Navigate to="/patient-dashboard" replace />;
+  }
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -37,10 +76,39 @@ const App = () => (
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/patient-dashboard" element={<PatientDashboard />} />
-                  <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                  <Route path="/therapist-dashboard" element={<TherapistDashboard />} />
+                  <Route path="/dashboard" element={<DashboardRoute />} />
+                  <Route 
+                    path="/profile" 
+                    element={
+                      <ProtectedRoute allowedRoles={['patient', 'doctor', 'admin']}>
+                        <Profile />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/patient-dashboard" 
+                    element={
+                      <ProtectedRoute allowedRoles={['patient']}>
+                        <PatientDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin-dashboard" 
+                    element={
+                      <ProtectedRoute allowedRoles={['admin']}>
+                        <AdminDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/therapist-dashboard" 
+                    element={
+                      <ProtectedRoute allowedRoles={['doctor']}>
+                        <TherapistDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
                   <Route path="/psychological-tests" element={<PsychologicalTests />} />
                   <Route path="/book-session" element={<SessionBooking />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

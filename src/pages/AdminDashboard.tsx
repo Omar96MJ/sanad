@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useSettings } from "@/hooks/useSettings";
@@ -13,20 +13,30 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Users, Settings, Activity, Shield } from "lucide-react";
+import { Users, Settings, Activity, Shield, BarChart3, UserCog, Database, FileText } from "lucide-react";
+import AdminProfile from "@/components/admin/AdminProfile";
 
 const AdminDashboard = () => {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { settings, updateSettings } = useSettings();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { theme } = useTheme();
+  const isRTL = language === 'ar';
 
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Redirect if user is not admin
+  useEffect(() => {
+    // Redirect if user is not admin
+    if (!user || !isAdmin()) {
+      navigate("/login");
+      toast.error(t('unauthorized_access'));
+    }
+    
+    window.scrollTo(0, 0);
+  }, [user, isAdmin, navigate, t]);
+
   if (!user || !isAdmin()) {
-    navigate("/");
     return null;
   }
 
@@ -37,11 +47,19 @@ const AdminDashboard = () => {
     }
   };
 
+  // Mock data for analytics
+  const analyticsData = [
+    { label: t('new_users'), value: '38', change: '+12%', trend: 'up' },
+    { label: t('active_sessions'), value: '156', change: '+24%', trend: 'up' },
+    { label: t('completed_tests'), value: '89', change: '+5%', trend: 'up' },
+    { label: t('revenue'), value: '$12,450', change: '+18%', trend: 'up' },
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
       <Navbar />
-      <main className="flex-grow mt-16 md:mt-20 py-8">
-        <div className="container-custom">
+      <main className="flex-grow mt-16 md:mt-20 py-8 px-4 sm:px-6 lg:px-8 bg-muted/30">
+        <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div>
               <h1 className="text-3xl font-bold mb-2">{t('admin_dashboard')}</h1>
@@ -56,13 +74,35 @@ const AdminDashboard = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid grid-cols-3 md:w-[400px]">
+            <TabsList className="grid grid-cols-2 md:grid-cols-5">
               <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
               <TabsTrigger value="users">{t('users')}</TabsTrigger>
               <TabsTrigger value="settings">{t('system_settings')}</TabsTrigger>
+              <TabsTrigger value="reports">{t('reports')}</TabsTrigger>
+              <TabsTrigger value="profile">{t('profile')}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+                {analyticsData.map((item, index) => (
+                  <Card key={index}>
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium text-muted-foreground">{item.label}</p>
+                        <div className={`text-xs px-2 py-1 rounded-full ${
+                          item.trend === 'up' 
+                            ? 'bg-green-100 text-green-800' 
+                            : 'bg-red-100 text-red-800'
+                        }`}>
+                          {item.change}
+                        </div>
+                      </div>
+                      <p className="text-3xl font-bold mt-2">{item.value}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <Card>
                   <CardHeader className="pb-2">
@@ -74,8 +114,16 @@ const AdminDashboard = () => {
                   <CardContent>
                     <div className="text-3xl font-bold">3</div>
                     <p className="text-sm text-muted-foreground mt-1">
-                      1 {t('doctors')}, 1 {t('patients')}, 1 {t('admin_panel')}
+                      1 {t('doctors')}, 1 {t('patients')}, 1 {t('admin')}
                     </p>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="mt-4"
+                      onClick={() => setActiveTab("users")}
+                    >
+                      {t('manage_users')}
+                    </Button>
                   </CardContent>
                 </Card>
 
@@ -88,12 +136,16 @@ const AdminDashboard = () => {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="text-sm">
-                      <div className="font-medium">System Update</div>
-                      <div className="text-xs text-muted-foreground">2 hours ago</div>
+                      <div className="font-medium">{t('system_update')}</div>
+                      <div className="text-xs text-muted-foreground">2 {t('hours_ago')}</div>
                     </div>
                     <div className="text-sm">
-                      <div className="font-medium">New User Registration</div>
-                      <div className="text-xs text-muted-foreground">Yesterday</div>
+                      <div className="font-medium">{t('new_user_registration')}</div>
+                      <div className="text-xs text-muted-foreground">{t('yesterday')}</div>
+                    </div>
+                    <div className="text-sm">
+                      <div className="font-medium">{t('payment_received')}</div>
+                      <div className="text-xs text-muted-foreground">2 {t('days_ago')}</div>
                     </div>
                   </CardContent>
                 </Card>
@@ -116,6 +168,14 @@ const AdminDashboard = () => {
                         {settings.enableRegistration ? t('enabled') : t('disabled')}
                       </div>
                     </div>
+                    <Button 
+                      size="sm" 
+                      variant="outline" 
+                      className="w-full mt-2"
+                      onClick={() => setActiveTab("settings")}
+                    >
+                      {t('manage_settings')}
+                    </Button>
                   </CardContent>
                 </Card>
               </div>
@@ -126,7 +186,7 @@ const AdminDashboard = () => {
                 <CardHeader>
                   <CardTitle>{t('manage_users')}</CardTitle>
                   <CardDescription>
-                    View and manage all users in the system
+                    {t('view_and_manage_all_users')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -163,7 +223,7 @@ const AdminDashboard = () => {
                       <div className="flex justify-between items-center mb-2">
                         <div className="font-medium">Admin User</div>
                         <div className="bg-primary/20 text-xs px-2 py-1 rounded-full">
-                          {t('admin_panel')}
+                          {t('admin')}
                         </div>
                       </div>
                       <div className="text-sm text-muted-foreground mb-2">admin@example.com</div>
@@ -182,7 +242,7 @@ const AdminDashboard = () => {
                 <CardHeader>
                   <CardTitle>{t('system_settings')}</CardTitle>
                   <CardDescription>
-                    Manage system-wide settings and configurations
+                    {t('manage_system_wide_settings')}
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
@@ -191,7 +251,7 @@ const AdminDashboard = () => {
                       <div className="space-y-0.5">
                         <Label htmlFor="enable-registration">{t('signup')}</Label>
                         <p className="text-sm text-muted-foreground">
-                          Allow new users to register
+                          {t('allow_new_users')}
                         </p>
                       </div>
                       <Switch
@@ -203,9 +263,9 @@ const AdminDashboard = () => {
 
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
-                        <Label htmlFor="maintenance-mode">Maintenance Mode</Label>
+                        <Label htmlFor="maintenance-mode">{t('maintenance_mode')}</Label>
                         <p className="text-sm text-muted-foreground">
-                          Put the site in maintenance mode
+                          {t('put_site_in_maintenance')}
                         </p>
                       </div>
                       <Switch
@@ -214,15 +274,110 @@ const AdminDashboard = () => {
                         onCheckedChange={() => handleSettingToggle('maintenanceMode')}
                       />
                     </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <Label htmlFor="email-notifications">{t('email_notifications')}</Label>
+                        <p className="text-sm text-muted-foreground">
+                          {t('send_notification_emails')}
+                        </p>
+                      </div>
+                      <Switch
+                        id="email-notifications"
+                        checked={true}
+                        onCheckedChange={() => toast.success(t('setting_updated'))}
+                      />
+                    </div>
                   </div>
 
                   <div className="pt-4 border-t">
-                    <Button onClick={() => toast.success("Settings saved successfully")}>
-                      Save Changes
+                    <Button onClick={() => toast.success(t('settings_saved'))}>
+                      {t('save_changes')}
                     </Button>
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+            
+            <TabsContent value="reports" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <BarChart3 className="h-5 w-5 mr-2 text-primary" />
+                    {t('usage_reports')}
+                  </CardTitle>
+                  <CardDescription>
+                    {t('view_system_usage_analytics')}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-8">
+                    <div>
+                      <h3 className="text-lg font-medium mb-4">{t('user_growth')}</h3>
+                      <div className="h-[200px] w-full bg-muted/50 rounded-md flex items-end justify-between p-2">
+                        {[35, 45, 30, 65, 80, 70, 90].map((height, i) => (
+                          <div 
+                            key={i} 
+                            className="bg-primary/80 w-12 rounded-t-sm" 
+                            style={{ height: `${height}%` }}
+                          ></div>
+                        ))}
+                      </div>
+                      <div className="flex justify-between mt-2 text-xs text-muted-foreground">
+                        <span>Jan</span>
+                        <span>Feb</span>
+                        <span>Mar</span>
+                        <span>Apr</span>
+                        <span>May</span>
+                        <span>Jun</span>
+                        <span>Jul</span>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm text-muted-foreground">{t('total_sessions')}</p>
+                              <p className="text-2xl font-bold">342</p>
+                            </div>
+                            <Calendar className="h-10 w-10 text-primary/60" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm text-muted-foreground">{t('test_completions')}</p>
+                              <p className="text-2xl font-bold">128</p>
+                            </div>
+                            <FileText className="h-10 w-10 text-primary/60" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card>
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm text-muted-foreground">{t('active_users')}</p>
+                              <p className="text-2xl font-bold">75%</p>
+                            </div>
+                            <Users className="h-10 w-10 text-primary/60" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="profile">
+              <AdminProfile />
             </TabsContent>
           </Tabs>
         </div>
