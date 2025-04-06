@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -13,7 +12,17 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { Users, Settings, Activity, Shield, BarChart3, UserCog, Database, FileText } from "lucide-react";
+import { 
+  Users, 
+  Settings, 
+  Activity, 
+  Shield, 
+  BarChart3, 
+  UserCog, 
+  Database, 
+  FileText, 
+  Calendar as CalendarIcon 
+} from "lucide-react";
 import AdminProfile from "@/components/admin/AdminProfile";
 
 const AdminDashboard = () => {
@@ -342,7 +351,7 @@ const AdminDashboard = () => {
                               <p className="text-sm text-muted-foreground">{t('total_sessions')}</p>
                               <p className="text-2xl font-bold">342</p>
                             </div>
-                            <Calendar className="h-10 w-10 text-primary/60" />
+                            <CalendarIcon className="h-10 w-10 text-primary/60" />
                           </div>
                         </CardContent>
                       </Card>
