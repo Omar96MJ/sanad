@@ -1,1282 +1,404 @@
 
-import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, Clock, User, Tag } from "lucide-react";
-import { useLanguage } from "@/hooks/useLanguage";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import React from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { BlogPost } from "@/lib/types";
+import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { Facebook, Twitter, Linkedin, Share2, ArrowLeft } from "lucide-react";
 
-// Extended blog data - we'll reuse the same mock data structure from Blog.tsx
-// but we'll need to access it from this component
-const mockBlogs: BlogPost[] = [
+// Type definition for blog post
+interface BlogPostData {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  imageUrl: string;
+  date: string;
+  author: {
+    name: string;
+    avatar: string;
+    role: string;
+  };
+  categories: string[];
+  readTime: number;
+}
+
+// Example blog posts data
+const blogPostsData: BlogPostData[] = [
   {
-    id: '1',
-    title: 'فهم الاكتئاب: الأسباب والأعراض والعلاجات',
-    excerpt: 'اضطرابات الاكتئاب تؤثر على ملايين الأشخاص حول العالم. تعرف على الأسباب والأعراض والعلاجات المتاحة.',
+    id: "1",
+    title: "Understanding Anxiety in the Modern World",
+    slug: "understanding-anxiety-modern-world",
+    excerpt: "Learn about the causes, symptoms, and coping mechanisms for anxiety in today's fast-paced society.",
     content: `
-      <p>يؤثر الاكتئاب على أكثر من 264 مليون شخص حول العالم، ويعتبر من أكثر أسباب الإعاقة انتشارًا. في هذا المقال، سنتناول بعمق أسباب وأعراض وعلاجات الاكتئاب.</p>
+      <h2>Understanding Anxiety in the Modern World</h2>
       
-      <h2>ما هو الاكتئاب؟</h2>
-      <p>الاكتئاب هو اضطراب نفسي يتميز بالحزن المستمر وفقدان الاهتمام بالأنشطة التي كانت ممتعة سابقًا. يمكن أن يؤدي إلى مجموعة متنوعة من المشاكل العاطفية والجسدية ويقلل من قدرة الشخص على العمل في العمل وفي المنزل.</p>
+      <p>Anxiety is one of the most common mental health challenges people face in our fast-paced, modern world. The constant pressure to succeed, information overload, and unprecedented global events have all contributed to rising anxiety levels worldwide.</p>
       
-      <h2>أسباب الاكتئاب</h2>
-      <p>الاكتئاب معقد ويمكن أن يحدث لأسباب مختلفة، منها:</p>
+      <h3>What is Anxiety?</h3>
+      
+      <p>Anxiety is the body's natural response to stress. It's a feeling of fear or apprehension about what's to come. In moderate amounts, anxiety can be helpful – it alerts us to potential dangers and helps us prepare for important events. However, when anxiety becomes excessive, persistent, and interferes with daily activities, it may be classified as an anxiety disorder.</p>
+      
+      <p>Common symptoms of anxiety include:</p>
+      
       <ul>
-        <li>عوامل بيولوجية: اختلالات في المواد الكيميائية في الدماغ</li>
-        <li>عوامل وراثية: تاريخ عائلي من الاكتئاب</li>
-        <li>عوامل بيئية: التعرض للعنف، أو الإهمال، أو الفقر، أو الإساءة</li>
-        <li>شخصية الفرد: أشخاص ذوي تقدير ذات منخفض أو المتشائمين بشكل عام</li>
+        <li>Increased heart rate</li>
+        <li>Rapid breathing</li>
+        <li>Restlessness</li>
+        <li>Trouble concentrating</li>
+        <li>Difficulty falling asleep</li>
+        <li>Persistent feelings of worry or dread</li>
       </ul>
       
-      <h2>أعراض الاكتئاب</h2>
-      <p>تختلف أعراض الاكتئاب من شخص لآخر، ولكنها قد تشمل:</p>
+      <h3>Modern Contributors to Anxiety</h3>
+      
+      <p>Several factors unique to our modern lifestyle contribute to increasing anxiety levels:</p>
+      
+      <h4>Digital Overload</h4>
+      
+      <p>The constant stream of information from social media, news outlets, and work communications means our brains rarely get a chance to rest and process. Studies have shown links between heavy social media use and increased anxiety and depression, particularly among young people.</p>
+      
+      <h4>Work-Life Balance Challenges</h4>
+      
+      <p>Remote work has blurred the lines between professional and personal life for many. The ability to work from anywhere often translates to feeling like we should be working everywhere and all the time. This "always on" culture contributes significantly to anxiety and burnout.</p>
+      
+      <h4>Global Events and Uncertainty</h4>
+      
+      <p>From pandemics to climate change to economic fluctuations, we're constantly aware of large-scale challenges that can trigger anxiety about the future. The 24-hour news cycle ensures we never miss a crisis, which can lead to disaster fatigue and persistent worry.</p>
+      
+      <h3>Effective Coping Strategies</h3>
+      
+      <p>The good news is that there are many evidence-based approaches to managing anxiety in the modern world:</p>
+      
+      <h4>Digital Boundaries</h4>
+      
+      <p>Setting limits on technology use can significantly reduce anxiety. Try:</p>
+      
       <ul>
-        <li>مشاعر الحزن أو الفراغ أو اليأس المستمرة</li>
-        <li>فقدان الاهتمام أو المتعة في معظم الأنشطة</li>
-        <li>تغيرات في الشهية وفقدان أو زيادة الوزن</li>
-        <li>صعوبة في النوم أو النوم المفرط</li>
-        <li>التعب وفقدان الطاقة</li>
-        <li>مشاعر بالذنب أو انعدام القيمة</li>
-        <li>صعوبة في التركيز واتخاذ القرارات</li>
-        <li>أفكار متكررة عن الموت أو الانتحار</li>
+        <li>Designated tech-free times during your day</li>
+        <li>Social media breaks or "fasts"</li>
+        <li>Turning off non-essential notifications</li>
+        <li>Not checking devices first thing in the morning or right before bed</li>
       </ul>
       
-      <h2>علاجات الاكتئاب</h2>
-      <p>يمكن علاج الاكتئاب بشكل فعال، وتشمل خيارات العلاج:</p>
+      <h4>Mindfulness and Meditation</h4>
+      
+      <p>Regular mindfulness practice helps train your brain to return to the present moment rather than worrying about the future or ruminating on the past. Even 5-10 minutes of daily meditation can make a significant difference in anxiety levels over time.</p>
+      
+      <h4>Physical Movement</h4>
+      
+      <p>Exercise is one of the most effective natural anxiety remedies. Physical activity releases endorphins, improves sleep quality, and can serve as a form of moving meditation. Find movement you enjoy, whether it's walking, dancing, yoga, or team sports.</p>
+      
+      <h4>Professional Support</h4>
+      
+      <p>For persistent or severe anxiety, professional help is invaluable. Cognitive Behavioral Therapy (CBT) is particularly effective for anxiety disorders, helping identify and change thought patterns that trigger anxiety. In some cases, medication may also be appropriate as part of a comprehensive treatment plan.</p>
+      
+      <h3>Building Resilience for the Long Term</h3>
+      
+      <p>Beyond immediate coping strategies, building psychological resilience can help you weather life's challenges with less anxiety:</p>
+      
       <ul>
-        <li>العلاج النفسي: مثل العلاج المعرفي السلوكي (CBT)</li>
-        <li>الأدوية: مثل مضادات الاكتئاب</li>
-        <li>تغييرات نمط الحياة: ممارسة التمارين الرياضية، والتغذية الجيدة، وتحسين نمط النوم</li>
-        <li>العلاجات البديلة: مثل التأمل واليوجا</li>
-        <li>العلاج بالصدمات الكهربائية (ECT): في حالات الاكتئاب الشديدة</li>
+        <li>Cultivate strong social connections – relationships are a buffer against stress</li>
+        <li>Practice self-compassion – treat yourself with the kindness you would offer a friend</li>
+        <li>Develop a growth mindset – view challenges as opportunities to learn and grow</li>
+        <li>Establish meaning and purpose – connect your daily activities to your core values</li>
       </ul>
       
-      <h2>متى يجب طلب المساعدة؟</h2>
-      <p>إذا كنت تعاني من أعراض الاكتئاب لأكثر من أسبوعين، فمن المهم التحدث مع أخصائي الرعاية الصحية. إذا كانت لديك أفكار انتحارية، فاطلب المساعدة على الفور من خلال الاتصال بخط المساعدة أو الذهاب إلى غرفة الطوارئ.</p>
+      <h3>Conclusion</h3>
       
-      <h2>الخلاصة</h2>
-      <p>الاكتئاب مرض شائع ولكنه خطير، ومع ذلك فهو قابل للعلاج. مع الدعم المناسب، يمكن للأشخاص الذين يعانون من الاكتئاب أن يتحسنوا ويعيشوا حياة كاملة ومنتجة.</p>
+      <p>Anxiety is a natural human emotion that has been amplified by our modern lifestyle. By understanding the unique challenges we face today and implementing targeted strategies, it's possible to reduce anxiety and build a more balanced relationship with our digital, fast-paced world.</p>
+      
+      <p>Remember that seeking help for anxiety is a sign of strength, not weakness. Whether through self-help strategies, support groups, or professional treatment, taking steps to address anxiety can lead to profound improvements in your quality of life and overall wellbeing.</p>
     `,
-    author: 'د. سارة القحطاني',
-    authorId: '1',
-    authorRole: 'doctor',
-    publishedDate: '2023-10-15',
-    imageUrl: 'https://images.unsplash.com/photo-1649972904349-6e44c42644a7',
-    tags: ['الاكتئاب', 'الصحة النفسية', 'العلاج']
+    imageUrl: "/placeholder.svg",
+    date: "March 15, 2025",
+    author: {
+      name: "Dr. Sarah Johnson",
+      avatar: "/placeholder.svg",
+      role: "Clinical Psychologist"
+    },
+    categories: ["Mental Health", "Anxiety", "Wellbeing"],
+    readTime: 8
   },
   {
-    id: '2',
-    title: 'استراتيجيات التعامل مع القلق في الحياة اليومية',
-    excerpt: 'تعرف على طرق فعالة للتعامل مع القلق وكيفية تطبيقها في حياتك اليومية للحصول على راحة نفسية أفضل.',
+    id: "2",
+    title: "The Science of Mindfulness Meditation",
+    slug: "science-of-mindfulness-meditation",
+    excerpt: "Explore the neuroscience behind mindfulness meditation and how it can transform your brain and mental health.",
     content: `
-      <p>يعاني الكثير من الناس من القلق في حياتهم اليومية، سواء كان ذلك بسبب ضغوط العمل، العلاقات الشخصية، أو التحديات المالية. في هذا المقال، سنتحدث عن استراتيجيات فعالة للتعامل مع القلق.</p>
+      <h2>The Science of Mindfulness Meditation</h2>
       
-      <h2>ما هو القلق؟</h2>
-      <p>القلق هو استجابة طبيعية للتوتر والخطر، ولكن عندما يصبح مزمنًا أو شديدًا، فقد يتداخل مع حياتك اليومية ويؤثر على صحتك العامة. يمكن أن يظهر القلق كمشاعر من الخوف أو التوتر أو القلق المفرط حول المواقف اليومية.</p>
+      <p>Mindfulness meditation has moved from the realm of spiritual practice to scientific inquiry, with thousands of studies now documenting its effects on the brain and body. What was once considered alternative is now mainstream, with mindfulness programs implemented in healthcare settings, corporations, schools, and even military training.</p>
       
-      <h2>الأعراض الشائعة للقلق</h2>
-      <p>يمكن أن تختلف أعراض القلق من شخص لآخر، ولكن بعض الأعراض الشائعة تشمل:</p>
+      <h3>What is Mindfulness Meditation?</h3>
+      
+      <p>At its core, mindfulness meditation is the practice of intentionally focusing attention on the present moment and accepting it without judgment. While this sounds simple, it represents a radical shift from our default mode of thinking, which often involves dwelling on the past or worrying about the future.</p>
+      
+      <p>Common mindfulness practices include:</p>
+      
       <ul>
-        <li>الشعور بالتوتر، العصبية أو القلق</li>
-        <li>تسارع دقات القلب</li>
-        <li>التنفس السريع (فرط التنفس)</li>
-        <li>التعرق</li>
-        <li>الشعور بالتعب أو الضعف</li>
-        <li>صعوبة التركيز</li>
-        <li>صعوبة النوم</li>
-        <li>اضطرابات المعدة</li>
+        <li>Focused attention on breath</li>
+        <li>Body scan meditations</li>
+        <li>Mindful walking</li>
+        <li>Loving-kindness meditation</li>
+        <li>Mindful eating</li>
       </ul>
       
-      <h2>استراتيجيات التعامل مع القلق</h2>
-      <p>هناك العديد من الاستراتيجيات التي يمكنك استخدامها للتعامل مع القلق:</p>
+      <h3>Neuroscience of Mindfulness</h3>
       
-      <h3>1. تمارين التنفس العميق</h3>
-      <p>يمكن أن تساعد تمارين التنفس العميق في تهدئة جهازك العصبي وتقليل أعراض القلق. جرب التنفس البطني: استنشق ببطء من خلال الأنف عد حتى أربعة، احتفظ بالهواء لثانيتين، ثم ازفر ببطء من خلال الفم عد حتى ستة.</p>
+      <p>Advanced neuroimaging techniques have allowed scientists to observe how mindfulness meditation actually changes the brain, both in structure and function:</p>
       
-      <h3>2. التأمل والوعي الذهني</h3>
-      <p>يمكن أن يساعد التأمل وممارسات الوعي الذهني في تقليل مستويات القلق عن طريق جلب انتباهك إلى اللحظة الحالية. حاول تخصيص 10 دقائق يوميًا للتأمل أو ممارسة الوعي الذهني.</p>
+      <h4>Structural Brain Changes</h4>
       
-      <h3>3. النشاط البدني المنتظم</h3>
-      <p>التمارين الرياضية ليست مفيدة فقط لصحتك الجسدية، بل يمكن أن تساعد أيضًا في تقليل مشاعر القلق والتوتر. حاول ممارسة الرياضة لمدة 30 دقيقة على الأقل يوميًا.</p>
+      <p>Studies using MRI scans have found that regular meditation practice is associated with:</p>
       
-      <h3>4. نوم كافٍ وصحي</h3>
-      <p>يمكن أن يؤدي نقص النوم إلى زيادة مشاعر القلق. حاول الحصول على 7-9 ساعات من النوم كل ليلة وتأسيس روتين نوم منتظم.</p>
+      <ul>
+        <li>Increased gray matter in the prefrontal cortex, associated with attention and emotional regulation</li>
+        <li>Greater volume in the hippocampus, crucial for learning and memory</li>
+        <li>Reduced size of the amygdala, the brain's "fight or flight" center</li>
+        <li>Altered connectivity between brain regions, improving communication networks</li>
+      </ul>
       
-      <h3>5. تقليل الكافيين والكحول</h3>
-      <p>يمكن أن يزيد الكافيين والكحول من أعراض القلق. حاول تقليل استهلاكك أو تجنبهما تمامًا إذا لاحظت أنهما يزيدان من قلقك.</p>
+      <p>What's particularly remarkable is that these changes can begin to appear with just 8 weeks of consistent practice, suggesting the brain's impressive neuroplasticity in response to mindfulness training.</p>
       
-      <h2>متى يجب طلب المساعدة المهنية؟</h2>
-      <p>إذا كان القلق يتداخل مع حياتك اليومية، فقد يكون من المفيد التحدث مع أخصائي الصحة النفسية. العلاج المعرفي السلوكي (CBT) فعال بشكل خاص في علاج اضطرابات القلق. قد تكون الأدوية أيضًا خيارًا لبعض الأشخاص.</p>
+      <h4>Functional Brain Changes</h4>
       
-      <h2>الخلاصة</h2>
-      <p>القلق هو تجربة مشتركة، ومع الاستراتيجيات المناسبة، يمكنك تعلم كيفية إدارته بشكل فعال. تذكر أنه من الطبيعي طلب المساعدة عندما تحتاج إليها، والعديد من الموارد متاحة لدعمك في رحلتك نحو الصحة النفسية.</p>
+      <p>Beyond physical structure, mindfulness meditation changes how the brain functions:</p>
+      
+      <ul>
+        <li>Decreased activity in the Default Mode Network (DMN), the brain network active when mind-wandering</li>
+        <li>Improved attention networks, enhancing focus and reducing distractibility</li>
+        <li>Enhanced emotional regulation circuits, creating space between stimulus and response</li>
+        <li>Reduced stress reactivity, with lower cortisol levels and inflammatory markers</li>
+      </ul>
+      
+      <h3>Health Benefits Backed by Science</h3>
+      
+      <p>The neurological changes from mindfulness translate to measurable health benefits:</p>
+      
+      <h4>Mental Health</h4>
+      
+      <ul>
+        <li>Reduced symptoms of anxiety and depression</li>
+        <li>Improved emotion regulation</li>
+        <li>Enhanced resilience to stress</li>
+        <li>Better sleep quality</li>
+        <li>Decreased rumination (repetitive negative thinking)</li>
+      </ul>
+      
+      <h4>Physical Health</h4>
+      
+      <ul>
+        <li>Lower blood pressure</li>
+        <li>Improved immune function</li>
+        <li>Reduced inflammation</li>
+        <li>Better pain management, particularly for chronic conditions</li>
+        <li>Faster recovery from illness</li>
+      </ul>
+      
+      <h4>Cognitive Benefits</h4>
+      
+      <ul>
+        <li>Enhanced attention span and focus</li>
+        <li>Improved working memory</li>
+        <li>Better decision-making</li>
+        <li>Increased cognitive flexibility</li>
+        <li>Preservation of cognitive function with aging</li>
+      </ul>
+      
+      <h3>Evidence-Based Mindfulness Programs</h3>
+      
+      <p>Several structured mindfulness programs have been developed and rigorously tested:</p>
+      
+      <h4>Mindfulness-Based Stress Reduction (MBSR)</h4>
+      
+      <p>Developed by Jon Kabat-Zinn at the University of Massachusetts Medical School in the 1970s, MBSR is an 8-week program combining mindfulness meditation, body awareness, and yoga. Originally designed for patients with chronic pain, it's now used for a wide range of conditions and for general wellbeing.</p>
+      
+      <h4>Mindfulness-Based Cognitive Therapy (MBCT)</h4>
+      
+      <p>MBCT combines elements of MBSR with cognitive therapy and is particularly effective for preventing relapse in recurrent depression. Studies show it can reduce relapse rates by up to 50% for those with three or more previous episodes of depression.</p>
+      
+      <h3>Practical Applications</h3>
+      
+      <p>The science of mindfulness has led to widespread applications:</p>
+      
+      <h4>Clinical Settings</h4>
+      
+      <p>Mindfulness is now incorporated into treatment for various conditions, including depression, anxiety, addiction, chronic pain, and even cancer support care.</p>
+      
+      <h4>Educational Settings</h4>
+      
+      <p>Schools implementing mindfulness programs report improved attention, reduced behavioral problems, and better emotional regulation among students. Even brief mindfulness practices before tests have been shown to improve performance.</p>
+      
+      <h4>Workplace Applications</h4>
+      
+      <p>Companies like Google, Apple, and General Mills have implemented mindfulness programs, reporting benefits including reduced employee stress, improved collaboration, and enhanced creativity and innovation.</p>
+      
+      <h3>Starting Your Own Practice</h3>
+      
+      <p>The scientific evidence is compelling, but the real benefits come from regular practice. Here are science-backed tips for beginning:</p>
+      
+      <ul>
+        <li>Start small – even 5-10 minutes daily is beneficial</li>
+        <li>Consistency matters more than duration</li>
+        <li>Use guided meditations (apps like Headspace, Calm, or Waking Up)</li>
+        <li>Expect your mind to wander – noticing this IS the practice</li>
+        <li>Apply mindfulness to daily activities (eating, walking, showering)</li>
+      </ul>
+      
+      <h3>Conclusion</h3>
+      
+      <p>The science of mindfulness meditation offers a compelling case for its integration into daily life. What was once considered esoteric has proven to be a powerful tool for mental and physical wellbeing, backed by neurological evidence and clinical outcomes.</p>
+      
+      <p>As research continues to evolve, one thing is clear: mindfulness meditation isn't just about feeling good in the moment—it's about transforming your brain and health for the long term. The ancient wisdom of mindfulness, now validated by modern science, offers a remedy for many of the challenges of contemporary life.</p>
     `,
-    author: 'د. أحمد الشمري',
-    authorId: '3',
-    authorRole: 'doctor',
-    publishedDate: '2023-10-10',
-    imageUrl: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158',
-    tags: ['القلق', 'إدارة التوتر', 'الصحة النفسية']
-  },
-  {
-    id: '3',
-    title: 'تحليل أنماط الشخصية: اكتشف ذاتك الحقيقية',
-    excerpt: 'كل شخصية فريدة من نوعها. اكتشف مزيدًا عن أنماط الشخصية وكيف يمكن أن تساعدك في فهم نفسك والآخرين بشكل أفضل.',
-    content: `
-      <p>هل تساءلت يومًا لماذا يتصرف الناس بطرق مختلفة، أو لماذا تجد نفسك منجذبًا لبعض الأنشطة بينما تتجنب أنشطة أخرى؟ الإجابة قد تكمن في نمط شخصيتك. في هذا المقال، سنستكشف أنماط الشخصية المختلفة وكيف يمكن أن تساعدك في فهم نفسك والآخرين بشكل أفضل.</p>
-      
-      <h2>ما هي أنماط الشخصية؟</h2>
-      <p>أنماط الشخصية هي مجموعات من السمات والميول السلوكية التي تميز الأفراد. على مر السنين، طور علماء النفس والباحثون نماذج مختلفة لتصنيف وفهم هذه الأنماط. من بين هذه النماذج الشهيرة نموذج مايرز بريغز، ونموذج الشخصية الخمسة الكبرى، والإنياغرام.</p>
-      
-      <h2>نموذج مايرز بريغز (MBTI)</h2>
-      <p>يصنف نموذج مايرز بريغز الشخصيات إلى 16 نوعًا مختلفًا بناءً على أربعة أبعاد:</p>
-      <ul>
-        <li><strong>الانطواء (I) مقابل الانبساط (E)</strong>: هل تستمد طاقتك من الوقت بمفردك أم من التفاعل مع الآخرين؟</li>
-        <li><strong>الحس (S) مقابل الحدس (N)</strong>: هل تفضل التركيز على الحقائق والتفاصيل أم على المفاهيم والنظريات؟</li>
-        <li><strong>التفكير (T) مقابل الشعور (F)</strong>: هل تتخذ قراراتك بناءً على المنطق والتحليل أم على القيم والمشاعر؟</li>
-        <li><strong>الحكم (J) مقابل الإدراك (P)</strong>: هل تفضل التخطيط والتنظيم أم المرونة والتكيف؟</li>
-      </ul>
-      
-      <h2>نموذج الشخصية الخمسة الكبرى</h2>
-      <p>يصف هذا النموذج الشخصية من خلال خمسة أبعاد رئيسية:</p>
-      <ul>
-        <li><strong>الانفتاح على التجربة</strong>: الفضول مقابل التحفظ</li>
-        <li><strong>الضمير</strong>: المنظم مقابل غير المنظم</li>
-        <li><strong>الانبساط</strong>: المنفتح اجتماعيًا مقابل المنطوي</li>
-        <li><strong>المقبولية</strong>: الودود والمتعاون مقابل التحدي والمستقل</li>
-        <li><strong>العصابية</strong>: القلق والحساس مقابل الهادئ والمستقر عاطفيًا</li>
-      </ul>
-      
-      <h2>الإنياغرام</h2>
-      <p>نظام الإنياغرام يصنف الشخصيات إلى تسعة أنماط أساسية، كل منها مرتبط بدوافع ومخاوف وسلوكيات معينة. هذه الأنماط هي:</p>
-      <ul>
-        <li><strong>النمط الأول: المصلح</strong>: الدافع للتحسين والكمال</li>
-        <li><strong>النمط الثاني: المساعد</strong>: الدافع للحب والعطاء</li>
-        <li><strong>النمط الثالث: المنجز</strong>: الدافع للتميز والنجاح</li>
-        <li><strong>النمط الرابع: الفردي</strong>: الدافع للأصالة والمعنى</li>
-        <li><strong>النمط الخامس: المتأمل</strong>: الدافع للمعرفة والفهم</li>
-        <li><strong>النمط السادس: المخلص</strong>: الدافع للأمان والدعم</li>
-        <li><strong>النمط السابع: المتحمس</strong>: الدافع للسعادة والتنوع</li>
-        <li><strong>النمط الثامن: المتحدي</strong>: الدافع للقوة والسيطرة</li>
-        <li><strong>النمط التاسع: صانع السلام</strong>: الدافع للسلام والتوافق</li>
-      </ul>
-      
-      <h2>فوائد فهم نمط شخصيتك</h2>
-      <p>فهم نمط شخصيتك يمكن أن يوفر العديد من الفوائد:</p>
-      <ul>
-        <li>تحسين الوعي الذاتي والفهم</li>
-        <li>تطوير علاقات أفضل مع الآخرين</li>
-        <li>اتخاذ قرارات مهنية أكثر ملاءمة</li>
-        <li>تحديد نقاط القوة والتحديات الشخصية</li>
-        <li>تعزيز التواصل مع الآخرين</li>
-      </ul>
-      
-      <h2>الخلاصة</h2>
-      <p>فهم نمط شخصيتك يمكن أن يكون أداة قوية للنمو الشخصي والتطور. ومع ذلك، من المهم أن نتذكر أن أنماط الشخصية هي مجرد نماذج، وأن كل فرد معقد وفريد من نوعه. استخدم هذه الأطر كأدوات للتعلم والتطور، وليس لوضع نفسك أو الآخرين في صناديق محدودة.</p>
-    `,
-    author: 'د. نورة العتيبي',
-    authorId: '4',
-    authorRole: 'doctor',
-    publishedDate: '2023-09-25',
-    imageUrl: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c',
-    tags: ['الشخصية', 'علم النفس', 'التنمية الذاتية']
-  },
-  {
-    id: '4',
-    title: 'ADHD عند البالغين: كيف تتعامل مع التحديات اليومية',
-    excerpt: 'اضطراب فرط الحركة ونقص الانتباه ليس فقط عند الأطفال. تعرف على كيفية التعامل مع هذا الاضطراب في مرحلة البلوغ.',
-    content: `
-      <p>عندما نفكر في اضطراب فرط الحركة ونقص الانتباه (ADHD)، غالبًا ما نفكر في الأطفال الذين يواجهون صعوبة في الجلوس بهدوء أو التركيز في المدرسة. ومع ذلك، فإن ADHD يمكن أن يستمر حتى مرحلة البلوغ، مما يؤثر على العمل والعلاقات وجودة الحياة بشكل عام. في هذا المقال، سنتناول كيفية التعرف على ADHD عند البالغين وكيفية التعامل مع التحديات اليومية.</p>
-      
-      <h2>كيف يختلف ADHD عند البالغين عنه عند الأطفال؟</h2>
-      <p>بينما قد تتشابه الأعراض الأساسية، تميل أعراض ADHD إلى التغير مع تقدم العمر. قد يواجه البالغون المصابون بـ ADHD:</p>
-      <ul>
-        <li>صعوبة في الانتباه وزيادة التشتت</li>
-        <li>ضعف في التنظيم وإدارة الوقت</li>
-        <li>تقلب المزاج والاندفاعية</li>
-        <li>صعوبة في إنهاء المهام</li>
-        <li>الاندفاع في اتخاذ القرارات</li>
-        <li>الإحباط المزمن والشعور بعدم الكفاءة</li>
-      </ul>
-      <p>في حين أن فرط النشاط الجسدي الواضح قد يقل، غالبًا ما يتحول إلى شعور داخلي بالتململ أو الحاجة المستمرة للحركة.</p>
-      
-      <h2>تشخيص ADHD عند البالغين</h2>
-      <p>قد يكون تشخيص ADHD في مرحلة البلوغ أكثر تعقيدًا، حيث يمكن أن تتداخل الأعراض مع حالات أخرى مثل القلق أو الاكتئاب. للحصول على تشخيص دقيق:</p>
-      <ul>
-        <li>اطلب إحالة إلى أخصائي في ADHD عند البالغين</li>
-        <li>توقع تقييمًا شاملاً للتاريخ الطبي والنفسي</li>
-        <li>شارك معلومات عن طفولتك والصعوبات التي واجهتها</li>
-        <li>قد تحتاج إلى إكمال استبيانات لتقييم الأعراض</li>
-      </ul>
-      
-      <h2>استراتيجيات للتعامل مع ADHD في الحياة اليومية</h2>
-      
-      <h3>1. في العمل</h3>
-      <ul>
-        <li>استخدم تقنيات إدارة الوقت مثل أسلوب بومودورو (25 دقيقة عمل، 5 دقائق استراحة)</li>
-        <li>قسّم المهام الكبيرة إلى خطوات أصغر وأكثر قابلية للإدارة</li>
-        <li>استخدم تطبيقات التقويم والتذكير</li>
-        <li>حاول العمل في مكان هادئ قدر الإمكان</li>
-        <li>اطلب ترتيبات تيسيرية معقولة إذا كنت بحاجة إليها</li>
-      </ul>
-      
-      <h3>2. في المنزل</h3>
-      <ul>
-        <li>ضع روتينًا منتظمًا وحاول الالتزام به</li>
-        <li>استخدم قوائم المهام وقوائم المراجعة</li>
-        <li>خصص أماكن محددة للأشياء المهمة (المفاتيح، المحفظة، إلخ)</li>
-        <li>خصص وقتًا أسبوعيًا للتنظيم والترتيب</li>
-        <li>قلل من المشتتات عن طريق تقليل الفوضى</li>
-      </ul>
-      
-      <h3>3. في العلاقات</h3>
-      <ul>
-        <li>تواصل بوضوح مع الأحباء حول تحدياتك</li>
-        <li>تعلم التعرف على علامات الإحباط أو الاندفاع</li>
-        <li>مارس الاستماع الفعال</li>
-        <li>خذ وقتًا للتأمل قبل الاستجابة في المواقف العاطفية</li>
-      </ul>
-      
-      <h2>العلاجات والتدخلات المتاحة</h2>
-      <p>يمكن أن يشمل علاج ADHD عند البالغين مزيجًا من:</p>
-      <ul>
-        <li><strong>الأدوية</strong>: مثل المنشطات (الريتالين، الأدرال) وغير المنشطات (ستراتيرا)</li>
-        <li><strong>العلاج السلوكي المعرفي (CBT)</strong>: لتطوير استراتيجيات التأقلم وتغيير أنماط التفكير السلبية</li>
-        <li><strong>التدريب على المهارات</strong>: للمساعدة في تطوير مهارات إدارة الوقت والتنظيم</li>
-        <li><strong>مجموعات الدعم</strong>: للتواصل مع الآخرين الذين يفهمون تحدياتك</li>
-      </ul>
-      
-      <h2>الخلاصة</h2>
-      <p>العيش مع ADHD كشخص بالغ يمكن أن يكون صعبًا، لكنه ليس مستحيلًا. مع التشخيص المناسب والعلاج والاستراتيجيات اليومية، يمكنك تعلم إدارة الأعراض بفعالية والاستفادة من الجوانب الإيجابية للـ ADHD، مثل الإبداع والطاقة والتفكير خارج الصندوق. لا تخف من طلب المساعدة والدعم ؛ فالتعامل مع ADHD هو رحلة، وكل خطوة صغيرة نحو الإدارة الأفضل هي فوز.</p>
-    `,
-    author: 'د. محمد السالم',
-    authorId: '5',
-    authorRole: 'doctor',
-    publishedDate: '2023-09-15',
-    imageUrl: 'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b',
-    tags: ['ADHD', 'فرط الحركة', 'التركيز']
-  },
-  {
-    id: '5',
-    title: 'الصحة النفسية للأطفال: دليل للآباء والمعلمين',
-    excerpt: 'كيفية التعرف على علامات المشاكل النفسية عند الأطفال والخطوات التي يمكن اتخاذها لدعم صحتهم النفسية.',
-    content: `
-      <p>تعتبر الصحة النفسية للأطفال أمرًا بالغ الأهمية لنموهم وتطورهم الصحي. كآباء ومعلمين ومقدمي رعاية، يقع على عاتقنا مسؤولية الانتباه إلى احتياجات الصحة النفسية للأطفال ودعمها. في هذا الدليل، سنتناول كيفية التعرف على علامات المشاكل النفسية عند الأطفال والخطوات التي يمكنك اتخاذها لدعم صحتهم النفسية.</p>
-      
-      <h2>أهمية الصحة النفسية للأطفال</h2>
-      <p>تؤثر الصحة النفسية على كيفية تفكير الأطفال وشعورهم وتصرفهم. وهي تؤثر أيضًا على قدرتهم على:</p>
-      <ul>
-        <li>التعامل مع التوتر</li>
-        <li>التواصل مع الآخرين</li>
-        <li>اتخاذ خيارات صحية</li>
-        <li>الأداء الجيد في المدرسة</li>
-        <li>تطوير علاقات صحية</li>
-      </ul>
-      <p>عندما يتمتع الأطفال بصحة نفسية جيدة، فإنهم يطورون المرونة التي تساعدهم على التعامل مع تحديات الحياة.</p>
-      
-      <h2>علامات المشاكل النفسية عند الأطفال</h2>
-      <p>يمكن أن تختلف علامات المشاكل النفسية حسب عمر الطفل ونوع المشكلة. ومع ذلك، هناك بعض العلامات العامة التي يجب الانتباه إليها:</p>
-      
-      <h3>في مرحلة ما قبل المدرسة (3-5 سنوات)</h3>
-      <ul>
-        <li>مخاوف ومخاوف كثيرة</li>
-        <li>سلوك عدواني متكرر</li>
-        <li>نوبات غضب متكررة أو طويلة</li>
-        <li>عدم الاهتمام بالتفاعل مع الأطفال الآخرين</li>
-        <li>تأخر في النمو في مهارات اللغة أو مهارات أخرى</li>
-      </ul>
-      
-      <h3>في سن المدرسة الابتدائية (6-12 سنة)</h3>
-      <ul>
-        <li>تغيرات في الأداء الأكاديمي</li>
-        <li>القلق أو القلق المفرط</li>
-        <li>فرط النشاط المستمر</li>
-        <li>الكوابيس المتكررة</li>
-        <li>العدوان المستمر</li>
-        <li>رفض الذهاب إلى المدرسة</li>
-        <li>الانسحاب من الأنشطة والأصدقاء</li>
-      </ul>
-      
-      <h3>في مرحلة المراهقة (13-18 سنة)</h3>
-      <ul>
-        <li>تغيرات كبيرة في العادات الغذائية أو النوم</li>
-        <li>تعاطي المخدرات أو الكحول</li>
-        <li>السلوك المدمر</li>
-        <li>الانسحاب من الأصدقاء والأنشطة</li>
-        <li>خسارة الاهتمام بالهوايات</li>
-        <li>الأفكار الانتحارية أو الحديث عن الموت</li>
-      </ul>
-      
-      <h2>كيف يمكنك دعم الصحة النفسية للأطفال</h2>
-      
-      <h3>كوالد أو مقدم رعاية</h3>
-      <ul>
-        <li><strong>بناء علاقة آمنة وداعمة</strong>: قضاء وقت ذي جودة مع طفلك، والاستماع إليه، وتشجيعه على التعبير عن مشاعره.</li>
-        <li><strong>تعزيز المرونة</strong>: تعليم طفلك مهارات التأقلم وتشجيعه على حل المشكلات.</li>
-        <li><strong>تعزيز العادات الصحية</strong>: التأكد من حصول طفلك على نوم كافٍ وتغذية جيدة وممارسة رياضية منتظمة.</li>
-        <li><strong>تحديد التوقعات المناسبة للعمر</strong>: توفير الهيكل والقواعد المناسبة لعمر طفلك.</li>
-        <li><strong>نمذجة السلوك الصحي</strong>: أظهر سلوكيات إيجابية وتعامل مع التوتر بطرق صحية.</li>
-      </ul>
-      
-      <h3>كمعلم</h3>
-      <ul>
-        <li><strong>خلق بيئة آمنة وداعمة</strong>: تعزيز جو من الاحترام والدعم في الفصل الدراسي.</li>
-        <li><strong>تعليم المهارات الاجتماعية والعاطفية</strong>: دمج أنشطة تساعد الأطفال على فهم وإدارة مشاعرهم.</li>
-        <li><strong>توفير هيكل روتيني</strong>: المساعدة في خلق شعور بالأمان والتنبؤ.</li>
-        <li><strong>الانتباه إلى علامات التوتر أو التغييرات في السلوك</strong>: ملاحظة التغييرات والتواصل مع الوالدين أو المستشارين المدرسيين.</li>
-        <li><strong>تشجيع التفاعل الاجتماعي الصحي</strong>: تعزيز الصداقات والتعاون بين الأقران.</li>
-      </ul>
-      
-      <h2>متى يجب طلب المساعدة المهنية</h2>
-      <p>من المهم طلب المساعدة المهنية إذا:</p>
-      <ul>
-        <li>تتداخل المشاكل مع الحياة اليومية للطفل (المدرسة، الصداقات، العائلة)</li>
-        <li>يعاني الطفل من أعراض معينة لأكثر من أسبوعين</li>
-        <li>يتحدث الطفل عن إيذاء نفسه أو الآخرين</li>
-        <li>يواجه الطفل تغييرات كبيرة في النوم أو الأكل</li>
-      </ul>
-      
-      <h2>الخلاصة</h2>
-      <p>دعم الصحة النفسية للأطفال أمر بالغ الأهمية لنموهم ورفاههم العام. من خلال الانتباه إلى علامات المشاكل المحتملة وتوفير بيئة داعمة وطلب المساعدة المهنية عند الحاجة، يمكنك لعب دور حيوي في مساعدة الأطفال على تطوير الصحة النفسية الإيجابية التي ستستمر معهم طوال حياتهم.</p>
-    `,
-    author: 'د. ليلى المالكي',
-    authorId: '6',
-    authorRole: 'doctor',
-    publishedDate: '2023-09-05',
-    imageUrl: 'https://images.unsplash.com/photo-1485546784815-e380f3c5a786',
-    tags: ['الأطفال', 'الصحة النفسية', 'التربية']
-  },
-  // The remaining blog posts with their content can go here
-  {
-    id: '6',
-    title: 'الغيرة في العلاقات: متى تكون صحية ومتى تصبح مشكلة',
-    excerpt: 'استكشف الفرق بين الغيرة الصحية والمرضية في العلاقات وكيفية التعامل معها بطريقة بناءة.',
-    content: `
-      <p>الغيرة هي مشاعر معقدة يمكن أن تظهر في العلاقات بأشكال مختلفة، بعضها صحي وبعضها مدمر. في هذا المقال، سنتعمق في فهم الغيرة، متى تكون صحية ومتى تصبح مشكلة، وكيفية التعامل معها بطريقة بناءة.</p>
-      
-      <h2>فهم الغيرة</h2>
-      <p>الغيرة هي استجابة عاطفية معقدة تنشأ عندما نشعر بالتهديد تجاه علاقة نقدرها. يمكن أن تتضمن مزيجًا من المشاعر مثل الخوف من الفقدان، والقلق، والغضب، وانعدام الأمان. على الرغم من أن الغيرة غالبًا ما تُرى بشكل سلبي، إلا أنها في الواقع استجابة إنسانية طبيعية في بعض المواقف.</p>
-      
-      <h2>الغيرة الصحية مقابل الغيرة غير الصحية</h2>
-      
-      <h3>علامات الغيرة الصحية</h3>
-      <ul>
-        <li><strong>قصيرة المدى</strong>: تظهر استجابةً لموقف معين وتختفي بمجرد معالجة المشكلة</li>
-        <li><strong>يتم التعبير عنها بشكل مناسب</strong>: يتم التواصل بشأنها بطريقة هادئة وغير اتهامية</li>
-        <li><strong>تؤدي إلى حوار بناء</strong>: تفتح باب المناقشة حول الاحتياجات والحدود في العلاقة</li>
-        <li><strong>تحفز النمو الشخصي</strong>: تشجعك على مواجهة مخاوفك وانعدام الأمان</li>
-      </ul>
-      
-      <h3>علامات الغيرة غير الصحية</h3>
-      <ul>
-        <li><strong>مستمرة ومكثفة</strong>: شعور مستمر بالغيرة حتى في غياب أي تهديد حقيقي</li>
-        <li><strong>التحكم والتملك</strong>: محاولة السيطرة على سلوك الشريك أو اتصالاته</li>
-        <li><strong>التجسس والتحقق المستمر</strong>: التفتيش في هاتف الشريك أو وسائل التواصل الاجتماعي</li>
-        <li><strong>الاتهامات المستمرة</strong>: اتهام الشريك بالخيانة بدون دليل</li>
-        <li><strong>العزلة الاجتماعية</strong>: محاولة منع الشريك من قضاء الوقت مع الأصدقاء أو العائلة</li>
-      </ul>
-      
-      <h2>أسباب الغيرة المفرطة</h2>
-      <p>قد تنبع الغيرة المفرطة من عدة عوامل:</p>
-      <ul>
-        <li><strong>تجارب سابقة</strong>: خيانة أو ثقة مكسورة في علاقات سابقة</li>
-        <li><strong>انعدام الأمان الشخصي</strong>: مشاكل تقدير الذات أو صورة الجسد</li>
-        <li><strong>أنماط التعلق غير الآمنة</strong>: تطورت في مرحلة الطفولة نتيجة للعلاقات مع مقدمي الرعاية</li>
-        <li><strong>الضغوط الاجتماعية أو الثقافية</strong>: التوقعات المجتمعية حول كيفية تصرف الشركاء</li>
-        <li><strong>مشاكل الصحة النفسية</strong>: مثل اضطراب الوسواس القهري أو اضطراب الشخصية</li>
-      </ul>
-      
-      <h2>كيفية التعامل مع الغيرة في العلاقات</h2>
-      
-      <h3>إذا كنت تشعر بالغيرة</h3>
-      <ul>
-        <li><strong>اعترف بمشاعرك</strong>: كن صادقًا مع نفسك حول ما تشعر به</li>
-        <li><strong>تأمل في السبب الجذري</strong>: ما الذي يثير غيرتك حقًا؟ هل هو خوف من الهجر أو عدم الكفاية؟</li>
-        <li><strong>تواصل بشكل صحي</strong>: استخدم عبارات "أنا" بدلاً من الاتهامات، مثل "أشعر بالقلق عندما..." بدلاً من "أنت دائمًا..."</li>
-        <li><strong>تحدي الأفكار غير المنطقية</strong>: اسأل نفسك ما إذا كان هناك دليل على مخاوفك</li>
-        <li><strong>اعمل على تحسين ثقتك بنفسك</strong>: ركز على نقاط قوتك وقيمتك المتأصلة</li>
-        <li><strong>اطلب المساعدة المهنية عند الحاجة</strong>: قد يكون العلاج مفيدًا إذا كانت الغيرة تؤثر على صحتك النفسية أو علاقاتك</li>
-      </ul>
-      
-      <h3>إذا كان شريكك يظهر غيرة غير صحية</h3>
-      <ul>
-        <li><strong>حدد حدودًا واضحة</strong>: كن حازمًا بشأن السلوكيات التي لن تقبلها</li>
-        <li><strong>كن متعاطفًا ولكن حازمًا</strong>: يمكنك فهم مشاعرهم دون السماح بسلوك غير صحي</li>
-        <li><strong>شجع على الانفتاح</strong>: خلق مساحة آمنة لمناقشة المخاوف والشكوك</li>
-        <li><strong>اقترح العلاج المشترك</strong>: إذا كانت المشكلة مستمرة، قد يكون العلاج الزوجي مفيدًا</li>
-        <li><strong>انتبه لعلامات الإساءة</strong>: إذا تحولت الغيرة إلى سيطرة أو عنف، ضع سلامتك في المقام الأول</li>
-      </ul>
-      
-      <h2>بناء الثقة في العلاقات</h2>
-      <p>بناء الثقة هو أفضل ترياق للغيرة غير الصحية. بعض الطرق لتعزيز الثقة تشمل:</p>
-      <ul>
-        <li><strong>الصدق والشفافية</strong>: كن صادقًا ومفتوحًا في تواصلك</li>
-        <li><strong>الاتساق</strong>: كن متسقًا في أفعالك وكلماتك</li>
-        <li><strong>الاحترام المتبادل</strong>: احترم استقلالية وخصوصية بعضكما البعض</li>
-        <li><strong>الوقت المشترك الهادف</strong>: استثمر في تجارب إيجابية مشتركة</li>
-        <li><strong>التواصل المنتظم</strong>: حافظ على قنوات التواصل مفتوحة حول مشاعركما</li>
-      </ul>
-      
-      <h2>الخلاصة</h2>
-      <p>الغيرة هي مشاعر معقدة موجودة في معظم العلاقات بدرجة ما. المفتاح هو تعلم الفرق بين الغيرة الصحية والغيرة المرضية، والتعامل مع هذه المشاعر بطريقة بناءة. من خلال الوعي الذاتي، والتواصل المفتوح، والحدود الصحية، وربما المساعدة المهنية، يمكن للأفراد والأزواج التغلب على تحديات الغيرة وبناء علاقات أكثر صحة وأمانًا.</p>
-    `,
-    author: 'د. سارة القحطاني',
-    authorId: '1',
-    authorRole: 'doctor',
-    publishedDate: '2023-08-28',
-    imageUrl: 'https://images.unsplash.com/photo-1522621032211-ac0031dfbddc',
-    tags: ['الغيرة', 'العلاقات', 'الصحة النفسية']
-  },
-  {
-    id: '7',
-    title: 'علم نفس الحب: كيف يؤثر على عقولنا وأجسادنا',
-    excerpt: 'تأثير الحب على الدماغ والهرمونات والصحة النفسية والجسدية، والفرق بين أنواع الحب المختلفة.',
-    content: `
-      <p>الحب - تلك المشاعر القوية التي تلهمنا وتحيرنا وتحركنا. ولكن ما الذي يحدث حقًا في أدمغتنا وأجسادنا عندما نقع في الحب؟ في هذا المقال، سنستكشف علم نفس الحب وتأثيره على صحتنا العقلية والجسدية.</p>
-      
-      <h2>علم الأعصاب في الحب: ما الذي يحدث في الدماغ</h2>
-      <p>عندما نقع في الحب، تحدث سلسلة من التفاعلات الكيميائية في أدمغتنا تؤثر على كيفية شعورنا وتفكيرنا وتصرفنا:</p>
-      
-      <h3>مرحلة الانجذاب الأولي</h3>
-      <ul>
-        <li><strong>الدوبامين</strong>: يزداد إفراز هذا الناقل العصبي المرتبط بالمكافأة والسعادة، مما يسبب ذلك الشعور بالنشوة والإثارة.</li>
-        <li><strong>النورادرينالين</strong>: يزيد من معدل ضربات القلب والطاقة، مما يفسر لماذا قد نشعر "بالفراشات" في معدتنا أو نجد صعوبة في النوم.</li>
-        <li><strong>السيروتونين</strong>: قد تنخفض مستوياته، مما يشبه ما يحدث في اضطراب الوسواس القهري - لذلك نجد أنفسنا "مهووسين" بالشخص الآخر.</li>
-      </ul>
-      
-      <h3>مرحلة التعلق</h3>
-      <ul>
-        <li><strong>الأوكسيتوسين</strong>: يسمى أحيانًا "هرمون الحب"، ويتم إفرازه خلال اللمس الجسدي والعلاقة الحميمة، ويعزز الروابط العاطفية والثقة.</li>
-        <li><strong>الفازوبرسين</strong>: مرتبط بالولاء والتعلق طويل المدى.</li>
-        <li><strong>الإندورفين</strong>: المسكنات الطبيعية للجسم التي تخلق شعورًا بالراحة والرضا.</li>
-      </ul>
-      
-      <h2>أنواع الحب: ما وراء الحب الرومانسي</h2>
-      <p>الحب ليس تجربة واحدة. في الواقع، حدد علماء النفس عدة أنواع مختلفة من الحب:</p>
-      
-      <h3>نظرية روبرت ستيرنبرج المثلثة للحب</h3>
-      <p>تقترح هذه النظرية أن الحب يتكون من ثلاثة مكونات:</p>
-      <ul>
-        <li><strong>الألفة</strong>: الشعور بالقرب والاتصال العاطفي</li>
-        <li><strong>الشغف</strong>: الانجذاب الجسدي والرغبة الجنسية</li>
-        <li><strong>الالتزام</strong>: القرار بالبقاء مع الشخص والحفاظ على العلاقة</li>
-      </ul>
-      <p>تؤدي مجموعات مختلفة من هذه المكونات إلى أنواع مختلفة من الحب، مثل:</p>
-      <ul>
-        <li><strong>الحب المستهلك</strong>: الشغف فقط</li>
-        <li><strong>الحب الرفيق</strong>: الألفة والالتزام، ولكن بدون شغف</li>
-        <li><strong>الحب الرومانسي</strong>: الألفة والشغف، ولكن بدون التزام</li>
-        <li><strong>الحب المكتمل</strong>: الألفة والشغف والالتزام</li>
-      </ul>
-      
-      <h3>حب اللغات الخمس</h3>
-      <p>طور غاري تشابمان مفهوم "لغات الحب"، وهي طرق مختلفة يعبر بها الناس عن الحب ويفضلون تلقيه:</p>
-      <ul>
-        <li>كلمات التأكيد</li>
-        <li>وقت الجودة</li>
-        <li>تلقي الهدايا</li>
-        <li>أعمال الخدمة</li>
-        <li>اللمس الجسدي</li>
-      </ul>
-      <p>يمكن أن يساعد فهم لغة الحب الخاصة بك ولغة شريكك في تعزيز التواصل وتقليل سوء الفهم في العلاقات.</p>
-      
-      <h2>الآثار الصحية للحب</h2>
-      <p>للحب تأثيرات قوية على صحتنا، إيجابية وسلبية:</p>
-      
-      <h3>الفوائد الصحية</h3>
-      <ul>
-        <li><strong>تقليل التوتر</strong>: العلاقات الصحية يمكن أن تخفض مستويات الكورتيزول (هرمون التوتر)</li>
-        <li><strong>تحسين صحة القلب</strong>: ارتبطت العلاقات الدعمة بانخفاض خطر الإصابة بأمراض القلب</li>
-        <li><strong>تعزيز المناعة</strong>: يمكن أن يعزز الحب وظيفة المناعة</li>
-        <li><strong>تخفيف الألم</strong>: يمكن أن يعمل الأوكسيتوسين والإندورفين كمسكنات طبيعية للألم</li>
-        <li><strong>العمر الأطول</strong>: أظهرت الدراسات أن الأشخاص في علاقات صحية يميلون إلى العيش لفترة أطول</li>
-      </ul>
-      
-      <h3>التحديات الصحية</h3>
-      <ul>
-        <li><strong>آلام الحب غير المتبادل</strong>: يمكن أن يسبب الرفض أو انتهاء العلاقة ألمًا جسديًا حقيقيًا وأعراضًا تشبه الانسحاب</li>
-        <li><strong>متلازمة القلب المكسور</strong>: حالة طبية حقيقية يمكن أن تحدث بعد خسارة عاطفية كبيرة</li>
-        <li><strong>العمى بالحب</strong>: الميل إلى تجاهل العلامات الحمراء أو المشاكل في العلاقات الجديدة</li>
-      </ul>
-      
-      <h2>الحفاظ على الحب مع مرور الوقت</h2>
-      <p>في حين أن الانفعال الأولي للوقوع في الحب قد يتلاشى، يمكن أن تتطور العلاقات طويلة المدى إلى أشكال أعمق وأكثر استقرارًا من الحب:</p>
-      
-      <h3>استراتيجيات للعلاقات الصحية طويلة المدى</h3>
-      <ul>
-        <li><strong>التواصل المفتوح</strong>: المشاركة المنتظمة للأفكار والمشاعر والاحتياجات</li>
-        <li><strong>الحفاظ على الحميمية</strong>: ليس فقط جسديًا، ولكن أيضًا عاطفيًا وفكريًا</li>
-        <li><strong>ممارسة الامتنان</strong>: التعبير بانتظام عن التقدير لشريكك</li>
-        <li><strong>التجارب الجديدة</strong>: جرب أنشطة جديدة معًا لتعزيز الترابط وخلق ذكريات مشتركة</li>
-        <li><strong>الحفاظ على الاستقلالية</strong>: الموازنة بين الوقت معًا والنمو كأفراد</li>
-        <li><strong>العلاج الزوجي</strong>: التماس المساعدة المهنية عند مواجهة التحديات</li>
-      </ul>
-      
-      <h2>الخلاصة</h2>
-      <p>الحب ليس مجرد مشاعر؛ إنه عملية بيولوجية ونفسية معقدة تؤثر على أدمغتنا وأجسادنا وصحتنا العامة. من خلال فهم علم نفس الحب، يمكننا تطوير علاقات أكثر صحة ورضا، والاستفادة من فوائده العديدة مع تجنب مخاطره المحتملة. سواء كنت في علاقة جديدة مثيرة أو شراكة طويلة الأمد، تذكر أن الحب هو رحلة مستمرة من النمو والفهم والاتصال.</p>
-    `,
-    author: 'د. أحمد الشمري',
-    authorId: '3',
-    authorRole: 'doctor',
-    publishedDate: '2023-08-14',
-    imageUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330',
-    tags: ['الحب', 'العلاقات', 'علم النفس']
-  },
-  {
-    id: '8',
-    title: 'الشغف والإبداع: كيف تجد شغفك وتطوره',
-    excerpt: 'أهمية الشغف في حياتنا وكيف يمكن اكتشافه وتنميته لتحقيق الإنجاز والرضا النفسي.',
-    content: `
-      <p>الشغف - تلك القوة الدافعة التي تلهمنا وتحركنا وتمنحنا الطاقة لتحقيق أحلامنا. في عالم مليء بالمشتتات والضغوط اليومية، يمكن أن يكون العثور على شغفك وتطويره تحديًا حقيقيًا. في هذا المقال، سنستكشف أهمية الشغف، وكيفية اكتشافه، وكيف يمكن أن يعزز الإبداع ويحسن حياتنا.</p>
-      
-      <h2>ما هو الشغف؟</h2>
-      <p>الشغف هو اهتمام أو هواية أو نشاط يثير حماسك ويمنحك الطاقة ويجعلك تشعر أنك على قيد الحياة. إنه شيء تستمتع به بعمق وتريد قضاء وقتك في القيام به. الشغف يمكن أن يكون متعلقًا بالعمل، أو الهوايات، أو الفنون، أو الرياضة، أو أي شيء آخر يلهمك.</p>
-      
-      <h2>أهمية الشغف في حياتنا</h2>
-      <p>للشغف فوائد عديدة لصحتنا النفسية ورفاهيتنا:</p>
-      <ul>
-        <li><strong>زيادة السعادة والرضا</strong>: عندما تنخرط في أنشطة شغوفة، يطلق دماغك مواد كيميائية تعزز المزاج مثل الدوبامين والإندورفين</li>
-        <li><strong>تعزيز المعنى والغرض</strong>: الشغف يمنح حياتنا معنى ويساعدنا على الشعور بأننا نعيش حياة هادفة</li>
-        <li><strong>تعزيز المرونة</strong>: يمكن أن يساعدك الشغف على التغلب على التحديات وإيجاد القوة في الأوقات الصعبة</li>
-        <li><strong>تحسين الإبداع</strong>: الشغف يغذي التفكير الإبداعي ويلهم الحلول المبتكرة</li>
-        <li><strong>تعزيز التدفق</strong>: حالة من الانغماس الكامل والتركيز في نشاط ممتع ومجزٍ</li>
-      </ul>
-      
-      <h2>كيف تكتشف شغفك</h2>
-      <p>قد لا يعرف الجميع ما هو شغفهم على الفور. إليك بعض الاستراتيجيات لاكتشاف ما أنت متحمس له حقًا:</p>
-      
-      <h3>1. استكشف ذكريات طفولتك</h3>
-      <p>غالبًا ما تحتوي طفولتنا على مفاتيح شغفنا. ما هي الأنشطة التي كنت تستمتع بها كطفل؟ ما الذي كنت تفعله لساعات دون أن تشعر بالملل؟ قد تكون هذه الأنشطة أساسًا لاكتشاف شغفك كشخص بالغ.</p>
-      
-      <h3>2. لاحظ ما يجذب انتباهك</h3>
-      <p>ما هي الموضوعات التي تجد نفسك تقرأ عنها باستمرار؟ ما هي المحادثات التي تجدها أكثر إثارة للاهتمام؟ ما هي المقالات أو مقاطع الفيديو التي تشاركها مع الآخرين؟ قد تشير هذه الاهتمامات إلى شغفك الكامن.</p>
-      
-      <h3>3. جرّب أشياء جديدة</h3>
-      <p>لا يمكنك معرفة ما إذا كنت شغوفًا بشيء ما حتى تجربه. خصص وقتًا للتجربة - خذ دروسًا، وحضر ورش عمل، وانضم إلى نوادٍ، وتطوع لأسباب مختلفة. كلما جربت المزيد، زادت فرصتك في العثور على ما يلهب حماسك.</p>
-      
-      <h3>4. خذ اختبارات الاهتمامات والشخصية</h3>
-      <p>يمكن أن تقدم اختبارات مثل Strong Interest Inventory، وMyers-Briggs Type Indicator، وHolland Code رؤى حول اهتماماتك وقيمك وشخصيتك، مما قد يساعدك في تحديد الأنشطة التي قد تكون شغوفًا بها.</p>
-      
-      <h3>5. استمع إلى جسدك</h3>
-      <p>لاحظ متى تشعر بأعلى مستويات الطاقة والحماس. ما الذي كنت تفعله؟ متى تفقد إحساسك بالوقت لأنك مستغرق تمامًا في نشاط ما؟ هذه علامات على الشغف.</p>
-      
-      <h2>تطوير شغفك</h2>
-      <p>بمجرد اكتشاف شغفك، إليك كيفية تطويره وتعزيزه:</p>
-      
-      <h3>1. تخصيص الوقت</h3>
-      <p>حدد وقتًا في جدولك بانتظام لمتابعة شغفك. حتى 15-30 دقيقة يوميًا يمكن أن تحدث فرقًا كبيرًا في تطوير مهاراتك واهتماماتك.</p>
-      
-      <h3>2. التعلم المستمر</h3>
-      <p>اقرأ كتبًا، واشترك في مجلات، واستمع إلى بودكاست، وشاهد مقاطع فيديو تعليمية، واحضر دورات حول موضوع شغفك. كلما تعلمت أكثر، زاد شغفك واهتمامك.</p>
-      
-      <h3>3. التواصل مع الآخرين ذوي التفكير المماثل</h3>
-      <p>ابحث عن مجتمعات (عبر الإنترنت أو في الواقع) حيث يتشارك الأشخاص نفس شغفك. يمكن أن يوفر هؤلاء الأشخاص الدعم والإلهام والصداقة ويساعدونك على النمو.</p>
-      
-      <h3>4. تحديد الأهداف وتتبع التقدم</h3>
-      <p>حدد أهدافًا محددة وقابلة للقياس وقابلة للتحقيق وذات صلة ومحددة زمنيًا (SMART) مرتبطة بشغفك. تتبع تقدمك لتبقى متحمسًا ومحفزًا.</p>
-      
-      <h3>5. المخاطرة والخروج من منطقة الراحة</h3>
-      <p>تقدم في شغفك من خلال قبول التحديات التي تدفعك إلى ما وراء مستوى راحتك. هذا هو المكان الذي يحدث فيه النمو الحقيقي والإبداع.</p>
-      
-      <h2>ربط الشغف بالإبداع</h2>
-      <p>الشغف والإبداع مرتبطان ارتباطًا وثيقًا. عندما تكون شغوفًا بشيء ما:</p>
-      <ul>
-        <li><strong>تفكر خارج الصندوق</strong>: الحماس يحفز التفكير الإبداعي وحل المشكلات</li>
-        <li><strong>تكون أكثر ابتكارًا</strong>: تميل إلى رؤية الاحتمالات والفرص التي قد لا يلاحظها الآخرون</li>
-        <li><strong>تتحمل المزيد من المخاطر الإبداعية</strong>: الشغف يمنحك الشجاعة لتجربة أفكار جديدة</li>
-        <li><strong>تتغلب على العقبات بسهولة أكبر</strong>: عندما تكون متحمسًا، فأنت أكثر عرضة للتغلب على التحديات التي قد تعيق عملية الإبداع</li>
-      </ul>
-      
-      <h2>الشغف والمهنة</h2>
-      <p>هناك مقولة قديمة: "اعمل في مجال تحبه ولن تضطر للعمل يومًا في حياتك." بينما قد تكون هذه المقولة مبسطة بعض الشيء، فإن دمج شغفك في حياتك المهنية يمكن أن يزيد من رضاك الوظيفي وإنتاجيتك:</p>
-      
-      <h3>طرق دمج الشغف في العمل</h3>
-      <ul>
-        <li><strong>البحث عن وظائف تتوافق مع شغفك</strong>: استكشف المهن التي تتضمن أنشطة أو موضوعات أنت متحمس لها</li>
-        <li><strong>تكييف دورك الحالي</strong>: ابحث عن طرق لدمج اهتماماتك في وظيفتك الحالية (يسمى هذا أحيانًا "تصميم الوظيفة")</li>
-        <li><strong>المشاريع الجانبية</strong>: ابدأ عملًا جانبيًا أو مشروعًا خارج وظيفتك الرئيسية لمتابعة شغفك</li>
-        <li><strong>التطوع</strong>: قدم وقتك ومهاراتك لقضايا أو منظمات تهتم بها</li>
-      </ul>
-      
-      <h2>التغلب على عقبات الشغف</h2>
-      <p>قد تواجه تحديات عند متابعة شغفك:</p>
-      <ul>
-        <li><strong>قيود الوقت</strong>: حدد أولويات وقتك، وتخلص من الأنشطة غير الضرورية، وابحث عن فترات قصيرة خلال يومك</li>
-        <li><strong>الخوف من الفشل</strong>: تذكر أن الفشل جزء من عملية التعلم وأنه لا بأس بالبداية كمبتدئ</li>
-        <li><strong>نقص الموارد</strong>: كن مبدعًا في العثور على موارد بديلة، وابحث عن خيارات مجانية أو منخفضة التكلفة، وفكر في العمل التعاوني</li>
-        <li><strong>شكوك الآخرين</strong>: أحط نفسك بأشخاص داعمين، وتعلم تصفية النقد السلبي</li>
-      </ul>
-      
-      <h2>الخلاصة</h2>
-      <p>العثور على شغفك وتطويره رحلة مستمرة يمكن أن تجلب الفرح والمعنى والإبداع إلى حياتك. من خلال تخصيص الوقت لاستكشاف اهتماماتك وتوسيع آفاقك والاستماع إلى ما يلهمك، يمكنك اكتشاف الأنشطة التي تشعلك وتحركك. تذكر أن الشغف ليس فقط حول ما تفعله، بل أيضًا حول كيفية تقريبك مما تفعله إلى أفضل نسخة من نفسك.</p>
-    `,
-    author: 'د. نورة العتيبي',
-    authorId: '4',
-    authorRole: 'doctor',
-    publishedDate: '2023-07-30',
-    imageUrl: 'https://images.unsplash.com/photo-1507290439931-a861b5a38200',
-    tags: ['الشغف', 'الإبداع', 'تحقيق الذات']
-  },
-  {
-    id: '9',
-    title: 'الاكتئاب الموسمي: كيف تتغلب على التغيرات المزاجية مع تغير الفصول',
-    excerpt: 'فهم أسباب وأعراض الاكتئاب الموسمي واستراتيجيات فعالة للتعامل معه والتخفيف من حدته.',
-    content: `
-      <p>هل تشعر بالحزن والتعب والخمول عندما تصبح الأيام أقصر وأكثر ظلامًا؟ قد تكون مصابًا بالاضطراب العاطفي الموسمي (SAD)، المعروف أيضًا باسم الاكتئاب الموسمي. في هذا المقال، سنستكشف أسباب وأعراض هذه الحالة واستراتيجيات فعالة للمساعدة في التغلب عليها.</p>
-      
-      <h2>ما هو الاكتئاب الموسمي؟</h2>
-      <p>الاضطراب العاطفي الموسمي (SAD) هو نوع من الاكتئاب يرتبط بتغير المواسم. يبدأ وينتهي عادة في نفس الوقت كل عام. في حين أن معظم الأشخاص المصابين بالاكتئاب الموسمي يعانون من الأعراض خلال أشهر الخريف والشتاء (النمط الشتوي)، هناك أيضًا نسبة أقل ممن يعانون من الأعراض خلال الربيع والصيف (النمط الصيفي).</p>
-      
-      <h2>أسباب الاكتئاب الموسمي</h2>
-      <p>لم يتم فهم السبب الدقيق للاكتئاب الموسمي بشكل كامل، ولكن هناك عدة عوامل قد تلعب دورًا:</p>
-      <ul>
-        <li><strong>اضطراب الساعة البيولوجية (الإيقاع اليومي)</strong>: قد يؤدي انخفاض ضوء الشمس في الخريف والشتاء إلى تعطيل الساعة البيولوجية الداخلية للجسم، مما يؤدي إلى مشاعر الاكتئاب.</li>
-        <li><strong>انخفاض مستويات السيروتونين</strong>: قد يؤدي انخفاض ضوء الشمس إلى انخفاض إنتاج السيروتونين، وهو ناقل عصبي يؤثر على المزاج.</li>
-        <li><strong>اختلال مستويات الميلاتونين</strong>: التغيرات الموسمية يمكن أن تعطل توازن الميلاتونين في الجسم، مما يؤثر على أنماط النوم والمزاج.</li>
-        <li><strong>نقص فيتامين د</strong>: انخفاض التعرض لأشعة الشمس يمكن أن يسبب انخفاض مستويات فيتامين د، والذي ارتبط بأعراض الاكتئاب.</li>
-      </ul>
-      
-      <h2>أعراض الاكتئاب الموسمي</h2>
-      <p>قد تختلف أعراض الاكتئاب الموسمي حسب نوعه (شتوي أو صيفي) وشدته.</p>
-      
-      <h3>أعراض النمط الشتوي</h3>
-      <ul>
-        <li>الشعور بالاكتئاب معظم اليوم، كل يوم تقريبًا</li>
-        <li>فقدان الاهتمام بالأنشطة التي كنت تستمتع بها سابقًا</li>
-        <li>انخفاض الطاقة والشعور بالتعب المستمر</li>
-        <li>صعوبة في التركيز</li>
-        <li>مشاكل في النوم (غالبًا النوم أكثر من المعتاد)</li>
-        <li>تغيرات في الشهية أو الوزن (خاصة الرغبة الشديدة في الكربوهيدرات)</li>
-        <li>الشعور باليأس أو انعدام القيمة</li>
-        <li>الشعور بالبطء أو التململ</li>
-      </ul>
-      
-      <h3>أعراض النمط الصيفي</h3>
-      <ul>
-        <li>أعراض اكتئاب تبدأ في أواخر الربيع أو أوائل الصيف</li>
-        <li>مشاكل في النوم (الأرق)</li>
-        <li>فقدان الشهية</li>
-        <li>فقدان الوزن</li>
-        <li>التهيج أو القلق</li>
-        <li>نوبات من العنف أو السلوك المتهور</li>
-      </ul>
-      
-      <h2>استراتيجيات للتعامل مع الاكتئاب الموسمي</h2>
-      <p>هناك العديد من الطرق الفعالة للتخفيف من أعراض الاكتئاب الموسمي:</p>
-      
-      <h3>1. العلاج بالضوء</h3>
-      <p>العلاج بالضوء هو علاج خط أول للاكتئاب الموسمي الشتوي. يتضمن الجلوس أمام صندوق ضوء خاص يحاكي ضوء الشمس لمدة 20-30 دقيقة يوميًا، عادة في الصباح الباكر. يمكن أن يساعد هذا في تعديل المواد الكيميائية في الدماغ المرتبطة بالمزاج.</p>
-      
-      <h3>2. قضاء الوقت في الهواء الطلق</h3>
-      <p>حتى في الأيام الباردة أو الغائمة، يمكن أن يساعد التعرض للضوء الطبيعي. حاول أن تأخذ نزهة قصيرة في الصباح، أو اجلس بالقرب من النوافذ عندما تكون في الداخل.</p>
-      
-      <h3>3. ممارسة التمارين الرياضية بانتظام</h3>
-      <p>النشاط البدني يمكن أن يساعد في تخفيف التوتر والقلق، وهما من الأعراض الشائعة للاكتئاب الموسمي. يمكن أن تساعد ممارسة الرياضة أيضًا في تحسين نوعية النوم وزيادة مستويات الطاقة.</p>
-      
-      <h3>4. الحفاظ على روتين منتظم</h3>
-      <p>الالتزام بجدول منتظم للنوم والاستيقاظ والأكل يمكن أن يساعد في تنظيم إيقاعك اليومي، مما قد يخفف من أعراض الاكتئاب الموسمي.</p>
-      
-      <h3>5. اتباع نظام غذائي متوازن</h3>
-      <p>الأطعمة الغنية بفيتامين د (مثل الأسماك الدهنية والبيض ومنتجات الألبان المدعمة) والكربوهيدرات المعقدة (مثل الحبوب الكاملة والخضروات) يمكن أن تساعد في تحسين المزاج والطاقة.</p>
-      
-      <h3>6. العلاج المعرفي السلوكي (CBT)</h3>
-      <p>تم تطوير نسخة من العلاج المعرفي السلوكي خصيصًا للاكتئاب الموسمي. يركز هذا العلاج على تحديد وتغيير الأفكار والسلوكيات السلبية التي قد تفاقم أعراض الاكتئاب الموسمي.</p>
-      
-      <h3>7. مكملات فيتامين د</h3>
-      <p>إذا كنت تعاني من نقص في فيتامين د، فقد توصي مقدم الرعاية الصحية بمكمل. تحدث دائمًا مع طبيبك قبل بدء أي نظام مكمل غذائي.</p>
-      
-      <h3>8. الأدوية</h3>
-      <p>في الحالات الأكثر شدة، قد يصف الطبيب مضادات الاكتئاب، خاصة من فئة مثبطات امتصاص السيروتونين الانتقائية (SSRIs). في بعض الأحيان، يتم وصف هذه الأدوية موسميًا، قبل بدء الأعراض وتستمر حتى الربيع.</p>
-      
-      <h2>متى يجب طلب المساعدة المهنية</h2>
-      <p>من المهم التحدث مع أخصائي الرعاية الصحية إذا:</p>
-      <ul>
-        <li>تشعر باكتئاب يتداخل مع أنشطتك اليومية</li>
-        <li>تجد صعوبة في النوم أو تغيرات في الشهية</li>
-        <li>تشعر باليأس أو لديك أفكار انتحارية</li>
-        <li>تعتمد على الكحول أو المواد الأخرى للتأقلم</li>
-        <li>استمرت الأعراض رغم محاولتك للعلاجات الذاتية</li>
-      </ul>
-      
-      <h2>استراتيجيات وقائية للمستقبل</h2>
-      <p>للمساعدة في منع أو تقليل أعراض الاكتئاب الموسمي في المواسم المقبلة:</p>
-      <ul>
-        <li>ابدأ بالعلاجات (مثل العلاج بالضوء أو الأدوية) قبل موسمك الصعب المعتاد</li>
-        <li>خطط لرحلات إلى المناطق المشمسة خلال فصل الشتاء إذا كان ذلك ممكنًا</li>
-        <li>مارس تقنيات إدارة التوتر مثل التأمل واليوغا على مدار العام</li>
-        <li>حافظ على التواصل الاجتماعي، حتى عندما لا تشعر بالرغبة في الاختلاط</li>
-        <li>ضع خطة وقائية مع مقدم الرعاية الصحية</li>
-      </ul>
-      
-      <h2>الخلاصة</h2>
-      <p>الاكتئاب الموسمي هو حالة حقيقية تؤثر على ملايين الأشخاص. الخبر السار هو أنه مع زيادة الوعي والفهم، هناك استراتيجيات فعالة للتخفيف من الأعراض. من خلال مزيج من تغييرات نمط الحياة، والعلاجات الطبيعية، والتدخلات الطبية عند الضرورة، يمكن للأشخاص الذين يعانون من الاكتئاب الموسمي أن يتغلبوا على التغيرات المزاجية الموسمية ويحافظوا على صحة نفسية أفضل على مدار العام.</p>
-    `,
-    author: 'د. محمد السالم',
-    authorId: '5',
-    authorRole: 'doctor',
-    publishedDate: '2023-07-15',
-    imageUrl: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9',
-    tags: ['الاكتئاب', 'الصحة النفسية', 'تغير المواسم']
-  },
-  {
-    id: '10',
-    title: 'اضطرابات القلق المختلفة: الفوبيا، OCD، الهلع والقلق العام',
-    excerpt: 'مقارنة بين مختلف أنواع اضطرابات القلق، أعراضها وطرق علاجها المختلفة.',
-    content: `
-      <p>القلق هو استجابة طبيعية للتوتر والخطر، لكن عندما يصبح مزمنًا أو شديدًا أو يتداخل مع الحياة اليومية، فقد يكون اضطراب قلق. في هذا المقال، سنستكشف مختلف أنواع اضطرابات القلق، ونقارن بين أعراضها، ونناقش خيارات العلاج المتاحة.</p>
-      
-      <h2>مقدمة إلى اضطرابات القلق</h2>
-      <p>اضطرابات القلق هي الأكثر شيوعًا بين اضطرابات الصحة النفسية، حيث تؤثر على ملايين الأشخاص حول العالم. تتميز هذه الاضطرابات بالخوف والقلق المفرط والتغيرات السلوكية المرتبطة بها. على الرغم من أن جميع اضطرابات القلق تشترك في بعض السمات، إلا أن لكل منها خصائصها الفريدة.</p>
-      
-      <h2>اضطراب القلق العام (GAD)</h2>
-      
-      <h3>الأعراض</h3>
-      <ul>
-        <li>قلق وتوتر مستمر ومفرط حول مجموعة متنوعة من الأمور</li>
-        <li>صعوبة السيطرة على القلق</li>
-        <li>التعب وصعوبة التركيز</li>
-        <li>توتر العضلات</li>
-        <li>مشاكل في النوم</li>
-        <li>التهيج</li>
-      </ul>
-      
-      <h3>ما الذي يميزه؟</h3>
-      <p>على عكس أنواع القلق الأخرى، لا يرتبط اضطراب القلق العام بمحفزات محددة. بدلاً من ذلك، يعاني الأشخاص من قلق مستمر حول مجموعة واسعة من المواقف والأحداث اليومية، غالبًا مع توقع "الأسوأ" حتى عندما لا يكون هناك سبب واضح للقلق.</p>
-      
-      <h2>اضطراب الهلع</h2>
-      
-      <h3>الأعراض</h3>
-      <ul>
-        <li>نوبات هلع متكررة وغير متوقعة (فترات قصيرة من الخوف الشديد)</li>
-        <li>خفقان القلب أو تسارع ضربات القلب</li>
-        <li>التعرق، الارتعاش، أو الارتجاف</li>
-        <li>الشعور بضيق التنفس أو الاختناق</li>
-        <li>الشعور بعدم الواقعية أو الانفصال عن الذات</li>
-        <li>الخوف من فقدان السيطرة أو "الجنون"</li>
-        <li>الخوف من الموت</li>
-      </ul>
-      
-      <h3>ما الذي يميزه؟</h3>
-      <p>اضطراب الهلع يتميز بنوبات هلع مفاجئة ومتكررة تصل إلى ذروتها في غضون دقائق. غالبًا ما يؤدي الخوف من حدوث نوبة هلع أخرى إلى تجنب المواقف التي حدثت فيها النوبات السابقة، مما قد يؤدي في بعض الحالات إلى رهاب الساحات (الخوف من الأماكن المزدحمة).</p>
-      
-      <h2>الرهاب (الفوبيا)</h2>
-      
-      <h3>الأعراض</h3>
-      <ul>
-        <li>خوف شديد وغير منطقي من شيء أو موقف معين</li>
-        <li>تجنب نشط للأشياء أو المواقف المخيفة</li>
-        <li>القلق الفوري عند مواجهة الخوف</li>
-        <li>أعراض جسدية مثل التعرق، وزيادة ضربات القلب، وضيق التنفس</li>
-      </ul>
-      
-      <h3>الأنواع الشائعة</h3>
-      <ul>
-        <li><strong>الرهاب الاجتماعي (اضطراب القلق الاجتماعي)</strong>: الخوف من المواقف الاجتماعية والحكم السلبي من الآخرين</li>
-        <li><strong>الرهاب المحدد</strong>: الخوف من أشياء محددة مثل العناكب (رهاب العناكب) أو الأماكن المرتفعة (رهاب المرتفعات)</li>
-        <li><strong>رهاب الساحات</strong>: الخوف من الأماكن أو المواقف التي قد يكون من الصعب الهروب منها</li>
-      </ul>
-      
-      <h3>ما الذي يميزها؟</h3>
-      <p>على عكس اضطرابات القلق الأخرى، ترتبط المخاوف في الرهاب بمحفزات محددة جدًا، والقلق غائب عمومًا عندما لا يكون المحفز موجودًا. غالبًا ما يعترف الأشخاص المصابون بالرهاب بأن خوفهم مفرط أو غير منطقي، لكنهم لا يستطيعون التغلب عليه.</p>
-      
-      <h2>اضطراب الوسواس القهري (OCD)</h2>
-      
-      <h3>الأعراض</h3>
-      <ul>
-        <li><strong>الوساوس</strong>: أفكار أو صور أو دوافع متكررة وغير مرغوب فيها تسبب القلق</li>
-        <li><strong>القهر</strong>: سلوكيات متكررة أو أفعال عقلية يشعر الشخص بالدافع لأدائها استجابة للوساوس</li>
-        <li>استهلاك وقت كبير في الوساوس والقهر (أكثر من ساعة يوميًا)</li>
-        <li>ضيق كبير أو تداخل مع الأداء اليومي</li>
-      </ul>
-      
-      <h3>ما الذي يميزه؟</h3>
-      <p>يتميز اضطراب الوسواس القهري عن اضطرابات القلق الأخرى بوجود دورة محددة من الوساوس والقهر. غالبًا ما يدرك الأشخاص المصابون بـ OCD أن أفكارهم ليست منطقية، لكنهم يشعرون باضطرار شديد لأداء طقوسهم لتخفيف القلق، على الرغم من أن الراحة تكون مؤقتة فقط.</p>
-      
-      <h2>اضطراب القلق من الانفصال</h2>
-      
-      <h3>الأعراض</h3>
-      <ul>
-        <li>خوف مفرط من الانفصال عن المنزل أو الأشخاص الملتصقين بهم</li>
-        <li>قلق مستمر بشأن فقدان الأشخاص المقربين</li>
-        <li>قلق من النوم بعيدًا عن المنزل أو بدون الشخص المقرب</li>
-        <li>كوابيس حول الانفصال</li>
-        <li>شكاوى جسدية عندما يحدث الانفصال أو يتوقع</li>
-      </ul>
-      
-      <h3>ما الذي يميزه؟</h3>
-      <p>على الرغم من أنه يُعرف عادة كاضطراب طفولة، إلا أن قلق الانفصال يمكن أن يستمر في مرحلة البلوغ أو يظهر في مرحلة البلوغ. يتميز عن اضطرابات القلق الأخرى بتركيزه المحدد على الخوف من الانفصال عن الأشخاص المقربين، بدلاً من الخوف من محفزات خارجية أو القلق العام.</p>
-      
-      <h2>اضطراب القلق من المرض (المعروف سابقًا بالمراق أو توهم المرض)</h2>
-      
-      <h3>الأعراض</h3>
-      <ul>
-        <li>انشغال بالخوف من الإصابة بمرض خطير</li>
-        <li>قلق مستمر حول الصحة</li>
-        <li>الانشغال بالأحاسيس الجسدية البسيطة</li>
-        <li>البحث المتكرر عن طمأنة من خلال فحوصات طبية متكررة</li>
-        <li>تجنب الأنشطة أو المواقف التي قد تشكل مخاطر صحية</li>
-      </ul>
-      
-      <h3>ما الذي يميزه؟</h3>
-      <p>على عكس اضطرابات القلق الأخرى، يركز قلق المرض بشكل خاص على المخاوف الصحية. قد يكون لدى الأشخاص أعراض جسدية حقيقية ولكنهم يفسرونها بطريقة كارثية، أو قد يكونون خائفين من الإصابة بمرض على الرغم من عدم وجود أعراض.</p>
-      
-      <h2>مقارنة بين خيارات العلاج</h2>
-      <p>بينما تتشارك العديد من اضطرابات القلق في نهج العلاج، هناك بعض الاختلافات المهمة:</p>
-      
-      <h3>العلاج النفسي</h3>
-      <ul>
-        <li><strong>العلاج المعرفي السلوكي (CBT)</strong>: فعال لمعظم اضطرابات القلق، يساعد في تحديد وتغيير أنماط التفكير والسلوك التي تساهم في القلق</li>
-        <li><strong>العلاج بالتعرض</strong>: مفيد بشكل خاص للرهاب واضطراب الوسواس القهري، ينطوي على مواجهة تدريجية للمخاوف</li>
-        <li><strong>تقنيات الاسترخاء</strong>: مثل التنفس العميق، التأمل، استرخاء العضلات التدريجي</li>
-        <li><strong>العلاج بقبول الالتزام (ACT)</strong>: يعلم قبول المشاعر الصعبة مع العمل نحو الأهداف القيمة</li>
-      </ul>
-      
-      <h3>الأدوية</h3>
-      <ul>
-        <li><strong>مثبطات امتصاص السيروتونين الانتقائية (SSRIs)</strong>: غالبًا ما تكون الخط الأول للعلاج لمعظم اضطرابات القلق</li>
-        <li><strong>مثبطات امتصاص السيروتونين والنورإبينفرين (SNRIs)</strong>: قد تكون فعالة أيضًا لمجموعة من اضطرابات القلق</li>
-        <li><strong>البنزوديازيبينات</strong>: قد تستخدم على المدى القصير للاكتئاب الشديد، ولكن لها مخاطر إدمان</li>
-        <li><strong>حاصرات بيتا</strong>: يمكن أن تساعد في تخفيف الأعراض الجسدية للقلق مثل زيادة ضربات القلب</li>
-      </ul>
-      
-      <h3>تغييرات نمط الحياة</h3>
-      <ul>
-        <li><strong>التمارين الرياضية المنتظمة</strong>: يمكن أن تقلل التوتر والقلق</li>
-        <li><strong>تقليل الكافيين والكحول</strong>: قد تزيد هذه المواد من القلق</li>
-        <li><strong>النوم الكافي</strong>: الحرمان من النوم يمكن أن يفاقم أعراض القلق</li>
-        <li><strong>تقنيات إدارة التوتر</strong>: مثل التنفس العميق، التأمل، واليوغا</li>
-        <li><strong>التغذية المتوازنة</strong>: الأكل الصحي يمكن أن يؤثر على المزاج ومستويات الطاقة</li>
-      </ul>
-      
-      <h2>التشخيص المزدوج واضطرابات القلق</h2>
-      <p>غالبًا ما تتعايش اضطرابات القلق مع حالات الصحة النفسية الأخرى، مثل:</p>
-      <ul>
-        <li><strong>الاكتئاب</strong>: شائع جدًا لدى الأشخاص المصابين باضطرابات القلق</li>
-        <li><strong>اضطرابات تعاطي المخدرات</strong>: قد يلجأ بعض الأشخاص إلى الكحول أو المخدرات للتعامل مع القلق</li>
-        <li><strong>اضطرابات الأكل</strong>: خاصة لدى الأشخاص المصابين بقلق اجتماعي</li>
-        <li><strong>PTSD</strong>: غالبًا ما يتضمن أعراض قلق كعنصر أساسي</li>
-      </ul>
-      <p>العلاج الفعال غالبًا ما يتطلب معالجة جميع الحالات المتزامنة.</p>
-      
-      <h2>متى يجب طلب المساعدة المهنية</h2>
-      <p>من المهم طلب المساعدة المهنية إذا:</p>
-      <ul>
-        <li>كان القلق يتداخل مع حياتك اليومية، بما في ذلك العمل، المدرسة، أو العلاقات</li>
-        <li>وجدت صعوبة في السيطرة على قلقك</li>
-        <li>استخدمت الكحول أو المخدرات للتعامل مع القلق</li>
-        <li>كان لديك أعراض اكتئاب أو أفكار انتحارية</li>
-        <li>كنت تعاني من مشاكل صحية جسدية غير مفسرة</li>
-      </ul>
-      
-      <h2>الخلاصة</h2>
-      <p>تأتي اضطرابات القلق بأشكال مختلفة، ولكن جميعها يمكن أن تؤثر بشكل كبير على جودة الحياة. الخبر السار هو أن هذه الاضطرابات قابلة للعلاج بشكل عام. الخطوة الأولى هي التعرف على الأعراض وطلب مساعدة الاختصاصي. من خلال مزيج من العلاج النفسي، والعلاج الدوائي عند الاقتضاء، وتغييرات نمط الحياة، يمكن للعديد من الأشخاص تحقيق تحسن كبير ويمكنهم المضي قدمًا في حياتهم دون السماح للقلق بالسيطرة عليهم.</p>
-    `,
-    author: 'د. ليلى المالكي',
-    authorId: '6',
-    authorRole: 'doctor',
-    publishedDate: '2023-07-05',
-    imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-    tags: ['القلق', 'اضطرابات نفسية', 'العلاج النفسي']
-  },
-  {
-    id: '11',
-    title: 'اختبار الشخصية MBTI: ما هي أنماط الشخصية الـ 16؟',
-    excerpt: 'تعرف على اختبار مايرز بريغز للشخصية والأنماط الـ 16 المختلفة وكيف يمكن أن يساعدك في فهم نفسك والآخرين.',
-    content: `
-      <p>اختبار مايرز-بريغز للشخصية (MBTI) هو أحد أكثر اختبارات الشخصية شهرة واستخدامًا في العالم. يستند إلى نظريات عالم النفس كارل يونغ ويصنف الناس إلى 16 نمطًا مختلفًا من الشخصية بناءً على أربعة أبعاد للتفضيلات النفسية. في هذا المقال، سنستكشف ما هو MBTI، وكيف يعمل، وما هي الأنماط الـ 16 المختلفة، وكيفية استخدام هذه المعرفة في حياتك الشخصية والمهنية.</p>
-      
-      <h2>ما هو اختبار مايرز-بريغز للشخصية (MBTI)؟</h2>
-      <p>تم تطوير اختبار مايرز-بريغز من قبل إيزابيل بريغز مايرز وأمها كاثرين كوك بريغز بناءً على نظريات كارل يونغ حول الأنماط النفسية. يقوم الاختبار بتقييم كيفية استقبال الشخص للمعلومات واتخاذ القرارات والتفاعل مع العالم من حوله.</p>
-      
-      <h2>الأبعاد الأربعة للـ MBTI</h2>
-      <p>يقوم MBTI بتقييم الشخصية على أربعة أبعاد:</p>
-      
-      <h3>1. كيف تستمد الطاقة؟ (E/I)</h3>
-      <ul>
-        <li><strong>الانبساط (E - Extraversion)</strong>: الأشخاص الانبساطيون يستمدون الطاقة من التفاعل مع الآخرين والعالم الخارجي. يميلون إلى الاجتماعية والتفكير بصوت عالٍ ويستمتعون بالنشاطات الجماعية.</li>
-        <li><strong>الانطواء (I - Introversion)</strong>: الأشخاص الانطوائيون يستمدون الطاقة من وقتهم الخاص والتفكير الداخلي. يفضلون النشاطات الفردية والتأمل ويحتاجون إلى وقت بمفردهم لإعادة شحن طاقتهم.</li>
-      </ul>
-      
-      <h3>2. كيف تجمع المعلومات؟ (S/N)</h3>
-      <ul>
-        <li><strong>الحس (S - Sensing)</strong>: أصحاب هذا التفضيل يركزون على الحقائق والتفاصيل والخبرات العملية. يهتمون بما هو واقعي وملموس ويعتمدون على خبراتهم السابقة.</li>
-        <li><strong>الحدس (N - iNtuition)</strong>: أصحاب هذا التفضيل يركزون على الصورة الكبيرة، الاحتمالات والمعاني. يستمتعون بالتفكير في المستقبل والأفكار النظرية ويبحثون عن الأنماط والروابط.</li>
-      </ul>
-      
-      <h3>3. كيف تتخذ القرارات؟ (T/F)</h3>
-      <ul>
-        <li><strong>التفكير (T - Thinking)</strong>: أصحاب هذا التفضيل يتخذون القرارات بناءً على المنطق والتحليل الموضوعي. يسعون للعدالة والاتساق ويعطون أولوية للحقائق على المشاعر.</li>
-        <li><strong>الشعور (F - Feeling)</strong>: أصحاب هذا التفضيل يتخذون القرارات بناءً على القيم الشخصية والتأثير على الآخرين. يسعون للانسجام والتعاطف ويراعون مشاعر الآخرين.</li>
-      </ul>
-      
-      <h3>4. كيف تتعامل مع العالم الخارجي؟ (J/P)</h3>
-      <ul>
-        <li><strong>الحكم (J - Judging)</strong>: أصحاب هذا التفضيل يميلون إلى التخطيط والتنظيم. يفضلون الهيكل والنظام والقرارات النهائية ويستمتعون بإكمال المهام.</li>
-        <li><strong>الإدراك (P - Perceiving)</strong>: أصحاب هذا التفضيل يميلون إلى المرونة والتكيف. يفضلون الاحتمالات المفتوحة، والتلقائية، ويستمتعون ببدء مشاريع جديدة.</li>
-      </ul>
-      
-      <h2>الأنماط الـ 16 للشخصية حسب MBTI</h2>
-      <p>من خلال مزج هذه التفضيلات الأربعة، يحدد MBTI 16 نمطًا مختلفًا للشخصية:</p>
-      
-      <h3>المحللون (Analysts) - الـ "NT"</h3>
-      <ul>
-        <li><strong>INTJ (المستشار)</strong>: استراتيجيون مبتكرون ذوو رؤية واضحة. يتميزون بالتفكير المنطقي والتخطيط طويل المدى.</li>
-        <li><strong>INTP (المنطقي)</strong>: مفكرون مبتكرون يسعون دائمًا إلى المعرفة. فضوليون ويهتمون بالأفكار النظرية والتحليل المنطقي.</li>
-        <li><strong>ENTJ (القائد)</strong>: قادة حازمون ذوو رؤية استراتيجية. يتميزون بالتنظيم والقيادة والكفاءة في تحقيق الأهداف.</li>
-        <li><strong>ENTP (المناظر)</strong>: مفكرون متحمسون يحبون التحدي الفكري. مبدعون في حل المشكلات ويستمتعون بطرح الأفكار الجديدة.</li>
-      </ul>
-      
-      <h3>الدبلوماسيون (Diplomats) - الـ "NF"</h3>
-      <ul>
-        <li><strong>INFJ (المحامي)</strong>: مثاليون ملهمون ذوو مبادئ قوية. يسعون للمعنى والاتصال ويهتمون برفاهية الآخرين.</li>
-        <li><strong>INFP (الوسيط)</strong>: أشخاص مثاليون وإبداعيون يبحثون عن المعنى الشخصي. يهتمون بالقيم والمثل العليا.</li>
-        <li><strong>ENFJ (البطل)</strong>: قادة كاريزميون ملهمون. يهتمون بتطوير الآخرين ويسعون للنمو الشخصي والاجتماعي.</li>
-        <li><strong>ENFP (المناضل)</strong>: متحمسون ومبدعون ومحبون للحياة. يرون الإمكانيات في كل شيء ويلهمون الآخرين.</li>
-      </ul>
-      
-      <h3>الحراس (Sentinels) - الـ "SJ"</h3>
-      <ul>
-        <li><strong>ISTJ (المفتش)</strong>: أشخاص مسؤولون وموثوقون. يقدرون التقاليد والنظام والالتزام بالواجب.</li>
-        <li><strong>ISFJ (المدافع)</strong>: حماة مخلصون ومتعاطفون. يهتمون برعاية الآخرين واحتياجاتهم العملية.</li>
-        <li><strong>ESTJ (المدير)</strong>: منظمون ومباشرون وملتزمون بالتقاليد. يسعون للنظام والكفاءة والاستقرار.</li>
-        <li><strong>ESFJ (القنصل)</strong>: اجتماعيون ومراعون للآخرين. يهتمون بالانسجام والتعاون والاحتياجات الاجتماعية.</li>
-      </ul>
-      
-      <h3>المستكشفون (Explorers) - الـ "SP"</h3>
-      <ul>
-        <li><strong>ISTP (الحرفي)</strong>: مغامرون عمليون ومستقلون. يتمتعون بحل المشكلات العملية واستكشاف كيفية عمل الأشياء.</li>
-        <li><strong>ISFP (الفنان)</strong>: فنانون حساسون ولطيفون. يعيشون اللحظة ويقدرون الجمال والتجارب الحسية.</li>
-        <li><strong>ESTP (رائد الأعمال)</strong>: ذكيون وطاقتهم عالية ويحبون المخاطرة. يستمتعون بالتحديات والمغامرات.</li>
-        <li><strong>ESFP (المؤدي)</strong>: عفويون ومتحمسون ومرحون. يستمتعون بالمرح والأضواء ويعيشون اللحظة.</li>
-      </ul>
-      
-      <h2>كيفية استخدام معرفة MBTI في حياتك</h2>
-      
-      <h3>فهم أفضل لنفسك</h3>
-      <p>معرفة نمط شخصيتك يمكن أن تساعدك في:</p>
-      <ul>
-        <li>فهم نقاط قوتك وتحدياتك الطبيعية</li>
-        <li>اكتشاف استراتيجيات أفضل للتعلم والعمل</li>
-        <li>فهم احتياجاتك من الطاقة والتفاعل الاجتماعي</li>
-        <li>اتخاذ قرارات مهنية وشخصية أكثر ملاءمة لشخصيتك</li>
-      </ul>
-      
-      <h3>تحسين العلاقات</h3>
-      <p>يمكن أن يساعدك فهم الأنماط الشخصية المختلفة في:</p>
-      <ul>
-        <li>تقدير وجهات نظر مختلفة عن وجهة نظرك</li>
-        <li>تحسين التواصل مع الآخرين بالطرق التي يفضلونها</li>
-        <li>حل النزاعات بشكل أكثر فعالية</li>
-        <li>تطوير التعاطف مع أساليب مختلفة للتفكير واتخاذ القرارات</li>
-      </ul>
-      
-      <h3>التطوير المهني</h3>
-      <p>يمكن استخدام MBTI في المجال المهني لـ:</p>
-      <ul>
-        <li>استكشاف مسارات مهنية تناسب نمط شخصيتك</li>
-        <li>فهم أساليب القيادة والعمل المفضلة لديك</li>
-        <li>تحديد بيئات العمل المناسبة لتزدهر فيها</li>
-        <li>تحسين العمل الجماعي وديناميكيات الفريق</li>
-      </ul>
-      
-      <h2>حدود وانتقادات MBTI</h2>
-      <p>على الرغم من شعبيته، فإن MBTI له بعض الحدود المهمة:</p>
-      <ul>
-        <li><strong>ليس أداة تشخيصية</strong>: لا ينبغي استخدام MBTI لتشخيص اضطرابات الصحة النفسية أو اتخاذ قرارات طبية</li>
-        <li><strong>نقص الاتساق</strong>: قد يحصل الأشخاص على نتائج مختلفة عند إعادة الاختبار</li>
-        <li><strong>التصنيف الثنائي</strong>: يصنف الأشخاص في فئات ثنائية (مثل E أو I) بدلاً من وضعهم على طيف</li>
-        <li><strong>نقص الدعم العلمي القوي</strong>: يشكك بعض علماء النفس في صحة النموذج والاختبار</li>
-      </ul>
-      <p>من المهم التعامل مع نتائج MBTI كمنظور مفيد وليس كحقيقة مطلقة أو تعريف شامل لشخصيتك.</p>
-      
-      <h2>الخلاصة</h2>
-      <p>يوفر اختبار مايرز-بريغز للشخصية (MBTI) إطارًا مثيرًا للاهتمام لفهم أنفسنا والآخرين. من خلال تحديد التفضيلات في أربعة أبعاد رئيسية، يصنف MBTI الناس إلى 16 نمطًا مختلفًا، كل منها له نقاط قوة وتحديات وأساليب تواصل فريدة.</p>
-      <p>بينما يجب ألا نقيد أنفسنا بهذه التصنيفات، فإن فهم نمط MBTI الخاص بك يمكن أن يوفر رؤى قيمة حول كيفية تفاعلك مع العالم، واتخاذ القرارات، والتواصل مع الآخرين. عندما تستخدم بشكل مناسب، يمكن أن تكون هذه المعرفة أداة قوية للنمو الشخصي والمهني ولتعزيز فهم أعمق وأكثر تعاطفًا للاختلافات البشرية.</p>
-    `,
-    author: 'د. سارة القحطاني',
-    authorId: '1',
-    authorRole: 'doctor',
-    publishedDate: '2023-06-20',
-    imageUrl: 'https://images.unsplash.com/photo-1470813740244-df37b8c1edcb',
-    tags: ['الشخصية', 'MBTI', 'علم النفس']
-  },
-  {
-    id: '12',
-    title: 'تربية الأطفال ذوي ADHD: استراتيجيات عملية للآباء',
-    excerpt: 'نصائح وتقنيات تساعد الآباء في التعامل مع التحديات اليومية لتربية طفل يعاني من فرط الحركة ونقص الانتباه.',
-    content: `
-      <p>تربية الأطفال تأتي مع تحدياتها الخاصة، ولكن عندما يكون طفلك مصابًا باضطراب فرط الحركة ونقص الانتباه (ADHD)، قد تواجه مجموعة فريدة من التحديات. في هذا المقال، سنشارك استراتيجيات عملية للآباء لمساعدتهم على التنقل في رحلة تربية طفل مصاب بـ ADHD بمزيد من الثقة والفعالية.</p>
-      
-      <h2>فهم ADHD عند الأطفال</h2>
-      <p>اضطراب فرط الحركة ونقص الانتباه (ADHD) هو اضطراب عصبي نمائي يؤثر على قدرة الطفل على التركيز، والسيطرة على الاندفاع، وتنظيم مستويات النشاط. قبل مناقشة استراتيجيات التربية، من المهم فهم الأنواع الرئيسية الثلاثة لـ ADHD:</p>
-      <ul>
-        <li><strong>النوع الأساسي غير المنتبه</strong>: يواجه صعوبة في الانتباه والتركيز، ولكن ليس بالضرورة فرط النشاط</li>
-        <li><strong>النوع الأساسي فرط الحركة-اندفاعي</strong>: يظهر سلوكيات مفرطة النشاط واندفاعية، ولكن قد لا يكون لديه مشاكل كبيرة في الانتباه</li>
-        <li><strong>النوع المختلط</strong>: يجمع بين أعراض عدم الانتباه وفرط النشاط-الاندفاعية</li>
-      </ul>
-      <p>من المهم ملاحظة أن ADHD ليس نتيجة لتربية سيئة، ولا يعكس ذكاء الطفل. إنه حالة بيولوجية تؤثر على وظائف الدماغ، خاصة في المناطق المسؤولة عن الوظائف التنفيذية.</p>
-      
-      <h2>استراتيجيات عملية للآباء</h2>
-      
-      <h3>1. أنشئ روتينًا منظمًا</h3>
-      <p>الأطفال المصابون بـ ADHD يزدهرون مع الروتين والهيكل المتوقع:</p>
-      <ul>
-        <li><strong>جدول يومي ثابت</strong>: حافظ على أوقات ثابتة للاستيقاظ، والوجبات، والواجبات المنزلية، واللعب، وروتين وقت النوم</li>
-        <li><strong>جدول مرئي</strong>: استخدم جداول أو مخططات بصرية لمساعدة طفلك على تتبع الروتين اليومي</li>
-        <li><strong>التحذير بالانتقالات</strong>: أعط إشعارًا مسبقًا قبل الانتقال من نشاط إلى آخر ("خمس دقائق حتى وقت الواجب المنزلي")</li>
-        <li><strong>الاتساق عبر البيئات</strong>: حاول الحفاظ على روتين مماثل في عطلات نهاية الأسبوع والإجازات قدر الإمكان</li>
-      </ul>
-      
-      <h3>2. استراتيجيات لإدارة السلوك</h3>
-      <p>أنظمة إدارة السلوك الفعالة يمكن أن تساعد في تشجيع السلوكيات الإيجابية:</p>
-      <ul>
-        <li><strong>تقديم تعليمات واضحة وموجزة</strong>: استخدم أوامر مباشرة بدلاً من الأسئلة ("من فضلك ضع حذائك في الخزانة" بدلاً من "هل يمكنك وضع حذائك؟")</li>
-        <li><strong>التعزيز الإيجابي</strong>: امدح السلوكيات الجيدة على الفور وكثيرًا، مع التركيز على الجهود والتحسينات المحددة</li>
-        <li><strong>نظام المكافآت</strong>: استخدم مخططات النقاط أو الملصقات أو أنظمة المكافآت الأخرى لتتبع وتشجيع السلوكيات المرغوبة</li>
-        <li><strong>عواقب منطقية وثابتة</strong>: عندما يكون التأديب ضروريًا، استخدم عواقب منطقية ترتبط بالسلوك المعني</li>
-        <li><strong>تقنية 1-2-3 ماجيك</strong>: طريقة بسيطة لتعليم الانضباط باستخدام العد والمهل الزمنية المتسقة</li>
-      </ul>
-      
-      <h3>3. دعم التحصيل الأكاديمي</h3>
-      <p>غالبًا ما يواجه الأطفال المصابون بـ ADHD تحديات في المدرسة. يمكنك مساعدة طفلك عن طريق:</p>
-      <ul>
-        <li><strong>مساحة دراسة خالية من المشتتات</strong>: خصص مكانًا هادئًا ومنظمًا ومريحًا للواجبات المنزلية، بعيدًا عن التلفزيون والأجهزة الإلكترونية</li>
-        <li><strong>تقسيم المهام الكبيرة</strong>: ساعد طفلك على تقسيم المشاريع الكبيرة إلى خطوات أصغر يمكن التحكم فيها</li>
-        <li><strong>فترات دراسة قصيرة</strong>: استخدم تقنية بومودورو (25 دقيقة من العمل تليها استراحة 5 دقائق) للحفاظ على التركيز</li>
-        <li><strong>المنظمون المرئيون</strong>: استخدم قوائم المراجعة والمخططات والجداول الزمنية المرمزة بالألوان</li>
-        <li><strong>التواصل المنتظم مع المعلمين</strong>: ابق على اطلاع بتقدم طفلك وأي تحديات وتعاون في خطط الدعم</li>
-        <li><strong>الدفاع عن أي خدمات للتعليم الخاص</strong>: تعرف على خطة التعليم الفردي (IEP) أو خطة 504 إذا كان طفلك مؤهلاً</li>
-      </ul>
-      
-      <h3>4. مساعدة طفلك على تنمية المهارات الاجتماعية</h3>
-      <p>قد يواجه الأطفال المصابون بـ ADHD تحديات في تكوين الصداقات والحفاظ عليها:</p>
-      <ul>
-        <li><strong>لعب الأدوار</strong>: تدرب على التفاعلات الاجتماعية من خلال لعب الأدوار في المواقف الصعبة</li>
-        <li><strong>مواعيد اللعب المنظمة</strong>: قم بترتيب مواعيد لعب صغيرة ومنظمة مع أنشطة مخططة</li>
-        <li><strong>تعليم قراءة الإشارات الاجتماعية</strong>: ساعد طفلك على تفسير تعبيرات الوجه ولغة الجسد ونبرة الصوت</li>
-        <li><strong>نمذجة مهارات التواصل</strong>: اعرض الاستماع النشط وحل النزاعات بالتراضي</li>
-        <li><strong>البرامج الرياضية المناسبة</strong>: ابحث عن الرياضات المنظمة التي تناسب احتياجات ومهارات طفلك</li>
-      </ul>
-      
-      <h3>5. تعزيز الصحة البدنية والعاطفية</h3>
-      <p>الصحة العامة تؤثر بشكل كبير على أعراض ADHD:</p>
-      <ul>
-        <li><strong>ممارسة التمارين الرياضية بانتظام</strong>: شجع النشاط البدني اليومي، خاصة الرياضات والألعاب التي تستخدم الطاقة الزائدة</li>
-        <li><strong>عادات نوم صحية</strong>: حافظ على روتين النوم المتسق وبيئة النوم المريحة</li>
-        <li><strong>تغذية متوازنة</strong>: اقدم وجبات منتظمة ووجبات خفيفة غنية بالبروتين، وقلل من السكر والمواد المضافة</li>
-        <li><strong>تقنيات الاسترخاء</strong>: علّم طفلك التنفس العميق، أو اليوغا، أو تأمل اليقظة المناسب للعمر</li>
-        <li><strong>الوقت في الهواء الطلق</strong>: اقضِ وقتًا في الطبيعة، حيث أظهرت الدراسات أنه يمكن أن يقلل من أعراض ADHD</li>
-      </ul>
-      
-      <h3>6. التكنولوجيا والوسائط</h3>
-      <p>أدر استخدام طفلك للتكنولوجيا بحكمة:</p>
-      <ul>
-        <li><strong>حدود واضحة</strong>: ضع قواعد محددة حول وقت الشاشة، متى وأين يمكن استخدام الأجهزة</li>
-        <li><strong>تطبيقات ذات فائدة</strong>: اختر التطبيقات والألعاب التي تعزز المهارات التنفيذية والانتباه</li>
-        <li><strong>مراقبة المحتوى</strong>: الأطفال ذوو ADHD قد يكونون أكثر حساسية للمحتوى العنيف أو المثير للمشاعر</li>
-        <li><strong>استخدام منظمي الوقت الرقميين</strong>: علم طفلك استخدام التقويمات والتذكيرات الرقمية لتحسين تنظيم الوقت</li>
-      </ul>
-      
-      <h3>7. الاهتمام بنفسك</h3>
-      <p>لا يمكنك أن تكون والدًا فعالًا إذا كنت منهكًا:</p>
-      <ul>
-        <li><strong>جد الدعم</strong>: تواصل مع مجموعات دعم الآباء، سواء شخصيًا أو عبر الإنترنت</li>
-        <li><strong>خذ فترات راحة</strong>: اطلب المساعدة من الأسرة والأصدقاء للحصول على وقت للشحن</li>
-        <li><strong>استشر أخصائيين</strong>: تدريب الآباء يمكن أن يوفر استراتيجيات مصممة خصيصًا لأسرتك</li>
-        <li><strong>ادارة التوقعات</strong>: كن واقعيًا حول ما يمكنك وطفلك تحقيقه</li>
-        <li><strong>احتفل بالنجاحات</strong>: لاحظ واحتفل بالتقدم، مهما كان صغيرًا</li>
-      </ul>
-      
-      <h2>العلاجات والتدخلات</h2>
-      <p>بالإضافة إلى استراتيجيات التربية، هناك أنواع مختلفة من التدخلات التي قد تساعد طفلك:</p>
-      <ul>
-        <li><strong>العلاج الدوائي</strong>: يمكن أن تكون الأدوية فعالة في تقليل أعراض ADHD الأساسية. ناقش الخيارات مع طبيب الأطفال أو طبيب نفسي</li>
-        <li><strong>العلاج السلوكي</strong>: تدريب الآباء، والعلاج المعرفي السلوكي (CBT)، وتدريب المهارات الاجتماعية يمكن أن تكون جميعها مفيدة</li>
-        <li><strong>العلاج الوظيفي</strong>: يمكن أن يساعد في المهارات الحركية والمهارات الحسية والمهارات اليومية</li>
-        <li><strong>دعم المدرسة</strong>: التدخلات السلوكية في الفصل والخدمات التعليمية المتخصصة</li>
-        <li><strong>التدريب على الوظائف التنفيذية</strong>: برامج مصممة خصيصًا لتحسين مهارات التنظيم والتخطيط</li>
-      </ul>
-      <p>النهج الأكثر فعالية لـ ADHD هو عادةً نهج متعدد الأوجه يجمع بين الاستراتيجيات السلوكية والعاطفية والأكاديمية والطبية المصممة خصيصًا لاحتياجات طفلك.</p>
-      
-      <h2>الخلاصة</h2>
-      <p>تربية طفل مصاب بـ ADHD يمكن أن تكون صعبة، ولكنها يمكن أن تكون أيضًا مجزية بشكل كبير. مع الصبر، والاتساق، والاستراتيجيات المناسبة، يمكنك مساعدة طفلك على الازدهار والنجاح.</p>
-      <p>تذكر أن ADHD لا يحدد طفلك. فالأطفال المصابون بـ ADHD غالبًا ما يكونون مبدعين، وعفويين، ومليئين بالطاقة، ويمكن أن يصبحوا بالغين ناجحين للغاية. من خلال بناء على نقاط قوتهم ودعمهم خلال التحديات، يمكنك مساعدة طفلك على تطوير الثقة والمهارات اللازمة للنجاح مدى الحياة.</p>
-    `,
-    author: 'د. أحمد الشمري',
-    authorId: '3',
-    authorRole: 'doctor',
-    publishedDate: '2023-06-10',
-    imageUrl: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04',
-    tags: ['ADHD', 'تربية الأطفال', 'فرط الحركة']
+    imageUrl: "/placeholder.svg",
+    date: "April 2, 2025",
+    author: {
+      name: "Dr. Michael Chen",
+      avatar: "/placeholder.svg",
+      role: "Neuroscientist"
+    },
+    categories: ["Mindfulness", "Neuroscience", "Mental Health"],
+    readTime: 10
   }
 ];
 
-const BlogPost = () => {
-  const { t, language } = useLanguage();
-  const { id } = useParams();
-  const [blog, setBlog] = useState<BlogPost | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-  const navigate = useLink();
+const BlogPostPage: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const post = blogPostsData.find(post => post.id === id);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    
-    // Simulate loading data
-    setIsLoading(true);
-    setTimeout(() => {
-      const foundBlog = mockBlogs.find(blog => blog.id === id);
-      if (foundBlog) {
-        setBlog(foundBlog);
-        setIsError(false);
-      } else {
-        setIsError(true);
-      }
-      setIsLoading(false);
-    }, 500);
-  }, [id]);
-
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    };
-    return new Date(dateString).toLocaleDateString(language === 'ar' ? 'ar-SA' : 'en-US', options);
-  };
-
-  if (isLoading) {
+  if (!post) {
     return (
-      <div className="min-h-screen flex flex-col" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-        <Navbar />
-        <main className="flex-grow mt-16 md:mt-24 pb-16">
-          <div className="container-custom">
-            <div className="max-w-3xl mx-auto">
-              <div className="animate-pulse">
-                <div className="aspect-video bg-muted rounded-xl mb-8"></div>
-                <div className="h-8 bg-muted rounded mb-4 w-3/4"></div>
-                <div className="h-4 bg-muted rounded mb-2 w-1/4"></div>
-                <div className="h-4 bg-muted rounded mb-8 w-1/3"></div>
-                <div className="space-y-4">
-                  <div className="h-4 bg-muted rounded w-full"></div>
-                  <div className="h-4 bg-muted rounded w-full"></div>
-                  <div className="h-4 bg-muted rounded w-5/6"></div>
-                  <div className="h-4 bg-muted rounded w-full"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (isError || !blog) {
-    return (
-      <div className="min-h-screen flex flex-col" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-        <Navbar />
-        <main className="flex-grow mt-16 md:mt-24 pb-16">
-          <div className="container-custom">
-            <div className="max-w-3xl mx-auto text-center py-16">
-              <h1 className="text-3xl font-bold mb-4">{t('blog_not_found')}</h1>
-              <p className="text-muted-foreground mb-8">{t('blog_not_found_message')}</p>
-              <Button asChild>
-                <Link to="/blog"><ArrowLeft className="mr-2" />{t('back_to_blogs')}</Link>
-              </Button>
-            </div>
-          </div>
-        </main>
-        <Footer />
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-2xl font-bold mb-4">Blog post not found</h1>
+        <Link to="/blog" className="text-blue-500 hover:underline flex items-center">
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to all posts
+        </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col" dir={language === 'ar' ? 'rtl' : 'ltr'}>
-      <Navbar />
-      <main className="flex-grow mt-16 md:mt-24 pb-16">
-        <div className="container-custom">
-          <article className="max-w-3xl mx-auto">
-            <div className="mb-8">
-              <Button variant="ghost" size="sm" asChild className="mb-6">
-                <Link to="/blog" className="flex items-center gap-2 text-muted-foreground">
-                  <ArrowLeft size={16} />
-                  <span>{t('back_to_blogs')}</span>
-                </Link>
-              </Button>
-              
-              <div className="flex flex-wrap gap-2 mb-4">
-                {blog.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary" className="rounded-full font-normal">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-              
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">{blog.title}</h1>
-              
-              <div className="flex items-center gap-x-4 text-sm text-muted-foreground mb-6">
-                <span className="flex items-center gap-x-1">
-                  <User size={16} /> {blog.author}
-                </span>
-                <span className="flex items-center gap-x-1">
-                  <Clock size={16} /> {formatDate(blog.publishedDate)}
-                </span>
-              </div>
-              
-              <div className="aspect-video relative overflow-hidden rounded-xl mb-10">
-                <img 
-                  src={blog.imageUrl} 
-                  alt={blog.title} 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-            
-            <div className="prose prose-lg dark:prose-invert max-w-none mb-10" dangerouslySetInnerHTML={{ __html: blog.content }} />
-            
-            <Separator className="my-10" />
-            
-            <div className="flex justify-between items-center">
-              <div>
-                <h4 className="text-lg font-medium mb-2">{t('share_article')}</h4>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="icon">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
-                    </svg>
-                    <span className="sr-only">Twitter</span>
-                  </Button>
-                  <Button variant="outline" size="icon">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
-                    </svg>
-                    <span className="sr-only">Facebook</span>
-                  </Button>
-                  <Button variant="outline" size="icon">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path fillRule="evenodd" d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z" clipRule="evenodd" />
-                    </svg>
-                    <span className="sr-only">YouTube</span>
-                  </Button>
-                </div>
-              </div>
-              
-              <Button asChild>
-                <Link to="/book-session">{t('book_appointment')}</Link>
-              </Button>
-            </div>
-          </article>
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      {/* Back button */}
+      <Link to="/blog" className="text-blue-500 hover:underline flex items-center mb-6">
+        <ArrowLeft className="mr-2 h-4 w-4" /> Back to all posts
+      </Link>
+
+      {/* Hero image */}
+      <div className="w-full h-[300px] md:h-[400px] rounded-lg overflow-hidden mb-8">
+        <img 
+          src={post.imageUrl} 
+          alt={post.title}
+          className="w-full h-full object-cover"
+        />
+      </div>
+
+      {/* Post header */}
+      <div className="mb-8">
+        <div className="flex flex-wrap gap-2 mb-4">
+          {post.categories.map((category, index) => (
+            <Badge key={index} variant="outline" className="bg-primary/10">
+              {category}
+            </Badge>
+          ))}
         </div>
-      </main>
-      <Footer />
+        <h1 className="text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
+        <div className="flex justify-between items-center flex-wrap gap-4">
+          <div className="flex items-center">
+            <Avatar className="h-10 w-10 mr-3">
+              <AvatarImage src={post.author.avatar} alt={post.author.name} />
+              <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <div>
+              <p className="font-medium">{post.author.name}</p>
+              <p className="text-sm text-muted-foreground">{post.author.role}</p>
+            </div>
+          </div>
+          <div className="text-sm text-muted-foreground">
+            {post.date} · {post.readTime} min read
+          </div>
+        </div>
+      </div>
+
+      <Separator className="my-8" />
+
+      {/* Post content */}
+      <div 
+        className="prose max-w-none dark:prose-invert"
+        dangerouslySetInnerHTML={{ __html: post.content }}
+      />
+
+      <Separator className="my-8" />
+
+      {/* Author card */}
+      <Card className="p-6 mb-8">
+        <div className="flex items-start gap-4">
+          <Avatar className="h-16 w-16">
+            <AvatarImage src={post.author.avatar} alt={post.author.name} />
+            <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
+          </Avatar>
+          <div>
+            <h3 className="text-lg font-semibold">About {post.author.name}</h3>
+            <p className="text-sm text-muted-foreground mb-4">{post.author.role}</p>
+            <p className="text-sm">
+              An experienced healthcare professional dedicated to improving mental health outcomes 
+              through evidence-based practice and compassionate care.
+            </p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Share buttons */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 justify-center mb-12">
+        <span className="font-medium flex items-center gap-2">
+          <Share2 className="h-4 w-4" /> Share this article:
+        </span>
+        <div className="flex gap-3">
+          <Button variant="outline" size="icon" className="rounded-full">
+            <Facebook className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" size="icon" className="rounded-full">
+            <Twitter className="h-4 w-4" />
+          </Button>
+          <Button variant="outline" size="icon" className="rounded-full">
+            <Linkedin className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      {/* Related posts - we'd map through related posts here */}
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {blogPostsData
+            .filter(relatedPost => relatedPost.id !== post.id)
+            .slice(0, 2)
+            .map(relatedPost => (
+              <Card key={relatedPost.id} className="overflow-hidden">
+                <Link to={`/blog/${relatedPost.id}`}>
+                  <div className="h-48 overflow-hidden">
+                    <img
+                      src={relatedPost.imageUrl}
+                      alt={relatedPost.title}
+                      className="w-full h-full object-cover transition-transform hover:scale-105"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-bold text-lg mb-2">{relatedPost.title}</h3>
+                    <p className="text-muted-foreground line-clamp-2">{relatedPost.excerpt}</p>
+                  </div>
+                </Link>
+              </Card>
+            ))}
+        </div>
+      </div>
     </div>
   );
 };
 
-export default BlogPost;
+export default BlogPostPage;
