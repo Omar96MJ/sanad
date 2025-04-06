@@ -16,6 +16,7 @@ import PatientDashboard from "./pages/PatientDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import TherapistDashboard from "./pages/TherapistDashboard";
 import PsychologicalTests from "./pages/PsychologicalTests";
+import SessionBooking from "./pages/SessionBooking";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App = () => (
                   <Route path="/admin-dashboard" element={<AdminDashboard />} />
                   <Route path="/therapist-dashboard" element={<TherapistDashboard />} />
                   <Route path="/psychological-tests" element={<PsychologicalTests />} />
+                  <Route path="/book-session" element={<SessionBooking />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>

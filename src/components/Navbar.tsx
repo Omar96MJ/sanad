@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
-import { Menu, X, HelpingHand, ShieldAlert } from 'lucide-react';
+import { Menu, X, HelpingHand, ShieldAlert, Calendar } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -44,6 +44,7 @@ const Navbar = () => {
     { href: "/", label: t('Home') },
     { href: "/blog", label: t('Blog') },
     { href: "/psychological-tests", label: t('Psychological Tests') },
+    { href: "/book-session", label: t('Book a Session'), icon: Calendar },
   ];
 
   return (
@@ -67,8 +68,9 @@ const Navbar = () => {
             <Link 
               key={link.href} 
               to={link.href} 
-              className={`transition-custom px-2 ${isActive(link.href) ? 'text-primary font-medium' : 'hover:text-primary'}`}
+              className={`transition-custom px-2 ${isActive(link.href) ? 'text-primary font-medium' : 'hover:text-primary'} flex items-center gap-1`}
             >
+              {link.icon && <link.icon className="h-4 w-4" />}
               {link.label}
             </Link>
           ))}
@@ -145,8 +147,9 @@ const Navbar = () => {
               <Link 
                 key={link.href} 
                 to={link.href} 
-                className={`py-2 ${isActive(link.href) ? 'text-primary font-medium' : ''}`}
+                className={`py-2 flex items-center gap-2 ${isActive(link.href) ? 'text-primary font-medium' : ''}`}
               >
+                {link.icon && <link.icon className="h-4 w-4" />}
                 {link.label}
               </Link>
             ))}
