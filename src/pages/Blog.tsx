@@ -9,7 +9,8 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/hooks/useLanguage";
 
-// Extended blog data with the requested topics
+// Extended blog data with full content - this is moved to the BlogPost.tsx component
+// and will be kept in sync between the two files
 const mockBlogs: BlogPost[] = [
   {
     id: '1',

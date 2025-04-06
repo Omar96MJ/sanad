@@ -10,6 +10,7 @@ import { LanguageProvider } from "@/hooks/useLanguage";
 import { SettingsProvider } from "@/hooks/useSettings";
 import Index from "./pages/Index";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
@@ -74,6 +75,7 @@ const App = () => (
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/blog" element={<Blog />} />
+                  <Route path="/blog/:id" element={<BlogPost />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/dashboard" element={<DashboardRoute />} />
