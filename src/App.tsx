@@ -19,6 +19,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import TherapistDashboard from "./pages/TherapistDashboard";
 import PsychologicalTests from "./pages/PsychologicalTests";
 import SessionBooking from "./pages/SessionBooking";
+import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -78,6 +79,7 @@ const App = () => (
                   <Route path="/blog/:id" element={<BlogPost />} />
                   <Route path="/login" element={<Login />} />
                   <Route path="/register" element={<Register />} />
+                  <Route path="/about-us" element={<AboutUs />} />
                   <Route path="/dashboard" element={<DashboardRoute />} />
                   <Route 
                     path="/profile" 

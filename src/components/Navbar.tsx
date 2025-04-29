@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -42,6 +41,7 @@ const Navbar = () => {
 
   const navLinks = [
     { href: "/", label: t('Home') },
+    { href: "/about-us", label: t('About Us') },
     { href: "/blog", label: t('Blog') },
     { href: "/psychological-tests", label: t('Psychological Tests') },
     { href: "/book-session", label: t('Book a Session'), icon: Calendar },
