@@ -1,4 +1,3 @@
-
 // Arabic translations
 const arTranslations = {
   "Home": "الرئيسية",
@@ -49,6 +48,41 @@ const arTranslations = {
   "psychological_tests": "الاختبارات النفسية",
   "take_test_description": "قم بإجراء أحد اختباراتنا النفسية لمعرفة المزيد عن نفسك.",
   "test_completed": "تم إكمال الاختبار!",
+  "self_assessment": "التقييم الذاتي",
+  "professional_tests": "اختبارات مهنية",
+  
+  // Test categories
+  "all_tests": "جميع الاختبارات",
+  "cognitive": "إدراكي",
+  "personality": "الشخصية",
+  "clinical": "سريري",
+  "wellbeing": "الرفاهية",
+  
+  // PsyToolkit test interface
+  "search_tests": "البحث في الاختبارات...",
+  "take_test": "إجراء الاختبار",
+  "back_to_tests": "العودة إلى الاختبارات",
+  "loading_test": "جاري تحميل الاختبار...",
+  "test_loaded": "تم تحميل الاختبار",
+  "test_load_error": "فشل في تحميل الاختبار. يرجى المحاولة مرة أخرى.",
+  "no_tests_found": "لم يتم العثور على اختبارات",
+  "open_in_new_tab": "فتح في علامة تبويب جديدة",
+  "opening_external_test": "فتح الاختبار في علامة تبويب جديدة",
+  "psytoolkit_attribution": "الاختبارات مقدمة من",
+  
+  // Added test translations
+  "social-anxiety_name": "تقييم القلق الاجتماعي",
+  "social-anxiety_description": "تقييم مستوى القلق لديك في المواقف الاجتماعية.",
+  "life-satisfaction_name": "مقياس الرضا عن الحياة",
+  "life-satisfaction_description": "قياس مدى الرضا العام عن الحياة.",
+  "emotional-intelligence_name": "تقييم الذكاء العاطفي",
+  "emotional-intelligence_description": "تقييم قدرتك على التعرف على المشاعر وإدارتها في نفسك والآخرين.",
+  "childhood-trauma_name": "استبيان تجارب الطفولة",
+  "childhood-trauma_description": "تقييم تأثيرات تجارب الحياة المبكرة على الرفاهية الحالية.",
+  "relationship-satisfaction_name": "مقياس الرضا عن العلاقات",
+  "relationship-satisfaction_description": "تقييم مستويات الرضا في علاقاتك الوثيقة.",
+  "resilience_name": "مقياس المرونة النفسية",
+  "resilience_description": "قياس قدرتك على التعافي من المحن.",
   
   "depression_test": "اختبار الاكتئاب",
   "anxiety_test": "اختبار القلق",
@@ -127,7 +161,7 @@ const arTranslations = {
   "jealousy_q5": "غالبًا ما أحتاج إلى تطمين من شريكي",
   
   "love_q1": "أفكر في هذا الشخص باستمرار",
-  "love_q2": "أشعر بالسعادة عندما أكون مع هذا الشخص",
+  "love_q2": "أشعر بالسعادة ��ندما أكون مع هذا الشخص",
   "love_q3": "أعطي أولوية لاحتياجات هذا الشخص على احتياجاتي",
   "love_q4": "أستطيع أن أرى مستقبلًا مع هذا الشخص",
   "love_q5": "أتقبل عيوب هذا الشخص",

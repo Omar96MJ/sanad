@@ -17,7 +17,7 @@ interface PsyToolkitTest {
 }
 
 const PsyToolkitTests = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [activeTest, setActiveTest] = useState<PsyToolkitTest | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("all");
@@ -81,6 +81,49 @@ const PsyToolkitTests = () => {
       description: "Measure your perception of stress in your life.",
       embedUrl: "https://www.psytoolkit.org/survey-library/stress-pss.html",
       category: "clinical"
+    },
+    // Adding culturally relevant tests for Arabic users
+    {
+      id: "social-anxiety",
+      name: "Social Anxiety Assessment",
+      description: "Evaluate your level of anxiety in social situations.",
+      embedUrl: "https://www.psytoolkit.org/survey-library/social-anxiety-lsas.html",
+      category: "clinical"
+    },
+    {
+      id: "life-satisfaction",
+      name: "Life Satisfaction Scale",
+      description: "Measure your overall satisfaction with life.",
+      embedUrl: "https://www.psytoolkit.org/survey-library/life-satisfaction-swls.html",
+      category: "wellbeing"
+    },
+    {
+      id: "emotional-intelligence",
+      name: "Emotional Intelligence Assessment",
+      description: "Evaluate your ability to recognize and manage emotions in yourself and others.",
+      embedUrl: "https://www.psytoolkit.org/survey-library/emotional-intelligence-wleis.html",
+      category: "personality"
+    },
+    {
+      id: "childhood-trauma",
+      name: "Childhood Experiences Questionnaire",
+      description: "Assess impacts of early life experiences on current wellbeing.",
+      embedUrl: "https://www.psytoolkit.org/survey-library/childhood-trauma-ctq.html",
+      category: "clinical"
+    },
+    {
+      id: "relationship-satisfaction",
+      name: "Relationship Satisfaction Scale",
+      description: "Evaluate satisfaction levels in your close relationships.",
+      embedUrl: "https://www.psytoolkit.org/survey-library/relationship-satisfaction-rss.html",
+      category: "wellbeing"
+    },
+    {
+      id: "resilience",
+      name: "Psychological Resilience Scale",
+      description: "Measure your ability to bounce back from adversity.",
+      embedUrl: "https://www.psytoolkit.org/survey-library/resilience-short.html",
+      category: "wellbeing"
     }
   ];
 
@@ -135,6 +178,7 @@ const PsyToolkitTests = () => {
                 <TabsTrigger value="cognitive">{t('cognitive')}</TabsTrigger>
                 <TabsTrigger value="personality">{t('personality')}</TabsTrigger>
                 <TabsTrigger value="clinical">{t('clinical')}</TabsTrigger>
+                <TabsTrigger value="wellbeing">{t('wellbeing')}</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -143,8 +187,8 @@ const PsyToolkitTests = () => {
             {filteredTests.map((test) => (
               <Card key={test.id} className="cursor-pointer hover:shadow-md transition-shadow">
                 <CardHeader>
-                  <CardTitle>{test.name}</CardTitle>
-                  <CardDescription>{test.description}</CardDescription>
+                  <CardTitle>{language === 'ar' ? t(test.id + '_name') || test.name : test.name}</CardTitle>
+                  <CardDescription>{language === 'ar' ? t(test.id + '_description') || test.description : test.description}</CardDescription>
                 </CardHeader>
                 <CardFooter>
                   <Button onClick={() => handleSelectTest(test)} className="w-full">{t('take_test')}</Button>

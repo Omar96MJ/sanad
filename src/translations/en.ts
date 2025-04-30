@@ -1,4 +1,3 @@
-
 // English translations
 const enTranslations = {
   // General UI elements
@@ -51,6 +50,41 @@ const enTranslations = {
   "psychological_tests": "Psychological Tests",
   "take_test_description": "Take one of our psychological tests to learn more about yourself.",
   "test_completed": "Test completed!",
+  "self_assessment": "Self Assessment",
+  "professional_tests": "Professional Tests",
+  
+  // Test categories
+  "all_tests": "All Tests",
+  "cognitive": "Cognitive",
+  "personality": "Personality",
+  "clinical": "Clinical",
+  "wellbeing": "Wellbeing",
+  
+  // PsyToolkit test interface
+  "search_tests": "Search tests...",
+  "take_test": "Take Test",
+  "back_to_tests": "Back to Tests",
+  "loading_test": "Loading test...",
+  "test_loaded": "Test loaded",
+  "test_load_error": "Failed to load test. Please try again.",
+  "no_tests_found": "No tests found",
+  "open_in_new_tab": "Open in new tab",
+  "opening_external_test": "Opening test in a new tab",
+  "psytoolkit_attribution": "Tests provided by",
+  
+  // Added test translations
+  "social-anxiety_name": "Social Anxiety Assessment",
+  "social-anxiety_description": "Evaluate your level of anxiety in social situations.",
+  "life-satisfaction_name": "Life Satisfaction Scale",
+  "life-satisfaction_description": "Measure your overall satisfaction with life.",
+  "emotional-intelligence_name": "Emotional Intelligence Assessment",
+  "emotional-intelligence_description": "Evaluate your ability to recognize and manage emotions in yourself and others.",
+  "childhood-trauma_name": "Childhood Experiences Questionnaire",
+  "childhood-trauma_description": "Assess impacts of early life experiences on current wellbeing.",
+  "relationship-satisfaction_name": "Relationship Satisfaction Scale",
+  "relationship-satisfaction_description": "Evaluate satisfaction levels in your close relationships.",
+  "resilience_name": "Psychological Resilience Scale",
+  "resilience_description": "Measure your ability to bounce back from adversity.",
   
   // Test names
   "depression_test": "Depression Test",
