@@ -1,28 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { toast } from "sonner";
-import { ExternalLink } from "lucide-react";
-
-interface PsyToolkitTest {
-  id: string;
-  name: string;
-  description: string;
-  embedUrl: string;
-  category: string;
-}
+import { psyToolkitTests, PsyToolkitTest } from '@/data/psyToolkitTests';
+import TestSearchFilter from './psytoolkit/TestSearchFilter';
+import TestList from './psytoolkit/TestList';
+import TestViewer from './psytoolkit/TestViewer';
 
 const PsyToolkitTests = () => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const [activeTest, setActiveTest] = useState<PsyToolkitTest | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [category, setCategory] = useState("all");
   const [isVisible, setIsVisible] = useState(false);
-  const [iframeLoading, setIframeLoading] = useState(false);
 
   useEffect(() => {
     // Trigger animation after component mounts
@@ -30,102 +20,6 @@ const PsyToolkitTests = () => {
       setIsVisible(true);
     }, 100);
   }, []);
-
-  // PsyToolkit tests with correct embed URLs
-  const psyToolkitTests: PsyToolkitTest[] = [
-    {
-      id: "stroop",
-      name: "Stroop Test",
-      description: "The Stroop test measures your ability to focus on relevant information and ignore irrelevant information.",
-      embedUrl: "https://www.psytoolkit.org/experiment-library/stroop.html",
-      category: "cognitive"
-    },
-    {
-      id: "memory",
-      name: "Visual Memory Test",
-      description: "Test your visual memory capacity and recall abilities.",
-      embedUrl: "https://www.psytoolkit.org/experiment-library/memory.html",
-      category: "cognitive"
-    },
-    {
-      id: "reaction",
-      name: "Reaction Time Test",
-      description: "Measure your reaction time to visual stimuli.",
-      embedUrl: "https://www.psytoolkit.org/experiment-library/simple-rt.html",
-      category: "cognitive"
-    },
-    {
-      id: "bigfive",
-      name: "Big Five Personality Test",
-      description: "Assess your personality across five major dimensions: openness, conscientiousness, extraversion, agreeableness, and neuroticism.",
-      embedUrl: "https://www.psytoolkit.org/survey-library/big5.html",
-      category: "personality"
-    },
-    {
-      id: "anxiety",
-      name: "Anxiety Assessment (GAD-7)",
-      description: "Evaluate your current anxiety levels with this standardized assessment.",
-      embedUrl: "https://www.psytoolkit.org/survey-library/anxiety-gad7.html",
-      category: "clinical"
-    },
-    {
-      id: "depression",
-      name: "Depression Questionnaire (PHQ-9)",
-      description: "A standardized screening tool for depression symptoms.",
-      embedUrl: "https://www.psytoolkit.org/survey-library/depression-phq9.html",
-      category: "clinical"
-    },
-    {
-      id: "stress",
-      name: "Perceived Stress Scale",
-      description: "Measure your perception of stress in your life.",
-      embedUrl: "https://www.psytoolkit.org/survey-library/stress-pss.html",
-      category: "clinical"
-    },
-    // Adding culturally relevant tests for Arabic users
-    {
-      id: "social-anxiety",
-      name: "Social Anxiety Assessment",
-      description: "Evaluate your level of anxiety in social situations.",
-      embedUrl: "https://www.psytoolkit.org/survey-library/social-anxiety-lsas.html",
-      category: "clinical"
-    },
-    {
-      id: "life-satisfaction",
-      name: "Life Satisfaction Scale",
-      description: "Measure your overall satisfaction with life.",
-      embedUrl: "https://www.psytoolkit.org/survey-library/life-satisfaction-swls.html",
-      category: "wellbeing"
-    },
-    {
-      id: "emotional-intelligence",
-      name: "Emotional Intelligence Assessment",
-      description: "Evaluate your ability to recognize and manage emotions in yourself and others.",
-      embedUrl: "https://www.psytoolkit.org/survey-library/emotional-intelligence-wleis.html",
-      category: "personality"
-    },
-    {
-      id: "childhood-trauma",
-      name: "Childhood Experiences Questionnaire",
-      description: "Assess impacts of early life experiences on current wellbeing.",
-      embedUrl: "https://www.psytoolkit.org/survey-library/childhood-trauma-ctq.html",
-      category: "clinical"
-    },
-    {
-      id: "relationship-satisfaction",
-      name: "Relationship Satisfaction Scale",
-      description: "Evaluate satisfaction levels in your close relationships.",
-      embedUrl: "https://www.psytoolkit.org/survey-library/relationship-satisfaction-rss.html",
-      category: "wellbeing"
-    },
-    {
-      id: "resilience",
-      name: "Psychological Resilience Scale",
-      description: "Measure your ability to bounce back from adversity.",
-      embedUrl: "https://www.psytoolkit.org/survey-library/resilience-short.html",
-      category: "wellbeing"
-    }
-  ];
 
   const filteredTests = psyToolkitTests.filter(test => 
     (category === "all" || test.category === category) &&
@@ -135,125 +29,35 @@ const PsyToolkitTests = () => {
 
   const handleSelectTest = (test: PsyToolkitTest) => {
     setActiveTest(test);
-    setIframeLoading(true);
     toast.info(t('loading_test'));
   };
 
   const handleBackToTests = () => {
     setActiveTest(null);
-    setIframeLoading(false);
   };
 
-  const handleIframeLoad = () => {
-    setIframeLoading(false);
-    toast.success(t('test_loaded'));
-  };
-
-  const handleIframeError = () => {
-    setIframeLoading(false);
-    toast.error(t('test_load_error') || 'Failed to load test. Please try again later.');
-  };
-
-  const openExternalTest = () => {
-    if (!activeTest) return;
-    
-    window.open(activeTest.embedUrl, '_blank', 'noopener,noreferrer');
-    toast.info(t('opening_external_test') || 'Opening test in a new tab');
-  };
+  const { t } = useLanguage();
 
   return (
     <div className={`transition-opacity duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
       {!activeTest ? (
         <div className="space-y-6">
-          <div className="flex flex-col sm:flex-row justify-between gap-4">
-            <Input
-              placeholder={t('search_tests')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="max-w-xs"
-            />
-            <Tabs defaultValue="all" value={category} onValueChange={setCategory}>
-              <TabsList>
-                <TabsTrigger value="all">{t('all_tests')}</TabsTrigger>
-                <TabsTrigger value="cognitive">{t('cognitive')}</TabsTrigger>
-                <TabsTrigger value="personality">{t('personality')}</TabsTrigger>
-                <TabsTrigger value="clinical">{t('clinical')}</TabsTrigger>
-                <TabsTrigger value="wellbeing">{t('wellbeing')}</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredTests.map((test) => (
-              <Card key={test.id} className="cursor-pointer hover:shadow-md transition-shadow">
-                <CardHeader>
-                  <CardTitle>{language === 'ar' ? t(test.id + '_name') || test.name : test.name}</CardTitle>
-                  <CardDescription>{language === 'ar' ? t(test.id + '_description') || test.description : test.description}</CardDescription>
-                </CardHeader>
-                <CardFooter>
-                  <Button onClick={() => handleSelectTest(test)} className="w-full">{t('take_test')}</Button>
-                </CardFooter>
-              </Card>
-            ))}
-            
-            {filteredTests.length === 0 && (
-              <div className="col-span-full text-center py-8">
-                <p>{t('no_tests_found')}</p>
-              </div>
-            )}
-          </div>
+          <TestSearchFilter 
+            searchTerm={searchTerm} 
+            setSearchTerm={setSearchTerm} 
+            category={category} 
+            setCategory={setCategory}
+          />
+          <TestList 
+            tests={filteredTests} 
+            onSelectTest={handleSelectTest} 
+          />
         </div>
       ) : (
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold">{activeTest.name}</h2>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={openExternalTest}>
-                <ExternalLink size={16} className="mr-1" />
-                {t('open_in_new_tab') || 'Open in new tab'}
-              </Button>
-              <Button variant="outline" onClick={handleBackToTests}>{t('back_to_tests')}</Button>
-            </div>
-          </div>
-          
-          <Card>
-            <CardContent className="p-0 h-[600px] relative">
-              {iframeLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
-                  <div className="text-center">
-                    <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-2"></div>
-                    <p>{t('loading_test')}</p>
-                  </div>
-                </div>
-              )}
-              <div className="h-full flex items-center justify-center">
-                <iframe
-                  src={activeTest.embedUrl}
-                  title={activeTest.name}
-                  width="100%"
-                  height="100%"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  onLoad={handleIframeLoad}
-                  onError={handleIframeError}
-                ></iframe>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <div className="text-sm text-muted-foreground flex items-center gap-2">
-            <p>{t('psytoolkit_attribution')}</p>
-            <a 
-              href="https://www.psytoolkit.org/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary inline-flex items-center hover:underline"
-            >
-              PsyToolkit <ExternalLink size={14} className="ml-1" />
-            </a>
-          </div>
-        </div>
+        <TestViewer 
+          test={activeTest} 
+          onBack={handleBackToTests} 
+        />
       )}
     </div>
   );
