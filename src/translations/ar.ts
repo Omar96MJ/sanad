@@ -3,6 +3,7 @@
 const arTranslations = {
   "Home": "الرئيسية",
   "Blog": "مدونة",
+  "About Us": "من نحن", // Added explicit About Us translation
   "Psychological Tests": "الاختبارات النفسية",
   "Login": "تسجيل الدخول",
   "Register": "تسجيل",

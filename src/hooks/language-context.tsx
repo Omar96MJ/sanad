@@ -23,6 +23,10 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       localStorage.setItem('language', language);
       document.documentElement.setAttribute('lang', language);
       document.documentElement.setAttribute('dir', language === 'ar' ? 'rtl' : 'ltr');
+      
+      // Force a full page refresh to ensure all translations are applied
+      // This is optional but can help ensure consistent translation across components
+      // window.location.reload();
     }
   }, [language]);
 

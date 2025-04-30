@@ -18,6 +18,12 @@ const LanguageToggle = () => {
     document.documentElement.lang = language;
   }, [language]);
 
+  const handleLanguageChange = (newLang: 'en' | 'ar') => {
+    setLanguage(newLang);
+    // Force a reload to ensure all components pick up the language change
+    window.location.reload();
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,13 +33,13 @@ const LanguageToggle = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setLanguage('en')}>
+        <DropdownMenuItem onClick={() => handleLanguageChange('en')}>
           <span className={language === 'en' ? 'font-medium' : ''}>
             {t('english')}
           </span>
           {language === 'en' && <span className="ml-2">✓</span>}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setLanguage('ar')}>
+        <DropdownMenuItem onClick={() => handleLanguageChange('ar')}>
           <span className={language === 'ar' ? 'font-medium' : ''}>
             {t('arabic')}
           </span>
