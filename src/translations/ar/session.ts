@@ -8,6 +8,7 @@ const sessionTranslations = {
   "Select your preferred therapist, date, and time": "اختر المعالج والتاريخ والوقت المناسب لك",
   "Therapist": "المعالج",
   "Select a therapist": "اختر معالج",
+  "Loading therapists...": "جاري تحميل المعالجين...",
   "patients": "مريض",
   "years of experience": "سنوات خبرة",
   "Session Type": "نوع الجلسة",
@@ -18,12 +19,18 @@ const sessionTranslations = {
   "Date": "التاريخ",
   "Time": "الوقت",
   "Select a time": "اختر وقتًا",
+  "Loading available times...": "جاري تحميل المواعيد المتاحة...",
+  "No available times for this day": "لا توجد مواعيد متاحة في هذا اليوم",
   "Additional Notes (optional)": "ملاحظات إضافية (اختياري)",
   "Add any additional information that might help your therapist": "أضف أي معلومات إضافية قد تساعد المعالج",
   "Confirm Booking": "تأكيد الحجز",
   "Booking...": "جاري الحجز...",
   "Your session has been booked successfully! We'll send you a confirmation email.": "تم حجز جلستك بنجاح! سنرسل لك تأكيدًا عبر البريد الإلكتروني.",
   "Please fill in all required fields": "يرجى تعبئة جميع الحقول المطلوبة",
+  "You must be logged in to book a session": "يجب تسجيل الدخول لحجز جلسة",
+  "Error booking your session": "حدث خطأ أثناء حجز الجلسة",
+  "Error loading therapists": "حدث خطأ أثناء تحميل قائمة المعالجين",
+  "Error loading available time slots": "حدث خطأ أثناء تحميل المواعيد المتاحة",
 };
 
 export default sessionTranslations;

@@ -1,12 +1,10 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
 import { format, addDays, isAfter, isBefore } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Card,
@@ -26,49 +24,13 @@ import {
 import { toast } from "sonner";
 import { CalendarIcon, Clock, Users, Calendar as CalendarCheck } from "lucide-react";
 import { TherapistProfile } from "@/lib/therapist-types";
-
-// Mock therapist data
-const mockTherapists: TherapistProfile[] = [
-  {
-    id: "1",
-    name: "Dr. Sarah Johnson",
-    email: "sarah@example.com",
-    role: "doctor",
-    specialization: "Cognitive Behavioral Therapy",
-    bio: "Specializing in anxiety and depression treatment with 8+ years of experience",
-    patients: 24,
-    yearsOfExperience: 8,
-    profileImage: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=256"
-  },
-  {
-    id: "2",
-    name: "Dr. Michael Chen",
-    email: "michael@example.com",
-    role: "doctor",
-    specialization: "Family Therapy",
-    bio: "Helping families build stronger relationships for over 10 years",
-    patients: 18,
-    yearsOfExperience: 10,
-    profileImage: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=256"
-  },
-  {
-    id: "3",
-    name: "Dr. Aisha Rahman",
-    email: "aisha@example.com",
-    role: "doctor",
-    specialization: "Trauma Therapy",
-    bio: "Specialized in PTSD and trauma recovery with a compassionate approach",
-    patients: 15,
-    yearsOfExperience: 7,
-    profileImage: "https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?auto=format&fit=crop&q=80&w=256"
-  },
-];
-
-// Available time slots
-const timeSlots = [
-  "09:00", "10:00", "11:00", "12:00", 
-  "13:00", "14:00", "15:00", "16:00", "17:00"
-];
+import { 
+  getCalUsers, 
+  getCalAvailability, 
+  createCalBooking, 
+  CalUser,
+  CalAvailability
+} from "@/lib/cal-api";
 
 // Session types
 const sessionTypes = [
@@ -82,37 +44,156 @@ const SessionBookingForm = () => {
   const { user } = useAuth();
   const isRTL = language === "ar";
 
+  const [therapists, setTherapists] = useState<CalUser[]>([]);
   const [selectedTherapist, setSelectedTherapist] = useState("");
+  const [selectedTherapistDetails, setSelectedTherapistDetails] = useState<CalUser | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [availableSlots, setAvailableSlots] = useState<CalAvailability[]>([]);
   const [selectedTime, setSelectedTime] = useState("");
-  const [sessionType, setSessionType] = useState("");
+  const [eventTypeId, setEventTypeId] = useState("");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingTherapists, setLoadingTherapists] = useState(true);
+  const [loadingSlots, setLoadingSlots] = useState(false);
 
-  const handleBookSession = () => {
-    if (!selectedTherapist || !selectedDate || !selectedTime || !sessionType) {
+  // Fetch therapists on component mount
+  useEffect(() => {
+    const fetchTherapists = async () => {
+      try {
+        const calUsers = await getCalUsers();
+        setTherapists(calUsers);
+      } catch (error) {
+        toast.error(isRTL 
+          ? "حدث خطأ أثناء تحميل قائمة المعالجين"
+          : "Error loading therapists");
+      } finally {
+        setLoadingTherapists(false);
+      }
+    };
+
+    fetchTherapists();
+  }, [isRTL]);
+
+  // Fetch therapist details when selection changes
+  useEffect(() => {
+    if (selectedTherapist) {
+      const therapist = therapists.find(t => t.id === selectedTherapist);
+      setSelectedTherapistDetails(therapist || null);
+      
+      // Reset related fields
+      setEventTypeId("");
+      setSelectedDate(undefined);
+      setSelectedTime("");
+      setAvailableSlots([]);
+    } else {
+      setSelectedTherapistDetails(null);
+    }
+  }, [selectedTherapist, therapists]);
+
+  // Fetch available slots when date changes
+  useEffect(() => {
+    const fetchAvailability = async () => {
+      if (!selectedTherapist || !eventTypeId || !selectedDate) return;
+
+      setLoadingSlots(true);
+      try {
+        const dateString = format(selectedDate, 'yyyy-MM-dd');
+        const nextDay = addDays(selectedDate, 1);
+        const nextDayString = format(nextDay, 'yyyy-MM-dd');
+
+        const availability = await getCalAvailability(
+          selectedTherapist,
+          eventTypeId,
+          dateString,
+          nextDayString
+        );
+
+        setAvailableSlots(availability);
+      } catch (error) {
+        toast.error(isRTL 
+          ? "حدث خطأ أثناء تحميل المواعيد المتاحة"
+          : "Error loading available time slots");
+      } finally {
+        setLoadingSlots(false);
+      }
+    };
+
+    if (selectedTherapist && eventTypeId && selectedDate) {
+      fetchAvailability();
+    }
+  }, [selectedTherapist, eventTypeId, selectedDate, isRTL]);
+
+  // Handle therapist selection
+  const handleTherapistChange = (therapistId: string) => {
+    setSelectedTherapist(therapistId);
+    setEventTypeId("");
+    setSelectedDate(undefined);
+    setSelectedTime("");
+  };
+
+  // Handle event type selection
+  const handleEventTypeChange = (typeId: string) => {
+    setEventTypeId(typeId);
+    setSelectedDate(undefined);
+    setSelectedTime("");
+  };
+
+  // Handle booking session
+  const handleBookSession = async () => {
+    if (!selectedTherapist || !eventTypeId || !selectedDate || !selectedTime) {
       toast.error(isRTL ? "يرجى تعبئة جميع الحقول المطلوبة" : "Please fill in all required fields");
+      return;
+    }
+
+    if (!user) {
+      toast.error(isRTL ? "يجب تسجيل الدخول لحجز جلسة" : "You must be logged in to book a session");
       return;
     }
 
     setLoading(true);
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const dateString = format(selectedDate, 'yyyy-MM-dd');
+      const startTime = `${dateString}T${selectedTime}:00`;
+      
+      // Calculate end time based on session type
+      const sessionTypeObj = selectedTherapistDetails?.eventTypes?.find(et => et.id === eventTypeId);
+      const durationMinutes = sessionTypeObj?.length || 60;
+      
+      // Simple way to calculate end time
+      const startDate = new Date(startTime);
+      const endDate = new Date(startDate.getTime() + durationMinutes * 60000);
+      const endTime = endDate.toISOString();
+
+      await createCalBooking(
+        selectedTherapist,
+        eventTypeId,
+        startTime,
+        endTime,
+        user.name,
+        user.email || "",
+        notes
+      );
+
       toast.success(
         isRTL 
           ? "تم حجز جلستك بنجاح! سنرسل لك تأكيدًا عبر البريد الإلكتروني." 
           : "Your session has been booked successfully! We'll send you a confirmation email."
       );
-      setLoading(false);
       
       // Reset form
       setSelectedTherapist("");
+      setSelectedTherapistDetails(null);
+      setEventTypeId("");
       setSelectedDate(undefined);
       setSelectedTime("");
-      setSessionType("");
       setNotes("");
-    }, 1500);
+      
+    } catch (error) {
+      toast.error(isRTL ? "حدث خطأ أثناء حجز الجلسة" : "Error booking your session");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const disablePastDates = (date: Date) => {
@@ -126,6 +207,13 @@ const SessionBookingForm = () => {
       date1.getFullYear() === date2.getFullYear()
     );
   };
+
+  // Find available time slots for the selected date
+  const timeSlots = selectedDate && availableSlots.length > 0
+    ? availableSlots
+        .find(day => day.date === format(selectedDate, 'yyyy-MM-dd'))
+        ?.slots.map(slot => slot.startTime) || []
+    : [];
 
   return (
     <Card className="border shadow-sm">
@@ -142,90 +230,58 @@ const SessionBookingForm = () => {
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
-          <Label htmlFor="therapist">{isRTL ? "المعالج" : "Therapist"}</Label>
-          <Select value={selectedTherapist} onValueChange={setSelectedTherapist}>
+          <label htmlFor="therapist">{isRTL ? "المعالج" : "Therapist"}</label>
+          <Select value={selectedTherapist} onValueChange={handleTherapistChange}>
             <SelectTrigger id="therapist" className="w-full">
               <SelectValue placeholder={isRTL ? "اختر معالج" : "Select a therapist"} />
             </SelectTrigger>
             <SelectContent>
-              {mockTherapists.map((therapist) => (
-                <SelectItem key={therapist.id} value={therapist.id} className="flex items-center">
-                  {therapist.name} - {therapist.specialization}
+              {loadingTherapists ? (
+                <SelectItem value="loading" disabled>
+                  {isRTL ? "جاري تحميل المعالجين..." : "Loading therapists..."}
                 </SelectItem>
-              ))}
+              ) : (
+                therapists.map((therapist) => (
+                  <SelectItem key={therapist.id} value={therapist.id}>
+                    {therapist.name}
+                  </SelectItem>
+                ))
+              )}
             </SelectContent>
           </Select>
 
-          {selectedTherapist && (
+          {selectedTherapistDetails && (
             <div className="mt-4 p-4 bg-muted/40 rounded-lg">
-              {mockTherapists.filter(t => t.id === selectedTherapist).map((therapist) => (
-                <div key={therapist.id} className="flex gap-4 items-start">
+              <div className="flex gap-4 items-start">
+                {selectedTherapistDetails.avatar && (
                   <img 
-                    src={therapist.profileImage} 
-                    alt={therapist.name}
+                    src={selectedTherapistDetails.avatar} 
+                    alt={selectedTherapistDetails.name}
                     className="h-16 w-16 rounded-full object-cover"
                   />
-                  <div>
-                    <h3 className="font-medium">{therapist.name}</h3>
-                    <p className="text-sm text-muted-foreground">{therapist.specialization}</p>
-                    <p className="text-sm mt-1">{therapist.bio}</p>
-                    <div className="flex gap-4 mt-2 text-sm text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Users className="h-3 w-3" />
-                        {therapist.patients} {isRTL ? "مريض" : "patients"}
-                      </span>
-                      <span>
-                        {therapist.yearsOfExperience} {isRTL ? "سنوات خبرة" : "years of experience"}
-                      </span>
-                    </div>
-                  </div>
+                )}
+                <div>
+                  <h3 className="font-medium">{selectedTherapistDetails.name}</h3>
+                  {selectedTherapistDetails.bio && (
+                    <p className="text-sm mt-1">{selectedTherapistDetails.bio}</p>
+                  )}
                 </div>
-              ))}
+              </div>
             </div>
           )}
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="session-type">{isRTL ? "نوع الجلسة" : "Session Type"}</Label>
-          <Select value={sessionType} onValueChange={setSessionType}>
-            <SelectTrigger id="session-type">
-              <SelectValue placeholder={isRTL ? "اختر نوع الجلسة" : "Select session type"} />
-            </SelectTrigger>
-            <SelectContent>
-              {sessionTypes.map((type) => (
-                <SelectItem key={type.value} value={type.value}>
-                  {isRTL ? type.label.ar : type.label.en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label>{isRTL ? "التاريخ" : "Date"}</Label>
-          <div className="border rounded-md p-2">
-            <Calendar
-              mode="single"
-              selected={selectedDate}
-              onSelect={setSelectedDate}
-              className="mx-auto rounded-md border pointer-events-auto"
-              disabled={disablePastDates}
-              initialFocus
-            />
-          </div>
-        </div>
-
-        {selectedDate && (
+        {selectedTherapistDetails && (
           <div className="space-y-2">
-            <Label htmlFor="time">{isRTL ? "الوقت" : "Time"}</Label>
-            <Select value={selectedTime} onValueChange={setSelectedTime}>
-              <SelectTrigger id="time">
-                <SelectValue placeholder={isRTL ? "اختر وقتًا" : "Select a time"} />
+            <label htmlFor="session-type">{isRTL ? "نوع الجلسة" : "Session Type"}</label>
+            <Select value={eventTypeId} onValueChange={handleEventTypeChange}>
+              <SelectTrigger id="session-type">
+                <SelectValue placeholder={isRTL ? "اختر نوع الجلسة" : "Select session type"} />
               </SelectTrigger>
               <SelectContent>
-                {timeSlots.map((time) => (
-                  <SelectItem key={time} value={time}>
-                    {time}
+                {selectedTherapistDetails.eventTypes?.map((eventType) => (
+                  <SelectItem key={eventType.id} value={eventType.id}>
+                    {eventType.title} ({eventType.length} min)
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -233,8 +289,52 @@ const SessionBookingForm = () => {
           </div>
         )}
 
+        {eventTypeId && (
+          <div className="space-y-2">
+            <label>{isRTL ? "التاريخ" : "Date"}</label>
+            <div className="border rounded-md p-2">
+              <Calendar
+                mode="single"
+                selected={selectedDate}
+                onSelect={setSelectedDate}
+                className="mx-auto rounded-md border pointer-events-auto"
+                disabled={disablePastDates}
+                initialFocus
+              />
+            </div>
+          </div>
+        )}
+
+        {selectedDate && (
+          <div className="space-y-2">
+            <label htmlFor="time">{isRTL ? "الوقت" : "Time"}</label>
+            <Select value={selectedTime} onValueChange={setSelectedTime}>
+              <SelectTrigger id="time">
+                <SelectValue placeholder={isRTL ? "اختر وقتًا" : "Select a time"} />
+              </SelectTrigger>
+              <SelectContent>
+                {loadingSlots ? (
+                  <SelectItem value="loading" disabled>
+                    {isRTL ? "جاري تحميل المواعيد المتاحة..." : "Loading available times..."}
+                  </SelectItem>
+                ) : timeSlots.length > 0 ? (
+                  timeSlots.map((time) => (
+                    <SelectItem key={time} value={time}>
+                      {time}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="none" disabled>
+                    {isRTL ? "لا توجد مواعيد متاحة في هذا اليوم" : "No available times for this day"}
+                  </SelectItem>
+                )}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
         <div className="space-y-2">
-          <Label htmlFor="notes">{isRTL ? "ملاحظات إضافية (اختياري)" : "Additional Notes (optional)"}</Label>
+          <label htmlFor="notes">{isRTL ? "ملاحظات إضافية (اختياري)" : "Additional Notes (optional)"}</label>
           <Textarea
             id="notes"
             value={notes}
@@ -247,7 +347,7 @@ const SessionBookingForm = () => {
       <CardFooter>
         <Button 
           onClick={handleBookSession} 
-          disabled={!selectedTherapist || !selectedDate || !selectedTime || !sessionType || loading}
+          disabled={!selectedTherapist || !eventTypeId || !selectedDate || !selectedTime || loading}
           className="w-full"
         >
           {loading ? (
