@@ -3,7 +3,7 @@
 const arTranslations = {
   "Home": "الرئيسية",
   "Blog": "مدونة",
-  "About Us": "من نحن", // Added explicit About Us translation
+  "About Us": "من نحن", 
   "Psychological Tests": "الاختبارات النفسية",
   "Login": "تسجيل الدخول",
   "Register": "تسجيل",
@@ -162,7 +162,7 @@ const arTranslations = {
   "jealousy_q5": "غالبًا ما أحتاج إلى تطمين من شريكي",
   
   "love_q1": "أفكر في هذا الشخص باستمرار",
-  "love_q2": "أشعر بالسعادة ��ندما أكون مع هذا الشخص",
+  "love_q2": "أشعر بالسعادة عندما أكون مع هذا الشخص",
   "love_q3": "أعطي أولوية لاحتياجات هذا الشخص على احتياجاتي",
   "love_q4": "أستطيع أن أرى مستقبلًا مع هذا الشخص",
   "love_q5": "أتقبل عيوب هذا الشخص",
@@ -275,7 +275,6 @@ const arTranslations = {
   "therapist_dashboard": "لوحة المعالج",
   "welcome_back": "مرحبًا بعودتك",
   "overview": "نظرة عامة",
-  "profile": "الملف الشخصي",
   "patients": "المرضى",
   "sessions": "الجلسات",
   "evaluations": "التقييمات",
@@ -312,7 +311,6 @@ const arTranslations = {
   "view_detailed_progress": "عرض التقدم المفصل",
   "your_therapist": "معالجك",
   "calendar": "التقويم",
-  "mental_health_resources": "موارد الصحة النفسية",
   "emergency_help": "مساعدة طارئة",
   "access_immediate_support": "الوصول إلى دعم فوري لأزمات الصحة النفسية",
   "view_resources": "عرض الموارد",
@@ -321,7 +319,18 @@ const arTranslations = {
   "access_tools": "الوصول إلى الأدوات",
   "educational_material": "المواد التعليمية",
   "learn_about_mental_health": "تعلم عن حالات الصحة النفسية والعلاجات واستراتيجيات التأقلم",
-  "start_learning": "ابدأ التعلم"
+  "start_learning": "ابدأ التعلم",
+  
+  // Additional translations for login/signup
+  "welcome_back": "مرحبًا بعودتك",
+  "sign_in_to_continue": "قم بتسجيل الدخول للمتابعة",
+  "password": "كلمة المرور",
+  "forgot_password": "نسيت كلمة المرور؟",
+  "sign_in": "تسجيل الدخول",
+  "signing_in": "جاري تسجيل الدخول...",
+  "dont_have_account": "ليس لديك حساب؟",
+  "disabled": "تم التعطيل",
+  "enabled": "تم التفعيل"
 };
 
 export default arTranslations;
