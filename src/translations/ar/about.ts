@@ -1,0 +1,38 @@
+
+// About Us page translations for Arabic
+const aboutTranslations = {
+  "About Sanad": "من نحن",
+  "We are a mental health care platform committed to providing support and resources to help you on your journey to mental wellness.": "نحن منصة رعاية صحية نفسية ملتزمة بتوفير الدعم والموارد للمساعدة في رحلتك نحو الرفاهية النفسية.",
+  "Our Mission": "مهمتنا",
+  "At Sanad, our mission is to make mental health care accessible, affordable, and stigma-free for everyone. We believe that every person deserves the support and resources to overcome mental health challenges and achieve holistic well-being.": "في سند، مهمتنا هي جعل الرعاية الصحية النفسية متاحة وميسورة التكلفة وخالية من الوصمة للجميع. نحن نؤمن بأن كل شخص يستحق الدعم والموارد للتغلب على التحديات النفسية وتحقيق الرفاهية الشاملة.",
+  "Our Vision": "رؤيتنا",
+  "We envision a world where access to high-quality mental health care is a fundamental right, and where every person can thrive mentally and emotionally. We strive to build a supportive community where mental health challenges are addressed with compassion, understanding, and expert care.": "نتصور عالمًا يكون فيه الوصول إلى الرعاية الصحية النفسية عالية الجودة حقًا أساسيًا، وحيث يمكن لكل شخص أن يزدهر عقليًا وعاطفيًا. نحن نسعى جاهدين لبناء مجتمع داعم حيث تتم معالجة التحديات النفسية بالتعاطف والفهم والرعاية الخبيرة.",
+  "Our Core Values": "قيمنا الأساسية",
+  "Compassion": "التعاطف",
+  "We treat each person with care, understanding, and empathy, recognizing that every mental health journey is unique.": "نتعامل مع كل شخص بالرعاية والتفهم والتعاطف، مدركين أن كل رحلة صحية نفسية هي فريدة من نوعها.",
+  "Accessibility": "الوصول",
+  "We strive to remove barriers to mental health care, whether they are financial, geographical, or cultural.": "نسعى جاهدين لإزالة الحواجز أمام الرعاية الصحية النفسية، سواء كانت مالية أو جغرافية أو ثقافية.",
+  "Excellence": "التميز",
+  "We are committed to delivering high-quality services, evidence-based practices, and an exceptional user experience.": "نلتزم بتقديم خدمات ذات جودة عالية وممارسات قائمة على الأدلة وتجربة مستخدم استثنائية.",
+  "Inclusivity": "الشمولية",
+  "We welcome people of all backgrounds, identities, and experiences, believing in equitable care for all.": "نرحب بالأشخاص من جميع الخلفيات والهويات والتجارب، ونؤمن بالمساواة في الرعاية للجميع.",
+  "Anti-Stigma": "مكافحة الوصم",
+  "We actively work against the stigma surrounding mental health through education, awareness, and advocacy.": "نعمل بنشاط على مكافحة الوصم المحيط بالصحة النفسية من خلال التعليم والتوعية والمناصرة.",
+  "Empowerment": "التمكين",
+  "We aim to empower individuals with knowledge, tools, and support to be active participants in their wellness journey.": "نهدف إلى تمكين الأفراد بالمعرفة والأدوات والدعم ليكونوا مشاركين نشطين في رحلتهم نحو العافية.",
+  "Our Team": "فريقنا",
+  "Get in Touch": "تواصل معنا",
+  "Contact Information": "معلومات الاتصال",
+  "Office Hours": "ساعات العمل",
+  "Monday - Friday": "الإثنين - الجمعة",
+  "Saturday": "السبت",
+  "Sunday": "الأحد",
+  "Closed": "مغلق",
+  "Send Us a Message": "أرسل لنا رسالة",
+  "Name": "الاسم",
+  "Email": "البريد الإلكتروني",
+  "Message": "الرسالة",
+  "Send Message": "إرسال",
+};
+
+export default aboutTranslations;

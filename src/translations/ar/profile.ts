@@ -1,0 +1,45 @@
+
+// Profile related translations for Arabic
+const profileTranslations = {
+  // Admin & Patient Profile translations
+  "profile_information": "معلومات الملف الشخصي",
+  "manage_your_information": "إدارة معلوماتك الشخصية",
+  "email_settings": "إعدادات البريد الإلكتروني",
+  "manage_your_email_address": "إدارة عنوان البريد الإلكتروني الخاص بك",
+  "security": "الأمان",
+  "manage_your_password": "إدارة كلمة المرور الخاصة بك",
+  "health_information": "المعلومات الصحية",
+  "your_health_records": "سجلاتك الصحية",
+  "recent_sessions": "الجلسات الأخيرة",
+  "no_recent_sessions": "لا توجد جلسات حديثة",
+  "book_a_session": "حجز جلسة",
+  "no_tests_completed": "لم يتم إكمال أي اختبارات",
+  "take_a_test": "إجراء اختبار",
+  "change_picture": "تغيير الصورة",
+  "full_name": "الاسم الكامل",
+  "about_me": "نبذة عني",
+  "save_changes": "حفظ التغييرات",
+  "email_address": "عنوان البريد الإلكتروني",
+  "verify_email": "التحقق من البريد الإلكتروني",
+  "current_password": "كلمة المرور الحالية",
+  "new_password": "كلمة المرور الجديدة",
+  "confirm_password": "تأكيد كلمة المرور",
+  "update_password": "تحديث كلمة المرور",
+  "profile_updated": "تم تحديث الملف الشخصي",
+  "passwords_dont_match": "كلمات المرور غير متطابقة",
+  "password_too_short": "كلمة المرور قصيرة جدًا",
+  "password_updated": "تم تحديث كلمة المرور",
+  "verification_email_sent": "تم إرسال رسالة التحقق إلى البريد الإلكتروني",
+  
+  // Admin specific translations
+  "admin_permissions": "صلاحيات المسؤول",
+  "manage_your_admin_permissions": "إدارة صلاحيات المسؤول الخاصة بك",
+  "manage_users": "إدارة المستخدمين",
+  "permission_to_manage_users": "الإذن بإدارة حسابات المستخدمين",
+  "manage_content": "إدارة المحتوى",
+  "permission_to_manage_content": "الإذن بإدارة محتوى الموقع",
+  "system_settings": "إعدادات النظام",
+  "permission_to_manage_settings": "الإذن بإدارة إعدادات النظام",
+};
+
+export default profileTranslations;
