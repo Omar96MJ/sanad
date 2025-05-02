@@ -19,7 +19,6 @@ const profileTranslations = {
   "full_name": "الاسم الكامل",
   "about_me": "نبذة عني",
   "save_changes": "حفظ التغييرات",
-  "email_address": "عنوان البريد الإلكتروني",
   "verify_email": "التحقق من البريد الإلكتروني",
   "current_password": "كلمة المرور الحالية",
   "new_password": "كلمة المرور الجديدة",

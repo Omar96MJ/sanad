@@ -34,6 +34,7 @@ const generalTranslations = {
   "privacy_policy": "سياسة الخصوصية",
   "terms_of_service": "شروط الخدمة",
   "cookie_policy": "سياسة ملفات تعريف الارتباط",
+  "sign_in_to_continue": "قم بتسجيل الدخول للمتابعة",
 
   // Blog and articles
   "mental_health_resources": "موارد الصحة النفسية",
