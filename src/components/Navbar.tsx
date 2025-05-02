@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -102,7 +103,7 @@ const Navbar = () => {
                   </DropdownMenuItem>
                 )}
                 <DropdownMenuItem asChild>
-                  <Link to={user.role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard'}>
+                  <Link to={user.role === 'doctor' ? '/therapist-dashboard' : '/patient-dashboard'}>
                     {t('dashboard')}
                   </Link>
                 </DropdownMenuItem>
@@ -162,7 +163,7 @@ const Navbar = () => {
                   </Link>
                 )}
                 <Link 
-                  to={user.role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard'} 
+                  to={user.role === 'doctor' ? '/therapist-dashboard' : '/patient-dashboard'} 
                   className="py-2"
                 >
                   {t('dashboard')}

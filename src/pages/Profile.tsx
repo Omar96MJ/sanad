@@ -11,7 +11,7 @@ import PatientProfile from "@/components/patient/PatientProfile";
 
 const Profile = () => {
   const { user } = useAuth();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const navigate = useNavigate();
 
   useEffect(() => {

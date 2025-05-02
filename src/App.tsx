@@ -113,6 +113,14 @@ const App = () => (
                       </ProtectedRoute>
                     } 
                   />
+                  <Route 
+                    path="/doctor-dashboard" 
+                    element={
+                      <ProtectedRoute allowedRoles={['doctor']}>
+                        <TherapistDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
                   <Route path="/psychological-tests" element={<PsychologicalTests />} />
                   <Route path="/book-session" element={<SessionBooking />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
