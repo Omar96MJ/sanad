@@ -13,6 +13,7 @@ const Profile = () => {
   const { user } = useAuth();
   const { language, t } = useLanguage();
   const navigate = useNavigate();
+  const isRTL = language === 'ar';
 
   useEffect(() => {
     // If not logged in, redirect to login
@@ -26,9 +27,9 @@ const Profile = () => {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen flex flex-col" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
       <Navbar />
-      <main className="flex-grow mt-16 md:mt-20 py-8 px-4 sm:px-6 lg:px-8 bg-muted/30">
+      <main className={`flex-grow mt-16 md:mt-20 py-8 px-4 sm:px-6 lg:px-8 bg-muted/30 ${isRTL ? 'text-right' : 'text-left'}`}>
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">
             {t('profile')}

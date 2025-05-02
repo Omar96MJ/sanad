@@ -12,11 +12,12 @@ import { useEffect } from "react";
 
 const LanguageToggle = () => {
   const { language, setLanguage, t } = useLanguage();
+  const isRTL = language === 'ar';
 
   useEffect(() => {
-    document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
+    document.documentElement.dir = isRTL ? 'rtl' : 'ltr';
     document.documentElement.lang = language;
-  }, [language]);
+  }, [language, isRTL]);
 
   const handleLanguageChange = (newLang: 'en' | 'ar') => {
     setLanguage(newLang);
@@ -37,13 +38,13 @@ const LanguageToggle = () => {
           <span className={language === 'en' ? 'font-medium' : ''}>
             {t('english')}
           </span>
-          {language === 'en' && <span className="ml-2">✓</span>}
+          {language === 'en' && <span className={isRTL ? 'mr-2' : 'ml-2'}>✓</span>}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => handleLanguageChange('ar')}>
           <span className={language === 'ar' ? 'font-medium' : ''}>
             {t('arabic')}
           </span>
-          {language === 'ar' && <span className="mr-2">✓</span>}
+          {language === 'ar' && <span className={isRTL ? 'mr-2' : 'ml-2'}>✓</span>}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

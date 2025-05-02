@@ -329,7 +329,38 @@ const arTranslations = {
   "dont_have_account": "ليس لديك حساب؟",
   "disabled": "تم التعطيل",
   "enabled": "تم التفعيل",
-  "welcome_back": "مرحبًا بعودتك"
+  "welcome_back": "مرحبًا بعودتك",
+
+  // Admin Dashboard translations
+  "admin_dashboard": "لوحة تحكم المسؤول",
+  "manage_system_wide_settings": "إدارة إعدادات النظام بأكمله",
+  "users": "المستخدمون",
+  "view_and_manage_all_users": "عرض وإدارة جميع المستخدمين",
+  "system_update": "تحديث النظام",
+  "hours_ago": "ساعات مضت",
+  "new_user_registration": "تسجيل مستخدم جديد",
+  "yesterday": "أمس",
+  "payment_received": "تم استلام الدفعة",
+  "days_ago": "أيام مضت",
+  "dark_mode": "الوضع المظلم",
+  "light_mode": "الوضع المضيء",
+  "reports": "التقارير",
+  "maintenance_mode": "وضع الصيانة",
+  "put_site_in_maintenance": "وضع الموقع في وضع الصيانة",
+  "email_notifications": "إشعارات البريد الإلكتروني",
+  "send_notification_emails": "إرسال رسائل إشعار عبر البريد الإلكتروني",
+  "setting_updated": "تم تحديث الإعداد",
+  "settings_saved": "تم حفظ الإعدادات",
+  "usage_reports": "تقارير الاستخدام",
+  "view_system_usage_analytics": "عرض تحليلات استخدام النظام",
+  "user_growth": "نمو المستخدمين",
+  "total_sessions": "إجمالي الجلسات",
+  "test_completions": "اكتمال الاختبارات",
+  "active_users": "المستخدمين النشطين",
+  "doctors": "أطباء",
+  "admin": "مسؤول",
+  "recent_activities": "الأنشطة الأخيرة",
+  "allow_new_users": "السماح للمستخدمين الجدد"
 };
 
 export default arTranslations;

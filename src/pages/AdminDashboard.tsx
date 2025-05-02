@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -52,7 +53,7 @@ const AdminDashboard = () => {
   const handleSettingToggle = (setting: keyof typeof settings) => {
     if (typeof settings[setting] === 'boolean') {
       updateSettings({ [setting]: !settings[setting] });
-      toast.success(`Setting "${setting}" updated successfully`);
+      toast.success(`${t('setting_updated')}`);
     }
   };
 
@@ -67,7 +68,7 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
       <Navbar />
-      <main className="flex-grow mt-16 md:mt-20 py-8 px-4 sm:px-6 lg:px-8 bg-muted/30">
+      <main className={`flex-grow mt-16 md:mt-20 py-8 px-4 sm:px-6 lg:px-8 bg-muted/30 ${isRTL ? 'text-right' : 'text-left'}`}>
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
             <div>
@@ -76,8 +77,8 @@ const AdminDashboard = () => {
                 {t('manage_users')} {t('system_settings')}
               </p>
             </div>
-            <div className="flex items-center mt-4 md:mt-0">
-              <Shield className="text-primary mr-2 h-5 w-5" />
+            <div className={`flex items-center mt-4 md:mt-0 ${isRTL ? 'md:mr-4' : 'md:ml-4'}`}>
+              <Shield className={`text-primary ${isRTL ? 'ml-2' : 'mr-2'} h-5 w-5`} />
               <span className="text-sm font-medium">{user.name} - {t('admin_panel')}</span>
             </div>
           </div>
@@ -116,7 +117,7 @@ const AdminDashboard = () => {
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xl flex items-center">
-                      <Users className="mr-2 h-5 w-5 text-primary" />
+                      <Users className={`${isRTL ? 'ml-2' : 'mr-2'} h-5 w-5 text-primary`} />
                       {t('users')}
                     </CardTitle>
                   </CardHeader>
@@ -139,7 +140,7 @@ const AdminDashboard = () => {
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xl flex items-center">
-                      <Activity className="mr-2 h-5 w-5 text-primary" />
+                      <Activity className={`${isRTL ? 'ml-2' : 'mr-2'} h-5 w-5 text-primary`} />
                       {t('recent_activities')}
                     </CardTitle>
                   </CardHeader>
@@ -162,7 +163,7 @@ const AdminDashboard = () => {
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xl flex items-center">
-                      <Settings className="mr-2 h-5 w-5 text-primary" />
+                      <Settings className={`${isRTL ? 'ml-2' : 'mr-2'} h-5 w-5 text-primary`} />
                       {t('system_settings')}
                     </CardTitle>
                   </CardHeader>
@@ -209,8 +210,8 @@ const AdminDashboard = () => {
                       </div>
                       <div className="text-sm text-muted-foreground mb-2">doctor@example.com</div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">View</Button>
-                        <Button variant="outline" size="sm">Edit</Button>
+                        <Button variant="outline" size="sm">{t('view_resources')}</Button>
+                        <Button variant="outline" size="sm">{t('manage_content')}</Button>
                       </div>
                     </div>
 
@@ -223,8 +224,8 @@ const AdminDashboard = () => {
                       </div>
                       <div className="text-sm text-muted-foreground mb-2">patient@example.com</div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">View</Button>
-                        <Button variant="outline" size="sm">Edit</Button>
+                        <Button variant="outline" size="sm">{t('view_resources')}</Button>
+                        <Button variant="outline" size="sm">{t('manage_content')}</Button>
                       </div>
                     </div>
 
@@ -237,8 +238,8 @@ const AdminDashboard = () => {
                       </div>
                       <div className="text-sm text-muted-foreground mb-2">admin@example.com</div>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">View</Button>
-                        <Button variant="outline" size="sm">Edit</Button>
+                        <Button variant="outline" size="sm">{t('view_resources')}</Button>
+                        <Button variant="outline" size="sm">{t('manage_content')}</Button>
                       </div>
                     </div>
                   </div>
@@ -312,7 +313,7 @@ const AdminDashboard = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center">
-                    <BarChart3 className="h-5 w-5 mr-2 text-primary" />
+                    <BarChart3 className={`h-5 w-5 ${isRTL ? 'ml-2' : 'mr-2'} text-primary`} />
                     {t('usage_reports')}
                   </CardTitle>
                   <CardDescription>

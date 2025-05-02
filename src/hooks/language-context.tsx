@@ -24,9 +24,12 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
       document.documentElement.setAttribute('lang', language);
       document.documentElement.setAttribute('dir', language === 'ar' ? 'rtl' : 'ltr');
       
-      // Force a full page refresh to ensure all translations are properly applied
-      // This addresses issues where some components don't update properly on language change
-      // window.location.reload();
+      // Style adjustments for RTL
+      if (language === 'ar') {
+        document.body.classList.add('rtl');
+      } else {
+        document.body.classList.remove('rtl');
+      }
     }
   }, [language]);
 
