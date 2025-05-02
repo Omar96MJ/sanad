@@ -273,7 +273,6 @@ const arTranslations = {
   
   // Therapist Dashboard translations
   "therapist_dashboard": "لوحة المعالج",
-  "welcome_back": "مرحبًا بعودتك",
   "overview": "نظرة عامة",
   "patients": "المرضى",
   "sessions": "الجلسات",
@@ -321,8 +320,7 @@ const arTranslations = {
   "learn_about_mental_health": "تعلم عن حالات الصحة النفسية والعلاجات واستراتيجيات التأقلم",
   "start_learning": "ابدأ التعلم",
   
-  // Additional translations for login/signup
-  "welcome_back": "مرحبًا بعودتك",
+  // Login/signup specific translations
   "sign_in_to_continue": "قم بتسجيل الدخول للمتابعة",
   "password": "كلمة المرور",
   "forgot_password": "نسيت كلمة المرور؟",
