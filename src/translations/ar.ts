@@ -328,7 +328,9 @@ const arTranslations = {
   "signing_in": "جاري تسجيل الدخول...",
   "dont_have_account": "ليس لديك حساب؟",
   "disabled": "تم التعطيل",
-  "enabled": "تم التفعيل"
+  "enabled": "تم التفعيل",
+  "welcome_back": "مرحبًا بعودتك"
 };
 
 export default arTranslations;
+
