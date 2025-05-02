@@ -31,7 +31,7 @@ const Profile = () => {
       <main className="flex-grow mt-16 md:mt-20 py-8 px-4 sm:px-6 lg:px-8 bg-muted/30">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold mb-8">
-            {language === 'ar' ? 'الملف الشخصي' : 'Profile'}
+            {t('profile')}
           </h1>
           
           {user.role === 'doctor' && <TherapistProfile />}

@@ -59,7 +59,7 @@ const AdminProfile = () => {
       ...permissions,
       [permission]: !permissions[permission]
     });
-    toast.success(`${permission} ${permissions[permission] ? 'disabled' : 'enabled'}`);
+    toast.success(`${permission} ${permissions[permission] ? t('disabled') : t('enabled')}`);
   };
 
   return (
