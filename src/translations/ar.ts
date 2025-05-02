@@ -1,5 +1,4 @@
 
-
 // Arabic translations
 const arTranslations = {
   "Home": "الرئيسية",
@@ -334,4 +333,3 @@ const arTranslations = {
 };
 
 export default arTranslations;
-
