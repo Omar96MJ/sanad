@@ -1,4 +1,5 @@
 
+
 // Arabic translations
 const arTranslations = {
   "Home": "الرئيسية",
