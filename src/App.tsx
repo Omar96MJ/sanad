@@ -64,76 +64,86 @@ const DashboardRoute = () => {
   }
 };
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <ThemeProvider>
-        <LanguageProvider>
-          <SettingsProvider>
-            <AuthProvider>
-              <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <Routes>
-                  <Route path="/" element={<Index />} />
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/blog/:id" element={<BlogPost />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/register" element={<Register />} />
-                  <Route path="/about-us" element={<AboutUs />} />
-                  <Route path="/dashboard" element={<DashboardRoute />} />
-                  <Route 
-                    path="/profile" 
-                    element={
-                      <ProtectedRoute allowedRoles={['patient', 'doctor', 'admin']}>
-                        <Profile />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/patient-dashboard" 
-                    element={
-                      <ProtectedRoute allowedRoles={['patient']}>
-                        <PatientDashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin-dashboard" 
-                    element={
-                      <ProtectedRoute allowedRoles={['admin']}>
-                        <AdminDashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/therapist-dashboard" 
-                    element={
-                      <ProtectedRoute allowedRoles={['doctor']}>
-                        <TherapistDashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/doctor-dashboard" 
-                    element={
-                      <ProtectedRoute allowedRoles={['doctor']}>
-                        <TherapistDashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route path="/psychological-tests" element={<PsychologicalTests />} />
-                  <Route path="/book-session" element={<SessionBooking />} />
-                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </TooltipProvider>
-            </AuthProvider>
-          </SettingsProvider>
-        </LanguageProvider>
-      </ThemeProvider>
-    </BrowserRouter>
-  </QueryClientProvider>
-);
+const AppContent = () => {
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:id" element={<BlogPost />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/about-us" element={<AboutUs />} />
+      <Route path="/dashboard" element={<DashboardRoute />} />
+      <Route 
+        path="/profile" 
+        element={
+          <ProtectedRoute allowedRoles={['patient', 'doctor', 'admin']}>
+            <Profile />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/patient-dashboard" 
+        element={
+          <ProtectedRoute allowedRoles={['patient']}>
+            <PatientDashboard />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/admin-dashboard" 
+        element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/therapist-dashboard" 
+        element={
+          <ProtectedRoute allowedRoles={['doctor']}>
+            <TherapistDashboard />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/doctor-dashboard" 
+        element={
+          <ProtectedRoute allowedRoles={['doctor']}>
+            <TherapistDashboard />
+          </ProtectedRoute>
+        } 
+      />
+      <Route path="/psychological-tests" element={<PsychologicalTests />} />
+      <Route path="/book-session" element={<SessionBooking />} />
+      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
+};
+
+const App = () => {
+  return (
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <ThemeProvider>
+            <LanguageProvider>
+              <SettingsProvider>
+                <AuthProvider>
+                  <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    <AppContent />
+                  </TooltipProvider>
+                </AuthProvider>
+              </SettingsProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </React.StrictMode>
+  );
+};
 
 export default App;
