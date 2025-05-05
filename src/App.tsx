@@ -21,6 +21,7 @@ import PsychologicalTests from "./pages/PsychologicalTests";
 import SessionBooking from "./pages/SessionBooking";
 import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
+import React from "react";
 
 const queryClient = new QueryClient();
 
@@ -65,14 +66,14 @@ const DashboardRoute = () => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
+    <BrowserRouter>
       <ThemeProvider>
         <LanguageProvider>
           <SettingsProvider>
             <AuthProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
+              <TooltipProvider>
+                <Toaster />
+                <Sonner />
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/blog" element={<Blog />} />
@@ -126,12 +127,12 @@ const App = () => (
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
-              </BrowserRouter>
+              </TooltipProvider>
             </AuthProvider>
           </SettingsProvider>
         </LanguageProvider>
       </ThemeProvider>
-    </TooltipProvider>
+    </BrowserRouter>
   </QueryClientProvider>
 );
 
