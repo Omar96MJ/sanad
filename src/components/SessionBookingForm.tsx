@@ -21,9 +21,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { toast } from "sonner";
 import { CalendarIcon, Clock } from "lucide-react";
 import { TherapistProfile } from "@/lib/therapist-types";
+import { cn } from "@/lib/utils";
 
 // Mock data for therapists
 const mockTherapists = [
@@ -311,16 +317,34 @@ const SessionBookingForm = () => {
         {eventTypeId && (
           <div className="space-y-2">
             <label>{isRTL ? "التاريخ" : "Date"}</label>
-            <div className="border rounded-md p-2">
-              <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={setSelectedDate}
-                className="mx-auto rounded-md border pointer-events-auto"
-                disabled={disablePastDates}
-                initialFocus
-              />
-            </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-full justify-start text-left font-normal",
+                    !selectedDate && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {selectedDate ? (
+                    format(selectedDate, "PPP")
+                  ) : (
+                    <span>{isRTL ? "اختر تاريخًا" : "Pick a date"}</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={setSelectedDate}
+                  disabled={disablePastDates}
+                  initialFocus
+                  className="rounded-md border pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
           </div>
         )}
 
