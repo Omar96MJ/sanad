@@ -23,6 +23,7 @@ import AboutUs from "./pages/AboutUs";
 import NotFound from "./pages/NotFound";
 import React from "react";
 
+// Create QueryClient outside of component render
 const queryClient = new QueryClient();
 
 // Protected route component
@@ -124,25 +125,25 @@ const AppRoutes = () => {
 
 const App = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ThemeProvider>
-          <LanguageProvider>
-            <SettingsProvider>
-              <AuthProvider>
-                <React.StrictMode>
+    <React.StrictMode>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <ThemeProvider>
+            <LanguageProvider>
+              <SettingsProvider>
+                <AuthProvider>
                   <TooltipProvider>
                     <Toaster />
                     <Sonner />
                     <AppRoutes />
                   </TooltipProvider>
-                </React.StrictMode>
-              </AuthProvider>
-            </SettingsProvider>
-          </LanguageProvider>
-        </ThemeProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+                </AuthProvider>
+              </SettingsProvider>
+            </LanguageProvider>
+          </ThemeProvider>
+        </BrowserRouter>
+      </QueryClientProvider>
+    </React.StrictMode>
   );
 };
 
