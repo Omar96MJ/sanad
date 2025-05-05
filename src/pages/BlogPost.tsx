@@ -6,10 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, User, MessageSquare, Share2, ArrowLeft, Bookmark, Heart } from "lucide-react";
+import { Calendar, Clock, Share2, ArrowLeft, Bookmark, Heart } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { BlogPost } from "@/lib/types";
+import { mockBlogs } from "./Blog"; // Import mockBlogs directly from Blog.tsx
 
 // Type definition for blog post
 interface BlogPostData {
@@ -29,14 +31,9 @@ interface BlogPostData {
   readTime: number;
 }
 
-// Get blog posts from Blog.tsx
-// This is a simplified version to make sure we have the latest content
-const getBlogPostsData = () => {
-  // Import mockBlogs from Blog page
-  const mockBlogsModule = require('./Blog');
-  const blogPosts = mockBlogsModule.default?.mockBlogs || [];
-  
-  return blogPosts.map(blog => ({
+// Convert mockBlogs to the format needed for BlogPostPage
+const getBlogPostsData = (): BlogPostData[] => {
+  return mockBlogs.map(blog => ({
     id: blog.id,
     title: blog.title,
     slug: blog.id,

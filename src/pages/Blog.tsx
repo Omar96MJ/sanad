@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/hooks/useLanguage";
 
 // Updated blog data with real content from arabtherapy.com
-const mockBlogs: BlogPost[] = [
+export const mockBlogs: BlogPost[] = [
   {
     id: '1',
     title: 'Understanding Anxiety: Causes, Symptoms, and Treatment',
