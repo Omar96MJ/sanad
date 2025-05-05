@@ -1,5 +1,5 @@
 
-import { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { translations, LanguageCode } from '@/translations';
 
 export interface LanguageContextType {
@@ -10,7 +10,7 @@ export interface LanguageContextType {
 
 export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
+export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const storedLanguage = typeof window !== 'undefined' ? localStorage.getItem('language') : null;
   const initialLanguage: LanguageCode = (storedLanguage === 'en' || storedLanguage === 'ar') 
     ? storedLanguage as LanguageCode 
