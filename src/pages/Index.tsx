@@ -3,10 +3,10 @@ import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import FeaturedContent from "@/components/FeaturedContent";
 import Footer from "@/components/Footer";
-import { useEffect } from "react";
-import { useLanguage } from "@/hooks/useLanguage";
 import MentalHealthInfo from "@/components/MentalHealthInfo";
 import QuoteSection from "@/components/QuoteSection";
+import { useEffect } from "react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 const Index = () => {
   const { language } = useLanguage();
@@ -16,9 +16,9 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen flex flex-col bg-background" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <Navbar />
-      <main className="flex-grow mt-16 md:mt-20">
+      <main className="flex-grow">
         <Hero />
         <MentalHealthInfo />
         <QuoteSection />

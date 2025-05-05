@@ -20,105 +20,107 @@ const Hero = () => {
   }, []);
 
   return (
-    <section className="relative min-h-[90vh] flex flex-col justify-center">
-      {/* Background Shapes */}
-      <div className="absolute inset-0 overflow-hidden -z-10">
-        <div className="absolute top-0 left-[10%] w-72 h-72 bg-primary/5 rounded-full blur-3xl animate-float"></div>
-        <div className="absolute bottom-[10%] right-[5%] w-96 h-96 bg-secondary/5 rounded-full blur-3xl animate-pulse-gentle"></div>
+    <section className="relative py-16 lg:py-24 overflow-hidden">
+      {/* Background gradient */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-0 w-full h-full bg-gradient-to-b from-primary/5 to-background"></div>
       </div>
       
-      <div className="container-custom flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-        <div 
-          className={`w-full lg:w-1/2 transition-all duration-700 ease-out ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          <div className="inline-block bg-primary/10 text-primary font-medium rounded-full px-4 py-1 mb-6">
-            {isRTL ? 'رعاية الصحة النفسية' : 'Mental Health Care'}
-          </div>
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
-            {isRTL ? 'صحتك النفسية أولويتنا' : 'Your Mental Health is Our Priority'}
-          </h1>
-          <p className="text-lg text-muted-foreground mb-8 max-w-xl">
-            {isRTL 
-              ? 'في سند، نؤمن أن الصحة النفسية جزء أساسي من صحتك العامة. نقدم الدعم والموارد لمساعدتك في رحلتك نحو الرفاهية النفسية'
-              : 'At Sanad, we believe mental health is a vital part of your overall wellbeing. We provide support and resources to help you on your journey to mental wellness.'}
-          </p>
-          <div className="flex flex-wrap gap-4">
-            {!user ? (
-              <>
-                <Link to="/register">
-                  <Button className="btn-primary" size="lg">
-                    {isRTL ? 'ابدأ رحلتك اليوم' : 'Start Your Journey Today'}
-                  </Button>
-                </Link>
-                <Link to="/blog">
-                  <Button variant="outline" size="lg" className="rounded-full">
-                    {isRTL ? 'استكشف موارد الصحة النفسية' : 'Explore Mental Health Resources'}
-                  </Button>
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link to={user.role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard'}>
-                  <Button className="btn-primary" size="lg">
-                    {isRTL ? 'الذهاب إلى لوحة التحكم' : 'Go to Dashboard'}
-                  </Button>
-                </Link>
-                <Link to="/blog">
-                  <Button variant="outline" size="lg" className="rounded-full">
-                    {isRTL ? 'تصفح المقالات والموارد' : 'Browse Articles and Resources'}
-                  </Button>
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-        
-        <div 
-          className={`w-full lg:w-1/2 transition-all duration-700 ease-out delay-300 ${
-            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-          }`}
-        >
-          <div className="relative">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-3xl blur-xl opacity-50"></div>
-            <div className="relative bg-background rounded-3xl p-2 shadow-custom">
-              <img 
-                src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
-                alt={isRTL ? "الصحة النفسية" : "Mental Health"}
-                className="w-full h-[500px] object-cover rounded-2xl"
-                loading="lazy"
-              />
-            </div>
-            <div className="absolute -bottom-8 -left-8 bg-background rounded-2xl p-4 shadow-custom">
-              <div className="flex items-center gap-3">
-                <div className="bg-primary/10 rounded-full p-3">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 16C13.1046 16 14 15.1046 14 14C14 12.8954 13.1046 12 12 12C10.8954 12 10 12.8954 10 14C10 15.1046 10.8954 16 12 16Z" fill="currentColor" className="text-primary" />
-                    <path d="M19 16C20.1046 16 21 15.1046 21 14C21 12.8954 20.1046 12 19 12C17.8954 12 17 12.8954 17 14C17 15.1046 17.8954 16 19 16Z" fill="currentColor" className="text-primary" />
-                    <path d="M5 16C6.10457 16 7 15.1046 7 14C7 12.8954 6.10457 12 5 12C3.89543 12 3 12.8954 3 14C3 15.1046 3.89543 16 5 16Z" fill="currentColor" className="text-primary" />
-                    <path d="M12 9C13.1046 9 14 8.10457 14 7C14 5.89543 13.1046 5 12 5C10.8954 5 10 5.89543 10 7C10 8.10457 10.8954 9 12 9Z" fill="currentColor" className="text-primary" />
-                  </svg>
+      <div className="container-custom">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+          <div 
+            className={`transition-all duration-700 ease-out ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+          >
+            <div className="flex flex-col max-w-xl">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+                {isRTL 
+                  ? 'الوصول إلى مساحة آمنة للدعم النفسي'
+                  : 'Access a safe space for mental health support'}
+              </h1>
+              <p className="text-lg text-muted-foreground mb-8">
+                {isRTL 
+                  ? 'في سند، نربطك بأخصائيين نفسيين مؤهلين لمساعدتك في رحلة الصحة النفسية الخاصة بك. العلاج الميسر والسري من راحة منزلك.'
+                  : 'At Sanad, we connect you with qualified mental health professionals to help you on your mental health journey. Accessible and confidential therapy from the comfort of your home.'}
+              </p>
+              
+              <div className="flex flex-wrap gap-4">
+                {!user ? (
+                  <>
+                    <Link to="/register">
+                      <Button className="bg-primary text-white px-8 py-3 rounded-md text-base font-medium hover:bg-primary/90">
+                        {isRTL ? 'ابدأ الآن' : 'Get Started Now'}
+                      </Button>
+                    </Link>
+                    <Link to="/blog">
+                      <Button variant="outline" className="px-8 py-3 rounded-md text-base font-medium">
+                        {isRTL ? 'تصفح المقالات' : 'Browse Articles'}
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link to={user.role === 'doctor' ? '/doctor-dashboard' : '/patient-dashboard'}>
+                      <Button className="bg-primary text-white px-8 py-3 rounded-md text-base font-medium hover:bg-primary/90">
+                        {isRTL ? 'الذهاب إلى لوحة التحكم' : 'Go to Dashboard'}
+                      </Button>
+                    </Link>
+                    <Link to="/blog">
+                      <Button variant="outline" className="px-8 py-3 rounded-md text-base font-medium">
+                        {isRTL ? 'تصفح المقالات' : 'Browse Articles'}
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
+              
+              <div className="flex items-center gap-2 mt-12">
+                <div className="flex -space-x-4 rtl:space-x-reverse">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="w-10 h-10 rounded-full border-2 border-white overflow-hidden bg-gray-200">
+                      <img 
+                        src={`https://randomuser.me/api/portraits/${i % 2 === 0 ? 'women' : 'men'}/${i + 10}.jpg`} 
+                        alt="User avatar" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <p className="font-medium">{isRTL ? 'راحة البال' : 'Peace of Mind'}</p>
-                  <p className="text-sm text-muted-foreground">{isRTL ? 'خطوة بخطوة نحو التوازن النفسي' : 'Step by step toward mental balance'}</p>
+                <div className="text-sm text-muted-foreground">
+                  <span className="font-semibold text-foreground">500+</span> {isRTL ? 'مستخدم نشط' : 'active users'}
                 </div>
               </div>
             </div>
-            <div className="absolute -top-8 -right-8 bg-background rounded-2xl p-4 shadow-custom">
-              <div className="flex items-center gap-3">
-                <div className="bg-secondary/10 rounded-full p-3">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="currentColor" className="text-secondary/80" />
-                    <path d="M8 14C9.10457 14 10 13.1046 10 12C10 10.8954 9.10457 10 8 10C6.89543 10 6 10.8954 6 12C6 13.1046 6.89543 14 8 14Z" fill="white" />
-                    <path d="M16 14C17.1046 14 18 13.1046 18 12C18 10.8954 17.1046 10 16 10C14.8954 10 14 10.8954 14 12C14 13.1046 14.8954 14 16 14Z" fill="white" />
-                    <path d="M15.5 17C15.5 17 14.5 19 12 19C9.5 19 8.5 17 8.5 17" stroke="white" strokeWidth="1.5" strokeLinecap="round" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="font-medium">{isRTL ? 'دعم الخبراء' : 'Expert Support'}</p>
-                  <p className="text-sm text-muted-foreground">{isRTL ? 'خبراء مؤهلين لمساعدتك' : 'Qualified experts to help you'}</p>
+          </div>
+          
+          <div 
+            className={`transition-all duration-700 ease-out delay-300 ${
+              isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+          >
+            <div className="relative rounded-xl overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158" 
+                alt={isRTL ? "الدعم النفسي" : "Mental Health Support"}
+                className="w-full object-cover rounded-xl shadow-lg"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
+              
+              <div className="absolute bottom-4 left-4 right-4 bg-white/90 dark:bg-gray-800/90 rounded-lg p-4 backdrop-blur-sm shadow-lg">
+                <div className="flex items-center gap-3">
+                  <div className="bg-primary/10 rounded-full p-2 text-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M8 19a5 5 0 0 1-1.999-9.599A5.5 5.5 0 0 1 17.001 7a4.5 4.5 0 0 1-.999 8.899"></path>
+                      <path d="M12 19v.01"></path>
+                      <path d="M8 15v.01"></path>
+                      <path d="M16 15v.01"></path>
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="font-medium">{isRTL ? 'دعم موثوق' : 'Trusted Support'}</h3>
+                    <p className="text-xs text-muted-foreground">{isRTL ? 'متصل مع معالجين معتمدين' : 'Connected with certified therapists'}</p>
+                  </div>
                 </div>
               </div>
             </div>

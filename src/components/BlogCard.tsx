@@ -26,38 +26,38 @@ const BlogCard = ({ blog }: BlogCardProps) => {
 
   return (
     <Link to={`/blog/${blog.id}`}>
-      <Card className="overflow-hidden h-full hover:shadow-lg transition-all duration-300 border border-border/50">
-        <div className="relative aspect-video overflow-hidden">
+      <Card className="overflow-hidden h-full transition-all duration-300 hover:shadow-md border-border/40 rounded-xl">
+        <div className="relative aspect-[16/9] overflow-hidden">
           <div className={`absolute inset-0 bg-muted animate-pulse ${imageLoaded ? 'hidden' : 'block'}`}></div>
           <img
             src={blog.imageUrl}
             alt={blog.title}
             className={`w-full h-full object-cover transition-all duration-700 ${
-              imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-110'
+              imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
             }`}
             onLoad={() => setImageLoaded(true)}
             loading="lazy"
           />
         </div>
-        <CardContent className="pt-6">
-          <div className="flex flex-wrap gap-2 mb-3">
-            {blog.tags.slice(0, 3).map((tag) => (
-              <Badge key={tag} variant="secondary" className="rounded-full font-normal text-xs">
+        <CardContent className="pt-5">
+          <div className="flex flex-wrap gap-2 mb-2">
+            {blog.tags.slice(0, 2).map((tag) => (
+              <Badge key={tag} variant="outline" className="text-xs font-normal px-2 py-0.5 rounded-md bg-secondary/30">
                 {tag}
               </Badge>
             ))}
           </div>
-          <h3 className="text-xl font-semibold mb-2 line-clamp-2 hover:text-primary transition-colors">
+          <h3 className="text-lg font-medium mb-2 line-clamp-2 hover:text-primary transition-colors">
             {blog.title}
           </h3>
-          <p className="text-muted-foreground line-clamp-3 mb-4 text-sm">
+          <p className="text-muted-foreground line-clamp-2 mb-3 text-sm">
             {blog.excerpt}
           </p>
         </CardContent>
-        <CardFooter className="text-sm text-muted-foreground flex items-center justify-between pt-0 border-t border-border/30 mt-auto">
+        <CardFooter className="text-xs text-muted-foreground border-t border-border/30 pt-3 pb-4 flex items-center justify-between">
           <span className="font-medium">{blog.author}</span>
           <div className="flex items-center gap-1">
-            <Calendar className="h-3.5 w-3.5" />
+            <Calendar className="h-3 w-3" />
             <span>{formatDate(blog.publishedDate)}</span>
           </div>
         </CardFooter>
