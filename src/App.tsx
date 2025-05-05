@@ -64,7 +64,7 @@ const DashboardRoute = () => {
   }
 };
 
-const AppContent = () => {
+const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Index />} />
@@ -124,25 +124,25 @@ const AppContent = () => {
 
 const App = () => {
   return (
-    <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <ThemeProvider>
-            <LanguageProvider>
-              <SettingsProvider>
-                <AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <ThemeProvider>
+          <LanguageProvider>
+            <SettingsProvider>
+              <AuthProvider>
+                <React.StrictMode>
                   <TooltipProvider>
                     <Toaster />
                     <Sonner />
-                    <AppContent />
+                    <AppRoutes />
                   </TooltipProvider>
-                </AuthProvider>
-              </SettingsProvider>
-            </LanguageProvider>
-          </ThemeProvider>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </React.StrictMode>
+                </React.StrictMode>
+              </AuthProvider>
+            </SettingsProvider>
+          </LanguageProvider>
+        </ThemeProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 };
 
