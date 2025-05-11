@@ -23,24 +23,27 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("patient");
-  const [isLoading, setIsLoading] = useState(false);
-  const { register } = useAuth();
+  
+  const { register, isLoading, user } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   
   const isRTL = language === 'ar';
 
+  // Redirect if already logged in
+  if (user) {
+    navigate("/");
+    return null;
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     
     try {
       await register(name, email, password, role);
-      navigate("/");
+      // AuthProvider will handle session and user state
     } catch (error) {
       console.error("Registration error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 

@@ -13,24 +13,27 @@ import { Heart } from "lucide-react";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, isLoading, user } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
   
   const isRTL = language === 'ar';
 
+  // Redirect if already logged in
+  if (user) {
+    navigate("/");
+    return null;
+  }
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
     
     try {
       await login(email, password);
-      navigate("/");
+      // No need to navigate here as the AuthProvider will update the user state
+      // and the useEffect above will handle the redirect
     } catch (error) {
       console.error("Login error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -47,10 +50,6 @@ const Login = () => {
             <p className="mt-2 text-sm text-muted-foreground">
               {t('sign_in_to_continue')}
             </p>
-            <div className="mt-3 text-xs text-muted-foreground">
-              <p>{isRTL ? 'للتجربة التوضيحية: استخدم' : 'For demo purposes: use'} <span className="font-medium">doctor@example.com</span> {isRTL ? 'أو' : 'or'} <span className="font-medium">admin@example.com</span></p>
-              <p>{isRTL ? 'أو' : 'or'} <span className="font-medium">patient@example.com</span> {isRTL ? 'مع كلمة المرور' : 'with password'} <span className="font-medium">password</span></p>
-            </div>
           </div>
           
           <div className="mt-8 bg-card border border-border/50 rounded-lg p-6 shadow-sm">
