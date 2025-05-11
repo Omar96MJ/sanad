@@ -5,6 +5,7 @@ import FeaturedContent from "@/components/FeaturedContent";
 import Footer from "@/components/Footer";
 import MentalHealthInfo from "@/components/MentalHealthInfo";
 import QuoteSection from "@/components/QuoteSection";
+import TherapyTypes from "@/components/TherapyTypes";
 import { useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 
@@ -20,6 +21,7 @@ const Index = () => {
       <Navbar />
       <main className="flex-grow">
         <Hero />
+        <TherapyTypes />
         <MentalHealthInfo />
         <QuoteSection />
         <FeaturedContent />
