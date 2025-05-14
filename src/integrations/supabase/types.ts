@@ -9,6 +9,81 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      appointments: {
+        Row: {
+          created_at: string
+          doctor_id: string
+          id: string
+          notes: string | null
+          patient_id: string
+          patient_name: string
+          session_date: string
+          session_type: string
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          doctor_id: string
+          id?: string
+          notes?: string | null
+          patient_id: string
+          patient_name: string
+          session_date: string
+          session_type: string
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          patient_name?: string
+          session_date?: string
+          session_type?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      doctors: {
+        Row: {
+          bio: string | null
+          created_at: string
+          id: string
+          name: string
+          patients_count: number | null
+          profile_image: string | null
+          specialization: string | null
+          updated_at: string
+          user_id: string
+          years_of_experience: number | null
+        }
+        Insert: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          patients_count?: number | null
+          profile_image?: string | null
+          specialization?: string | null
+          updated_at?: string
+          user_id: string
+          years_of_experience?: number | null
+        }
+        Update: {
+          bio?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          patients_count?: number | null
+          profile_image?: string | null
+          specialization?: string | null
+          updated_at?: string
+          user_id?: string
+          years_of_experience?: number | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

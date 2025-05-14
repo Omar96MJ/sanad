@@ -1,323 +1,468 @@
-import { useState } from "react";
+
+import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
-import { 
-  Card, 
-  CardContent, 
-  CardDescription, 
-  CardHeader, 
-  CardTitle 
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage, Form } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { format, parseISO } from "date-fns";
+import { ar, enUS } from 'date-fns/locale';
+import { CalendarIcon, Loader2, Search } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Appointment } from "@/lib/therapist-types";
-import { format } from "date-fns";
-import { Calendar as CalendarIcon, Clock, FileText, Bell } from "lucide-react";
 
-const mockAppointments: Appointment[] = [
-  {
-    id: '1',
-    therapistId: '1',
-    patientId: '1',
-    patientName: 'John Smith',
-    date: '2023-10-29',
-    time: '10:00',
-    duration: 60,
-    status: 'scheduled'
-  },
-  {
-    id: '2',
-    therapistId: '1',
-    patientId: '2',
-    patientName: 'Emma Johnson',
-    date: '2023-11-01',
-    time: '14:00',
-    duration: 45,
-    status: 'scheduled'
-  },
-  {
-    id: '3',
-    therapistId: '1',
-    patientId: '3',
-    patientName: 'Michael Brown',
-    date: '2023-11-03',
-    time: '11:30',
-    duration: 60,
-    status: 'scheduled'
-  }
-];
+type Appointment = {
+  id: string;
+  patient_name: string;
+  session_date: string;
+  session_type: string;
+  status: string;
+  notes?: string;
+}
 
-const mockPatients = [
-  { id: '1', name: 'John Smith' },
-  { id: '2', name: 'Emma Johnson' },
-  { id: '3', name: 'Michael Brown' },
-  { id: '4', name: 'Sarah Williams' },
-  { id: '5', name: 'David Lee' }
-];
+const formSchema = z.object({
+  patient_name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  session_date: z.date({ required_error: "Please select a date." }),
+  session_time: z.string({ required_error: "Please select a time." }),
+  session_type: z.string({ required_error: "Please select a session type." }),
+  notes: z.string().optional(),
+});
 
 const SessionManagement = () => {
+  const { user } = useAuth();
   const { t, language } = useLanguage();
   const isRTL = language === 'ar';
+  const dateLocale = isRTL ? ar : enUS;
   
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
-  const [showSessionNotes, setShowSessionNotes] = useState(false);
-  const [sessionNotes, setSessionNotes] = useState("");
-  const [showAddAppointment, setShowAddAppointment] = useState(false);
-  
-  const [newAppointmentPatient, setNewAppointmentPatient] = useState("");
-  const [newAppointmentTime, setNewAppointmentTime] = useState("09:00");
-  const [newAppointmentDuration, setNewAppointmentDuration] = useState("60");
-  
-  const formattedDate = date ? format(date, 'yyyy-MM-dd') : '';
-  
-  const dayAppointments = mockAppointments.filter(
-    appointment => appointment.date === formattedDate
-  );
-  
-  const handleSubmitNotes = () => {
-    if (!sessionNotes.trim()) {
-      toast.error(t('session_notes_required'));
-      return;
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("upcoming");
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      patient_name: "",
+      session_date: undefined,
+      session_time: "",
+      session_type: "",
+      notes: "",
+    },
+  });
+
+  // Fetch doctor's appointments from Supabase
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      if (!user) return;
+      
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('appointments')
+          .select('*')
+          .eq('doctor_id', user.id)
+          .order('session_date', { ascending: true });
+        
+        if (error) {
+          console.error("Error fetching appointments:", error);
+          toast.error(t('error_loading_appointments'));
+          return;
+        }
+        
+        if (data) {
+          setAppointments(data);
+        }
+      } catch (error) {
+        console.error("Error in appointments fetch:", error);
+        toast.error(t('error_loading_appointments'));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAppointments();
+  }, [user, t]);
+
+  // Filter appointments based on search query and active tab
+  useEffect(() => {
+    let filtered = appointments;
+    
+    // Filter by status
+    if (activeTab === "upcoming") {
+      filtered = filtered.filter((apt) => apt.status === "scheduled");
+    } else if (activeTab === "completed") {
+      filtered = filtered.filter((apt) => apt.status === "completed");
+    } else if (activeTab === "cancelled") {
+      filtered = filtered.filter((apt) => apt.status === "cancelled");
     }
     
-    toast.success(t('session_notes_submitted'));
-    setSessionNotes("");
-    setShowSessionNotes(false);
-  };
-  
-  const handleAddAppointment = () => {
-    if (!newAppointmentPatient) {
-      toast.error(t('select_patient'));
-      return;
+    // Filter by search
+    if (searchQuery.trim() !== "") {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((apt) => 
+        apt.patient_name.toLowerCase().includes(query) || 
+        apt.session_type.toLowerCase().includes(query)
+      );
     }
     
-    toast.success(t('appointment_added'));
-    setShowAddAppointment(false);
+    setFilteredAppointments(filtered);
+  }, [appointments, searchQuery, activeTab]);
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (!user) return;
     
-    setNewAppointmentPatient("");
-    setNewAppointmentTime("09:00");
-    setNewAppointmentDuration("60");
+    try {
+      setIsSaving(true);
+      
+      // Combine date and time to create ISO date string
+      const dateTimeValue = new Date(values.session_date);
+      const [hours, minutes] = values.session_time.split(':').map(Number);
+      dateTimeValue.setHours(hours, minutes);
+      
+      // Create new appointment in Supabase
+      const { data, error } = await supabase
+        .from('appointments')
+        .insert({
+          doctor_id: user.id,
+          patient_id: user.id, // This should be replaced with actual patient ID
+          patient_name: values.patient_name,
+          session_date: dateTimeValue.toISOString(),
+          session_type: values.session_type,
+          notes: values.notes,
+        })
+        .select();
+      
+      if (error) {
+        console.error("Error creating appointment:", error);
+        toast.error(t('error_creating_appointment'));
+        return;
+      }
+      
+      // Add the new appointment to the list
+      if (data && data.length > 0) {
+        setAppointments([...appointments, data[0]]);
+      }
+      
+      toast.success(t('appointment_created'));
+      setIsDialogOpen(false);
+      form.reset();
+    } catch (error) {
+      console.error("Error in appointment creation:", error);
+      toast.error(t('error_creating_appointment'));
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="md:col-span-1">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CalendarIcon className="h-5 w-5" />
-              {t('session_calendar')}
-            </CardTitle>
-            <CardDescription>{t('select_date_to_view_sessions')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={setDate}
-              className="rounded-md border p-3 pointer-events-auto"
-              classNames={{
-                day_selected: "bg-primary text-primary-foreground",
-              }}
-            />
-            <div className="mt-4">
-              <Button 
-                className="w-full" 
-                onClick={() => setShowAddAppointment(true)}
-              >
-                {t('add_appointment')}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="md:col-span-2">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Clock className="h-5 w-5" />
-              {t('daily_schedule')}
-            </CardTitle>
-            <CardDescription>
-              {date ? format(date, 'PPPP') : t('no_date_selected')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {dayAppointments.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                {t('no_appointments_for_day')}
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {dayAppointments.map((appointment) => (
-                  <Card key={appointment.id} className="bg-muted/40">
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <h3 className="font-medium">{appointment.patientName}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {appointment.time} ({appointment.duration} min)
-                          </p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => {
-                              setSelectedAppointment(appointment);
-                              setShowSessionNotes(true);
-                            }}
-                          >
-                            <FileText className="h-4 w-4 mr-1" />
-                            {t('add_notes')}
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => {
-                              toast.success(t('notification_sent'));
-                            }}
-                          >
-                            <Bell className="h-4 w-4 mr-1" />
-                            {t('notify')}
-                          </Button>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+  const updateAppointmentStatus = async (id: string, status: string) => {
+    try {
+      const { error } = await supabase
+        .from('appointments')
+        .update({ status })
+        .eq('id', id);
       
-      {selectedAppointment && (
-        <Dialog open={showSessionNotes} onOpenChange={setShowSessionNotes}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>{t('session_notes')}: {selectedAppointment.patientName}</DialogTitle>
-              <DialogDescription>
-                {format(new Date(`${selectedAppointment.date}T${selectedAppointment.time}`), 'PPP')} at {selectedAppointment.time}
-              </DialogDescription>
-            </DialogHeader>
-            <div className="space-y-4 py-4">
-              <Textarea
-                value={sessionNotes}
-                onChange={(e) => setSessionNotes(e.target.value)}
-                placeholder={t('enter_session_notes')}
-                className="min-h-32"
+      if (error) {
+        console.error("Error updating appointment:", error);
+        toast.error(t('error_updating_appointment'));
+        return;
+      }
+      
+      // Update local state
+      setAppointments(appointments.map(apt => 
+        apt.id === id ? { ...apt, status } : apt
+      ));
+      
+      toast.success(t('appointment_updated'));
+    } catch (error) {
+      console.error("Error in appointment update:", error);
+      toast.error(t('error_updating_appointment'));
+    }
+  };
+
+  // Render loading state
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+          <div>
+            <CardTitle>{t('session_management')}</CardTitle>
+            <CardDescription>{t('manage_your_therapy_sessions')}</CardDescription>
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>{t('schedule_session')}</Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-md">
+              <DialogHeader>
+                <DialogTitle>{t('schedule_new_session')}</DialogTitle>
+                <DialogDescription>
+                  {t('enter_session_details_below')}
+                </DialogDescription>
+              </DialogHeader>
+              
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="patient_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('patient_name')}</FormLabel>
+                        <FormControl>
+                          <Input {...field} className={isRTL ? 'text-right' : 'text-left'} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="session_date"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <FormLabel>{t('date')}</FormLabel>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="outline"
+                                className={`w-full justify-start ${field.value ? "text-foreground" : "text-muted-foreground"}`}
+                              >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {field.value ? (
+                                  format(field.value, "PPP", { locale: dateLocale })
+                                ) : (
+                                  <span>{t('pick_a_date')}</span>
+                                )}
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="p-0">
+                              <Calendar
+                                mode="single"
+                                selected={field.value}
+                                onSelect={field.onChange}
+                                initialFocus
+                                locale={dateLocale}
+                              />
+                            </DialogContent>
+                          </Dialog>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="session_time"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>{t('time')}</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="time"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  
+                  <FormField
+                    control={form.control}
+                    name="session_type"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('session_type')}</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder={t('select_session_type')} />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="initial">
+                              {t('initial_consultation')}
+                            </SelectItem>
+                            <SelectItem value="followup">
+                              {t('follow_up')}
+                            </SelectItem>
+                            <SelectItem value="therapy">
+                              {t('therapy_session')}
+                            </SelectItem>
+                            <SelectItem value="assessment">
+                              {t('assessment')}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="notes"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t('notes')}</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder={t('session_notes_placeholder')}
+                            className={isRTL ? 'text-right' : 'text-left'}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <DialogFooter>
+                    <Button type="submit" disabled={isSaving}>
+                      {isSaving ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          {t('saving')}
+                        </>
+                      ) : (
+                        t('save')
+                      )}
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
+        </div>
+      </CardHeader>
+      
+      <CardContent>
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full sm:w-auto">
+              <TabsList>
+                <TabsTrigger value="upcoming">{t('upcoming')}</TabsTrigger>
+                <TabsTrigger value="completed">{t('completed')}</TabsTrigger>
+                <TabsTrigger value="cancelled">{t('cancelled')}</TabsTrigger>
+                <TabsTrigger value="all">{t('all')}</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            
+            <div className="relative w-full sm:w-64">
+              <Search className={`absolute top-2.5 ${isRTL ? 'right-3' : 'left-3'} h-4 w-4 text-muted-foreground`} />
+              <Input
+                placeholder={t('search_sessions')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={`pl-9 ${isRTL ? 'text-right pr-9 pl-4' : 'text-left pl-9 pr-4'}`}
               />
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowSessionNotes(false)}>
-                {t('cancel')}
-              </Button>
-              <Button onClick={handleSubmitNotes}>
-                {t('submit_notes')}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
-      
-      <Dialog open={showAddAppointment} onOpenChange={setShowAddAppointment}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('add_new_appointment')}</DialogTitle>
-            <DialogDescription>
-              {date ? format(date, 'PPP') : ''}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t('patient')}</label>
-              <Select
-                value={newAppointmentPatient}
-                onValueChange={setNewAppointmentPatient}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t('select_patient')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {mockPatients.map(patient => (
-                    <SelectItem key={patient.id} value={patient.id}>
-                      {patient.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t('time')}</label>
-              <Select
-                value={newAppointmentTime}
-                onValueChange={setNewAppointmentTime}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t('select_time')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.from({ length: 9 }, (_, i) => i + 9).map(hour => (
-                    <SelectItem key={hour} value={`${hour}:00`}>
-                      {hour}:00
-                    </SelectItem>
-                  ))}
-                  {Array.from({ length: 9 }, (_, i) => i + 9).map(hour => (
-                    <SelectItem key={`${hour}-30`} value={`${hour}:30`}>
-                      {hour}:30
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-sm font-medium">{t('duration')}</label>
-              <Select
-                value={newAppointmentDuration}
-                onValueChange={setNewAppointmentDuration}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={t('select_duration')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="30">30 {t('minutes')}</SelectItem>
-                  <SelectItem value="45">45 {t('minutes')}</SelectItem>
-                  <SelectItem value="60">60 {t('minutes')}</SelectItem>
-                  <SelectItem value="90">90 {t('minutes')}</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setShowAddAppointment(false)}>
-              {t('cancel')}
-            </Button>
-            <Button onClick={handleAddAppointment}>
-              {t('add_appointment')}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+          
+          {filteredAppointments.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">{t('no_sessions_found')}</p>
+            </div>
+          ) : (
+            <div className="space-y-4 mt-6">
+              {filteredAppointments.map((appointment) => (
+                <Card key={appointment.id} className={appointment.status === "cancelled" ? "opacity-70" : ""}>
+                  <CardContent className="p-4">
+                    <div className="flex flex-col sm:flex-row justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <h3 className="font-semibold text-lg">{appointment.patient_name}</h3>
+                          <span className={`text-xs px-2 py-1 rounded-full font-medium ${
+                            appointment.status === "scheduled" ? "bg-blue-100 text-blue-800" :
+                            appointment.status === "completed" ? "bg-green-100 text-green-800" :
+                            "bg-gray-100 text-gray-800"
+                          }`}>
+                            {appointment.status}
+                          </span>
+                        </div>
+                        <p className="text-muted-foreground text-sm">
+                          {format(parseISO(appointment.session_date), "PPpp", { locale: dateLocale })}
+                        </p>
+                        <p className="text-sm">
+                          <span className="font-medium">{t('session_type')}:</span> {
+                            appointment.session_type === "initial" ? t('initial_consultation') :
+                            appointment.session_type === "followup" ? t('follow_up') :
+                            appointment.session_type === "therapy" ? t('therapy_session') :
+                            appointment.session_type === "assessment" ? t('assessment') :
+                            appointment.session_type
+                          }
+                        </p>
+                        {appointment.notes && (
+                          <p className="text-sm">
+                            <span className="font-medium">{t('notes')}:</span> {appointment.notes}
+                          </p>
+                        )}
+                      </div>
+                      
+                      <div className="flex flex-row sm:flex-col gap-2 justify-end">
+                        {appointment.status === "scheduled" && (
+                          <>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={() => updateAppointmentStatus(appointment.id, "completed")}
+                            >
+                              {t('mark_completed')}
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => updateAppointmentStatus(appointment.id, "cancelled")}
+                            >
+                              {t('cancel')}
+                            </Button>
+                          </>
+                        )}
+                        {appointment.status === "cancelled" && (
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => updateAppointmentStatus(appointment.id, "scheduled")}
+                          >
+                            {t('reschedule')}
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

@@ -1,259 +1,255 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { User, Mail, Lock, Image, Video } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { Loader2 } from "lucide-react";
+
+// Form schema for doctor profile
+const profileFormSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  specialization: z.string().min(2, { message: "Specialization must be at least 2 characters." }),
+  bio: z.string().min(10, { message: "Bio must be at least 10 characters." }).max(500, { message: "Bio cannot be more than 500 characters." }),
+  years_of_experience: z.coerce.number().min(0, { message: "Years of experience cannot be negative." }),
+  profile_image: z.string().optional(),
+});
+
+type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 const TherapistProfile = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const isRTL = language === 'ar';
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [doctorProfile, setDoctorProfile] = useState<any>(null);
   
-  const [name, setName] = useState(user?.name || "");
-  const [email, setEmail] = useState(user?.email || "");
-  const [bio, setBio] = useState("I am a licensed therapist with over 10 years of experience in cognitive behavioral therapy. I specialize in anxiety, depression, and stress management.");
-  const [specialization, setSpecialization] = useState("Cognitive Behavioral Therapy");
-  const [profileImage, setProfileImage] = useState(user?.profileImage || "");
-  const [introVideo, setIntroVideo] = useState("");
-  
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  
-  const handleProfileUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast.success(t('profile_updated'));
-  };
-  
-  const handlePasswordUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileFormSchema),
+    defaultValues: {
+      name: '',
+      specialization: '',
+      bio: '',
+      years_of_experience: 0,
+      profile_image: '',
+    },
+  });
+
+  // Fetch doctor profile from Supabase
+  useEffect(() => {
+    const fetchDoctorProfile = async () => {
+      if (!user) return;
+      
+      try {
+        setIsLoading(true);
+        const { data, error } = await supabase
+          .from('doctors')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (error) {
+          console.error("Error fetching doctor profile:", error);
+          toast.error(t('error_loading_profile'));
+          return;
+        }
+        
+        if (data) {
+          setDoctorProfile(data);
+          form.reset({
+            name: data.name || '',
+            specialization: data.specialization || '',
+            bio: data.bio || '',
+            years_of_experience: data.years_of_experience || 0,
+            profile_image: data.profile_image || '',
+          });
+        }
+      } catch (error) {
+        console.error("Error in profile fetch:", error);
+        toast.error(t('error_loading_profile'));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDoctorProfile();
+  }, [user, t, form]);
+
+  const onSubmit = async (values: ProfileFormValues) => {
+    if (!user) return;
     
-    if (newPassword !== confirmPassword) {
-      toast.error(t('passwords_dont_match'));
-      return;
+    try {
+      setIsSaving(true);
+      
+      // Update the doctor profile in Supabase
+      const { error } = await supabase
+        .from('doctors')
+        .update({
+          name: values.name,
+          specialization: values.specialization,
+          bio: values.bio,
+          years_of_experience: values.years_of_experience,
+          profile_image: values.profile_image,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('user_id', user.id);
+      
+      if (error) {
+        console.error("Error updating doctor profile:", error);
+        toast.error(t('error_updating_profile'));
+        return;
+      }
+      
+      toast.success(t('profile_updated'));
+    } catch (error) {
+      console.error("Error in profile update:", error);
+      toast.error(t('error_updating_profile'));
+    } finally {
+      setIsSaving(false);
     }
-    
-    if (newPassword.length < 8) {
-      toast.error(t('password_too_short'));
-      return;
-    }
-    
-    toast.success(t('password_updated'));
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
   };
 
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Profile Information */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              {t('profile_information')}
-            </CardTitle>
-            <CardDescription>{t('manage_your_public_information')}</CardDescription>
-          </CardHeader>
-          <form onSubmit={handleProfileUpdate}>
-            <CardContent className="space-y-4">
-              <div className="flex flex-col items-center mb-6">
-                <Avatar className="h-24 w-24 mb-4">
-                  <AvatarImage src={profileImage} alt={name} />
-                  <AvatarFallback className="text-lg">{name.substring(0, 2).toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="profileImage" className="cursor-pointer bg-primary text-primary-foreground px-3 py-1 rounded-md text-sm hover:bg-primary/90">
-                    <Image className="h-4 w-4 inline-block mr-1" />
-                    {t('change_picture')}
-                  </Label>
-                  <input
-                    id="profileImage"
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        // Mock upload - in a real app, upload to server and get URL
-                        const reader = new FileReader();
-                        reader.onload = () => {
-                          if (typeof reader.result === 'string') {
-                            setProfileImage(reader.result);
-                          }
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="name">{t('full_name')}</Label>
-                <Input 
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className={isRTL ? 'text-right' : 'text-left'}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="specialization">{t('specialization')}</Label>
-                <Input 
-                  id="specialization"
-                  value={specialization}
-                  onChange={(e) => setSpecialization(e.target.value)}
-                  className={isRTL ? 'text-right' : 'text-left'}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="bio">{t('bio')}</Label>
-                <Textarea 
-                  id="bio"
-                  value={bio}
-                  onChange={(e) => setBio(e.target.value)}
-                  className={`min-h-32 ${isRTL ? 'text-right' : 'text-left'}`}
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="introVideo">{t('introduction_video')}</Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="introVideo"
-                    type="file"
-                    accept="video/*"
-                    className={isRTL ? 'text-right' : 'text-left'}
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        // Mock upload - in a real app, upload to server and get URL
-                        setIntroVideo(URL.createObjectURL(file));
-                      }
-                    }}
-                  />
-                  <Button type="button" size="sm" variant="outline">
-                    <Video className="h-4 w-4 mr-1" />
-                    {t('upload')}
-                  </Button>
-                </div>
-                {introVideo && (
-                  <div className="mt-4">
-                    <video controls className="w-full h-auto rounded-md">
-                      <source src={introVideo} />
-                      {t('browser_not_support_video')}
-                    </video>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit">{t('save_changes')}</Button>
-            </CardFooter>
-          </form>
-        </Card>
-        
-        {/* Account Settings */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Mail className="h-5 w-5" />
-                {t('email_settings')}
-              </CardTitle>
-              <CardDescription>{t('manage_your_email_address')}</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">{t('email_address')}</Label>
-                <Input 
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={isRTL ? 'text-right' : 'text-left'}
-                />
-                <p className="text-sm text-muted-foreground">{t('email_private')}</p>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" onClick={() => toast.success(t('verification_email_sent'))}>
-                {t('verify_email')}
-              </Button>
-            </CardFooter>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Lock className="h-5 w-5" />
-                {t('security')}
-              </CardTitle>
-              <CardDescription>{t('manage_your_password')}</CardDescription>
-            </CardHeader>
-            <form onSubmit={handlePasswordUpdate}>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="currentPassword">{t('current_password')}</Label>
-                  <Input 
-                    id="currentPassword"
-                    type="password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    className={isRTL ? 'text-right' : 'text-left'}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="newPassword">{t('new_password')}</Label>
-                  <Input 
-                    id="newPassword"
-                    type="password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className={isRTL ? 'text-right' : 'text-left'}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="confirmPassword">{t('confirm_password')}</Label>
-                  <Input 
-                    id="confirmPassword"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className={isRTL ? 'text-right' : 'text-left'}
-                  />
-                </div>
-                
-                <div className="text-sm space-y-1 text-muted-foreground">
-                  <p>{t('password_requirements')}:</p>
-                  <ul className="list-disc list-inside">
-                    <li>{t('min_eight_characters')}</li>
-                    <li>{t('at_least_one_number')}</li>
-                    <li>{t('at_least_one_special')}</li>
-                  </ul>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button type="submit">{t('update_password')}</Button>
-              </CardFooter>
-            </form>
-          </Card>
-        </div>
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{t('doctor_profile')}</CardTitle>
+        <CardDescription>{t('manage_your_profile_information')}</CardDescription>
+      </CardHeader>
+      
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="flex flex-col md:flex-row gap-6">
+              <div className="w-full md:w-1/3 flex flex-col items-center gap-4">
+                <Avatar className="w-32 h-32">
+                  <AvatarImage src={form.watch("profile_image") || "/placeholder.svg"} alt={form.watch("name")} />
+                  <AvatarFallback className="text-xl">{form.watch("name").substring(0, 2).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                
+                <FormField
+                  control={form.control}
+                  name="profile_image"
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormLabel>{t('profile_image_url')}</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="https://example.com/image.jpg" 
+                          {...field} 
+                          className={isRTL ? 'text-right' : 'text-left'}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              
+              <div className="w-full md:w-2/3 space-y-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('full_name')}</FormLabel>
+                      <FormControl>
+                        <Input {...field} className={isRTL ? 'text-right' : 'text-left'} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="specialization"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('specialization')}</FormLabel>
+                      <FormControl>
+                        <Input {...field} className={isRTL ? 'text-right' : 'text-left'} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="years_of_experience"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('years_of_experience')}</FormLabel>
+                      <FormControl>
+                        <Input 
+                          type="number" 
+                          min="0" 
+                          {...field} 
+                          className={isRTL ? 'text-right' : 'text-left'} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="bio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('professional_bio')}</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          rows={5}
+                          {...field} 
+                          className={isRTL ? 'text-right' : 'text-left'} 
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        {t('bio_description')}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            
+            <div className="flex justify-end">
+              <Button type="submit" disabled={isSaving}>
+                {isSaving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {t('saving')}
+                  </>
+                ) : (
+                  t('save_changes')
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 };
 
