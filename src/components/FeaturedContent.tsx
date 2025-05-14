@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { BlogPost } from '@/lib/types';
 import BlogCard from './BlogCard';
 import { useLanguage } from '@/hooks/useLanguage';
-import { mockBlogs } from '@/pages/Blog';
+import { mockBlogs } from '@/data/mockBlogs';
 
 const FeaturedContent = () => {
   const { t, language } = useLanguage();
