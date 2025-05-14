@@ -10,3 +10,4 @@ export const translations = {
 };
 
 export type TranslationKey = keyof typeof enTranslations;
+
