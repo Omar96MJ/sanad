@@ -1,12 +1,14 @@
+
 import * as React from "react"
+import { useLanguage } from "@/hooks/useLanguage";
 
 import type {
   ToastActionElement,
   ToastProps,
 } from "@/components/ui/toast"
 
-const TOAST_LIMIT = 1
-const TOAST_REMOVE_DELAY = 1000000
+const TOAST_LIMIT = 5
+const TOAST_REMOVE_DELAY = 5000
 
 type ToasterToast = ToastProps & {
   id: string
@@ -90,8 +92,6 @@ export const reducer = (state: State, action: Action): State => {
     case "DISMISS_TOAST": {
       const { toastId } = action
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -170,6 +170,7 @@ function toast({ ...props }: Toast) {
 
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState)
+  const { t } = useLanguage();
 
   React.useEffect(() => {
     listeners.push(setState)
@@ -181,10 +182,36 @@ function useToast() {
     }
   }, [state])
 
+  const translatedToast = React.useMemo(() => {
+    return {
+      success: (message: string) => toast({ 
+        title: t('success'), 
+        description: message, 
+        variant: "default" 
+      }),
+      error: (message: string) => toast({ 
+        title: t('error'), 
+        description: message, 
+        variant: "destructive" 
+      }),
+      info: (message: string) => toast({ 
+        title: t('info'), 
+        description: message,
+        variant: "default"
+      }),
+      warning: (message: string) => toast({ 
+        title: t('warning'), 
+        description: message,
+        variant: "destructive"
+      }),
+    };
+  }, [t]);
+
   return {
     ...state,
     toast,
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
+    ...translatedToast,
   }
 }
 

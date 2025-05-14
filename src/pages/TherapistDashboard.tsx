@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,7 +14,7 @@ import EvaluationForms from "@/components/therapist/EvaluationForms";
 import AvailabilityManagement from "@/components/therapist/AvailabilityManagement";
 import MessagingLayout from "@/components/messaging/MessagingLayout";
 import { Bell, MessageCircle, Users, Calendar, ClipboardList, Clock, PieChart, Loader2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 type DoctorStats = {

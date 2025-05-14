@@ -53,7 +53,7 @@ const AdminDashboard = () => {
   const handleSettingToggle = (setting: keyof typeof settings) => {
     if (typeof settings[setting] === 'boolean') {
       updateSettings({ [setting]: !settings[setting] });
-      toast.success(`${t('setting_updated')}`);
+      toast.success(t('setting_updated'));
     }
   };
 
