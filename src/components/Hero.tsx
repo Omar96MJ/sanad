@@ -101,8 +101,8 @@ const Hero = () => {
           >
             <div className="relative rounded-xl overflow-hidden">
               <img 
-                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158" 
-                alt={isRTL ? "الدعم النفسي" : "Mental Health Support"}
+                src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7" 
+                alt={isRTL ? "معالج نفسي" : "Therapist"}
                 className="w-full object-cover rounded-xl shadow-lg"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
