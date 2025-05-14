@@ -104,7 +104,7 @@ export default {
   'other': 'Other',
 
   // Quote
-  'quote_text': 'Mental health is not a destination, but a journey. It's about how you drive, not where you're going.',
+  'quote_text': 'Mental health is not a destination, but a journey. It\'s about how you drive, not where you\'re going.',
   'quote_author': 'Anonymous',
 
   // Featured Content
