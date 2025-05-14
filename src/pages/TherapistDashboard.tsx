@@ -14,7 +14,7 @@ import EvaluationForms from "@/components/therapist/EvaluationForms";
 import AvailabilityManagement from "@/components/therapist/AvailabilityManagement";
 import MessagingLayout from "@/components/messaging/MessagingLayout";
 import { Bell, MessageCircle, Users, Calendar, ClipboardList, Clock, PieChart, Loader2 } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 type DoctorStats = {
@@ -37,6 +37,7 @@ type DoctorProfile = {
 const TherapistDashboard = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
+  const { toast } = useToast();
   const navigate = useNavigate();
   const isRTL = language === 'ar';
   
@@ -111,7 +112,7 @@ const TherapistDashboard = () => {
     
     fetchDoctorData();
     window.scrollTo(0, 0);
-  }, [user, navigate, t]);
+  }, [user, navigate, t, toast]);
 
   if (!user || user.role !== 'doctor') {
     return null;
@@ -145,7 +146,7 @@ const TherapistDashboard = () => {
                   2
                 </span>
               </Button>
-              <Button variant="outline" className="relative" onClick={() => toast.info("Notifications will be implemented soon")}>
+              <Button variant="outline" className="relative" onClick={() => toast.info(t("notifications_coming_soon"))}>
                 <Bell className="h-5 w-5" />
                 {notificationsCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
