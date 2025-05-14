@@ -168,7 +168,50 @@ function toast({ ...props }: Toast) {
   }
 }
 
-function useToast() {
+// Adding helper methods to the base toast function
+toast.success = (message: string) => {
+  return toast({ 
+    title: "Success", 
+    description: message, 
+    variant: "default" 
+  })
+}
+
+toast.error = (message: string) => {
+  return toast({ 
+    title: "Error", 
+    description: message, 
+    variant: "destructive" 
+  })
+}
+
+toast.info = (message: string) => {
+  return toast({ 
+    title: "Info", 
+    description: message,
+    variant: "default"
+  })
+}
+
+toast.warning = (message: string) => {
+  return toast({ 
+    title: "Warning", 
+    description: message,
+    variant: "destructive"
+  })
+}
+
+interface UseToastReturnType extends State {
+  toast: typeof toast & {
+    success: (message: string) => ReturnType<typeof toast>
+    error: (message: string) => ReturnType<typeof toast>
+    info: (message: string) => ReturnType<typeof toast>
+    warning: (message: string) => ReturnType<typeof toast>
+  }
+  dismiss: (toastId?: string) => void
+}
+
+function useToast(): UseToastReturnType {
   const [state, setState] = React.useState<State>(memoryState)
   const { t } = useLanguage();
 
@@ -209,9 +252,8 @@ function useToast() {
 
   return {
     ...state,
-    toast,
+    toast: Object.assign(toast, translatedToast),
     dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
-    ...translatedToast,
   }
 }
 
