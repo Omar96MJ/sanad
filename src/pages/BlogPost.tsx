@@ -12,6 +12,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { BlogPost } from "@/lib/types";
 import { mockBlogs } from "./Blog"; // Import mockBlogs directly from Blog.tsx
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 
 // Type definition for blog post
 interface BlogPostData {
@@ -38,7 +39,7 @@ const getBlogPostsData = (): BlogPostData[] => {
     title: blog.title,
     slug: blog.id,
     excerpt: blog.excerpt,
-    content: blog.content,
+    content: blog.content || 'Content coming soon...',
     imageUrl: blog.imageUrl,
     date: blog.publishedDate,
     author: {
@@ -47,7 +48,7 @@ const getBlogPostsData = (): BlogPostData[] => {
       role: blog.authorRole === 'doctor' ? 'Clinical Psychologist' : 'Writer'
     },
     categories: blog.tags,
-    readTime: Math.ceil(blog.content.length / 2000) // Approximate read time based on content length
+    readTime: Math.max(5, Math.ceil((blog.content?.length || 0) / 2000)) // Calculate read time based on content length, minimum 5 minutes
   }));
 };
 
@@ -82,12 +83,14 @@ const BlogPostPage: React.FC = () => {
         </Link>
 
         {/* Hero image */}
-        <div className="w-full h-[300px] md:h-[400px] rounded-lg overflow-hidden mb-8">
-          <img 
-            src={post.imageUrl} 
-            alt={post.title}
-            className="w-full h-full object-cover"
-          />
+        <div className="rounded-lg overflow-hidden mb-8">
+          <AspectRatio ratio={16/9}>
+            <img 
+              src={post.imageUrl} 
+              alt={post.title}
+              className="w-full h-full object-cover"
+            />
+          </AspectRatio>
         </div>
 
         {/* Post header */}
@@ -143,14 +146,14 @@ const BlogPostPage: React.FC = () => {
 
         {/* Post content */}
         <div 
-          className="prose max-w-none dark:prose-invert prose-headings:mb-4 prose-p:mb-4 prose-headings:mt-8 prose-img:rounded-lg"
+          className="prose max-w-none dark:prose-invert prose-headings:mb-4 prose-p:mb-4 prose-headings:mt-8 prose-img:rounded-lg prose-headings:text-primary prose-a:text-primary"
           dangerouslySetInnerHTML={{ __html: post.content }}
         />
 
         <Separator className="my-8" />
 
         {/* Author card */}
-        <Card className="p-6 mb-8">
+        <Card className="p-6 mb-8 bg-muted/30">
           <div className="flex items-start gap-4">
             <Avatar className="h-16 w-16">
               <AvatarImage src={post.author.avatar} alt={post.author.name} />
@@ -161,7 +164,8 @@ const BlogPostPage: React.FC = () => {
               <p className="text-sm text-muted-foreground mb-4">{post.author.role}</p>
               <p className="text-sm">
                 An experienced healthcare professional dedicated to improving mental health outcomes 
-                through evidence-based practice and compassionate care.
+                through evidence-based practice and compassionate care. Specializing in therapy approaches
+                that are tailored to each individual's unique needs and circumstances.
               </p>
             </div>
           </div>
@@ -198,18 +202,23 @@ const BlogPostPage: React.FC = () => {
           <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {blogPostsData
-              .filter(relatedPost => relatedPost.id !== post.id)
+              .filter(relatedPost => 
+                relatedPost.id !== post.id && 
+                relatedPost.categories.some(category => 
+                  post.categories.includes(category)
+                )
+              )
               .slice(0, 2)
               .map(relatedPost => (
                 <Card key={relatedPost.id} className="overflow-hidden">
                   <Link to={`/blog/${relatedPost.id}`}>
-                    <div className="h-48 overflow-hidden">
+                    <AspectRatio ratio={16/9}>
                       <img
                         src={relatedPost.imageUrl}
                         alt={relatedPost.title}
                         className="w-full h-full object-cover transition-transform hover:scale-105"
                       />
-                    </div>
+                    </AspectRatio>
                     <div className="p-6">
                       <h3 className="font-bold text-lg mb-2">{relatedPost.title}</h3>
                       <p className="text-muted-foreground line-clamp-2">{relatedPost.excerpt}</p>
