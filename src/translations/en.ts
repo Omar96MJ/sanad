@@ -228,19 +228,19 @@ export default {
   'total_sessions': 'Total Sessions',
   'test_completions': 'Test Completions',
   'active_users': 'Active Users',
+  'patients_singular': 'Patient',
   'patients': 'Patients',
+  'doctors_singular': 'Doctor',
   'doctors': 'Doctors',
-  'admin': 'Admin',
+  'admins': 'Admins',
   'recent_activities': 'Recent Activities',
   'allow_new_users': 'Allow New Users',
 
   // Therapist Dashboard
   'therapist_dashboard': 'Therapist Dashboard',
   'overview': 'Overview',
-  'profile': 'Profile',
   'doctor_profile': 'Doctor Profile',
   'manage_your_profile_information': 'Manage your professional profile information',
-  'sessions': 'Sessions',
   'session_management': 'Session Management',
   'manage_your_therapy_sessions': 'Manage your therapy sessions and appointments',
   'evaluations': 'Evaluations',
@@ -280,4 +280,8 @@ export default {
   'years_of_experience': 'Years of Experience',
   'professional_bio': 'Professional Bio',
   'bio_description': 'Share your approach to therapy and areas of expertise',
+  
+  // Language names for the language toggle
+  'english': 'English',
+  'arabic': 'العربية',
 };
