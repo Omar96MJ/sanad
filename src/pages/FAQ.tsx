@@ -22,50 +22,50 @@ const FAQ = () => {
           <Card>
             <CardHeader className="text-center pb-2">
               <CardTitle className="text-3xl font-bold">{t('faq')}</CardTitle>
-              <CardDescription className="text-lg">{t('common_questions')}</CardDescription>
+              <CardDescription className="text-lg">{t('commonquestions')}</CardDescription>
             </CardHeader>
             <CardContent className="pt-6">
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="item-1">
-                  <AccordionTrigger>{t('faq_what_is_sanad')}</AccordionTrigger>
+                  <AccordionTrigger>{t('faqwhatissanad')}</AccordionTrigger>
                   <AccordionContent>
-                    {t('faq_what_is_sanad_answer')}
+                    {t('faqwhatissanadanswer')}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-2">
-                  <AccordionTrigger>{t('faq_how_therapy_works')}</AccordionTrigger>
+                  <AccordionTrigger>{t('faqhowtherapyworks')}</AccordionTrigger>
                   <AccordionContent>
-                    {t('faq_how_therapy_works_answer')}
+                    {t('faqhowtherapyworksanswer')}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-3">
-                  <AccordionTrigger>{t('faq_cost')}</AccordionTrigger>
+                  <AccordionTrigger>{t('faqcost')}</AccordionTrigger>
                   <AccordionContent>
-                    {t('faq_cost_answer')}
+                    {t('faqcostanswer')}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-4">
-                  <AccordionTrigger>{t('faq_privacy')}</AccordionTrigger>
+                  <AccordionTrigger>{t('faqprivacy')}</AccordionTrigger>
                   <AccordionContent>
-                    {t('faq_privacy_answer')}
+                    {t('faqprivacyanswer')}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-5">
-                  <AccordionTrigger>{t('faq_session_duration')}</AccordionTrigger>
+                  <AccordionTrigger>{t('faqsessionduration')}</AccordionTrigger>
                   <AccordionContent>
-                    {t('faq_session_duration_answer')}
+                    {t('faqsessiondurationanswer')}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-6">
-                  <AccordionTrigger>{t('faq_cancel_session')}</AccordionTrigger>
+                  <AccordionTrigger>{t('faqcancelsession')}</AccordionTrigger>
                   <AccordionContent>
-                    {t('faq_cancel_session_answer')}
+                    {t('faqcancelsessionanswer')}
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="item-7">
-                  <AccordionTrigger>{t('faq_emergency')}</AccordionTrigger>
+                  <AccordionTrigger>{t('faqemergency')}</AccordionTrigger>
                   <AccordionContent>
-                    {t('faq_emergency_answer')}
+                    {t('faqemergencyanswer')}
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
