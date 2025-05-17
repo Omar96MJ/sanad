@@ -7,6 +7,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 interface Test {
   id: string;
   name: string;
+  icon: string;
 }
 
 interface TestResultsProps {
@@ -29,18 +30,18 @@ const TestResults: React.FC<TestResultsProps> = ({
   return (
     <Card className="w-full max-w-lg">
       <CardHeader>
-        <CardTitle>{t('Test Results')}</CardTitle>
+        <CardTitle>{t('test_results')}</CardTitle>
         <CardDescription>{tests.find(t => t.id === selectedTest)?.name}</CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-lg mb-4">{result}</p>
         <p className="text-sm text-muted-foreground mb-4">
-          {t('This test is for educational purposes only and should not be used for self-diagnosis. Please consult with a mental health professional for proper diagnosis and treatment.')}
+          {t('test_disclaimer')}
         </p>
       </CardContent>
       <CardFooter className="flex justify-between">
-        <Button variant="outline" onClick={onRestart}>{t('Restart Test')}</Button>
-        <Button onClick={onChooseAnother}>{t('Choose Another Test')}</Button>
+        <Button variant="outline" onClick={onRestart}>{t('restart_test')}</Button>
+        <Button onClick={onChooseAnother}>{t('choose_another_test')}</Button>
       </CardFooter>
     </Card>
   );

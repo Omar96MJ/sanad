@@ -7,6 +7,7 @@ import { useLanguage } from '@/hooks/useLanguage';
 interface Test {
   id: string;
   name: string;
+  icon: string;
 }
 
 interface TestQuestionsProps {
@@ -35,16 +36,16 @@ const TestQuestions: React.FC<TestQuestionsProps> = ({
       <CardHeader>
         <CardTitle>{tests.find(t => t.id === selectedTest)?.name}</CardTitle>
         <CardDescription>
-          {t('Question')} {currentQuestion + 1} {t('of')} {questions.length}
+          {t('question')} {currentQuestion + 1} {t('of')} {questions.length}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-lg mb-6">{currentQ}</p>
         <div className="flex flex-col space-y-2">
-          <Button variant="outline" onClick={() => onAnswer(0)}>{t('Not at all')}</Button>
-          <Button variant="outline" onClick={() => onAnswer(1)}>{t('Several days')}</Button>
-          <Button variant="outline" onClick={() => onAnswer(2)}>{t('More than half the days')}</Button>
-          <Button variant="outline" onClick={() => onAnswer(3)}>{t('Nearly every day')}</Button>
+          <Button variant="outline" onClick={() => onAnswer(0)}>{t('not_at_all')}</Button>
+          <Button variant="outline" onClick={() => onAnswer(1)}>{t('several_days')}</Button>
+          <Button variant="outline" onClick={() => onAnswer(2)}>{t('more_than_half_days')}</Button>
+          <Button variant="outline" onClick={() => onAnswer(3)}>{t('nearly_every_day')}</Button>
         </div>
       </CardContent>
     </Card>

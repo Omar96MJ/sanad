@@ -35,20 +35,20 @@ const TestSelection: React.FC<TestSelectionProps> = ({
         <CardHeader>
           <CardTitle>{tests.find(t => t.id === selectedTest)?.name}</CardTitle>
           <CardDescription>
-            {t('This test will help assess potential symptoms. Results are not a diagnosis.')}
+            {t('take_this_test')} {tests.find(t => t.id === selectedTest)?.name.toLowerCase()}.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <p className="mb-4">
-            {t('The test consists of')} {testQuestions[selectedTest]?.length || 5} {t('questions and will take approximately')} {testQuestions[selectedTest]?.length || 5} {t('minutes to complete.')}
+            {t('test_consists_of')} {testQuestions[selectedTest]?.length || 5} {t('questions_and_will_take')} {testQuestions[selectedTest]?.length || 5} {t('minutes_to_complete')}
           </p>
           <p className="text-sm text-muted-foreground mb-4">
-            {t('Please answer each question honestly for the most accurate results.')}
+            {t('answer_honestly')}
           </p>
         </CardContent>
         <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={onBack}>{t('Back')}</Button>
-          <Button onClick={onStartTest}>{t('Start Test')}</Button>
+          <Button variant="outline" onClick={onBack}>{t('back')}</Button>
+          <Button onClick={onStartTest}>{t('start_test')}</Button>
         </CardFooter>
       </Card>
     );
@@ -64,10 +64,10 @@ const TestSelection: React.FC<TestSelectionProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p>{t('Take this test to assess your')} {test.name.toLowerCase()}.</p>
+            <p>{t('take_this_test')} {test.name.toLowerCase()}.</p>
           </CardContent>
           <CardFooter>
-            <Button variant="outline" className="w-full">{t('Select')}</Button>
+            <Button variant="outline" className="w-full">{t('select')}</Button>
           </CardFooter>
         </Card>
       ))}
