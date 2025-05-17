@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,6 +20,7 @@ import PsychologicalTests from "./pages/PsychologicalTests";
 import SessionBooking from "./pages/SessionBooking";
 import AboutUs from "./pages/AboutUs";
 import FAQ from "./pages/FAQ";
+import MentalHealthGuide from "./pages/MentalHealthGuide";
 import NotFound from "./pages/NotFound";
 import React from "react";
 
@@ -76,6 +76,7 @@ const AppRoutes = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/about-us" element={<AboutUs />} />
       <Route path="/faq" element={<FAQ />} />
+      <Route path="/mental-health-guide" element={<MentalHealthGuide />} />
       <Route path="/dashboard" element={<DashboardRoute />} />
       <Route 
         path="/profile" 

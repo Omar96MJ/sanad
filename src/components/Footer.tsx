@@ -69,9 +69,9 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">{t('resources')}</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-custom">
+                <Link to="/mental-health-guide" className="text-muted-foreground hover:text-primary transition-custom">
                   {t('mental_health_guide')}
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-custom">

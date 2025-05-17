@@ -51,6 +51,43 @@ const general = {
   'enabled': 'Enabled',
   'disabled': 'Disabled',
   
+  // Mental Health Guide
+  'mentalhealthguide': 'Mental Health Guide',
+  'mentalhealthguidesubtitle': 'Understanding and caring for your mental wellbeing',
+  'understandingmentalhealth': 'Understanding Mental Health',
+  'mentalhealthintro': 'Mental health encompasses our emotional, psychological, and social well-being. It affects how we think, feel, and act as we cope with life. It also helps determine how we handle stress, relate to others, and make choices.',
+  'mentalhealthimportance': 'Taking care of your mental health is just as important as caring for your physical health. Good mental health allows you to realize your full potential, cope with the stresses of life, work productively, and make meaningful contributions to your community.',
+  
+  'anxietytitle': 'Anxiety Disorders',
+  'anxietydesc': 'Common types and symptoms to recognize',
+  'anxietysymptom1': 'Excessive worry or fear that interferes with daily activities',
+  'anxietysymptom2': 'Physical symptoms such as increased heart rate, rapid breathing, sweating, or trembling',
+  'anxietysymptom3': 'Avoidance of situations that trigger anxiety',
+  
+  'depressiontitle': 'Depression',
+  'depressiondesc': 'Understanding the signs and symptoms',
+  'depressionsymptom1': 'Persistent sad, anxious, or "empty" mood',
+  'depressionsymptom2': 'Loss of interest in activities once enjoyed',
+  'depressionsymptom3': 'Changes in sleep patterns, appetite, or energy levels',
+  
+  'selfcarepractices': 'Self-Care Practices',
+  'selfcaredescription': 'Self-care means taking the time to do things that help you live well and improve both your physical and mental health. When it comes to your mental health, self-care can help you manage stress, lower your risk of illness, and increase your energy.',
+  
+  'physicalselfcare': 'Physical Self-Care',
+  'physicalselfcaredesc': 'Regular exercise, healthy eating, adequate sleep, and avoiding harmful substances',
+  
+  'mentalselfcare': 'Mental Self-Care',
+  'mentalselfcaredesc': 'Reading books, practicing mindfulness, journaling, and engaging in creative activities',
+  
+  'socialselfcare': 'Social Self-Care',
+  'socialselfcaredesc': 'Spending time with supportive people, setting boundaries, and asking for help when needed',
+  
+  'whentoseekhelp': 'When to Seek Professional Help',
+  'seekhelpdescription': 'It\'s important to recognize when self-help strategies aren\'t enough. If you\'re experiencing persistent symptoms that interfere with your daily life, consider reaching out to a mental health professional.',
+  
+  'emergencywarning': 'Important: Emergency Situations',
+  'emergencydescription': 'If you or someone you know is in crisis or thinking about suicide, get help quickly. Call your local emergency number, go to the nearest emergency room, or call the national mental health crisis helpline.',
+  
   // FAQ page
   'commonquestions': 'Frequently Asked Questions',
   'faqwhatissanad': 'What is Sanad?',
@@ -60,7 +97,7 @@ const general = {
   'faqcost': 'How much does therapy cost?',
   'faqcostanswer': 'Therapy costs vary depending on the therapist and session type. We offer different pricing tiers to accommodate various budgets, and many insurance providers cover our services. Check our pricing page for details.',
   'faqprivacy': 'Is my information kept private?',
-  'faqprivacyanswer': 'Yes, your privacy is our priority. All communications are encrypted and confidential. Our therapists follow strict professional ethics and privacy laws. Your information is never shared without your explicit consent.',
+  'faqprivateanswer': 'Yes, your privacy is our priority. All communications are encrypted and confidential. Our therapists follow strict professional ethics and privacy laws. Your information is never shared without your explicit consent.',
   'faqsessionduration': 'How long are therapy sessions?',
   'faqsessiondurationanswer': 'Standard therapy sessions are 50 minutes long, which is the clinical hour. Some therapists offer longer sessions or specialized formats. The duration will be clearly indicated when you book.',
   'faqcancelsession': 'How do I cancel or reschedule a session?',
