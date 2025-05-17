@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { toast } from "sonner";
+import TestSelection from '@/components/tests/TestSelection';
+import TestQuestions from '@/components/tests/TestQuestions';
+import TestResults from '@/components/tests/TestResults';
 
 const PsychologicalTests = () => {
   const { language, t } = useLanguage();
@@ -160,104 +160,40 @@ const PsychologicalTests = () => {
     setResult('');
   };
 
-  const renderTestSelection = () => {
-    if (selectedTest && (testStarted || testCompleted)) return null;
-
-    if (selectedTest) {
+  const renderContent = () => {
+    if (selectedTest && testStarted && !testCompleted) {
       return (
-        <Card className="w-full max-w-lg">
-          <CardHeader>
-            <CardTitle>{tests.find(t => t.id === selectedTest)?.name}</CardTitle>
-            <CardDescription>
-              {t('This test will help assess potential symptoms. Results are not a diagnosis.')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="mb-4">
-              {t('The test consists of')} {testQuestions[selectedTest as keyof typeof testQuestions]?.length || 5} {t('questions and will take approximately')} {testQuestions[selectedTest as keyof typeof testQuestions]?.length || 5} {t('minutes to complete.')}
-            </p>
-            <p className="text-sm text-muted-foreground mb-4">
-              {t('Please answer each question honestly for the most accurate results.')}
-            </p>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <Button variant="outline" onClick={() => setSelectedTest(null)}>{t('Back')}</Button>
-            <Button onClick={startTest}>{t('Start Test')}</Button>
-          </CardFooter>
-        </Card>
+        <TestQuestions 
+          selectedTest={selectedTest}
+          tests={tests}
+          currentQuestion={currentQuestion}
+          questions={testQuestions[selectedTest as keyof typeof testQuestions]}
+          onAnswer={handleAnswer}
+        />
+      );
+    }
+
+    if (testCompleted) {
+      return (
+        <TestResults 
+          selectedTest={selectedTest}
+          tests={tests}
+          result={result}
+          onRestart={restartTest}
+          onChooseAnother={() => setSelectedTest(null)}
+        />
       );
     }
 
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full max-w-6xl">
-        {tests.map((test) => (
-          <Card key={test.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleSelectTest(test.id)}>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <span className="text-2xl">{test.icon}</span> {test.name}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p>{t('Take this test to assess your')} {test.name.toLowerCase()}.</p>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" className="w-full">{t('Select')}</Button>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    );
-  };
-
-  const renderQuestions = () => {
-    if (!selectedTest || !testStarted || testCompleted) return null;
-
-    const questions = testQuestions[selectedTest as keyof typeof testQuestions];
-    if (!questions || currentQuestion >= questions.length) return null;
-
-    const currentQ = questions[currentQuestion];
-
-    return (
-      <Card className="w-full max-w-lg">
-        <CardHeader>
-          <CardTitle>{tests.find(t => t.id === selectedTest)?.name}</CardTitle>
-          <CardDescription>
-            {t('Question')} {currentQuestion + 1} {t('of')} {questions.length}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg mb-6">{currentQ}</p>
-          <div className="flex flex-col space-y-2">
-            <Button variant="outline" onClick={() => handleAnswer(0)}>{t('Not at all')}</Button>
-            <Button variant="outline" onClick={() => handleAnswer(1)}>{t('Several days')}</Button>
-            <Button variant="outline" onClick={() => handleAnswer(2)}>{t('More than half the days')}</Button>
-            <Button variant="outline" onClick={() => handleAnswer(3)}>{t('Nearly every day')}</Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
-
-  const renderResult = () => {
-    if (!testCompleted) return null;
-
-    return (
-      <Card className="w-full max-w-lg">
-        <CardHeader>
-          <CardTitle>{t('Test Results')}</CardTitle>
-          <CardDescription>{tests.find(t => t.id === selectedTest)?.name}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg mb-4">{result}</p>
-          <p className="text-sm text-muted-foreground mb-4">
-            {t('This test is for educational purposes only and should not be used for self-diagnosis. Please consult with a mental health professional for proper diagnosis and treatment.')}
-          </p>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={restartTest}>{t('Restart Test')}</Button>
-          <Button onClick={() => setSelectedTest(null)}>{t('Choose Another Test')}</Button>
-        </CardFooter>
-      </Card>
+      <TestSelection 
+        tests={tests}
+        selectedTest={selectedTest}
+        onSelectTest={handleSelectTest}
+        onStartTest={startTest}
+        onBack={() => setSelectedTest(null)}
+        testQuestions={testQuestions}
+      />
     );
   };
 
@@ -273,9 +209,7 @@ const PsychologicalTests = () => {
         </div>
 
         <div className="flex flex-col items-center justify-center w-full">
-          {renderTestSelection()}
-          {renderQuestions()}
-          {renderResult()}
+          {renderContent()}
         </div>
       </main>
       <Footer />
