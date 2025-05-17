@@ -129,7 +129,7 @@ const PsychologicalTests = () => {
 
   const calculateResult = (finalAnswers: number[]) => {
     const sum = finalAnswers.reduce((a, b) => a + b, 0);
-    const max = finalAnswers.length * 4;
+    const max = finalAnswers.length * 3;
     const percentage = (sum / max) * 100;
 
     let resultText = '';
