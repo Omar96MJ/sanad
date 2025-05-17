@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -5,17 +6,16 @@ import { useLanguage } from "@/hooks/useLanguage";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import TherapistProfile from "@/components/therapist/TherapistProfile";
 import PatientManagement from "@/components/therapist/PatientManagement";
 import SessionManagement from "@/components/therapist/SessionManagement";
 import EvaluationForms from "@/components/therapist/EvaluationForms";
 import AvailabilityManagement from "@/components/therapist/AvailabilityManagement";
 import MessagingLayout from "@/components/messaging/MessagingLayout";
-import { Bell, MessageCircle, Users, Calendar, ClipboardList, Clock, PieChart, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { DashboardHeader } from "@/components/therapist/dashboard/DashboardHeader";
+import { DashboardOverview } from "@/components/therapist/dashboard/DashboardOverview";
 
 type DoctorStats = {
   patients_count: number;
@@ -155,37 +155,30 @@ const TherapistDashboard = () => {
     { name: t('stress'), percentage: 15 },
     { name: t('other'), percentage: 10 },
   ];
+  
+  const handleNotificationClick = () => {
+    toast.info(t("notifications_coming_soon"));
+  };
+
+  const handleViewSessionDetails = () => {
+    setActiveTab("sessions");
+  };
+
+  const handleScheduleSession = () => {
+    setActiveTab("sessions");
+  };
 
   return (
     <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
       <Navbar />
       <main className="flex-grow mt-16 md:mt-20 py-8 px-4 sm:px-6 lg:px-8 bg-muted/30">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <div>
-              <h1 className="text-3xl font-bold">{t('therapist_dashboard')}</h1>
-              <p className="text-muted-foreground mt-1">
-                {t('welcome_back')}, {doctorProfile?.name || user.name}
-              </p>
-            </div>
-            
-            <div className="flex gap-2">
-              <Button variant="outline" className="relative" onClick={() => setActiveTab("messaging")}>
-                <MessageCircle className="h-5 w-5" />
-                <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  2
-                </span>
-              </Button>
-              <Button variant="outline" className="relative" onClick={() => toast.info(t("notifications_coming_soon"))}>
-                <Bell className="h-5 w-5" />
-                {notificationsCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    {notificationsCount}
-                  </span>
-                )}
-              </Button>
-            </div>
-          </div>
+          <DashboardHeader 
+            doctorName={doctorProfile?.name || user.name || ''}
+            notificationsCount={notificationsCount}
+            onMessageClick={() => setActiveTab("messaging")}
+            onNotificationClick={handleNotificationClick}
+          />
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid grid-cols-2 md:grid-cols-7 mb-8">
@@ -199,145 +192,14 @@ const TherapistDashboard = () => {
             </TabsList>
             
             <TabsContent value="overview">
-              {isLoading ? (
-                <div className="flex justify-center items-center p-12">
-                  <Loader2 className="h-12 w-12 animate-spin text-primary" />
-                </div>
-              ) : (
-                <>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <Card>
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-medium text-muted-foreground">{t('total_patients')}</p>
-                            <p className="text-3xl font-bold mt-1">{doctorStats.patients_count}</p>
-                          </div>
-                          <div className="p-3 rounded-full bg-blue-100 text-blue-700">
-                            <Users className="h-6 w-6" />
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-medium text-muted-foreground">{t('upcoming_sessions')}</p>
-                            <p className="text-3xl font-bold mt-1">{doctorStats.upcoming_sessions}</p>
-                          </div>
-                          <div className="p-3 rounded-full bg-green-100 text-green-700">
-                            <Calendar className="h-6 w-6" />
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-medium text-muted-foreground">{t('pending_evaluations')}</p>
-                            <p className="text-3xl font-bold mt-1">{doctorStats.pending_evaluations}</p>
-                          </div>
-                          <div className="p-3 rounded-full bg-amber-100 text-amber-700">
-                            <ClipboardList className="h-6 w-6" />
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardContent className="p-6">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-medium text-muted-foreground">{t('available_hours')}</p>
-                            <p className="text-3xl font-bold mt-1">{doctorStats.available_hours}</p>
-                          </div>
-                          <div className="p-3 rounded-full bg-violet-100 text-violet-700">
-                            <Clock className="h-6 w-6" />
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                  
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-xl flex items-center">
-                          <Calendar className="mr-2 h-5 w-5 text-primary" />
-                          {t('todays_schedule')}
-                        </CardTitle>
-                        <CardDescription>{t('your_upcoming_sessions')}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        {upcomingAppointments.length > 0 ? (
-                          <div className="space-y-4">
-                            {upcomingAppointments.map((appointment) => (
-                              <div key={appointment.id} className="border rounded-md p-4">
-                                <div className="flex justify-between items-center mb-2">
-                                  <div className="font-medium">{appointment.patient_name}</div>
-                                  <div className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                                    {new Date(appointment.session_date).toLocaleTimeString([], {
-                                      hour: '2-digit',
-                                      minute: '2-digit'
-                                    })}
-                                  </div>
-                                </div>
-                                <div className="text-sm text-muted-foreground mb-2">
-                                  {appointment.session_type === "initial" ? t('initial_consultation') :
-                                   appointment.session_type === "followup" ? t('follow_up') :
-                                   appointment.session_type === "therapy" ? t('therapy_session') :
-                                   appointment.session_type === "assessment" ? t('assessment') :
-                                   appointment.session_type}
-                                </div>
-                                <Button variant="outline" size="sm" onClick={() => setActiveTab("sessions")}>
-                                  {t('view_details')}
-                                </Button>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="text-center py-6">
-                            <p className="text-muted-foreground">{t('no_upcoming_sessions')}</p>
-                            <Button className="mt-4" variant="outline" onClick={() => setActiveTab("sessions")}>
-                              {t('schedule_session')}
-                            </Button>
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                    
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-xl flex items-center">
-                          <PieChart className="mr-2 h-5 w-5 text-primary" />
-                          {t('patient_demographics')}
-                        </CardTitle>
-                        <CardDescription>{t('patient_overview')}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
-                          {demographics.map((item, index) => (
-                            <div key={index} className="flex justify-between items-center">
-                              <span className="text-sm">{item.name}</span>
-                              <div className="w-2/3 bg-muted rounded-full h-2.5">
-                                <div 
-                                  className="bg-blue-600 h-2.5 rounded-full" 
-                                  style={{ width: `${item.percentage}%` }}
-                                ></div>
-                              </div>
-                              <span className="text-sm font-medium">{item.percentage}%</span>
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </>
-              )}
+              <DashboardOverview 
+                isLoading={isLoading}
+                doctorStats={doctorStats}
+                upcomingAppointments={upcomingAppointments}
+                demographics={demographics}
+                onViewSessionDetails={handleViewSessionDetails}
+                onScheduleSession={handleScheduleSession}
+              />
             </TabsContent>
             
             <TabsContent value="profile">
