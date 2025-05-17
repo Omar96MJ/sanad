@@ -160,58 +160,6 @@ const PsychologicalTests = () => {
     setResult('');
   };
 
-  const renderQuestions = () => {
-    if (!selectedTest || !testStarted || testCompleted) return null;
-
-    const questions = testQuestions[selectedTest as keyof typeof testQuestions];
-    if (!questions || currentQuestion >= questions.length) return null;
-
-    const currentQ = questions[currentQuestion];
-
-    return (
-      <Card className="w-full max-w-lg">
-        <CardHeader>
-          <CardTitle>{tests.find(t => t.id === selectedTest)?.name}</CardTitle>
-          <CardDescription>
-            {t('Question')} {currentQuestion + 1} {t('of')} {questions.length}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg mb-6">{currentQ}</p>
-          <div className="flex flex-col space-y-2">
-            <Button variant="outline" onClick={() => handleAnswer(0)}>{t('Not at all')}</Button>
-            <Button variant="outline" onClick={() => handleAnswer(1)}>{t('Several days')}</Button>
-            <Button variant="outline" onClick={() => handleAnswer(2)}>{t('More than half the days')}</Button>
-            <Button variant="outline" onClick={() => handleAnswer(3)}>{t('Nearly every day')}</Button>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  };
-
-  const renderResult = () => {
-    if (!testCompleted) return null;
-
-    return (
-      <Card className="w-full max-w-lg">
-        <CardHeader>
-          <CardTitle>{t('Test Results')}</CardTitle>
-          <CardDescription>{tests.find(t => t.id === selectedTest)?.name}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-lg mb-4">{result}</p>
-          <p className="text-sm text-muted-foreground mb-4">
-            {t('This test is for educational purposes only and should not be used for self-diagnosis. Please consult with a mental health professional for proper diagnosis and treatment.')}
-          </p>
-        </CardContent>
-        <CardFooter className="flex justify-between">
-          <Button variant="outline" onClick={restartTest}>{t('Restart Test')}</Button>
-          <Button onClick={() => setSelectedTest(null)}>{t('Choose Another Test')}</Button>
-        </CardFooter>
-      </Card>
-    );
-  };
-
   const renderTestSelection = () => {
     if (selectedTest && (testStarted || testCompleted)) return null;
 
