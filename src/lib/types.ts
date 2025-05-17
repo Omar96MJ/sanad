@@ -12,14 +12,19 @@ export interface User {
 export interface BlogPost {
   id: string;
   title: string;
+  titleAr?: string;
   excerpt: string;
+  excerptAr?: string;
   content: string;
+  contentAr?: string;
   author: string;
+  authorAr?: string;
   authorId: string;
   authorRole: UserRole;
   publishedDate: string;
   imageUrl: string;
   tags: string[];
+  tagsAr?: string[];
 }
 
 export interface Doctor extends User {

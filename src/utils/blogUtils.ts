@@ -6,17 +6,23 @@ import { mockBlogs } from "@/data/mockBlogs";
 export interface BlogPostData {
   id: string;
   title: string;
+  titleAr?: string;
   slug: string;
   excerpt: string;
+  excerptAr?: string;
   content: string;
+  contentAr?: string;
   imageUrl: string;
   date: string;
   author: {
     name: string;
+    nameAr?: string;
     avatar: string;
     role: string;
+    roleAr?: string;
   };
   categories: string[];
+  categoriesAr?: string[];
   readTime: number;
 }
 
@@ -25,17 +31,23 @@ export const getBlogPostsData = (): BlogPostData[] => {
   return mockBlogs.map(blog => ({
     id: blog.id,
     title: blog.title,
+    titleAr: blog.titleAr,
     slug: blog.id,
     excerpt: blog.excerpt,
+    excerptAr: blog.excerptAr,
     content: blog.content || 'Content coming soon...',
+    contentAr: blog.contentAr,
     imageUrl: blog.imageUrl,
     date: blog.publishedDate,
     author: {
       name: blog.author,
+      nameAr: blog.authorAr,
       avatar: "/placeholder.svg",
-      role: blog.authorRole === 'doctor' ? 'Clinical Psychologist' : 'Writer'
+      role: blog.authorRole === 'doctor' ? 'Clinical Psychologist' : 'Writer',
+      roleAr: blog.authorRole === 'doctor' ? 'أخصائي نفسي سريري' : 'كاتب'
     },
     categories: blog.tags,
+    categoriesAr: blog.tagsAr,
     readTime: Math.max(5, Math.ceil((blog.content?.length || 0) / 2000)) // Calculate read time based on content length, minimum 5 minutes
   }));
 };
