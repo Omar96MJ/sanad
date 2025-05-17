@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,6 +23,7 @@ import AboutUs from "./pages/AboutUs";
 import FAQ from "./pages/FAQ";
 import MentalHealthGuide from "./pages/MentalHealthGuide";
 import NotFound from "./pages/NotFound";
+import CreateAdmin from "./pages/CreateAdmin";
 import React from "react";
 
 // Create QueryClient outside of component render
@@ -77,6 +79,7 @@ const AppRoutes = () => {
       <Route path="/about-us" element={<AboutUs />} />
       <Route path="/faq" element={<FAQ />} />
       <Route path="/mental-health-guide" element={<MentalHealthGuide />} />
+      <Route path="/create-admin" element={<CreateAdmin />} />
       <Route path="/dashboard" element={<DashboardRoute />} />
       <Route 
         path="/profile" 
