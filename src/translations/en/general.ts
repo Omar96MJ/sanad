@@ -49,7 +49,24 @@ const general = {
   'info': 'Information',
   'warning': 'Warning',
   'enabled': 'Enabled',
-  'disabled': 'Disabled'
+  'disabled': 'Disabled',
+  
+  // FAQ page
+  'common_questions': 'Frequently Asked Questions',
+  'faq_what_is_sanad': 'What is Sanad?',
+  'faq_what_is_sanad_answer': 'Sanad is a mental health platform designed to connect individuals with licensed therapists and mental health resources. We provide accessible, confidential support to help you on your wellness journey.',
+  'faq_how_therapy_works': 'How does online therapy work?',
+  'faq_how_therapy_works_answer': 'Online therapy through Sanad works similarly to in-person sessions, but from the comfort of your home. After signing up, you'll be matched with a therapist based on your needs. Sessions take place via secure video calls at scheduled times.',
+  'faq_cost': 'How much does therapy cost?',
+  'faq_cost_answer': 'Therapy costs vary depending on the therapist and session type. We offer different pricing tiers to accommodate various budgets, and many insurance providers cover our services. Check our pricing page for details.',
+  'faq_privacy': 'Is my information kept private?',
+  'faq_privacy_answer': 'Yes, your privacy is our priority. All communications are encrypted and confidential. Our therapists follow strict professional ethics and privacy laws. Your information is never shared without your explicit consent.',
+  'faq_session_duration': 'How long are therapy sessions?',
+  'faq_session_duration_answer': 'Standard therapy sessions are 50 minutes long, which is the clinical hour. Some therapists offer longer sessions or specialized formats. The duration will be clearly indicated when you book.',
+  'faq_cancel_session': 'How do I cancel or reschedule a session?',
+  'faq_cancel_session_answer': 'You can cancel or reschedule sessions through your dashboard up to 24 hours before the appointment without any penalty. Late cancellations may be subject to a fee as outlined in our cancellation policy.',
+  'faq_emergency': 'What if I have an emergency?',
+  'faq_emergency_answer': 'Sanad is not an emergency service. If you're experiencing a mental health crisis or emergency, please call your local emergency number or crisis hotline immediately. We provide resources for crisis support on our website.'
 };
 
 export default general;

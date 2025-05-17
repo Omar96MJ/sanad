@@ -20,6 +20,7 @@ import TherapistDashboard from "./pages/TherapistDashboard";
 import PsychologicalTests from "./pages/PsychologicalTests";
 import SessionBooking from "./pages/SessionBooking";
 import AboutUs from "./pages/AboutUs";
+import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 import React from "react";
 
@@ -74,6 +75,7 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/about-us" element={<AboutUs />} />
+      <Route path="/faq" element={<FAQ />} />
       <Route path="/dashboard" element={<DashboardRoute />} />
       <Route 
         path="/profile" 
