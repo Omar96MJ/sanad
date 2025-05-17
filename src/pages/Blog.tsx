@@ -9,7 +9,7 @@ import { mockBlogs } from "@/data/mockBlogs";
 import { getAllUniqueTags } from "@/utils/blogUtils";
 
 const Blog = () => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTag, setActiveTag] = useState<string | null>(null);
   const [filteredBlogs, setFilteredBlogs] = useState(mockBlogs);

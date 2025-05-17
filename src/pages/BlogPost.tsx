@@ -13,7 +13,7 @@ import RelatedPosts from "@/components/blog/RelatedPosts";
 
 const BlogPostPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const blogPostsData = getBlogPostsData();
   const post = blogPostsData.find(post => post.id === id);
 
@@ -24,9 +24,9 @@ const BlogPostPage: React.FC = () => {
   if (!post) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-4">Blog post not found</h1>
+        <h1 className="text-2xl font-bold mb-4">{t('blog_post_not_found')}</h1>
         <Link to="/blog" className="text-blue-500 hover:underline flex items-center">
-          <ArrowLeft className="mr-2 h-4 w-4" /> Back to all posts
+          <ArrowLeft className="mr-2 h-4 w-4" /> {t('back_to_all_posts')}
         </Link>
       </div>
     );
