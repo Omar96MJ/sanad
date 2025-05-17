@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,6 +17,8 @@ import { BlogPost } from "@/lib/types";
 import { DoctorCard } from "@/components/UserCard";
 import { toast } from "sonner";
 import MessagingLayout from "@/components/messaging/MessagingLayout";
+// Import specific locales from date-fns
+import { ar, enUS } from 'date-fns/locale';
 
 const mockDoctor: Doctor = {
   id: '1',
@@ -89,6 +90,9 @@ const PatientDashboard = () => {
   const [progress, setProgress] = useState(65);
   const [isVisible, setIsVisible] = useState(false);
   const isRTL = language === 'ar';
+  
+  // Set the correct locale object based on the selected language
+  const calendarLocale = isRTL ? ar : enUS;
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -110,7 +114,7 @@ const PatientDashboard = () => {
   };
 
   const handleStartTherapy = () => {
-    toast.success(isRTL ? "سيتم إضافة ميزة جلسة العلاج عبر الإنترنت قريبًا!" : "Online therapy session feature coming soon!");
+    toast.success(isRTL ? "سيتم إ��افة ميزة جلسة العلاج عبر الإنترنت قريبًا!" : "Online therapy session feature coming soon!");
   };
 
   const formatAppointmentDate = (dateString: string) => {
@@ -250,7 +254,7 @@ const PatientDashboard = () => {
                       selected={date}
                       onSelect={setDate}
                       className="rounded-md border"
-                      locale={isRTL ? 'ar-SA' : 'en-US'}
+                      locale={calendarLocale}
                     />
                     <div className="mt-4">
                       <h4 className="font-medium mb-2">{t('upcoming')}</h4>
