@@ -7,8 +7,6 @@ import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import PsyToolkitTests from '@/components/PsyToolkitTests';
 import { toast } from "sonner";
 
 const PsychologicalTests = () => {
@@ -21,7 +19,6 @@ const PsychologicalTests = () => {
   const [testCompleted, setTestCompleted] = useState(false);
   const [result, setResult] = useState('');
   const [isVisible, setIsVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState("internal");
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -264,6 +261,58 @@ const PsychologicalTests = () => {
     );
   };
 
+  const renderQuestions = () => {
+    if (!selectedTest || !testStarted || testCompleted) return null;
+
+    const questions = testQuestions[selectedTest as keyof typeof testQuestions];
+    if (!questions || currentQuestion >= questions.length) return null;
+
+    const currentQ = questions[currentQuestion];
+
+    return (
+      <Card className="w-full max-w-lg">
+        <CardHeader>
+          <CardTitle>{tests.find(t => t.id === selectedTest)?.name}</CardTitle>
+          <CardDescription>
+            {t('Question')} {currentQuestion + 1} {t('of')} {questions.length}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-lg mb-6">{currentQ}</p>
+          <div className="flex flex-col space-y-2">
+            <Button variant="outline" onClick={() => handleAnswer(0)}>{t('Not at all')}</Button>
+            <Button variant="outline" onClick={() => handleAnswer(1)}>{t('Several days')}</Button>
+            <Button variant="outline" onClick={() => handleAnswer(2)}>{t('More than half the days')}</Button>
+            <Button variant="outline" onClick={() => handleAnswer(3)}>{t('Nearly every day')}</Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const renderResult = () => {
+    if (!testCompleted) return null;
+
+    return (
+      <Card className="w-full max-w-lg">
+        <CardHeader>
+          <CardTitle>{t('Test Results')}</CardTitle>
+          <CardDescription>{tests.find(t => t.id === selectedTest)?.name}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <p className="text-lg mb-4">{result}</p>
+          <p className="text-sm text-muted-foreground mb-4">
+            {t('This test is for educational purposes only and should not be used for self-diagnosis. Please consult with a mental health professional for proper diagnosis and treatment.')}
+          </p>
+        </CardContent>
+        <CardFooter className="flex justify-between">
+          <Button variant="outline" onClick={restartTest}>{t('Restart Test')}</Button>
+          <Button onClick={() => setSelectedTest(null)}>{t('Choose Another Test')}</Button>
+        </CardFooter>
+      </Card>
+    );
+  };
+
   return (
     <div className="min-h-screen flex flex-col" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <Navbar />
@@ -275,24 +324,11 @@ const PsychologicalTests = () => {
           </p>
         </div>
 
-        <Tabs defaultValue="internal" value={activeTab} onValueChange={setActiveTab} className="mb-6">
-          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2">
-            <TabsTrigger value="internal">{t('self_assessment')}</TabsTrigger>
-            <TabsTrigger value="psytoolkit">{t('professional_tests')}</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="internal" className="mt-6">
-            <div className="flex flex-col items-center justify-center w-full">
-              {renderTestSelection()}
-              {renderQuestions()}
-              {renderResult()}
-            </div>
-          </TabsContent>
-          
-          <TabsContent value="psytoolkit" className="mt-6">
-            <PsyToolkitTests />
-          </TabsContent>
-        </Tabs>
+        <div className="flex flex-col items-center justify-center w-full">
+          {renderTestSelection()}
+          {renderQuestions()}
+          {renderResult()}
+        </div>
       </main>
       <Footer />
     </div>
