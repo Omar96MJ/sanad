@@ -1,6 +1,8 @@
+
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -82,9 +84,11 @@ const mockArticles: BlogPost[] = [
 
 const PatientDashboard = () => {
   const { user } = useAuth();
+  const { t, language } = useLanguage();
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [progress, setProgress] = useState(65);
   const [isVisible, setIsVisible] = useState(false);
+  const isRTL = language === 'ar';
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -102,16 +106,16 @@ const PatientDashboard = () => {
   }
 
   const handleBookAppointment = () => {
-    toast.success("Appointment booking feature coming soon!");
+    toast.success(isRTL ? "سيتم إضافة ميزة حجز المواعيد قريبًا!" : "Appointment booking feature coming soon!");
   };
 
   const handleStartTherapy = () => {
-    toast.success("Online therapy session feature coming soon!");
+    toast.success(isRTL ? "سيتم إضافة ميزة جلسة العلاج عبر الإنترنت قريبًا!" : "Online therapy session feature coming soon!");
   };
 
   const formatAppointmentDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
@@ -121,7 +125,7 @@ const PatientDashboard = () => {
 
   const formatAppointmentTime = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', { 
+    return date.toLocaleTimeString(isRTL ? 'ar-SA' : 'en-US', { 
       hour: '2-digit', 
       minute: '2-digit',
       hour12: true
@@ -139,9 +143,9 @@ const PatientDashboard = () => {
                 isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
               }`}
             >
-              <h1 className="text-3xl font-bold mb-2">Welcome, {user.name}</h1>
+              <h1 className="text-3xl font-bold mb-2">{t('welcome_back')}, {user.name}</h1>
               <p className="text-muted-foreground">
-                Track your progress, manage appointments, and access resources for your mental wellbeing.
+                {t('track_your_progress')}
               </p>
             </div>
           </div>
@@ -150,10 +154,10 @@ const PatientDashboard = () => {
         <div className="container-custom mt-8">
           <Tabs defaultValue="overview" className="space-y-8">
             <TabsList className="grid grid-cols-1 sm:grid-cols-4 gap-2">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="appointments">Appointments</TabsTrigger>
-              <TabsTrigger value="resources">Resources</TabsTrigger>
-              <TabsTrigger value="messaging">Messaging</TabsTrigger>
+              <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
+              <TabsTrigger value="appointments">{t('sessions')}</TabsTrigger>
+              <TabsTrigger value="resources">{t('resources')}</TabsTrigger>
+              <TabsTrigger value="messaging">{t('messaging')}</TabsTrigger>
             </TabsList>
             
             <TabsContent value="overview" className="space-y-8">
@@ -164,13 +168,13 @@ const PatientDashboard = () => {
                   }`}
                 >
                   <CardHeader>
-                    <CardTitle>Your Progress</CardTitle>
+                    <CardTitle>{t('your_progress')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-6">
                       <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                          <span>Therapy Program</span>
+                          <span>{t('therapy_program')}</span>
                           <span className="font-medium">{progress}%</span>
                         </div>
                         <Progress value={progress} className="h-2" />
@@ -178,33 +182,33 @@ const PatientDashboard = () => {
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="bg-accent rounded-lg p-4">
-                          <div className="text-sm font-medium mb-1">Completed Sessions</div>
-                          <div className="text-2xl font-bold">7 of 12</div>
-                          <div className="text-xs text-muted-foreground mt-1">Next session: Nov 10</div>
+                          <div className="text-sm font-medium mb-1">{t('completed_sessions')}</div>
+                          <div className="text-2xl font-bold">7 {t('of')} 12</div>
+                          <div className="text-xs text-muted-foreground mt-1">{t('next_session')}: {isRTL ? '١٠ نوفمبر' : 'Nov 10'}</div>
                         </div>
                         <div className="bg-accent rounded-lg p-4">
-                          <div className="text-sm font-medium mb-1">Mood Tracker</div>
-                          <div className="text-2xl font-bold">Improving</div>
-                          <div className="text-xs text-muted-foreground mt-1">Up 12% this month</div>
+                          <div className="text-sm font-medium mb-1">{t('mood_tracker')}</div>
+                          <div className="text-2xl font-bold">{t('improving')}</div>
+                          <div className="text-xs text-muted-foreground mt-1">12% {t('up_this_month')}</div>
                         </div>
                         <div className="bg-accent rounded-lg p-4">
-                          <div className="text-sm font-medium mb-1">Weekly Goals</div>
-                          <div className="text-2xl font-bold">3 of 5</div>
-                          <div className="text-xs text-muted-foreground mt-1">2 days remaining</div>
+                          <div className="text-sm font-medium mb-1">{t('weekly_goals')}</div>
+                          <div className="text-2xl font-bold">3 {t('of')} 5</div>
+                          <div className="text-xs text-muted-foreground mt-1">2 {t('days_remaining')}</div>
                         </div>
                         <div className="bg-accent rounded-lg p-4">
-                          <div className="text-sm font-medium mb-1">Exercises Completed</div>
+                          <div className="text-sm font-medium mb-1">{t('exercises_completed')}</div>
                           <div className="text-2xl font-bold">12</div>
-                          <div className="text-xs text-muted-foreground mt-1">+3 from last week</div>
+                          <div className="text-xs text-muted-foreground mt-1">+3 {t('from_last_week')}</div>
                         </div>
                       </div>
 
                       <div className="flex flex-wrap gap-4">
                         <Button onClick={handleStartTherapy} className="btn-primary">
-                          Start Today's Session
+                          {t('start_todays_session')}
                         </Button>
                         <Button variant="outline" className="rounded-full">
-                          View Detailed Progress
+                          {t('view_detailed_progress')}
                         </Button>
                       </div>
                     </div>
@@ -217,7 +221,7 @@ const PatientDashboard = () => {
                   }`}
                 >
                   <CardHeader>
-                    <CardTitle>Your Therapist</CardTitle>
+                    <CardTitle>{t('your_therapist')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <DoctorCard doctor={mockDoctor} />
@@ -225,7 +229,7 @@ const PatientDashboard = () => {
                       onClick={handleBookAppointment} 
                       className="w-full mt-6 btn-primary"
                     >
-                      Book Appointment
+                      {t('schedule_session')}
                     </Button>
                   </CardContent>
                 </Card>
@@ -238,7 +242,7 @@ const PatientDashboard = () => {
                   }`}
                 >
                   <CardHeader>
-                    <CardTitle>Calendar</CardTitle>
+                    <CardTitle>{t('calendar')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <Calendar
@@ -246,9 +250,10 @@ const PatientDashboard = () => {
                       selected={date}
                       onSelect={setDate}
                       className="rounded-md border"
+                      locale={isRTL ? 'ar-SA' : 'en-US'}
                     />
                     <div className="mt-4">
-                      <h4 className="font-medium mb-2">Upcoming</h4>
+                      <h4 className="font-medium mb-2">{t('upcoming')}</h4>
                       {mockAppointments.filter(apt => apt.status === 'upcoming').length > 0 ? (
                         mockAppointments
                           .filter(apt => apt.status === 'upcoming')
@@ -256,12 +261,12 @@ const PatientDashboard = () => {
                           .map(apt => (
                             <div key={apt.id} className="bg-primary/10 p-3 rounded-lg">
                               <p className="font-medium text-sm">{formatAppointmentDate(apt.date)}</p>
-                              <p className="text-xs text-muted-foreground">{formatAppointmentTime(apt.date)} • {apt.type}</p>
+                              <p className="text-xs text-muted-foreground">{formatAppointmentTime(apt.date)} • {isRTL ? (apt.type === 'Video Call' ? 'مكالمة فيديو' : 'شخصيًا') : apt.type}</p>
                               <p className="text-xs mt-1">{apt.doctor}</p>
                             </div>
                           ))
                       ) : (
-                        <p className="text-sm text-muted-foreground">No upcoming appointments</p>
+                        <p className="text-sm text-muted-foreground">{t('no_upcoming_sessions')}</p>
                       )}
                     </div>
                   </CardContent>
@@ -273,7 +278,7 @@ const PatientDashboard = () => {
                   }`}
                 >
                   <CardHeader>
-                    <CardTitle>Recommended Articles</CardTitle>
+                    <CardTitle>{t('recommended_articles')}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -290,16 +295,16 @@ const PatientDashboard = () => {
               <Card className="border border-border/50">
                 <CardHeader>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                    <CardTitle>Your Appointments</CardTitle>
+                    <CardTitle>{t('your_appointments')}</CardTitle>
                     <Button onClick={handleBookAppointment} className="btn-primary">
-                      Book New Appointment
+                      {t('schedule_new_session')}
                     </Button>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-6">
                     <div>
-                      <h3 className="font-semibold mb-3">Upcoming</h3>
+                      <h3 className="font-semibold mb-3">{t('upcoming')}</h3>
                       {mockAppointments.filter(apt => apt.status === 'upcoming').length > 0 ? (
                         <div className="space-y-3">
                           {mockAppointments
@@ -312,31 +317,33 @@ const PatientDashboard = () => {
                                 <div>
                                   <div className="flex items-center gap-3 mb-2">
                                     <div className="bg-primary/10 text-primary rounded-full px-2 py-1 text-xs font-medium">
-                                      {apt.type}
+                                      {isRTL ? (apt.type === 'Video Call' ? 'مكالمة فيديو' : 'شخصيًا') : apt.type}
                                     </div>
-                                    <Badge variant="outline">{apt.status}</Badge>
+                                    <Badge variant="outline">{t(apt.status)}</Badge>
                                   </div>
                                   <p className="font-medium">{formatAppointmentDate(apt.date)}</p>
-                                  <p className="text-sm text-muted-foreground">{formatAppointmentTime(apt.date)} with {apt.doctor}</p>
+                                  <p className="text-sm text-muted-foreground">
+                                    {formatAppointmentTime(apt.date)} {isRTL ? 'مع' : 'with'} {apt.doctor}
+                                  </p>
                                 </div>
                                 <div className="flex gap-2">
                                   <Button variant="outline" size="sm" className="rounded-full">
-                                    Reschedule
+                                    {t('reschedule')}
                                   </Button>
                                   <Button variant="destructive" size="sm" className="rounded-full">
-                                    Cancel
+                                    {t('cancel')}
                                   </Button>
                                 </div>
                               </div>
                             ))}
                         </div>
                       ) : (
-                        <p className="text-muted-foreground">No upcoming appointments</p>
+                        <p className="text-muted-foreground">{t('no_upcoming_sessions')}</p>
                       )}
                     </div>
                     
                     <div>
-                      <h3 className="font-semibold mb-3">Past Appointments</h3>
+                      <h3 className="font-semibold mb-3">{t('past_appointments')}</h3>
                       <div className="space-y-3">
                         {mockAppointments
                           .filter(apt => apt.status === 'completed')
@@ -348,16 +355,18 @@ const PatientDashboard = () => {
                               <div>
                                 <div className="flex items-center gap-3 mb-2">
                                   <div className="bg-muted text-muted-foreground rounded-full px-2 py-1 text-xs font-medium">
-                                    {apt.type}
+                                    {isRTL ? (apt.type === 'Video Call' ? 'مكالمة فيديو' : 'شخصيًا') : apt.type}
                                   </div>
-                                  <Badge variant="outline" className="bg-muted">completed</Badge>
+                                  <Badge variant="outline" className="bg-muted">{t('completed')}</Badge>
                                 </div>
                                 <p className="font-medium">{formatAppointmentDate(apt.date)}</p>
-                                <p className="text-sm text-muted-foreground">{formatAppointmentTime(apt.date)} with {apt.doctor}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {formatAppointmentTime(apt.date)} {isRTL ? 'مع' : 'with'} {apt.doctor}
+                                </p>
                               </div>
                               <div>
                                 <Button variant="outline" size="sm" className="rounded-full">
-                                  View Notes
+                                  {t('view_notes')}
                                 </Button>
                               </div>
                             </div>
@@ -372,7 +381,7 @@ const PatientDashboard = () => {
             <TabsContent value="resources" className="space-y-8">
               <Card className="border border-border/50">
                 <CardHeader>
-                  <CardTitle>Mental Health Resources</CardTitle>
+                  <CardTitle>{t('mental_health_resources')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -382,12 +391,12 @@ const PatientDashboard = () => {
                           <path d="M12 6.25278V19.2528M18.5 12.7528H5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary"/>
                         </svg>
                       </div>
-                      <h3 className="text-lg font-semibold mb-2">Emergency Help</h3>
+                      <h3 className="text-lg font-semibold mb-2">{t('emergency_help')}</h3>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Access immediate support for mental health crises
+                        {t('access_immediate_support')}
                       </p>
                       <a href="#" className="text-sm font-medium text-primary hover:underline">
-                        View resources →
+                        {t('view_resources')} →
                       </a>
                     </div>
                     
@@ -400,12 +409,12 @@ const PatientDashboard = () => {
                           <path d="M15 9H15.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary"/>
                         </svg>
                       </div>
-                      <h3 className="text-lg font-semibold mb-2">Self-Help Tools</h3>
+                      <h3 className="text-lg font-semibold mb-2">{t('self_help_tools')}</h3>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Explore exercises and techniques for managing daily stress
+                        {t('explore_exercises')}
                       </p>
                       <a href="#" className="text-sm font-medium text-primary hover:underline">
-                        Access tools →
+                        {t('access_tools')} →
                       </a>
                     </div>
                     
@@ -416,12 +425,12 @@ const PatientDashboard = () => {
                           <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary"/>
                         </svg>
                       </div>
-                      <h3 className="text-lg font-semibold mb-2">Educational Material</h3>
+                      <h3 className="text-lg font-semibold mb-2">{t('educational_material')}</h3>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Learn about mental health conditions, treatments, and coping strategies
+                        {t('learn_about_mental_health')}
                       </p>
                       <a href="#" className="text-sm font-medium text-primary hover:underline">
-                        Start learning →
+                        {t('start_learning')} →
                       </a>
                     </div>
                   </div>
@@ -430,7 +439,7 @@ const PatientDashboard = () => {
               
               <Card className="border border-border/50">
                 <CardHeader>
-                  <CardTitle>Recommended Articles</CardTitle>
+                  <CardTitle>{t('recommended_articles')}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

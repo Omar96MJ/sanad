@@ -111,7 +111,16 @@ const generalTranslations = {
   "copy_link": "نسخ الرابط",
   "link_copied": "تم نسخ الرابط",
   "related_posts": "منشورات ذات صلة",
-  "view_more": "عرض المزيد"
+  "view_more": "عرض المزيد",
+  
+  // Additional Dashboard translations
+  "of": "من",
+  "recommended_articles": "مقالات مُوصى بها",
+  "your_appointments": "مواعيدك",
+  "view_notes": "عرض الملاحظات",
+  "past_appointments": "المواعيد السابقة",
+  "upcoming": "قادمة"
 };
 
 export default generalTranslations;
+
