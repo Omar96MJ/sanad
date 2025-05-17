@@ -60,7 +60,47 @@ const TherapistProfile = () => {
         
         if (error) {
           console.error("Error fetching doctor profile:", error);
-          toast.error(t('error_loading_profile'));
+          
+          // If no doctor profile exists, create one
+          if (error.code === 'PGRST116') {
+            const { error: insertError } = await supabase
+              .from('doctors')
+              .insert({
+                user_id: user.id,
+                name: user.name || '',
+                specialization: '',
+                bio: '',
+                years_of_experience: 0,
+                patients_count: 0,
+                profile_image: user.profileImage || '',
+              });
+              
+            if (insertError) {
+              console.error("Error creating doctor profile:", insertError);
+              toast.error(t('error_creating_profile'));
+            } else {
+              // Fetch again after creating
+              const { data: newProfileData } = await supabase
+                .from('doctors')
+                .select('*')
+                .eq('user_id', user.id)
+                .single();
+                
+              if (newProfileData) {
+                setDoctorProfile(newProfileData);
+                form.reset({
+                  name: newProfileData.name || '',
+                  specialization: newProfileData.specialization || '',
+                  bio: newProfileData.bio || '',
+                  years_of_experience: newProfileData.years_of_experience || 0,
+                  profile_image: newProfileData.profile_image || '',
+                });
+              }
+            }
+          } else {
+            toast.error(t('error_loading_profile'));
+          }
+          
           return;
         }
         
@@ -111,6 +151,14 @@ const TherapistProfile = () => {
       }
       
       toast.success(t('profile_updated'));
+      
+      // Also update auth metadata for consistency
+      await supabase.auth.updateUser({
+        data: {
+          name: values.name,
+          profile_image: values.profile_image
+        }
+      });
     } catch (error) {
       console.error("Error in profile update:", error);
       toast.error(t('error_updating_profile'));

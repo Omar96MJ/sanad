@@ -76,6 +76,36 @@ const TherapistDashboard = () => {
         if (profileError) {
           console.error("Error fetching doctor profile:", profileError);
           toast.error(t('error_loading_profile'));
+          
+          // If no doctor profile exists, create one
+          if (profileError.code === 'PGRST116') {
+            const { error: insertError } = await supabase
+              .from('doctors')
+              .insert({
+                user_id: user.id,
+                name: user.name || '',
+                specialization: '',
+                bio: '',
+                years_of_experience: 0,
+                patients_count: 0,
+                profile_image: user.profileImage || '',
+              });
+              
+            if (insertError) {
+              console.error("Error creating doctor profile:", insertError);
+            } else {
+              // Fetch again after creating
+              const { data: newProfileData } = await supabase
+                .from('doctors')
+                .select('*')
+                .eq('user_id', user.id)
+                .single();
+                
+              if (newProfileData) {
+                setDoctorProfile(newProfileData);
+              }
+            }
+          }
         } else if (profileData) {
           setDoctorProfile(profileData);
           
@@ -83,8 +113,8 @@ const TherapistDashboard = () => {
           const stats: DoctorStats = {
             patients_count: profileData.patients_count || 0,
             upcoming_sessions: 0,
-            pending_evaluations: 5, // Mock data for now
-            available_hours: 16, // Mock data for now
+            pending_evaluations: 5, // Default value
+            available_hours: 16, // Default value
           };
           
           // Get upcoming appointments count

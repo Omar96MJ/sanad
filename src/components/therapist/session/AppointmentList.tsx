@@ -1,6 +1,7 @@
 
 import { useLanguage } from "@/hooks/useLanguage";
 import { AppointmentCard } from "./AppointmentCard";
+import { Loader2 } from "lucide-react";
 
 type Appointment = {
   id: string;
@@ -14,11 +15,20 @@ type Appointment = {
 type AppointmentListProps = {
   appointments: Appointment[];
   onUpdateStatus: (id: string, status: string) => void;
+  isLoading?: boolean;
 };
 
-export const AppointmentList = ({ appointments, onUpdateStatus }: AppointmentListProps) => {
+export const AppointmentList = ({ appointments, onUpdateStatus, isLoading = false }: AppointmentListProps) => {
   const { t } = useLanguage();
 
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+  
   if (appointments.length === 0) {
     return (
       <div className="text-center py-8">
