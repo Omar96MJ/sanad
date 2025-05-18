@@ -1,4 +1,3 @@
-
 import { useState, useEffect, createContext, useContext } from 'react';
 import { User, UserRole } from '@/lib/types';
 import { toast } from "sonner";

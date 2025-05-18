@@ -1,5 +1,5 @@
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -20,18 +20,26 @@ const Login = () => {
   const isRTL = language === 'ar';
 
   // Redirect if already logged in
-  if (user) {
-    navigate("/");
-    return null;
-  }
+  useEffect(() => {
+    if (user) {
+      // Redirect based on user role
+      if (user.role === 'doctor') {
+        navigate("/therapist-dashboard");
+      } else if (user.role === 'admin') {
+        navigate("/admin-dashboard");
+      } else {
+        navigate("/patient-dashboard");
+      }
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
     try {
       await login(email, password);
-      // No need to navigate here as the AuthProvider will update the user state
-      // and the useEffect above will handle the redirect
+      // The redirection will be handled by the useEffect hook above
+      // when the user state is updated by the AuthProvider
     } catch (error) {
       console.error("Login error:", error);
     }
