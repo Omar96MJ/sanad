@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -138,16 +137,13 @@ const TherapistProfile = () => {
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}/${Date.now()}.${fileExt}`;
       
-      // Upload to Supabase storage with progress tracking
+      // Upload to Supabase storage without using onUploadProgress
+      // This is compatible with the FileOptions type
       const { error: uploadError } = await supabase.storage
         .from('doctor_profiles')
         .upload(fileName, file, {
           cacheControl: '3600',
-          upsert: false,
-          onUploadProgress: (progress) => {
-            const percent = Math.round((progress.loaded / progress.total) * 100);
-            setUploadProgress(percent);
-          }
+          upsert: false
         });
         
       if (uploadError) {
@@ -155,6 +151,9 @@ const TherapistProfile = () => {
         toast.error(t('error_uploading_image'));
         return;
       }
+      
+      // Set progress to 100% after successful upload
+      setUploadProgress(100);
       
       // Get the public URL 
       const { data: urlData } = supabase.storage
@@ -184,7 +183,8 @@ const TherapistProfile = () => {
       toast.error(t('error_uploading_image'));
     } finally {
       setIsUploading(false);
-      setUploadProgress(0);
+      // Keep progress at 100% for a short time before resetting
+      setTimeout(() => setUploadProgress(0), 1500);
     }
   };
 
