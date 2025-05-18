@@ -30,12 +30,18 @@ const ConversationList: React.FC<ConversationListProps> = ({
   };
 
   // Get the last message for a conversation
-  const getLastMessage = (conversationId: Conversation) => {
+  const getLastMessage = (conversation: Conversation) => {
+    // Filter messages for this conversation
     const conversationMessages = messages.filter(m => 
-      conversationId.participantIds.includes(m.senderId) && 
-      conversationId.participantIds.includes(m.recipientId)
+      conversation.participantIds.includes(m.senderId) && 
+      conversation.participantIds.includes(m.recipientId)
     );
     
+    if (conversationMessages.length === 0) {
+      return null;
+    }
+    
+    // Sort by timestamp descending and get the first one (most recent)
     return conversationMessages.sort((a, b) => 
       new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     )[0];
@@ -45,6 +51,14 @@ const ConversationList: React.FC<ConversationListProps> = ({
   const sortedConversations = [...conversations].sort((a, b) => 
     new Date(b.lastMessageTimestamp).getTime() - new Date(a.lastMessageTimestamp).getTime()
   );
+
+  if (sortedConversations.length === 0) {
+    return (
+      <div className="text-center py-8 text-muted-foreground">
+        No conversations yet
+      </div>
+    );
+  }
 
   return (
     <ScrollArea className="h-[calc(100vh-350px)] pr-4">
@@ -78,7 +92,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                       </span>
                     )}
                   </div>
-                  {lastMessage && (
+                  {lastMessage ? (
                     <div className="flex justify-between items-center">
                       <p className="text-xs text-muted-foreground truncate">
                         {lastMessage.content}
@@ -92,6 +106,10 @@ const ConversationList: React.FC<ConversationListProps> = ({
                         </Badge>
                       )}
                     </div>
+                  ) : (
+                    <p className="text-xs text-muted-foreground italic">
+                      No messages yet
+                    </p>
                   )}
                 </div>
               </div>

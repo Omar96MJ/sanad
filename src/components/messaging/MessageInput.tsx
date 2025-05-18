@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Send } from "lucide-react";
+import { Send, Loader2 } from "lucide-react";
 
 interface MessageInputProps {
   onSendMessage: (content: string) => void;
@@ -10,12 +10,18 @@ interface MessageInputProps {
 
 const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
   const [message, setMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     const trimmedMessage = message.trim();
-    if (trimmedMessage) {
-      onSendMessage(trimmedMessage);
-      setMessage("");
+    if (trimmedMessage && !isSending) {
+      setIsSending(true);
+      try {
+        await onSendMessage(trimmedMessage);
+        setMessage("");
+      } finally {
+        setIsSending(false);
+      }
     }
   };
 
@@ -35,15 +41,20 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
           className="min-h-[60px] resize-none"
+          disabled={isSending}
         />
       </div>
       <Button 
         size="icon" 
         className="h-[60px]" 
         onClick={handleSendMessage} 
-        disabled={!message.trim()}
+        disabled={!message.trim() || isSending}
       >
-        <Send className="h-4 w-4" />
+        {isSending ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : (
+          <Send className="h-4 w-4" />
+        )}
       </Button>
     </div>
   );

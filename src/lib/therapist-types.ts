@@ -1,4 +1,3 @@
-
 import { User, UserRole } from "./types";
 
 export interface TherapistProfile extends User {
@@ -100,7 +99,7 @@ export interface Message {
   id: string;
   senderId: string;
   senderName: string;
-  senderRole: UserRole;
+  senderRole: string;
   recipientId: string;
   content: string;
   timestamp: string;
