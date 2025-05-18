@@ -1,11 +1,9 @@
+
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useLanguage } from "@/hooks/useLanguage";
-import MessagingLayout from "@/components/messaging/MessagingLayout";
-import { DashboardOverview } from "@/components/patient/dashboard/DashboardOverview";
-import { AppointmentsTab } from "@/components/patient/dashboard/AppointmentsTab";
-import { ResourcesTab } from "@/components/patient/dashboard/ResourcesTab";
+import { Tabs } from "@/components/ui/tabs";
 import { BlogPost, Doctor } from "@/lib/types";
+import { TabsList } from "./tabs/TabsList";
+import { TabContents } from "./tabs/TabContents";
 
 interface PatientDashboardTabsProps {
   isVisible: boolean;
@@ -36,53 +34,27 @@ export const PatientDashboardTabs = ({
   formatAppointmentTime,
   calendarLocale
 }: PatientDashboardTabsProps) => {
-  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("overview");
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-      <TabsList className="grid grid-cols-1 sm:grid-cols-4 gap-2">
-        <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
-        <TabsTrigger value="appointments">{t('sessions')}</TabsTrigger>
-        <TabsTrigger value="resources">{t('resources')}</TabsTrigger>
-        <TabsTrigger value="messaging">{t('messaging')}</TabsTrigger>
-      </TabsList>
+      <TabsList />
       
-      <TabsContent value="overview">
-        <DashboardOverview 
-          isVisible={isVisible}
-          progress={progress}
-          doctor={mockDoctor}
-          upcomingAppointments={mockAppointments}
-          mockArticles={mockArticles}
-          date={date}
-          setDate={setDate}
-          onStartTherapy={handleStartTherapy}
-          onBookAppointment={handleBookAppointment}
-          formatAppointmentDate={formatAppointmentDate}
-          formatAppointmentTime={formatAppointmentTime}
-          calendarLocale={calendarLocale}
-        />
-      </TabsContent>
-      
-      <TabsContent value="appointments">
-        <AppointmentsTab 
-          appointments={mockAppointments}
-          onBookAppointment={handleBookAppointment}
-          formatAppointmentDate={formatAppointmentDate}
-          formatAppointmentTime={formatAppointmentTime}
-        />
-      </TabsContent>
-      
-      <TabsContent value="resources">
-        <ResourcesTab articles={mockArticles} />
-      </TabsContent>
-      
-      <TabsContent value="messaging">
-        <div className="mt-4">
-          <MessagingLayout isTherapist={false} />
-        </div>
-      </TabsContent>
+      <TabContents
+        activeTab={activeTab}
+        isVisible={isVisible}
+        progress={progress}
+        mockDoctor={mockDoctor}
+        mockAppointments={mockAppointments}
+        mockArticles={mockArticles}
+        date={date}
+        setDate={setDate}
+        handleBookAppointment={handleBookAppointment}
+        handleStartTherapy={handleStartTherapy}
+        formatAppointmentDate={formatAppointmentDate}
+        formatAppointmentTime={formatAppointmentTime}
+        calendarLocale={calendarLocale}
+      />
     </Tabs>
   );
 };
