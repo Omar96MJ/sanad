@@ -1,8 +1,6 @@
-
 import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguage } from "@/hooks/useLanguage";
-import { Calendar } from "@/components/ui/calendar";
 import MessagingLayout from "@/components/messaging/MessagingLayout";
 import { DashboardOverview } from "@/components/patient/dashboard/DashboardOverview";
 import { AppointmentsTab } from "@/components/patient/dashboard/AppointmentsTab";
