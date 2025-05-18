@@ -32,6 +32,7 @@ const TherapistProfile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [doctorProfile, setDoctorProfile] = useState<any>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   
@@ -131,12 +132,23 @@ const TherapistProfile = () => {
     
     try {
       setIsUploading(true);
+      setUploadProgress(0);
       
-      // Upload to Supabase storage
-      const fileName = `${user.id}-${Date.now()}.${file.name.split('.').pop()}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
+      // Generate a unique filename with user ID to ensure proper permissions
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+      
+      // Upload to Supabase storage with progress tracking
+      const { error: uploadError } = await supabase.storage
         .from('doctor_profiles')
-        .upload(fileName, file);
+        .upload(fileName, file, {
+          cacheControl: '3600',
+          upsert: false,
+          onUploadProgress: (progress) => {
+            const percent = Math.round((progress.loaded / progress.total) * 100);
+            setUploadProgress(percent);
+          }
+        });
         
       if (uploadError) {
         console.error("Error uploading image:", uploadError);
@@ -145,19 +157,34 @@ const TherapistProfile = () => {
       }
       
       // Get the public URL 
-      const { data: urlData } = await supabase.storage
+      const { data: urlData } = supabase.storage
         .from('doctor_profiles')
         .getPublicUrl(fileName);
         
       if (urlData?.publicUrl) {
         setProfileImage(urlData.publicUrl);
-        toast.success(t('image_uploaded'));
+        toast.success(t('image_uploaded_successfully'));
+        
+        // Immediately update the profile image in database
+        const { error: updateError } = await supabase
+          .from('doctors')
+          .update({
+            profile_image: urlData.publicUrl,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('user_id', user.id);
+          
+        if (updateError) {
+          console.error("Error updating profile image:", updateError);
+          toast.error(t('error_updating_profile_image'));
+        }
       }
     } catch (error) {
       console.error("Image upload error:", error);
       toast.error(t('error_uploading_image'));
     } finally {
       setIsUploading(false);
+      setUploadProgress(0);
     }
   };
 
@@ -249,10 +276,23 @@ const TherapistProfile = () => {
                       />
                     </label>
                   </div>
-                  {profileImage && (
-                    <div className="mt-2 text-xs text-muted-foreground overflow-hidden text-ellipsis">
-                      {new URL(profileImage).pathname.split('/').pop()}
+                  
+                  {isUploading && (
+                    <div className="mt-2">
+                      <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-primary" 
+                          style={{ width: `${uploadProgress}%` }}
+                        ></div>
+                      </div>
+                      <p className="text-xs text-center mt-1">{uploadProgress}%</p>
                     </div>
+                  )}
+                  
+                  {profileImage && !isUploading && (
+                    <p className="mt-2 text-xs text-muted-foreground truncate">
+                      {new URL(profileImage).pathname.split('/').pop()}
+                    </p>
                   )}
                 </div>
               </div>
