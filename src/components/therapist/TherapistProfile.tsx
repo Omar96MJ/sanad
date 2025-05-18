@@ -13,7 +13,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { Loader2 } from "lucide-react";
+import { Loader2, Upload } from "lucide-react";
 
 // Form schema for doctor profile
 const profileFormSchema = z.object({
@@ -21,7 +21,6 @@ const profileFormSchema = z.object({
   specialization: z.string().min(2, { message: "Specialization must be at least 2 characters." }),
   bio: z.string().min(10, { message: "Bio must be at least 10 characters." }).max(500, { message: "Bio cannot be more than 500 characters." }),
   years_of_experience: z.coerce.number().min(0, { message: "Years of experience cannot be negative." }),
-  profile_image: z.string().optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -32,7 +31,9 @@ const TherapistProfile = () => {
   const isRTL = language === 'ar';
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [doctorProfile, setDoctorProfile] = useState<any>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -41,7 +42,6 @@ const TherapistProfile = () => {
       specialization: '',
       bio: '',
       years_of_experience: 0,
-      profile_image: '',
     },
   });
 
@@ -88,12 +88,12 @@ const TherapistProfile = () => {
                 
               if (newProfileData) {
                 setDoctorProfile(newProfileData);
+                setProfileImage(newProfileData.profile_image);
                 form.reset({
                   name: newProfileData.name || '',
                   specialization: newProfileData.specialization || '',
                   bio: newProfileData.bio || '',
                   years_of_experience: newProfileData.years_of_experience || 0,
-                  profile_image: newProfileData.profile_image || '',
                 });
               }
             }
@@ -106,12 +106,12 @@ const TherapistProfile = () => {
         
         if (data) {
           setDoctorProfile(data);
+          setProfileImage(data.profile_image);
           form.reset({
             name: data.name || '',
             specialization: data.specialization || '',
             bio: data.bio || '',
             years_of_experience: data.years_of_experience || 0,
-            profile_image: data.profile_image || '',
           });
         }
       } catch (error) {
@@ -124,6 +124,42 @@ const TherapistProfile = () => {
 
     fetchDoctorProfile();
   }, [user, t, form]);
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+    
+    try {
+      setIsUploading(true);
+      
+      // Upload to Supabase storage
+      const fileName = `${user.id}-${Date.now()}.${file.name.split('.').pop()}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('doctor_profiles')
+        .upload(fileName, file);
+        
+      if (uploadError) {
+        console.error("Error uploading image:", uploadError);
+        toast.error(t('error_uploading_image'));
+        return;
+      }
+      
+      // Get the public URL 
+      const { data: urlData } = await supabase.storage
+        .from('doctor_profiles')
+        .getPublicUrl(fileName);
+        
+      if (urlData?.publicUrl) {
+        setProfileImage(urlData.publicUrl);
+        toast.success(t('image_uploaded'));
+      }
+    } catch (error) {
+      console.error("Image upload error:", error);
+      toast.error(t('error_uploading_image'));
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   const onSubmit = async (values: ProfileFormValues) => {
     if (!user) return;
@@ -139,7 +175,7 @@ const TherapistProfile = () => {
           specialization: values.specialization,
           bio: values.bio,
           years_of_experience: values.years_of_experience,
-          profile_image: values.profile_image,
+          profile_image: profileImage,
           updated_at: new Date().toISOString(),
         })
         .eq('user_id', user.id);
@@ -156,7 +192,7 @@ const TherapistProfile = () => {
       await supabase.auth.updateUser({
         data: {
           name: values.name,
-          profile_image: values.profile_image
+          profile_image: profileImage
         }
       });
     } catch (error) {
@@ -188,27 +224,37 @@ const TherapistProfile = () => {
             <div className="flex flex-col md:flex-row gap-6">
               <div className="w-full md:w-1/3 flex flex-col items-center gap-4">
                 <Avatar className="w-32 h-32">
-                  <AvatarImage src={form.watch("profile_image") || "/placeholder.svg"} alt={form.watch("name")} />
+                  <AvatarImage src={profileImage || "/placeholder.svg"} alt={form.watch("name")} />
                   <AvatarFallback className="text-xl">{form.watch("name").substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 
-                <FormField
-                  control={form.control}
-                  name="profile_image"
-                  render={({ field }) => (
-                    <FormItem className="w-full">
-                      <FormLabel>{t('profile_image_url')}</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="https://example.com/image.jpg" 
-                          {...field} 
-                          className={isRTL ? 'text-right' : 'text-left'}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                <div className="w-full">
+                  <FormLabel>{t('profile_image')}</FormLabel>
+                  <div className="mt-2">
+                    <label 
+                      htmlFor="profile-image" 
+                      className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed p-4 transition-colors hover:bg-muted"
+                    >
+                      <Upload className="h-4 w-4" />
+                      <span className="text-sm font-medium">
+                        {isUploading ? t('uploading') : t('upload_image')}
+                      </span>
+                      <input
+                        id="profile-image"
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleImageUpload}
+                        disabled={isUploading}
+                      />
+                    </label>
+                  </div>
+                  {profileImage && (
+                    <div className="mt-2 text-xs text-muted-foreground overflow-hidden text-ellipsis">
+                      {new URL(profileImage).pathname.split('/').pop()}
+                    </div>
                   )}
-                />
+                </div>
               </div>
               
               <div className="w-full md:w-2/3 space-y-4">
@@ -283,7 +329,7 @@ const TherapistProfile = () => {
             </div>
             
             <div className="flex justify-end">
-              <Button type="submit" disabled={isSaving}>
+              <Button type="submit" disabled={isSaving || isUploading}>
                 {isSaving ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
