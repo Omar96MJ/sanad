@@ -4,6 +4,7 @@ import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/auth";
 import { AuthProvider } from "@/hooks/auth";
 import { LanguageProvider } from "@/hooks/language";
+import { ThemeProvider } from "@/hooks/useTheme";
 import Index from "./pages/Index";
 import AboutUs from "./pages/AboutUs";
 import Blog from "./pages/Blog";
@@ -21,9 +22,11 @@ import NotFound from "./pages/NotFound";
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <LanguageProvider>
-        <AppRoutes />
-      </LanguageProvider>
+      <ThemeProvider>
+        <LanguageProvider>
+          <AppRoutes />
+        </LanguageProvider>
+      </ThemeProvider>
     </AuthProvider>
   );
 };
