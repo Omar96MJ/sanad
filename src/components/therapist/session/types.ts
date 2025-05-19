@@ -13,6 +13,7 @@ export type Appointment = {
 
 export const appointmentFormSchema = z.object({
   patient_name: z.string().min(2),
+  patient_id: z.string().optional(),
   session_date: z.date(),
   session_time: z.string(),
   session_type: z.string(),

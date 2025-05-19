@@ -29,6 +29,7 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<AppointmentFormValues>({
     defaultValues: {
       patient_name: "",
+      patient_id: undefined,
       session_date: undefined,
       session_time: "",
       session_type: "",
