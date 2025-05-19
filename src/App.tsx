@@ -51,6 +51,7 @@ const App = () => {
               <Route path="/therapist-dashboard/*" element={<TherapistDashboard />} />
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
               <Route path="/tests" element={<PsychologicalTests />} />
+              <Route path="/psychological-tests" element={<PsychologicalTests />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/create-admin" element={<CreateAdmin />} />
               <Route path="*" element={<NotFound />} />
