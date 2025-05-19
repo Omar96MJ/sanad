@@ -126,7 +126,6 @@ const dashboardTranslations = {
   "years_of_experience": "سنوات الخبرة",
   "professional_bio": "السيرة الذاتية المهنية",
   "bio_description": "شارك نهجك في العلاج ومجالات خبرتك",
-  "full_name": "الاسم الكامل",
   "save_changes": "حفظ التغييرات",
   "session_notes_placeholder": "أدخل أي ملاحظات أو موضوعات ترغب في مناقشتها",
 };

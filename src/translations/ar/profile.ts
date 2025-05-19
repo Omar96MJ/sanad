@@ -16,7 +16,6 @@ const profileTranslations = {
   "no_tests_completed": "لم يتم إكمال أي اختبارات",
   "take_a_test": "إجراء اختبار",
   "change_picture": "تغيير الصورة",
-  "full_name": "الاسم الكامل",
   "about_me": "نبذة عني",
   "save_changes": "حفظ التغييرات",
   "verify_email": "التحقق من البريد الإلكتروني",

@@ -54,7 +54,7 @@ const general = {
   'i_am_a': 'I am a',
   'person_seeking_guidance': 'Person Seeking Guidance',
   'support_specialist': 'Support Specialist',
-  'already_have_account': 'Already Have Account',
+  'already_have_account': 'Already Have Account?',
   "create_password": "Create Password",
 
   
