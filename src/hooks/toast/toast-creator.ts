@@ -10,7 +10,7 @@ function genId() {
 }
 
 // Core toast function
-export const createToast: ToastFunction = (props: Toast) => {
+export const toast: ToastFunction = (props: Toast) => {
   const id = props.id || genId();
 
   const update = (props: ToasterToast) =>
@@ -41,36 +41,37 @@ export const createToast: ToastFunction = (props: Toast) => {
 };
 
 // Add helper methods
-createToast.success = (message: string) => {
-  return createToast({ 
+toast.success = (message: string) => {
+  return toast({ 
     title: "Success", 
     description: message, 
     variant: "default" 
   });
 };
 
-createToast.error = (message: string) => {
-  return createToast({ 
+toast.error = (message: string) => {
+  return toast({ 
     title: "Error", 
     description: message, 
     variant: "destructive" 
   });
 };
 
-createToast.info = (message: string) => {
-  return createToast({ 
+toast.info = (message: string) => {
+  return toast({ 
     title: "Info", 
     description: message,
     variant: "default"
   });
 };
 
-createToast.warning = (message: string) => {
-  return createToast({ 
+toast.warning = (message: string) => {
+  return toast({ 
     title: "Warning", 
     description: message,
     variant: "destructive"
   });
 };
 
-export const toast = createToast;
+// Explicitly export the toast function as baseToast for internal use
+export { toast as baseToast };

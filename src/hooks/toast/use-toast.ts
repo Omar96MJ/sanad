@@ -48,4 +48,4 @@ export function useToast(): UseToastReturnType {
   };
 }
 
-export { baseToast as toast } from "./toast-creator";
+export { toast } from "./toast-creator";
