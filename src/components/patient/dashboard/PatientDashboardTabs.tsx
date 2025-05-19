@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Tabs } from "@/components/ui/tabs";
 import { BlogPost, Doctor } from "@/lib/types";
@@ -40,21 +39,9 @@ export const PatientDashboardTabs = ({
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
       <TabsList />
       
-      <TabContents
-        activeTab={activeTab}
-        isVisible={isVisible}
-        progress={progress}
-        mockDoctor={mockDoctor}
-        mockAppointments={mockAppointments}
-        mockArticles={mockArticles}
-        date={date}
-        setDate={setDate}
-        handleBookAppointment={handleBookAppointment}
-        handleStartTherapy={handleStartTherapy}
-        formatAppointmentDate={formatAppointmentDate}
-        formatAppointmentTime={formatAppointmentTime}
-        calendarLocale={calendarLocale}
-      />
+      <TabContents />
     </Tabs>
   );
 };
+
+export default PatientDashboardTabs;

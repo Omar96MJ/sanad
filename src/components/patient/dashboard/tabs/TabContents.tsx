@@ -1,10 +1,11 @@
+
 import React from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import { useLanguage } from "@/hooks/useLanguage";
 import DashboardOverview from "@/components/patient/dashboard/DashboardOverview";
-import AppointmentsTab from "@/components/patient/dashboard/AppointmentsTab";
-import ResourcesTab from "@/components/patient/dashboard/ResourcesTab";
-import MessagingTab from "@/components/patient/dashboard/MessagingTab";
+import { AppointmentsTab } from "@/components/patient/dashboard/AppointmentsTab";
+import { ResourcesTab } from "@/components/patient/dashboard/ResourcesTab";
+import { MessagingTab } from "@/components/patient/dashboard/MessagingTab";
 
 export const TabContents = () => {
   const { t } = useLanguage();
@@ -29,3 +30,5 @@ export const TabContents = () => {
     </>
   );
 };
+
+export default TabContents;

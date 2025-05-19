@@ -1,6 +1,13 @@
-
 // Dashboard related translations for English
 const dashboardTranslations = {
+  // Dashboard general
+  "dashboard": "Dashboard",
+  "welcome_back": "Welcome back",
+  "overview": "Overview",
+  "sessions": "Sessions",
+  "resources": "Resources",
+  "messaging": "Messaging",
+  "send_messages_to_your_therapist": "Send secure messages to your therapist and receive responses directly.",
   // Patient Dashboard
   'patientdashboard': 'Patient Dashboard',
   'trackyourprogress': 'Track your progress, manage appointments, and access resources for your mental health',

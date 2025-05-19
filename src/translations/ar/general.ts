@@ -1,4 +1,3 @@
-
 // General terms and translations for Arabic
 export const generalTranslations = {
   // General terms
@@ -140,9 +139,15 @@ export const generalTranslations = {
   "join_us": "انضم إلينا",
   "signing_in": "جاري تسجيل الدخول...",
   
-  // Therapist search
+  // Messaging
+  "send_messages_to_your_therapist": "أرسل رسائل آمنة إلى معالجك واستلم الردود مباشرة.",
+  "messaging": "المراسلة",
+  "messages": "الرسائل",
+  "patients": "المرضى",
+  
+  // Therapist search and profile
   "find_therapist": "ابحث عن معالج",
-  "find_therapist_description": "تواصل مع معالج محترف يمكنه مساعدتك في رحلتك للصحة النفسية.",
+  "find_therapist_description": "تواصل مع معالج محترف يمكنه مساعدتك في رحلتك للصحة النفسية",
   "search_therapists": "البحث عن المعالجين بالاسم أو التخصص",
   "all_specializations": "جميع التخصصات",
   "no_therapists_found": "لم يتم العثور على معالجين مطابقين لمعاييرك",
@@ -151,7 +156,6 @@ export const generalTranslations = {
   "schedule": "الجدول",
   "reviews": "التقييمات",
   "select_as_my_therapist": "اختر كمعالجي",
-  "selected": "تم اختياره",
   "selecting_therapist": "جاري الاختيار...",
   "book_appointment": "حجز موعد",
   "contact_information": "معلومات الاتصال",
@@ -161,7 +165,6 @@ export const generalTranslations = {
   "professional_experience": "الخبرة المهنية",
   "specialization": "التخصص",
   "bio": "السيرة المهنية",
-  "bio_placeholder": "لا توجد معلومات متاحة",
   "education": "التعليم",
   "availability": "الأوقات المتاحة",
   "view_available_slots": "عرض فترات المواعيد المتاحة",
@@ -176,57 +179,5 @@ export const generalTranslations = {
   "patients": "المرضى",
   "years": "سنوات خبرة",
   "therapist_not_found": "لم يتم العثور على المعالج",
-  "error_loading_therapist_details": "خطأ في تحميل تفاصيل المعالج",
-  
-  // Appointments
-  "my_appointments": "مواعيدي",
-  "no_appointments": "لا توجد مواعيد",
-  "no_appointments_message": "ليس لديك أي مواعيد مجدولة. ابحث عن معالج لحجز جلستك الأولى.",
-  "find_a_therapist": "ابحث عن معالج",
-  "cancel": "إلغاء",
-  "reschedule": "إعادة جدولة",
-  "cancel_appointment": "إلغاء الموعد",
-  "cancel_appointment_confirmation": "هل أنت متأكد من رغبتك في إلغاء هذا الموعد؟ لا يمكن التراجع عن هذا الإجراء.",
-  "keep_appointment": "الاحتفاظ بالموعد",
-  "confirm_cancel": "نعم، قم بالإلغاء",
-  "cancelling": "جاري الإلغاء...",
-  "appointment_cancelled": "تم إلغاء الموعد بنجاح",
-  "error_cancelling_appointment": "خطأ في إلغاء الموعد",
-  "upcoming": "قادم",
-  "completed": "مكتمل",
-  "cancelled": "ملغى",
-  "error_loading_appointments": "خطأ في تحميل المواعيد",
-  
-  // Library
-  "library": "مكتبة الموارد",
-  "library_description": "استكشف مجموعتنا من المقالات والأدلة والفيديوهات لمعرفة المزيد حول الصحة النفسية والرفاهية.",
-  "search_resources": "البحث في الموارد",
-  "all": "الكل",
-  "articles": "المقالات",
-  "guides": "الأدلة",
-  "videos": "الفيديوهات",
-  "no_resources_found": "لم يتم العثور على موارد",
-  "no_resources_found_for_search": "لم يتم العثور على موارد تطابق معايير البحث الخاصة بك.",
-  "no_resources_available": "لا تتوفر موارد حاليًا.",
-  "clear_search": "مسح البحث",
-  "read_now": "اقرأ الآن",
-  "article": "مقالة",
-  "guide": "دليل",
-  "video": "فيديو",
-  "error_loading_resources": "خطأ في تحميل الموارد",
-  "resource_library": "مكتبة الموارد",
-  "explore_resources": "استكشف مقالاتنا وأدلتنا والمزيد",
-  "view_library": "عرض المكتبة",
-  "take_assessment": "قم بإجراء تقييم لصحتك النفسية",
-  "take_test": "إجراء اختبار",
-  "quick_actions": "إجراءات سريعة",
-  "my_therapist": "معالجي",
-  "no_therapist_assigned": "لم يتم تعيين معالج",
-  "find_therapist_message": "ابحث عن معالج يناسب احتياجاتك",
-  "english": "English",
-  "arabic": "العربية",
-  "overview": "نظرة عامة",
-  "sessions": "الجلسات",
-  "resources": "الموارد",
-  "messaging": "المراسلات"
+  "error_loading_therapist_details": "خطأ في تحميل تفاصيل المعالج"
 };

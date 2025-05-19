@@ -1,10 +1,11 @@
-
 export const generalTranslations = {
   'welcome': 'Welcome',
   'home': 'Home',
   'about_us': 'About Us',
   'blog': 'Blog',
   'faq': 'FAQ',
+  'contact': 'Contact',
+  'services': 'Services',
   'self_care_tips': 'Self-Care Tips',
   'mental_health_guide': 'Mental Health Guide',
   'crisis_support': 'Crisis Support',
@@ -116,8 +117,8 @@ export const generalTranslations = {
   'i_am_a': 'I am a',
   'find_therapist': 'Find a Therapist',
   'find_therapist_description': 'Connect with a professional therapist who can help you on your mental health journey.',
-  'search_therapists': 'Search therapists by name or specialization',
-  'all_specializations': 'All Specializations',
+  'search_therapists': 'Search therapists by name or specialty',
+  'all_specializations': 'All specializations',
   'no_therapists_found': 'No therapists found matching your criteria',
   'error_loading_therapists': 'Error loading therapists',
   'about': 'About',
@@ -137,7 +138,7 @@ export const generalTranslations = {
   'bio_placeholder': 'No information available',
   'education': 'Education',
   'availability': 'Availability',
-  'view_available_slots': 'View available appointment slots',
+  'view_available_slots': 'View Available Slots',
   'monday': 'Monday',
   'tuesday': 'Tuesday',
   'wednesday': 'Wednesday',
@@ -147,7 +148,7 @@ export const generalTranslations = {
   'what_patients_say': 'What other patients say about this therapist',
   'month_ago': 'month ago',
   'patients': 'patients',
-  'years': 'years exp',
+  'years': 'years experience',
   'therapist_not_found': 'Therapist not found',
   'error_loading_therapist_details': 'Error loading therapist details',
   
@@ -201,5 +202,11 @@ export const generalTranslations = {
   'overview': 'Overview',
   'sessions': 'Sessions',
   'resources': 'Resources',
-  'messaging': 'Messaging'
+  'messaging': 'Messaging',
+  
+  // Messaging
+  "send_messages_to_your_therapist": "Send secure messages to your therapist and receive responses directly.",
+  "messaging": "Messaging",
+  "messages": "Messages",
+  "patients": "Patients"
 };

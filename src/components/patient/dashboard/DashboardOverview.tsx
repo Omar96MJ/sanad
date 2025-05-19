@@ -4,7 +4,7 @@ import React from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { ProgressSection } from "./ProgressSection"; // Change from default to named import
 import { TherapistCard } from "./TherapistCard"; // Change from default to named import
-import CalendarAndArticles from "./CalendarAndArticles";
+import { CalendarAndArticles } from "./CalendarAndArticles"; // Fix import
 
 const DashboardOverview = () => {
   const { t } = useLanguage();
