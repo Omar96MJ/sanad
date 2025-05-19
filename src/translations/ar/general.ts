@@ -1,4 +1,3 @@
-
 // General translations for Arabic
 const generalTranslations = {
   // General terms
@@ -197,6 +196,30 @@ const generalTranslations = {
   "my_therapist": "معالجي",
   "view_profile": "عرض الملف الشخصي",
   "calendar": "التقويم",
+  
+  // Therapist capabilities
+  "therapist_capabilities": "قدرات المعالج",
+  "view_medical_records": "عرض السجلات الطبية",
+  "update_medical_records": "تحديث السجلات الطبية",
+  "transfer_client": "نقل العميل",
+  "conduct_sessions": "إجراء الجلسات",
+  "session_notes": "ملاحظات الجلسة",
+  "submit_session_notes": "تقديم ملاحظات الجلسة",
+  "update_session_notes": "تحديث ملاحظات الجلسة",
+  "view_schedule": "عرض الجدول",
+  "update_schedule": "تحديث الجدول",
+  "publish_blog": "نشر المدونة",
+  "update_blog": "تحديث المدونة",
+  "delete_blog": "حذف المدونة",
+  "submit_registration": "تقديم التسجيل",
+  "reset_password": "إعادة تعيين كلمة المرور",
+  "client_transfer_success": "تم نقل العميل بنجاح إلى معالج آخر",
+  "medical_history": "التاريخ الطبي",
+  "add_medical_record": "إضافة سجل طبي",
+  "update_medical_record": "تحديث السجل الطبي",
+  "registration_form": "نموذج التسجيل",
+  "registration_submitted": "تم تقديم التسجيل بنجاح",
+  "blog_management": "إدارة المدونة",
 };
 
 export default generalTranslations;

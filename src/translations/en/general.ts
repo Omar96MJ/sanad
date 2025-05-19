@@ -1,4 +1,3 @@
-
 // General translations for English
 const generalTranslations = {
   // General terms
@@ -195,6 +194,30 @@ const generalTranslations = {
   "my_therapist": "My Therapist",
   "view_profile": "View Profile",
   "calendar": "Calendar",
+  
+  // Therapist capabilities
+  "therapist_capabilities": "Therapist Capabilities",
+  "view_medical_records": "View Medical Records",
+  "update_medical_records": "Update Medical Records",
+  "transfer_client": "Transfer Client",
+  "conduct_sessions": "Conduct Sessions",
+  "session_notes": "Session Notes",
+  "submit_session_notes": "Submit Session Notes",
+  "update_session_notes": "Update Session Notes",
+  "view_schedule": "View Schedule",
+  "update_schedule": "Update Schedule",
+  "publish_blog": "Publish Blog",
+  "update_blog": "Update Blog",
+  "delete_blog": "Delete Blog",
+  "submit_registration": "Submit Registration",
+  "reset_password": "Reset Password",
+  "client_transfer_success": "Client successfully transferred to another therapist",
+  "medical_history": "Medical History",
+  "add_medical_record": "Add Medical Record",
+  "update_medical_record": "Update Medical Record",
+  "registration_form": "Registration Form",
+  "registration_submitted": "Registration submitted successfully",
+  "blog_management": "Blog Management",
 };
 
 export default generalTranslations;
