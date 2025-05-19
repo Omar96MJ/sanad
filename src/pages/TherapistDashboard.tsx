@@ -1,3 +1,14 @@
 
 import TherapistDashboard from "./TherapistDashboard/index";
-export default TherapistDashboard;
+import { LanguageProvider } from "@/hooks/language";
+
+// Wrap TherapistDashboard with LanguageProvider
+const WrappedTherapistDashboard = () => {
+  return (
+    <LanguageProvider>
+      <TherapistDashboard />
+    </LanguageProvider>
+  );
+};
+
+export default WrappedTherapistDashboard;
