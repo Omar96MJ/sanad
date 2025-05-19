@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,7 @@ const TherapyTypes = () => {
   const { language, t } = useLanguage();
   const isRTL = language === 'ar';
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const navigate = useNavigate();
   
   const therapyTypes = [
     {
@@ -34,6 +35,15 @@ const TherapyTypes = () => {
       icon: Baby,
     },
   ];
+
+  const handleContinue = () => {
+    if (selectedType) {
+      // Store the selected therapy type in localStorage to retrieve it later if needed
+      localStorage.setItem('selectedTherapyType', selectedType);
+      // Redirect to the register page
+      navigate('/register');
+    }
+  };
 
   return (
     <section className="py-16 bg-background">
@@ -103,15 +113,14 @@ const TherapyTypes = () => {
           </RadioGroup>
           
           <div className="flex justify-center mt-8">
-            <Link to={selectedType ? "/book-session" : "#"}>
-              <Button 
-                size="lg"
-                className="px-8"
-                disabled={!selectedType}
-              >
-                {isRTL ? 'المتابعة' : 'Continue'}
-              </Button>
-            </Link>
+            <Button 
+              size="lg"
+              className="px-8"
+              disabled={!selectedType}
+              onClick={handleContinue}
+            >
+              {isRTL ? 'المتابعة' : 'Continue'}
+            </Button>
           </div>
         </div>
 

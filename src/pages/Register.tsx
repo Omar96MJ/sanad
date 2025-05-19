@@ -1,5 +1,5 @@
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -17,18 +17,31 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import { UserRole } from "@/lib/types";
+import { useToast } from "@/hooks/use-toast";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<UserRole>("patient");
+  const [therapyType, setTherapyType] = useState<string | null>(null);
   
   const { register, isLoading, user } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
+  const { toast } = useToast();
   
   const isRTL = language === 'ar';
+
+  // Get therapy type from localStorage if available
+  useEffect(() => {
+    const savedTherapyType = localStorage.getItem('selectedTherapyType');
+    if (savedTherapyType) {
+      setTherapyType(savedTherapyType);
+      // Default to patient role when coming from therapy selection
+      setRole("patient");
+    }
+  }, []);
 
   // Redirect if already logged in
   if (user) {
@@ -41,6 +54,16 @@ const Register = () => {
     
     try {
       await register(name, email, password, role);
+      
+      // If user came from therapy selection, show a success toast
+      if (therapyType) {
+        toast({
+          title: t('account_created'),
+          description: t('therapy_preference_saved'),
+        });
+        // Clear the therapy type from localStorage after successful registration
+        localStorage.removeItem('selectedTherapyType');
+      }
       // AuthProvider will handle session and user state
     } catch (error) {
       console.error("Registration error:", error);
@@ -58,7 +81,9 @@ const Register = () => {
             </div>
             <h2 className="mt-6 text-3xl font-bold">{t('create_account')}</h2>
             <p className="mt-2 text-sm text-muted-foreground">
-              {t('join_us')}
+              {therapyType 
+                ? t('join_us_for_therapy').replace('{therapyType}', therapyType) 
+                : t('join_us')}
             </p>
           </div>
           
@@ -114,6 +139,7 @@ const Register = () => {
                 <Select 
                   value={role} 
                   onValueChange={(value) => setRole(value as UserRole)}
+                  disabled={!!therapyType} // Disable if coming from therapy selection
                 >
                   <SelectTrigger className={`${isRTL ? 'flex-row-reverse text-right' : 'flex-row text-left'}`}>
                     <SelectValue placeholder={t('i_am_a')} />
