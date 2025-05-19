@@ -1,5 +1,6 @@
+
 // General terms and translations for Arabic
-export const generalTranslations = {
+const generalTranslations = {
   // General terms
   "welcome": "أهلاً بك",
   "home": "الرئيسية",
@@ -176,8 +177,9 @@ export const generalTranslations = {
   "patient_reviews": "تقييمات المرضى",
   "what_patients_say": "ما يقوله المرضى الآخرون عن هذا المعالج",
   "month_ago": "شهر مضى",
-  "patients": "المرضى",
   "years": "سنوات خبرة",
   "therapist_not_found": "لم يتم العثور على المعالج",
   "error_loading_therapist_details": "خطأ في تحميل تفاصيل المعالج"
 };
+
+export default generalTranslations;

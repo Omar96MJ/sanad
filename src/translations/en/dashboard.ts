@@ -1,5 +1,5 @@
-// Dashboard related translations for English
-const dashboardTranslations = {
+
+export default {
   // Dashboard general
   "dashboard": "Dashboard",
   "welcome_back": "Welcome back",
@@ -72,14 +72,12 @@ const dashboardTranslations = {
 
   // Therapist Dashboard
   'therapistdashboard': 'Therapist Dashboard',
-  'overview': 'Overview',
   'doctorprofile': 'Doctor Profile',
   'manageyourprofileinformation': 'Manage your professional profile information',
   'sessionmanagement': 'Session Management',
   'manageyourtherapysessions': 'Manage your therapy sessions and appointments',
   'evaluations': 'Evaluations',
   'availability': 'Availability',
-  'messaging': 'Messaging',
   'totalpatients': 'Total Patients',
   'upcomingsessions': 'Upcoming Sessions',
   'pendingevaluations': 'Pending Evaluations',
@@ -110,5 +108,3 @@ const dashboardTranslations = {
   'appointmentupdated': 'Appointment updated successfully',
   'errorloadingdashboard': 'Error loading dashboard data',
 };
-
-export default dashboardTranslations;

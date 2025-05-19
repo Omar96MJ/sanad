@@ -100,10 +100,13 @@ const TherapistProfile = () => {
       // In a real app, this would create a record in the DB
       // Check if relationship already exists
       const { data, error } = await supabase
-        .from('doctors_patients')
+        .from('patient_appointments')
         .insert({
           doctor_id: therapist.id,
-          patient_id: user.id
+          patient_id: user.id,
+          doctor_name: therapist.name,
+          session_date: new Date().toISOString(),
+          session_type: 'Initial Consultation'
         });
         
       if (error && error.code !== '23505') { // Ignore duplicate key errors
@@ -133,7 +136,7 @@ const TherapistProfile = () => {
         <Navbar />
         <main className="flex-grow flex items-center justify-center py-16">
           <div className="text-center">
-            <Spinner size="lg" />
+            <Spinner className="h-8 w-8 animate-spin text-primary" />
             <p className="mt-4 text-muted-foreground">{t('loading')}...</p>
           </div>
         </main>

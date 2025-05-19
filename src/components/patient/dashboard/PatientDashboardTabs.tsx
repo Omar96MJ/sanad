@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Tabs } from "@/components/ui/tabs";
 import { BlogPost, Doctor } from "@/lib/types";
@@ -19,7 +20,7 @@ interface PatientDashboardTabsProps {
   calendarLocale: any;
 }
 
-export const PatientDashboardTabs = ({
+export const PatientDashboardTabs: React.FC<PatientDashboardTabsProps> = ({
   isVisible,
   progress,
   mockDoctor,
@@ -32,14 +33,26 @@ export const PatientDashboardTabs = ({
   formatAppointmentDate,
   formatAppointmentTime,
   calendarLocale
-}: PatientDashboardTabsProps) => {
+}) => {
   const [activeTab, setActiveTab] = useState("overview");
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
       <TabsList />
       
-      <TabContents />
+      <TabContents 
+        isVisible={isVisible}
+        progress={progress}
+        mockAppointments={mockAppointments}
+        mockArticles={mockArticles}
+        date={date}
+        setDate={setDate}
+        handleBookAppointment={handleBookAppointment}
+        handleStartTherapy={handleStartTherapy}
+        formatAppointmentDate={formatAppointmentDate}
+        formatAppointmentTime={formatAppointmentTime}
+        calendarLocale={calendarLocale}
+      />
     </Tabs>
   );
 };
