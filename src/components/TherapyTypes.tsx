@@ -4,12 +4,13 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { User, Users, Baby } from 'lucide-react';
+import { User, Users, Baby, Heart } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
+import { Separator } from '@/components/ui/separator';
 
 const TherapyTypes = () => {
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
   const isRTL = language === 'ar';
   const [selectedType, setSelectedType] = useState<string | null>(null);
   
@@ -109,6 +110,32 @@ const TherapyTypes = () => {
                 disabled={!selectedType}
               >
                 {isRTL ? 'المتابعة' : 'Continue'}
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        {/* Donation Section */}
+        <div className="max-w-4xl mx-auto mt-16 pt-12 border-t">
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center justify-center p-3 bg-red-100 text-red-600 rounded-full mb-4">
+              <Heart className="h-8 w-8" />
+            </div>
+            <h2 className="text-3xl font-bold mb-4">
+              {isRTL ? 'ساهم في دعم رسالتنا' : 'Support Our Mission'}
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-6">
+              {isRTL 
+                ? 'تبرعك يساعدنا في تقديم الدعم النفسي للمحتاجين وتوسيع خدماتنا للوصول إلى المزيد من الناس'
+                : 'Your donation helps us provide mental health support to those in need and expand our services to reach more people'}
+            </p>
+            <Link to="/donation">
+              <Button 
+                size="lg" 
+                className="px-10 bg-red-500 hover:bg-red-600"
+              >
+                {isRTL ? 'تبرع الآن' : 'Donate Now'}
+                <Heart className="ml-2" size={18} />
               </Button>
             </Link>
           </div>

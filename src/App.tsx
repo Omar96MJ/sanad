@@ -25,6 +25,7 @@ import CrisisSupport from "./pages/CrisisSupport";
 import SelfCareTips from "./pages/SelfCareTips";
 import NotFound from "./pages/NotFound";
 import CreateAdmin from "./pages/CreateAdmin";
+import Donation from "./pages/Donation";
 import React from "react";
 
 // Create QueryClient outside of component render
@@ -82,6 +83,7 @@ const AppRoutes = () => {
       <Route path="/mental-health-guide" element={<MentalHealthGuide />} />
       <Route path="/crisis-support" element={<CrisisSupport />} />
       <Route path="/self-care-tips" element={<SelfCareTips />} />
+      <Route path="/donation" element={<Donation />} />
       <Route path="/create-admin" element={<CreateAdmin />} />
       <Route path="/dashboard" element={<DashboardRoute />} />
       <Route 

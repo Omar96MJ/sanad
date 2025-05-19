@@ -1,4 +1,3 @@
-
 const general = {
   'welcome': 'Welcome to Mental Health Support',
   'aboutus': 'About Us',
@@ -236,6 +235,41 @@ const general = {
   'spiritual_tip_3_content': 'Reflect on your values and what gives your life meaning. Align your actions with these deeper principles.',
   'spiritual_tip_4_title': 'Engage in Spiritual Practices',
   'spiritual_tip_4_content': 'Whether through prayer, meditation, religious services, or personal rituals, find practices that connect you to something greater than yourself.',
+  
+  // Donation page translations
+  'support_our_mission': 'Support Our Mission',
+  'support_our_mission_desc': 'Your donation helps us provide mental health support to those in need and expand our services to reach more people',
+  'donate_now': 'Donate Now',
+  'donate_to_support': 'Donate to Support Mental Health',
+  'donation_helps': 'Your donation helps us provide mental health support to those who need it most',
+  'donation_amount': 'Donation Amount',
+  'custom_amount': 'Custom Amount',
+  'enter_custom_amount': 'Enter custom amount',
+  'apply': 'Apply',
+  'payment_method': 'Payment Method',
+  'card': 'Card',
+  'bank': 'Bank',
+  'mobile': 'Mobile',
+  'name_on_card': 'Name on Card',
+  'card_number': 'Card Number',
+  'expiry_date': 'Expiry Date',
+  'bank_name': 'Bank Name',
+  'account_name': 'Account Name',
+  'copy': 'Copy',
+  'bank_transfer_note': 'After completing the transfer, please send a copy of the transfer receipt to info@mentalhealth.org',
+  'paypal_redirect': 'You will be redirected to PayPal to complete your donation',
+  'pay_with_paypal': 'Pay with PayPal',
+  'continue_to_payment': 'Continue to Payment',
+  'copied': 'Copied',
+  'bank_info_copied': 'Bank information copied to clipboard',
+  'thank_for_support': 'Thank you for your support',
+  'donation_received': 'Your donation of ${amount} has been received. A receipt will be sent to your email.',
+  'donations_secure': 'All donations are secure and encrypted',
+  'tax_deductible': 'Our organization is registered as a non-profit, all donations are tax-deductible',
+  'impact_of_donation': 'The Impact of Your Donation',
+  'impact_25': 'Provides one hour of counseling to someone who cannot afford it',
+  'impact_100': 'Supports a school outreach program about mental health awareness',
+  'impact_250': 'Helps train a crisis helpline volunteer',
 };
 
 export default general;
