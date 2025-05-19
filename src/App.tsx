@@ -1,11 +1,7 @@
 
-import React, { useEffect } from 'react';
-import {
-  createBrowserRouter,
-  RouterProvider,
-  useNavigate,
-} from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import React from 'react';
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/hooks/auth";
 import { AuthProvider } from "@/hooks/auth";
 import Index from "./pages/Index";
 import AboutUs from "./pages/AboutUs";
@@ -14,27 +10,29 @@ import BlogPost from "./pages/BlogPost";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
-import NotFound from "./pages/NotFound";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import PatientDashboard from "./pages/PatientDashboard";
 import TherapistDashboard from "./pages/TherapistDashboard";
 import TherapistRegistration from "./pages/TherapistRegistration";
+import NotFound from "./pages/NotFound";
 
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <AppContent />
+      <AppRoutes />
     </AuthProvider>
   );
 };
 
-const AppContent: React.FC = () => {
+const AppRoutes: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  useEffect(() => {
-    if (user && window.location.pathname === '/login') {
+  // Redirect based on user role, similar to previous logic
+  React.useEffect(() => {
+    if (user && location.pathname === '/login') {
       if (user.role === 'patient') {
         navigate('/patient-dashboard');
       } else if (user.role === 'doctor') {
@@ -43,61 +41,25 @@ const AppContent: React.FC = () => {
         navigate('/profile');
       }
     }
-  }, [user, navigate]);
+  }, [user, navigate, location.pathname]);
 
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Index />,
-      errorElement: <NotFound />
-    },
-    {
-      path: "/about",
-      element: <AboutUs />
-    },
-    {
-      path: "/blog",
-      element: <Blog />
-    },
-    {
-      path: "/blog/:postId",
-      element: <BlogPost />
-    },
-    {
-      path: "/login",
-      element: <Login />
-    },
-    {
-      path: "/register",
-      element: <Register />
-    },
-    {
-      path: "/profile",
-      element: <Profile />
-    },
-    {
-      path: "/forgot-password",
-      element: <ForgotPassword />
-    },
-    {
-      path: "/reset-password",
-      element: <ResetPassword />
-    },
-    {
-      path: "/patient-dashboard",
-      element: <PatientDashboard />
-    },
-    {
-      path: "/therapist-dashboard",
-      element: <TherapistDashboard />
-    },
-    {
-      path: "/therapist-registration",
-      element: <TherapistRegistration />
-    }
-  ]);
-
-  return <RouterProvider router={router} />;
+  return (
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/about" element={<AboutUs />} />
+      <Route path="/blog" element={<Blog />} />
+      <Route path="/blog/:postId" element={<BlogPost />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/profile" element={<Profile />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/patient-dashboard" element={<PatientDashboard />} />
+      <Route path="/therapist-dashboard" element={<TherapistDashboard />} />
+      <Route path="/therapist-registration" element={<TherapistRegistration />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
 };
 
 export default App;

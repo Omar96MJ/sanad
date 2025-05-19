@@ -61,7 +61,7 @@ const MedicalHistorySection = ({ patientId, patientName }: MedicalHistorySection
   
   const handleAddRecord = () => {
     if (!newRecordContent.trim() || !recordType.trim()) {
-      toast.error(t('please_fill_all_fields'));
+      toast(t('please_fill_all_fields'));
       return;
     }
     
@@ -78,7 +78,7 @@ const MedicalHistorySection = ({ patientId, patientName }: MedicalHistorySection
     
     // In a real app, this would be an API call to save the record
     setRecords([...records, newRecord]);
-    toast.success(t('record_added_successfully'));
+    toast(t('record_added_successfully'));
     setAddDialogOpen(false);
     setNewRecordContent('');
     setRecordType('');
@@ -86,7 +86,7 @@ const MedicalHistorySection = ({ patientId, patientName }: MedicalHistorySection
   
   const handleEditRecord = () => {
     if (!currentRecord || !currentRecord.content.trim()) {
-      toast.error(t('please_fill_all_fields'));
+      toast(t('please_fill_all_fields'));
       return;
     }
     
@@ -95,7 +95,7 @@ const MedicalHistorySection = ({ patientId, patientName }: MedicalHistorySection
       record.id === currentRecord.id ? currentRecord : record
     ));
     
-    toast.success(t('record_updated_successfully'));
+    toast(t('record_updated_successfully'));
     setEditDialogOpen(false);
     setCurrentRecord(null);
   };

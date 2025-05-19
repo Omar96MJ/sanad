@@ -1,327 +1,350 @@
 
-// This file should be updated with proper toast.error usage
 import { useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { PenLine, Trash, Plus, BookOpen } from "lucide-react";
+import { FileEdit, Plus, Trash } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 
-// Define blog post type
+// Define types for blog posts
 interface BlogPost {
   id: string;
   title: string;
   content: string;
-  author: string;
+  status: "published" | "draft";
   publishDate: string;
-  status: "draft" | "published";
-  featuredImage?: string;
+  authorId: string;
+  authorName: string;
 }
 
 const BlogManagement = () => {
   const { t, language } = useLanguage();
   const isRTL = language === 'ar';
   
-  // Sample blog posts data
+  // Mock data for blog posts - in a real app this would come from the database
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([
     {
-      id: "1",
-      title: "Understanding Anxiety: Causes and Coping Mechanisms",
-      content: "Anxiety is a normal emotion that everyone experiences at times. Many people feel anxious, or nervous, when faced with a problem at work, before taking a test, or making an important decision...",
-      author: "Dr. Smith",
-      publishDate: "2025-01-15",
-      status: "published"
+      id: '1',
+      title: 'Managing Anxiety in Everyday Life',
+      content: 'Anxiety is a normal emotion that everyone experiences at times. Many people feel anxious, or nervous, when faced with a problem at work, before taking a test, or making an important decision...',
+      status: "published",
+      publishDate: '2025-04-15',
+      authorId: 'author-1',
+      authorName: 'Dr. Smith'
     },
     {
-      id: "2",
-      title: "The Benefits of Mindfulness Meditation",
-      content: "Mindfulness meditation is a mental training practice that teaches you to slow down racing thoughts, let go of negativity, and calm both your mind and body...",
-      author: "Dr. Smith",
-      publishDate: "2025-02-20",
-      status: "published"
-    },
-    {
-      id: "3",
-      title: "Sleep Hygiene: Tips for Better Sleep",
-      content: "Sleep hygiene refers to healthy sleep habits. Good sleep hygiene practices can help you get the quality sleep you need for optimal health and wellbeing...",
-      author: "Dr. Smith",
-      publishDate: "2025-03-10",
-      status: "draft"
+      id: '2',
+      title: 'The Importance of Sleep for Mental Health',
+      content: 'Sleep is crucial for maintaining good mental health. Research has shown that there is a close relationship between sleep and mental health...',
+      status: "draft",
+      publishDate: '',
+      authorId: 'author-1',
+      authorName: 'Dr. Smith'
     }
   ]);
+
+  // State for dialogs
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [currentPost, setCurrentPost] = useState<BlogPost | null>(null);
   
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [currentBlogPost, setCurrentBlogPost] = useState<BlogPost | null>(null);
-  const [newBlogTitle, setNewBlogTitle] = useState("");
-  const [newBlogContent, setNewBlogContent] = useState("");
-  const [newBlogStatus, setNewBlogStatus] = useState<"draft" | "published">("draft");
+  // State for new post
+  const [newPostTitle, setNewPostTitle] = useState('');
+  const [newPostContent, setNewPostContent] = useState('');
+  const [newPostStatus, setNewPostStatus] = useState<"published" | "draft">("draft");
   
+  // Function to handle creating new blog post
   const handleCreatePost = () => {
-    if (!newBlogTitle.trim() || !newBlogContent.trim()) {
-      toast.error(t('please_fill_all_fields'));
+    if (!newPostTitle.trim() || !newPostContent.trim()) {
+      toast(t('please_fill_all_fields'));
       return;
     }
     
     const newPost: BlogPost = {
-      id: String(Date.now()),
-      title: newBlogTitle,
-      content: newBlogContent,
-      author: "Dr. Smith", // In a real app, this would come from the authenticated user
-      publishDate: new Date().toISOString().split('T')[0],
-      status: newBlogStatus
+      id: `${Date.now()}`,
+      title: newPostTitle,
+      content: newPostContent,
+      status: newPostStatus,
+      publishDate: newPostStatus === "published" ? new Date().toISOString().split('T')[0] : '',
+      authorId: 'author-1', // This would be the current user's ID in a real app
+      authorName: 'Dr. Smith' // This would be the current user's name in a real app
     };
     
+    // In a real app, this would be an API call to save the post
     setBlogPosts([...blogPosts, newPost]);
-    setNewBlogTitle("");
-    setNewBlogContent("");
-    setNewBlogStatus("draft");
-    setIsCreateDialogOpen(false);
-    toast.success(t('blog_post_created'));
+    toast(t('blog_post_created'));
+    
+    // Reset form and close dialog
+    setNewPostTitle('');
+    setNewPostContent('');
+    setNewPostStatus("draft");
+    setCreateDialogOpen(false);
   };
   
-  const handleEditPost = () => {
-    if (!currentBlogPost || !currentBlogPost.title.trim() || !currentBlogPost.content.trim()) {
-      toast.error(t('please_fill_all_fields'));
+  // Function to handle updating a blog post
+  const handleUpdatePost = () => {
+    if (!currentPost || !currentPost.title.trim() || !currentPost.content.trim()) {
+      toast(t('please_fill_all_fields'));
       return;
     }
     
-    setBlogPosts(blogPosts.map(post => 
-      post.id === currentBlogPost.id ? currentBlogPost : post
-    ));
+    // Update publish date if status changes from draft to published
+    const updatedPost = { 
+      ...currentPost,
+      publishDate: currentPost.status === "published" && !currentPost.publishDate 
+        ? new Date().toISOString().split('T')[0] 
+        : currentPost.publishDate
+    };
     
-    setIsEditDialogOpen(false);
-    setCurrentBlogPost(null);
-    toast.success(t('blog_post_updated'));
+    // In a real app, this would be an API call to update the post
+    setBlogPosts(blogPosts.map(post => post.id === updatedPost.id ? updatedPost : post));
+    toast(t('blog_post_updated'));
+    
+    setCurrentPost(null);
+    setEditDialogOpen(false);
   };
   
+  // Function to handle deleting a blog post
   const handleDeletePost = () => {
-    if (!currentBlogPost) return;
+    if (!currentPost) return;
     
-    setBlogPosts(blogPosts.filter(post => post.id !== currentBlogPost.id));
-    setIsDeleteDialogOpen(false);
-    setCurrentBlogPost(null);
-    toast.success(t('blog_post_deleted'));
+    // In a real app, this would be an API call to delete the post
+    setBlogPosts(blogPosts.filter(post => post.id !== currentPost.id));
+    toast(t('blog_post_deleted'));
+    
+    setCurrentPost(null);
+    setDeleteDialogOpen(false);
   };
   
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex justify-between items-center">
-            <div className="flex items-center gap-2">
-              <BookOpen className="h-5 w-5" />
-              {t('manage_blog_posts')}
-            </div>
-            <Button onClick={() => setIsCreateDialogOpen(true)}>
-              <Plus className="h-4 w-4 mr-1" />
-              {t('new_blog_post')}
-            </Button>
-          </CardTitle>
-          <CardDescription>
-            {t('publish_and_manage_blog_content')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {blogPosts.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              {t('no_blog_posts')}
-            </div>
-          ) : (
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{t('title')}</TableHead>
-                  <TableHead>{t('status')}</TableHead>
-                  <TableHead>{t('publish_date')}</TableHead>
-                  <TableHead className="text-right">{t('actions')}</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {blogPosts.map((post) => (
-                  <TableRow key={post.id}>
-                    <TableCell className="font-medium">{post.title}</TableCell>
-                    <TableCell>
-                      <span className={`px-2 py-1 rounded text-xs ${post.status === 'published' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
-                        {post.status === 'published' ? t('published') : t('draft')}
-                      </span>
-                    </TableCell>
-                    <TableCell>{post.publishDate}</TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setCurrentBlogPost(post);
-                            setIsEditDialogOpen(true);
-                          }}
-                        >
-                          <PenLine className="h-4 w-4" />
-                          <span className="sr-only">{t('edit')}</span>
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setCurrentBlogPost(post);
-                            setIsDeleteDialogOpen(true);
-                          }}
-                        >
-                          <Trash className="h-4 w-4" />
-                          <span className="sr-only">{t('delete')}</span>
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          )}
-        </CardContent>
-      </Card>
-      
-      {/* Create Post Dialog */}
-      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>{t('create_new_blog_post')}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div>
-              <label htmlFor="title" className="block text-sm font-medium mb-1">
-                {t('title')}
-              </label>
-              <Input
-                id="title"
-                value={newBlogTitle}
-                onChange={(e) => setNewBlogTitle(e.target.value)}
-                placeholder={t('enter_blog_title')}
-              />
-            </div>
-            <div>
-              <label htmlFor="content" className="block text-sm font-medium mb-1">
-                {t('content')}
-              </label>
-              <Textarea
-                id="content"
-                value={newBlogContent}
-                onChange={(e) => setNewBlogContent(e.target.value)}
-                placeholder={t('write_blog_content')}
-                rows={12}
-              />
-            </div>
-            <div>
-              <label htmlFor="status" className="block text-sm font-medium mb-1">
-                {t('status')}
-              </label>
-              <select
-                id="status"
-                value={newBlogStatus}
-                onChange={(e) => setNewBlogStatus(e.target.value as "draft" | "published")}
-                className="w-full px-3 py-2 border rounded-md"
-              >
-                <option value="draft">{t('draft')}</option>
-                <option value="published">{t('published')}</option>
-              </select>
-            </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex justify-between items-center">
+          <div>
+            {t('manage_blog_posts')}
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
-              {t('cancel')}
-            </Button>
-            <Button onClick={handleCreatePost}>{t('create_post')}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Edit Post Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="sm:max-w-2xl">
-          <DialogHeader>
-            <DialogTitle>{t('edit_blog_post')}</DialogTitle>
-          </DialogHeader>
-          {currentBlogPost && (
+          <Button onClick={() => setCreateDialogOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            {t('new_blog_post')}
+          </Button>
+        </CardTitle>
+        <CardDescription>
+          {t('publish_and_manage_blog_content')}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        {blogPosts.length === 0 ? (
+          <p className="text-center py-6 text-muted-foreground">{t('no_blog_posts')}</p>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{t('title')}</TableHead>
+                <TableHead>{t('status')}</TableHead>
+                <TableHead>{t('publish_date')}</TableHead>
+                <TableHead>{t('actions')}</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {blogPosts.map((post) => (
+                <TableRow key={post.id}>
+                  <TableCell className="font-medium">{post.title}</TableCell>
+                  <TableCell>
+                    {post.status === "published" ? (
+                      <span className="inline-flex items-center rounded-full bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
+                        {t('published')}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center rounded-full bg-yellow-50 px-2 py-1 text-xs font-medium text-yellow-700 ring-1 ring-inset ring-yellow-600/20">
+                        {t('draft')}
+                      </span>
+                    )}
+                  </TableCell>
+                  <TableCell>{post.publishDate || '-'}</TableCell>
+                  <TableCell>
+                    <div className="flex space-x-2">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => {
+                          setCurrentPost(post);
+                          setEditDialogOpen(true);
+                        }}
+                      >
+                        <FileEdit className="h-4 w-4 mr-1" />
+                        {t('edit')}
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        className="text-destructive"
+                        onClick={() => {
+                          setCurrentPost(post);
+                          setDeleteDialogOpen(true);
+                        }}
+                      >
+                        <Trash className="h-4 w-4 mr-1" />
+                        {t('delete')}
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+        
+        {/* Create Post Dialog */}
+        <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>{t('create_new_blog_post')}</DialogTitle>
+            </DialogHeader>
             <div className="space-y-4 py-4">
-              <div>
-                <label htmlFor="edit-title" className="block text-sm font-medium mb-1">
-                  {t('title')}
-                </label>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t('title')}</label>
                 <Input
-                  id="edit-title"
-                  value={currentBlogPost.title}
-                  onChange={(e) =>
-                    setCurrentBlogPost({ ...currentBlogPost, title: e.target.value })
-                  }
+                  value={newPostTitle}
+                  onChange={(e) => setNewPostTitle(e.target.value)}
+                  placeholder={t('enter_blog_title')}
                 />
               </div>
-              <div>
-                <label htmlFor="edit-content" className="block text-sm font-medium mb-1">
-                  {t('content')}
-                </label>
-                <Textarea
-                  id="edit-content"
-                  value={currentBlogPost.content}
-                  onChange={(e) =>
-                    setCurrentBlogPost({ ...currentBlogPost, content: e.target.value })
-                  }
-                  rows={12}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t('content')}</label>
+                <Textarea 
+                  value={newPostContent}
+                  onChange={(e) => setNewPostContent(e.target.value)}
+                  placeholder={t('write_blog_content')}
+                  rows={10}
                 />
               </div>
-              <div>
-                <label htmlFor="edit-status" className="block text-sm font-medium mb-1">
-                  {t('status')}
-                </label>
-                <select
-                  id="edit-status"
-                  value={currentBlogPost.status}
-                  onChange={(e) =>
-                    setCurrentBlogPost({
-                      ...currentBlogPost,
-                      status: e.target.value as "draft" | "published"
-                    })
-                  }
-                  className="w-full px-3 py-2 border rounded-md"
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t('status')}</label>
+                <select 
+                  value={newPostStatus}
+                  onChange={(e) => setNewPostStatus(e.target.value as "published" | "draft")}
+                  className="w-full p-2 border rounded"
                 >
                   <option value="draft">{t('draft')}</option>
                   <option value="published">{t('published')}</option>
                 </select>
               </div>
             </div>
-          )}
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
-              {t('cancel')}
-            </Button>
-            <Button onClick={handleEditPost}>{t('update_post')}</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-      
-      {/* Delete Confirmation Dialog */}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t('delete_blog_post')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t('delete_blog_post_confirmation')}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeletePost} className="bg-red-500 hover:bg-red-600">
-              {t('delete')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
+                {t('cancel')}
+              </Button>
+              <Button onClick={handleCreatePost}>
+                {t('create_post')}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Edit Post Dialog */}
+        <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+          <DialogContent className="sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>{t('edit_blog_post')}</DialogTitle>
+            </DialogHeader>
+            {currentPost && (
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">{t('title')}</label>
+                  <Input
+                    value={currentPost.title}
+                    onChange={(e) => setCurrentPost({
+                      ...currentPost,
+                      title: e.target.value
+                    })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">{t('content')}</label>
+                  <Textarea 
+                    value={currentPost.content}
+                    onChange={(e) => setCurrentPost({
+                      ...currentPost,
+                      content: e.target.value
+                    })}
+                    rows={10}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">{t('status')}</label>
+                  <select 
+                    value={currentPost.status}
+                    onChange={(e) => setCurrentPost({
+                      ...currentPost,
+                      status: e.target.value as "published" | "draft"
+                    })}
+                    className="w-full p-2 border rounded"
+                  >
+                    <option value="draft">{t('draft')}</option>
+                    <option value="published">{t('published')}</option>
+                  </select>
+                </div>
+              </div>
+            )}
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
+                {t('cancel')}
+              </Button>
+              <Button onClick={handleUpdatePost}>
+                {t('update_post')}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        
+        {/* Delete Post Dialog */}
+        <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t('delete_blog_post')}</AlertDialogTitle>
+              <AlertDialogDescription>
+                {t('delete_blog_post_confirmation')}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{t('cancel')}</AlertDialogCancel>
+              <AlertDialogAction onClick={handleDeletePost} className="bg-destructive text-destructive-foreground">
+                {t('delete')}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </CardContent>
+    </Card>
   );
 };
 

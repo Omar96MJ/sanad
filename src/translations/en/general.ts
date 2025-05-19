@@ -1,4 +1,3 @@
-
 // English translation for general terms
 const general = {
   // General UI elements
@@ -266,7 +265,13 @@ const general = {
   blog_post_created: "Blog post created successfully",
   blog_post_updated: "Blog post updated successfully",
   blog_post_deleted: "Blog post deleted successfully",
-  content: "Content"
+  content: "Content",
+
+  // These are the keys that were duplicated - keeping only one instance
+  unauthorized_access: "Unauthorized access",
+  error_loading_profile: "Error loading profile",
+  error_loading_dashboard: "Error loading dashboard",
+  notifications_coming_soon: "Notifications coming soon"
 };
 
 export default general;
