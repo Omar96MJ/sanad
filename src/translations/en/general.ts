@@ -50,7 +50,13 @@ const general = {
   'warning': 'Warning',
   'enabled': 'Enabled',
   'disabled': 'Disabled',
-  'create_account': 'Create Account',
+  'join_us': 'Join Us',
+  'i_am_a': 'I am a',
+  'person_seeking_guidance': 'Person Seeking Guidance',
+  'support_specialist': 'Support Specialist',
+  'already_have_account': 'Already Have Account',
+  "create_password": "Create Password",
+
   
   // Mental Health Guide
   'mentalhealthguide': 'Mental Health Guide',

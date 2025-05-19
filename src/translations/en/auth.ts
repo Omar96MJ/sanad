@@ -24,6 +24,10 @@ const authTranslations = {
   'errorloadingprofile': 'Error loading profile data',
   'errorupdatingprofile': 'Error updating profile',
   'profileupdated': 'Profile updated successfully',
+  'full_name': 'Full Name or Nickname',
+  'email_address': 'Email',
+  "create_account": "Create Account",
+
 };
 
 export default authTranslations;

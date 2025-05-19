@@ -9,7 +9,11 @@ const authTranslations = {
   "dont_have_account": "ليس لديك حساب؟",
   "disabled": "تم التعطيل",
   "enabled": "تم التفعيل",
-  "email_address": "عنوان البريد الإلكتروني",
+  "email_address": "البريد الإلكتروني",
+  "full_name": "الاسم الكامل أو اللقب",
+  "create_account": "سجّل للانضمام إلى منصتنا",
+
+
 };
 
 export default authTranslations;

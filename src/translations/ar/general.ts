@@ -35,7 +35,13 @@ const generalTranslations = {
   "terms_of_service": "شروط الخدمة",
   "cookie_policy": "سياسة ملفات تعريف الارتباط",
   "sign_in_to_continue": "قم بتسجيل الدخول للمتابعة",
-
+  "join_us": "انضم إلينا وابدأ بخطوة نحو العافية",
+  'i_am_a': 'أنا',
+  'person_seeking_guidance': 'شخص يطلب إرشادًا',
+  'support_specialist': 'مختص بالدعم',
+  'already_have_account': 'انضممت مسبقًا؟',
+  "create_password": "إنشاء كلمة مرور",
+  
   // Blog and articles
   "mental_health_resources": "موارد الصحة النفسية",
   "explore_mental_health_blog": "استكشف مدونة الصحة النفسية",

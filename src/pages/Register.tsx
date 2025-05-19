@@ -110,17 +110,27 @@ const Register = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="role">{t('i_am_a')}</Label>
+                <Label htmlFor="role">{t('i_am_a')} :</Label>
                 <Select 
                   value={role} 
                   onValueChange={(value) => setRole(value as UserRole)}
                 >
-                  <SelectTrigger className={isRTL ? 'text-right' : 'text-left'}>
+                  <SelectTrigger className={`${isRTL ? 'flex-row-reverse text-right' : 'flex-row text-left'}`}>
                     <SelectValue placeholder={t('i_am_a')} />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="patient">{t('patient_seeking_help')}</SelectItem>
-                    <SelectItem value="doctor">{t('mental_health_professional')}</SelectItem>
+                  <SelectContent className={isRTL ? 'text-right' : 'text-left'}>
+                    <SelectItem 
+                      value="patient"
+                      className={`flex items-center ${isRTL ? 'justify-end text-right' : 'justify-start text-left'}`}
+                    >
+                      {t('person_seeking_guidance')}
+                    </SelectItem>
+                    <SelectItem 
+                    value="doctor"
+                    className={`flex items-center ${isRTL ? 'justify-end text-right' : 'justify-start text-left'}`}
+                    >
+                      {t('support_specialist')}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
