@@ -1,4 +1,5 @@
-const generalTranslations = {
+
+export const generalTranslations = {
   'welcome': 'Welcome',
   'home': 'Home',
   'about_us': 'About Us',
@@ -95,7 +96,6 @@ const generalTranslations = {
   'consult_professional': 'It is recommended to consult with a mental health professional for a comprehensive evaluation.',
   'test_completed': 'Test completed!',
   'create_password': 'Create Password',
-  'i_am_a': 'I am a',
   'person_seeking_guidance': 'Person seeking guidance',
   'support_specialist': 'Support specialist',
   'creating_account': 'Creating account...',
@@ -124,6 +124,7 @@ const generalTranslations = {
   'schedule': 'Schedule',
   'reviews': 'Reviews',
   'select_as_my_therapist': 'Select as My Therapist',
+  'selected': 'Selected',
   'selecting_therapist': 'Selecting...',
   'book_appointment': 'Book Appointment',
   'contact_information': 'Contact Information',
@@ -133,6 +134,7 @@ const generalTranslations = {
   'professional_experience': 'Professional Experience',
   'specialization': 'Specialization',
   'bio': 'Professional Bio',
+  'bio_placeholder': 'No information available',
   'education': 'Education',
   'availability': 'Availability',
   'view_available_slots': 'View available appointment slots',
@@ -146,7 +148,6 @@ const generalTranslations = {
   'month_ago': 'month ago',
   'patients': 'patients',
   'years': 'years exp',
-  'reviews': 'reviews',
   'therapist_not_found': 'Therapist not found',
   'error_loading_therapist_details': 'Error loading therapist details',
   
@@ -195,4 +196,10 @@ const generalTranslations = {
   'my_therapist': 'My Therapist',
   'no_therapist_assigned': 'No therapist assigned',
   'find_therapist_message': 'Find a therapist that suits your needs',
+  'english': 'English',
+  'arabic': 'Arabic',
+  'overview': 'Overview',
+  'sessions': 'Sessions',
+  'resources': 'Resources',
+  'messaging': 'Messaging'
 };

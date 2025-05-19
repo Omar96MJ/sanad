@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -83,9 +82,12 @@ const TherapistProfile = () => {
     try {
       // In a real app, this would update in the database
       const { error } = await supabase
-        .from('profiles')
-        .update({ assigned_therapist_id: therapist.id })
-        .eq('id', user.id);
+        .from('patient_therapist_relationships')
+        .upsert({
+          patient_id: user?.id,
+          therapist_id: therapist.id,
+          assigned_at: new Date().toISOString()
+        });
 
       if (error) throw error;
 

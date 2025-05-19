@@ -1,5 +1,6 @@
 
-const generalTranslations = {
+// General terms and translations for Arabic
+export const generalTranslations = {
   // General terms
   "welcome": "أهلاً بك",
   "home": "الرئيسية",
@@ -101,7 +102,6 @@ const generalTranslations = {
   "error_booking_appointment": "خطأ في حجز الموعد",
   "error_updating_progress": "خطأ في تحديث التقدم",
   "take_test_description": "ابدأ في فهم صحتك النفسية من خلال اختباراتنا النفسية.",
-  "psychological_tests": "الاختبارات النفسية",
   "test_results": "نتائج الاختبار",
   "test_disclaimer": "هذا الاختبار هو أداة فحص أولية فقط ولا ينبغي اعتباره بديلاً للتقييم المهني.",
   "restart_test": "إعادة الاختبار",
@@ -151,6 +151,7 @@ const generalTranslations = {
   "schedule": "الجدول",
   "reviews": "التقييمات",
   "select_as_my_therapist": "اختر كمعالجي",
+  "selected": "تم اختياره",
   "selecting_therapist": "جاري الاختيار...",
   "book_appointment": "حجز موعد",
   "contact_information": "معلومات الاتصال",
@@ -160,6 +161,7 @@ const generalTranslations = {
   "professional_experience": "الخبرة المهنية",
   "specialization": "التخصص",
   "bio": "السيرة المهنية",
+  "bio_placeholder": "لا توجد معلومات متاحة",
   "education": "التعليم",
   "availability": "الأوقات المتاحة",
   "view_available_slots": "عرض فترات المواعيد المتاحة",
@@ -220,7 +222,11 @@ const generalTranslations = {
   "quick_actions": "إجراءات سريعة",
   "my_therapist": "معالجي",
   "no_therapist_assigned": "لم يتم تعيين معالج",
-  "find_therapist_message": "ابحث عن معالج يناسب احتياجاتك"
+  "find_therapist_message": "ابحث عن معالج يناسب احتياجاتك",
+  "english": "English",
+  "arabic": "العربية",
+  "overview": "نظرة عامة",
+  "sessions": "الجلسات",
+  "resources": "الموارد",
+  "messaging": "المراسلات"
 };
-
-export default generalTranslations;

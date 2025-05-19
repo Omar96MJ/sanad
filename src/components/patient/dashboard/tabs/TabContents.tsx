@@ -1,81 +1,30 @@
-
-import { useLanguage } from "@/hooks/useLanguage";
+import React from "react";
 import { TabsContent } from "@/components/ui/tabs";
-import MessagingLayout from "@/components/messaging/MessagingLayout";
-import { DashboardOverview } from "@/components/patient/dashboard/DashboardOverview";
-import { AppointmentsTab } from "@/components/patient/dashboard/AppointmentsTab";
-import { ResourcesTab } from "@/components/patient/dashboard/ResourcesTab";
-import { BlogPost, Doctor } from "@/lib/types";
+import { useLanguage } from "@/hooks/useLanguage";
+import DashboardOverview from "@/components/patient/dashboard/DashboardOverview";
+import AppointmentsTab from "@/components/patient/dashboard/AppointmentsTab";
+import ResourcesTab from "@/components/patient/dashboard/ResourcesTab";
+import MessagingTab from "@/components/patient/dashboard/MessagingTab";
 
-interface TabContentsProps {
-  activeTab: string;
-  isVisible: boolean;
-  progress: number;
-  mockDoctor: Doctor;
-  mockAppointments: any[];
-  mockArticles: BlogPost[];
-  date: Date | undefined;
-  setDate: (date: Date | undefined) => void;
-  handleBookAppointment: () => void;
-  handleStartTherapy: () => void;
-  formatAppointmentDate: (dateString: string) => string;
-  formatAppointmentTime: (dateString: string) => string;
-  calendarLocale: any;
-}
-
-export const TabContents = ({
-  activeTab,
-  isVisible,
-  progress,
-  mockDoctor,
-  mockAppointments,
-  mockArticles,
-  date,
-  setDate,
-  handleBookAppointment,
-  handleStartTherapy,
-  formatAppointmentDate,
-  formatAppointmentTime,
-  calendarLocale
-}: TabContentsProps) => {
+export const TabContents = () => {
   const { t } = useLanguage();
-
+  
   return (
     <>
-      <TabsContent value="overview">
-        <DashboardOverview 
-          isVisible={isVisible}
-          progress={progress}
-          doctor={mockDoctor}
-          upcomingAppointments={mockAppointments}
-          mockArticles={mockArticles}
-          date={date}
-          setDate={setDate}
-          onStartTherapy={handleStartTherapy}
-          onBookAppointment={handleBookAppointment}
-          formatAppointmentDate={formatAppointmentDate}
-          formatAppointmentTime={formatAppointmentTime}
-          calendarLocale={calendarLocale}
-        />
+      <TabsContent value="overview" className="py-4">
+        <DashboardOverview />
       </TabsContent>
       
-      <TabsContent value="appointments">
-        <AppointmentsTab 
-          appointments={mockAppointments}
-          onBookAppointment={handleBookAppointment}
-          formatAppointmentDate={formatAppointmentDate}
-          formatAppointmentTime={formatAppointmentTime}
-        />
+      <TabsContent value="appointments" className="py-4">
+        <AppointmentsTab />
       </TabsContent>
       
-      <TabsContent value="resources">
-        <ResourcesTab articles={mockArticles} />
+      <TabsContent value="resources" className="py-4">
+        <ResourcesTab />
       </TabsContent>
       
-      <TabsContent value="messaging">
-        <div className="mt-4">
-          <MessagingLayout isTherapist={false} />
-        </div>
+      <TabsContent value="messaging" className="py-4">
+        <MessagingTab />
       </TabsContent>
     </>
   );

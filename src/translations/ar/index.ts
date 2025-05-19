@@ -1,5 +1,5 @@
 
-import generalTranslations from './general';
+import { generalTranslations } from './general';
 import authTranslations from './auth';
 import dashboardTranslations from './dashboard';
 import profileTranslations from './profile';
