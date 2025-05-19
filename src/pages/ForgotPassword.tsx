@@ -25,6 +25,7 @@ const ForgotPassword = () => {
     setIsLoading(true);
     
     try {
+      // Send password reset email with OTP option
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/reset-password`,
       });
@@ -32,6 +33,9 @@ const ForgotPassword = () => {
       if (error) {
         throw error;
       }
+      
+      // Save email to sessionStorage to be used in reset password page
+      sessionStorage.setItem('resetEmail', email);
       
       setResetSent(true);
       toast.success(t('password_reset_email_sent'));
@@ -70,7 +74,12 @@ const ForgotPassword = () => {
                     {t('password_reset_instructions_sent')}
                   </p>
                 </div>
-                <Button asChild variant="outline" className="w-full">
+                <Button asChild variant="outline" className="w-full mt-4">
+                  <Link to="/reset-password">
+                    {t('verify_and_continue')}
+                  </Link>
+                </Button>
+                <Button asChild variant="ghost" className="w-full">
                   <Link to="/login">
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     {t('back_to_login')}
