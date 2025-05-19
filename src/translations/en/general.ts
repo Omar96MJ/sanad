@@ -55,9 +55,18 @@ const general = {
   'person_seeking_guidance': 'Person Seeking Guidance',
   'support_specialist': 'Support Specialist',
   'already_have_account': 'Already Have Account?',
-  "create_password": "Create Password",
+  'create_password': 'Create Password',
+  'providing_mental_health_care': 'Providing mental health care and resources that support your wellness journey.',
+  'quick_links': 'Quick Links',
+  'resources': 'Resources',
+  'mental_health_guide': 'Mental Health Guide',
+  'crisis_support': 'Crisis Support',
+  'self_care_tips': 'Self-Care Tips',
+  'privacy_policy': 'Privacy Policy',
+  'terms_of_service': 'Terms of Service',
+  'cookie_policy': 'Cookie Policy',
+  'sanad_copyright': 'Sanad. All rights reserved.',
 
-  
   // Mental Health Guide
   'mentalhealthguide': 'Mental Health Guide',
   'mentalhealthguidesubtitle': 'Understanding and caring for your mental wellbeing',

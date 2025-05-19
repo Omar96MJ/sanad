@@ -22,7 +22,7 @@ const generalTranslations = {
   "logout": "تسجيل الخروج",
   "dashboard": "لوحة القيادة",
   "providing_mental_health_care": "تقديم رعاية صحية نفسية وموارد تدعم رحلة العافية الخاصة بك.",
-  "quick_links": "روابط سريعة",
+  "quick_links": "ريعروابط سة",
   "resources": "الموارد",
   "mental_health_guide": "دليل الصحة النفسية",
   "crisis_support": "دعم الأزمات",
@@ -41,7 +41,7 @@ const generalTranslations = {
   'support_specialist': 'مختص بالدعم',
   'already_have_account': 'انضممت مسبقًا؟',
   "create_password": "إنشاء كلمة مرور",
-  
+
   // Blog and articles
   "mental_health_resources": "موارد الصحة النفسية",
   "explore_mental_health_blog": "استكشف مدونة الصحة النفسية",
