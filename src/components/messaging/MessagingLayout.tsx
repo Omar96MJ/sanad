@@ -12,6 +12,7 @@ import MessageInput from "./MessageInput";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { PatientSearch, Patient } from "@/components/search/PatientSearch";
 
 interface MessagingLayoutProps {
   isTherapist?: boolean;
@@ -107,11 +108,14 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
     const fetchPatients = async () => {
       try {
         if (isTherapist) {
-          // Fetch patients if user is a therapist
+          // This is now handled by the PatientSearch component
+          // We'll still fetch some initial patients for the list
           const { data, error } = await supabase
             .from('profiles')
             .select('id, name')
-            .eq('role', 'patient');
+            .eq('role', 'patient')
+            .limit(10)
+            .order('name');
             
           if (!error && data) {
             setPatients(data.map(patient => ({
@@ -428,6 +432,10 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
     }
   };
 
+  const handlePatientSelect = (patient: Patient) => {
+    startNewConversation(patient.id);
+  };
+
   const filteredPatients = patients.filter(patient =>
     patient.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -506,50 +514,60 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
           </TabsContent>
           
           <TabsContent value="patients" className="mt-0">
-            <div className="mb-4">
-              <div className="relative">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={`Search ${isTherapist ? 'patients' : 'doctors'}...`}
-                  className="pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-              {filteredPatients.map((patient) => (
-                <Card key={patient.id} className="border border-border/50">
-                  <CardContent className="p-4">
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={`https://api.dicebear.com/7.x/micah/svg?seed=${patient.id}`} alt={patient.name} />
-                        <AvatarFallback>{patient.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <h4 className="font-medium text-sm">{patient.name}</h4>
-                        <p className="text-xs text-muted-foreground">{isTherapist ? 'Patient' : 'Doctor'}</p>
-                      </div>
-                    </div>
-                    <Button
-                      className="w-full mt-4"
-                      size="sm"
-                      onClick={() => startNewConversation(patient.id)}
-                    >
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      Message
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
-              
-              {filteredPatients.length === 0 && (
-                <div className="col-span-full text-center py-8 text-muted-foreground">
-                  No {isTherapist ? 'patients' : 'doctors'} found
+            {isTherapist ? (
+              <PatientSearch 
+                onPatientSelect={handlePatientSelect}
+                buttonText="Message"
+              />
+            ) : (
+              // For non-therapists (patients), keep the existing doctor search functionality
+              <>
+                <div className="mb-4">
+                  <div className="relative">
+                    <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      placeholder={`Search ${isTherapist ? 'patients' : 'doctors'}...`}
+                      className="pl-8"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
                 </div>
-              )}
-            </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {filteredPatients.map((patient) => (
+                    <Card key={patient.id} className="border border-border/50">
+                      <CardContent className="p-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={`https://api.dicebear.com/7.x/micah/svg?seed=${patient.id}`} alt={patient.name} />
+                            <AvatarFallback>{patient.name.charAt(0)}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1">
+                            <h4 className="font-medium text-sm">{patient.name}</h4>
+                            <p className="text-xs text-muted-foreground">{isTherapist ? 'Patient' : 'Doctor'}</p>
+                          </div>
+                        </div>
+                        <Button
+                          className="w-full mt-4"
+                          size="sm"
+                          onClick={() => startNewConversation(patient.id)}
+                        >
+                          <PlusCircle className="mr-2 h-4 w-4" />
+                          Message
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  ))}
+                  
+                  {filteredPatients.length === 0 && (
+                    <div className="col-span-full text-center py-8 text-muted-foreground">
+                      No {isTherapist ? 'patients' : 'doctors'} found
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </TabsContent>
         </CardContent>
       </Tabs>

@@ -2,52 +2,60 @@
 import { supabase } from "@/integrations/supabase/client";
 import { AppointmentFormValues } from "./types";
 
-export const createAppointment = async (
-  userId: string, 
-  values: AppointmentFormValues
-) => {
-  // Combine date and time to create ISO date string
-  const dateTimeValue = new Date(values.session_date);
-  const [hours, minutes] = values.session_time.split(':').map(Number);
-  dateTimeValue.setHours(hours, minutes);
+export const createAppointment = async (doctorId: string, values: AppointmentFormValues) => {
+  // Combine date and time for session_date
+  const dateObj = values.session_date;
+  const timeString = values.session_time;
   
-  // Create new appointment in Supabase
+  if (!dateObj || !timeString) {
+    throw new Error("Invalid date or time");
+  }
+  
+  // Parse time string (format: HH:MM) and set it on the date object
+  const [hours, minutes] = timeString.split(':').map(Number);
+  const sessionDateTime = new Date(dateObj);
+  sessionDateTime.setHours(hours, minutes, 0);
+  
+  const patientId = values.patient_id || null;
+  
+  // Create the appointment
   const { data, error } = await supabase
     .from('appointments')
     .insert({
-      doctor_id: userId,
-      patient_id: userId, // This should be replaced with actual patient ID
+      doctor_id: doctorId,
+      patient_id: patientId,
       patient_name: values.patient_name,
-      session_date: dateTimeValue.toISOString(),
+      session_date: sessionDateTime.toISOString(),
       session_type: values.session_type,
-      notes: values.notes,
-      status: "scheduled",
+      notes: values.notes || null,
+      status: 'scheduled'
     })
-    .select();
+    .select()
+    .single();
   
   if (error) {
+    console.error("Error creating appointment:", error);
     throw error;
   }
   
-  // Also create an entry in patient_appointments table
-  if (data && data.length > 0) {
+  // If we have a patient ID, also create a record in patient_appointments
+  if (patientId) {
     const { error: patientApptError } = await supabase
       .from('patient_appointments')
       .insert({
-        patient_id: userId, // This should be replaced with actual patient ID
-        doctor_id: userId,
-        doctor_name: "Dr.", // This should be replaced with actual doctor name
-        session_date: dateTimeValue.toISOString(),
+        patient_id: patientId,
+        doctor_id: doctorId,
+        doctor_name: "Doctor", // This should be replaced with the actual doctor name
+        session_date: sessionDateTime.toISOString(),
         session_type: values.session_type,
-        status: "upcoming"
+        status: 'upcoming'
       });
       
     if (patientApptError) {
       console.error("Error creating patient appointment:", patientApptError);
+      // We don't throw here as the main appointment was created successfully
     }
-    
-    return data[0];
   }
   
-  throw new Error("Failed to create appointment");
+  return data;
 };
