@@ -61,6 +61,7 @@ const MedicalHistorySection = ({ patientId, patientName }: MedicalHistorySection
   
   const handleAddRecord = () => {
     if (!newRecordContent.trim() || !recordType.trim()) {
+      // Fix here: Sending only one argument to toast
       toast(t('please_fill_all_fields'));
       return;
     }
@@ -78,6 +79,7 @@ const MedicalHistorySection = ({ patientId, patientName }: MedicalHistorySection
     
     // In a real app, this would be an API call to save the record
     setRecords([...records, newRecord]);
+    // Fix here: Sending only one argument to toast
     toast(t('record_added_successfully'));
     setAddDialogOpen(false);
     setNewRecordContent('');
@@ -86,6 +88,7 @@ const MedicalHistorySection = ({ patientId, patientName }: MedicalHistorySection
   
   const handleEditRecord = () => {
     if (!currentRecord || !currentRecord.content.trim()) {
+      // Fix here: Sending only one argument to toast
       toast(t('please_fill_all_fields'));
       return;
     }
@@ -95,6 +98,7 @@ const MedicalHistorySection = ({ patientId, patientName }: MedicalHistorySection
       record.id === currentRecord.id ? currentRecord : record
     ));
     
+    // Fix here: Sending only one argument to toast
     toast(t('record_updated_successfully'));
     setEditDialogOpen(false);
     setCurrentRecord(null);
