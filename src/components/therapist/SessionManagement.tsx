@@ -133,6 +133,22 @@ const SessionManagement = () => {
       // Add the new appointment to the list
       if (data && data.length > 0) {
         setAppointments([...appointments, data[0]]);
+        
+        // Also create an entry in patient_appointments table
+        const { error: patientApptError } = await supabase
+          .from('patient_appointments')
+          .insert({
+            patient_id: user.id, // This should be replaced with actual patient ID
+            doctor_id: user.id,
+            doctor_name: user.name || 'Dr.',
+            session_date: dateTimeValue.toISOString(),
+            session_type: values.session_type,
+            status: "upcoming"
+          });
+          
+        if (patientApptError) {
+          console.error("Error creating patient appointment:", patientApptError);
+        }
       }
       
       toast.success(t('appointment_created'));
@@ -162,6 +178,23 @@ const SessionManagement = () => {
       setAppointments(appointments.map(apt => 
         apt.id === id ? { ...apt, status } : apt
       ));
+      
+      // Also update the corresponding patient appointment
+      const appointmentToUpdate = appointments.find(apt => apt.id === id);
+      if (appointmentToUpdate) {
+        const patientStatus = status === "scheduled" ? "upcoming" : 
+                             status === "completed" ? "completed" : "cancelled";
+                             
+        const { error: patientApptError } = await supabase
+          .from('patient_appointments')
+          .update({ status: patientStatus })
+          .eq('patient_id', appointmentToUpdate.patient_id)
+          .eq('session_date', appointmentToUpdate.session_date);
+          
+        if (patientApptError) {
+          console.error("Error updating patient appointment:", patientApptError);
+        }
+      }
       
       toast.success(t('appointment_updated'));
     } catch (error) {

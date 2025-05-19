@@ -158,6 +158,66 @@ export type Database = {
         }
         Relationships: []
       }
+      patient_appointments: {
+        Row: {
+          created_at: string | null
+          doctor_id: string
+          doctor_name: string
+          id: string
+          patient_id: string
+          session_date: string
+          session_type: string
+          status: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          doctor_id: string
+          doctor_name: string
+          id?: string
+          patient_id: string
+          session_date: string
+          session_type: string
+          status?: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          doctor_id?: string
+          doctor_name?: string
+          id?: string
+          patient_id?: string
+          session_date?: string
+          session_type?: string
+          status?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      patient_dashboard: {
+        Row: {
+          created_at: string | null
+          id: string
+          progress: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          progress?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          progress?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

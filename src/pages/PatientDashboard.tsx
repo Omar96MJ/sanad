@@ -11,43 +11,9 @@ import { ar, enUS } from 'date-fns/locale';
 import { Doctor, BlogPost } from "@/lib/types";
 import { DashboardHeader } from "@/components/patient/dashboard/DashboardHeader";
 import { PatientDashboardTabs } from "@/components/patient/dashboard/PatientDashboardTabs";
+import { supabase } from "@/integrations/supabase/client";
 
-const mockDoctor: Doctor = {
-  id: '1',
-  name: 'Dr. Sarah Johnson',
-  email: 'doctor@example.com',
-  role: 'doctor',
-  profileImage: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=256',
-  specialization: 'Clinical Psychologist',
-  bio: 'Specializing in anxiety disorders and cognitive behavioral therapy with over 10 years of experience.',
-  patients: 42,
-  yearsOfExperience: 10
-};
-
-const mockAppointments = [
-  {
-    id: 1,
-    date: '2023-11-10T13:00:00',
-    doctor: 'Dr. Sarah Johnson',
-    type: 'Video Call',
-    status: 'upcoming'
-  },
-  {
-    id: 2,
-    date: '2023-10-25T10:30:00',
-    doctor: 'Dr. Sarah Johnson',
-    type: 'In-Person',
-    status: 'completed'
-  },
-  {
-    id: 3,
-    date: '2023-10-10T14:45:00',
-    doctor: 'Dr. Sarah Johnson',
-    type: 'Video Call',
-    status: 'completed'
-  }
-];
-
+// Mock data for blog posts that doesn't change with user
 const mockArticles: BlogPost[] = [
   {
     id: '1',
@@ -75,12 +41,28 @@ const mockArticles: BlogPost[] = [
   }
 ];
 
+// Default doctor data
+const defaultDoctor: Doctor = {
+  id: '',
+  name: '',
+  email: '',
+  role: 'doctor',
+  profileImage: '',
+  specialization: '',
+  bio: '',
+  patients: 0,
+  yearsOfExperience: 0
+};
+
 const PatientDashboard = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [progress, setProgress] = useState(65);
+  const [progress, setProgress] = useState(0);
   const [isVisible, setIsVisible] = useState(false);
+  const [mockDoctor, setMockDoctor] = useState<Doctor>(defaultDoctor);
+  const [mockAppointments, setMockAppointments] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const isRTL = language === 'ar';
   
   // Set the correct locale object based on the selected language
@@ -89,11 +71,84 @@ const PatientDashboard = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     
-    // Simulate data loading
-    setTimeout(() => {
-      setIsVisible(true);
-    }, 100);
-  }, []);
+    // Show loading state
+    setIsLoading(true);
+    
+    if (!user) return;
+    
+    const fetchDashboardData = async () => {
+      try {
+        // Fetch dashboard progress
+        const { data: dashboardData, error: dashboardError } = await supabase
+          .from('patient_dashboard')
+          .select('*')
+          .eq('user_id', user.id)
+          .single();
+          
+        if (dashboardError) {
+          if (dashboardError.code === 'PGRST116') {
+            // No dashboard data exists yet, create it
+            const { error: insertError } = await supabase
+              .from('patient_dashboard')
+              .insert({ user_id: user.id, progress: 0 });
+              
+            if (insertError) {
+              console.error('Error creating dashboard:', insertError);
+            } else {
+              setProgress(0);
+            }
+          } else {
+            console.error('Error fetching dashboard:', dashboardError);
+          }
+        } else if (dashboardData) {
+          setProgress(dashboardData.progress || 0);
+        }
+        
+        // Fetch appointments
+        const { data: appointmentsData, error: appointmentsError } = await supabase
+          .from('patient_appointments')
+          .select('*')
+          .eq('patient_id', user.id)
+          .order('session_date', { ascending: true });
+          
+        if (appointmentsError) {
+          console.error('Error fetching appointments:', appointmentsError);
+        } else if (appointmentsData) {
+          setMockAppointments(appointmentsData.map(apt => ({
+            id: apt.id,
+            date: apt.session_date,
+            doctor: apt.doctor_name,
+            type: apt.session_type,
+            status: apt.status
+          })));
+        }
+        
+        // Fetch assigned doctor (if any)
+        // For now we'll just set a default doctor
+        setMockDoctor({
+          id: '1',
+          name: 'Dr. Sarah Johnson',
+          email: 'doctor@example.com',
+          role: 'doctor',
+          profileImage: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=256',
+          specialization: 'Clinical Psychologist',
+          bio: 'Specializing in anxiety disorders and cognitive behavioral therapy with over 10 years of experience.',
+          patients: 42,
+          yearsOfExperience: 10
+        });
+        
+        // Make the dashboard visible after data is loaded
+        setIsVisible(true);
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+        toast.error(t('error_loading_dashboard'));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchDashboardData();
+  }, [user, t, isRTL]);
 
   if (!user) {
     return <Navigate to="/login" />;
@@ -101,12 +156,36 @@ const PatientDashboard = () => {
     return <Navigate to="/" />;
   }
 
-  const handleBookAppointment = () => {
-    toast.success(isRTL ? "سيتم إضافة ميزة حجز المواعيد قريبًا!" : "Appointment booking feature coming soon!");
+  const handleBookAppointment = async () => {
+    try {
+      // For now just show a toast, but in the future this would create an appointment
+      toast.success(isRTL ? "سيتم إضافة ميزة حجز المواعيد قريبًا!" : "Appointment booking feature coming soon!");
+    } catch (error) {
+      console.error('Error booking appointment:', error);
+      toast.error(t('error_booking_appointment'));
+    }
   };
 
-  const handleStartTherapy = () => {
-    toast.success(isRTL ? "سيتم إ��افة ميزة جلسة العلاج عبر الإنترنت قريبًا!" : "Online therapy session feature coming soon!");
+  const handleStartTherapy = async () => {
+    try {
+      // Update progress in database
+      const newProgress = Math.min(progress + 10, 100);
+      
+      const { error } = await supabase
+        .from('patient_dashboard')
+        .update({ progress: newProgress })
+        .eq('user_id', user.id);
+        
+      if (error) {
+        throw error;
+      }
+      
+      setProgress(newProgress);
+      toast.success(isRTL ? "سيتم إضافة ميزة جلسة العلاج عبر الإنترنت قريبًا!" : "Online therapy session feature coming soon!");
+    } catch (error) {
+      console.error('Error updating progress:', error);
+      toast.error(t('error_updating_progress'));
+    }
   };
 
   const formatAppointmentDate = (dateString: string) => {
