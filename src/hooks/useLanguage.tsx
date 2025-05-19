@@ -1,18 +1,7 @@
 
-import { useContext } from 'react';
-import { LanguageContext, LanguageProvider, LanguageContextType } from './language-context';
+import { useLanguage, LanguageProvider } from './language';
 
 /**
- * Custom hook to access the language context
- * @returns LanguageContextType object with language, setLanguage, and t functions
+ * Re-export the language hook and provider for backward compatibility
  */
-export const useLanguage = (): LanguageContextType => {
-  const context = useContext(LanguageContext);
-  if (context === undefined) {
-    throw new Error('useLanguage must be used within a LanguageProvider');
-  }
-  return context;
-};
-
-// Re-export the LanguageProvider for easy access
-export { LanguageProvider };
+export { useLanguage, LanguageProvider };
