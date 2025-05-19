@@ -1,10 +1,18 @@
 
 import { useState, useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
+import { useLanguage } from '@/hooks/useLanguage';
+
 
 const MentalHealthInfo = () => {
   const [isVisible, setIsVisible] = useState(false);
 
+
+  const { t, language } = useLanguage();
+  const currentYear = new Date().getFullYear();
+  const isRTL = language === 'ar';
+
+  
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -99,13 +107,13 @@ const MentalHealthInfo = () => {
             }`}
           >
             <div className="inline-block bg-primary/10 text-primary font-medium rounded-full px-4 py-1 mb-4">
-              فهم الصحة النفسية
+              {t('understanding_mental_health')}
             </div>
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              دليلك الشامل للصحة النفسية
+              {t('Your_comprehensive_guide_to_mental_health')}
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              تعرف على المزيد حول حالات الصحة النفسية الشائعة وكيفية التعرف على علاماتها وأعراضها
+              {t('learn_about_mental_health_conditions')}
             </p>
           </div>
         </div>

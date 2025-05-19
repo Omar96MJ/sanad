@@ -41,6 +41,10 @@ const generalTranslations = {
   'support_specialist': 'مختص بالدعم',
   'already_have_account': 'انضممت مسبقًا؟',
   "create_password": "إنشاء كلمة مرور",
+  "understanding_mental_health": "فهم الصحة النفسية",
+  "Your_comprehensive_guide_to_mental_health": "دليلك الشامل للصحة النفسية",
+  "learn_about_mental_health_conditions": "تعرف على المزيد حول حالات الصحة النفسية الشائعة وكيفية التعرف على علاماتها وأعراضها.",
+
   
   // Blog and articles
   "mental_health_resources": "موارد الصحة النفسية",

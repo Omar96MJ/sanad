@@ -66,6 +66,10 @@ const general = {
   'terms_of_service': 'Terms of Service',
   'cookie_policy': 'Cookie Policy',
   'sanad_copyright': 'Sanad. All rights reserved.',
+  'understanding_mental_health': 'Mental Health Awareness',
+  'Your_comprehensive_guide_to_mental_health': 'Your Comprehensive Guide to Mental Health',
+  'learn_about_mental_health_conditions': 'Learn more about common mental health conditions and how to recognize their signs and symptoms',
+  
 
   // Mental Health Guide
   'mentalhealthguide': 'Mental Health Guide',
