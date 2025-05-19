@@ -57,9 +57,9 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-custom">
+                <Link to="/crisis-support" className="text-muted-foreground hover:text-primary transition-custom">
                   {t('crisis_support')}
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-primary transition-custom">
