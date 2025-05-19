@@ -2,15 +2,7 @@
 import { useLanguage } from "@/hooks/useLanguage";
 import { AppointmentCard } from "./AppointmentCard";
 import { Loader2 } from "lucide-react";
-
-type Appointment = {
-  id: string;
-  patient_name: string;
-  session_date: string;
-  session_type: string;
-  status: string;
-  notes?: string;
-}
+import { Appointment } from "./types";
 
 type AppointmentListProps = {
   appointments: Appointment[];

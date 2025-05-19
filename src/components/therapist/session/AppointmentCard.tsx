@@ -4,16 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/hooks/useLanguage";
 import { format, parseISO } from "date-fns";
 import { ar, enUS } from 'date-fns/locale';
+import { Appointment } from "./types";
 
 type AppointmentCardProps = {
-  appointment: {
-    id: string;
-    patient_name: string;
-    session_date: string;
-    session_type: string;
-    status: string;
-    notes?: string;
-  };
+  appointment: Appointment;
   onUpdateStatus: (id: string, status: string) => void;
 };
 
