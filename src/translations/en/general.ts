@@ -1,4 +1,3 @@
-
 const general = {
   'welcome': 'Welcome to Mental Health Support',
   'aboutus': 'About Us',
@@ -166,7 +165,77 @@ const general = {
   'resource_2_title': 'Substance Abuse Help',
   'resource_2_desc': 'Resources for substance abuse and addiction recovery',
   'resource_3_title': 'Family Support Network',
-  'resource_3_desc': 'Support for family members of those experiencing mental health crises'
+  'resource_3_desc': 'Support for family members of those experiencing mental health crises',
+
+  // Self-Care Tips page
+  'self_care_tips': 'Self-Care Tips',
+  'self_care_tips_title': 'Self-Care Tips & Practices',
+  'self_care_tips_subtitle': 'Simple ways to nurture your mental, physical, and emotional wellbeing',
+  'self_care_intro_text': 'Self-care means taking the time to do things that help you live well and improve both your physical and mental health. When it comes to your mental health, self-care can help you manage stress, lower your risk of illness, and increase your energy.',
+  
+  'importance_of_self_care': 'Why Self-Care Matters',
+  'importance_of_self_care_desc': 'Regular self-care can help reduce stress, improve relationships, boost well-being, and prevent burnout.',
+  
+  'benefits_of_self_care': 'The Benefits',
+  'benefits_of_self_care_desc': 'Self-care improves your mood, reduces anxiety, and increases positive thoughts and emotions.',
+  
+  'start_small': 'Start Small',
+  'start_small_desc': 'Self-care doesn\'t have to be complicated. Even small changes can have a significant positive impact.',
+  
+  'physical_self_care': 'Physical Self-Care',
+  'physical_self_care_desc': 'Activities that improve your physical wellbeing and help you stay fit and healthy',
+  'physical_tip_1_title': 'Regular Exercise',
+  'physical_tip_1_content': 'Aim for at least 30 minutes of moderate exercise most days. Walking, swimming, cycling, or dancing are all great options.',
+  'physical_tip_2_title': 'Healthy Eating',
+  'physical_tip_2_content': 'Focus on a balanced diet rich in fruits, vegetables, whole grains, and lean proteins. Stay hydrated by drinking plenty of water.',
+  'physical_tip_3_title': 'Adequate Sleep',
+  'physical_tip_3_content': 'Prioritize 7-9 hours of quality sleep each night. Create a relaxing bedtime routine and stick to consistent sleep and wake times.',
+  'physical_tip_4_title': 'Regular Health Check-ups',
+  'physical_tip_4_content': 'Schedule and attend regular medical and dental appointments. Don\'t ignore health concerns when they arise.',
+  
+  'mental_self_care': 'Mental Self-Care',
+  'mental_self_care_desc': 'Activities that stimulate your mind and keep your brain healthy',
+  'mental_tip_1_title': 'Mindfulness Practices',
+  'mental_tip_1_content': 'Try meditation, deep breathing exercises, or simply focusing on the present moment for a few minutes each day.',
+  'mental_tip_2_title': 'Mental Stimulation',
+  'mental_tip_2_content': 'Engage in activities that challenge your brain like reading, puzzles, learning a new skill, or playing an instrument.',
+  'mental_tip_3_title': 'Digital Detox',
+  'mental_tip_3_content': 'Take regular breaks from screens and social media. Set boundaries for technology use, especially before bedtime.',
+  'mental_tip_4_title': 'Organization',
+  'mental_tip_4_content': 'Reduce mental clutter by keeping your space tidy and using tools like planners or digital calendars to stay organized.',
+  
+  'emotional_self_care': 'Emotional Self-Care',
+  'emotional_self_care_desc': 'Activities that help you connect with, process, and express your feelings',
+  'emotional_tip_1_title': 'Express Your Feelings',
+  'emotional_tip_1_content': 'Find healthy ways to express emotions, such as talking with a trusted friend, journaling, or creative activities.',
+  'emotional_tip_2_title': 'Set Boundaries',
+  'emotional_tip_2_content': 'Learn to say no when needed and set healthy boundaries in relationships and work situations.',
+  'emotional_tip_3_title': 'Practice Self-Compassion',
+  'emotional_tip_3_content': 'Treat yourself with the same kindness and understanding you would offer to a good friend.',
+  'emotional_tip_4_title': 'Seek Support When Needed',
+  'emotional_tip_4_content': 'Don\'t hesitate to reach out to friends, family, or professionals when facing emotional difficulties.',
+  
+  'social_self_care': 'Social Self-Care',
+  'social_self_care_desc': 'Activities that nurture and deepen the relationships with people around you',
+  'social_tip_1_title': 'Quality Time with Loved Ones',
+  'social_tip_1_content': 'Make time for meaningful connections with family and friends. Focus on quality interactions rather than quantity.',
+  'social_tip_2_title': 'Build Your Community',
+  'social_tip_2_content': 'Join groups, clubs, or classes that align with your interests to meet like-minded people.',
+  'social_tip_3_title': 'Balance Solitude and Socializing',
+  'social_tip_3_content': 'Honor your need for both social connection and alone time, based on your personality and current circumstances.',
+  'social_tip_4_title': 'Nurture Healthy Relationships',
+  'social_tip_4_content': 'Invest energy in relationships that are supportive and positive, and consider distancing from toxic relationships.',
+  
+  'spiritual_self_care': 'Spiritual Self-Care',
+  'spiritual_self_care_desc': 'Activities that nurture your spirit and connect you with your deeper values',
+  'spiritual_tip_1_title': 'Connect with Nature',
+  'spiritual_tip_1_content': 'Spend time outdoors, whether it\'s hiking, gardening, or simply sitting in a park and observing the natural world.',
+  'spiritual_tip_2_title': 'Practice Gratitude',
+  'spiritual_tip_2_content': 'Take time regularly to reflect on and appreciate the positive aspects of your life.',
+  'spiritual_tip_3_title': 'Explore Purpose and Meaning',
+  'spiritual_tip_3_content': 'Reflect on your values and what gives your life meaning. Align your actions with these deeper principles.',
+  'spiritual_tip_4_title': 'Engage in Spiritual Practices',
+  'spiritual_tip_4_content': 'Whether through prayer, meditation, religious services, or personal rituals, find practices that connect you to something greater than yourself.',
 };
 
 export default general;
