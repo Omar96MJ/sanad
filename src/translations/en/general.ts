@@ -175,11 +175,26 @@ const generalTranslations = {
   "friday": "Friday",
   "patient_reviews": "Patient Reviews",
   "what_patients_say": "What other patients say about this therapist",
-  "month_ago": "month ago",
   "patients": "Patients",
   "years": "Years Experience",
   "therapist_not_found": "Therapist not found",
-  "error_loading_therapist_details": "Error loading therapist details"
+  "error_loading_therapist_details": "Error loading therapist details",
+  
+  // Progress related
+  "your_progress": "Your Progress",
+  "mood": "Mood",
+  "anxiety": "Anxiety",
+  "sleep": "Sleep",
+  "activity": "Activity",
+  "start_therapy_session": "Start Therapy Session",
+  "therapy_complete": "Therapy Complete",
+  "monthly_data_coming_soon": "Monthly data coming soon",
+  "yearly_data_coming_soon": "Yearly data coming soon",
+  "no_therapist_assigned": "No therapist assigned yet",
+  "find_therapist_message": "Find a therapist who's right for you",
+  "my_therapist": "My Therapist",
+  "view_profile": "View Profile",
+  "calendar": "Calendar",
 };
 
 export default generalTranslations;

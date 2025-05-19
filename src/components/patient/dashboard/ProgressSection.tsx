@@ -4,9 +4,20 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+
+interface ProgressSectionProps {
+  isVisible: boolean;
+  progress: number;
+  handleStartTherapy: () => void;
+}
 
 // Export as a named export to match the import in DashboardOverview.tsx
-export const ProgressSection = () => {
+export const ProgressSection: React.FC<ProgressSectionProps> = ({ 
+  isVisible, 
+  progress, 
+  handleStartTherapy 
+}) => {
   const { t } = useLanguage();
   
   // Sample progress data
@@ -64,6 +75,14 @@ export const ProgressSection = () => {
                 <Progress value={progressData.activity} />
               </div>
             </div>
+            
+            <Button 
+              onClick={handleStartTherapy} 
+              className="w-full"
+              disabled={progress >= 100}
+            >
+              {progress < 100 ? t('start_therapy_session') : t('therapy_complete')}
+            </Button>
           </TabsContent>
           
           <TabsContent value="month">

@@ -7,8 +7,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
+interface TherapistCardProps {
+  isVisible: boolean;
+}
+
 // Export as a named export to match the import in DashboardOverview.tsx
-export const TherapistCard = () => {
+export const TherapistCard: React.FC<TherapistCardProps> = ({ isVisible }) => {
   const { t } = useLanguage();
   const navigate = useNavigate();
   const hasTherapist = false; // This would come from a real data source
