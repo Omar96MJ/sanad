@@ -123,7 +123,50 @@ const general = {
   'faqcancelsession': 'How do I cancel or reschedule a session?',
   'faqcancelsessionanswer': 'You can cancel or reschedule sessions through your dashboard up to 24 hours before the appointment without any penalty. Late cancellations may be subject to a fee as outlined in our cancellation policy.',
   'faqemergency': 'What if I have an emergency?',
-  'faqemergencyanswer': "Sanad is not an emergency service. If you're experiencing a mental health crisis or emergency, please call your local emergency number or crisis hotline immediately. We provide resources for crisis support on our website."
+  'faqemergencyanswer': "Sanad is not an emergency service. If you're experiencing a mental health crisis or emergency, please call your local emergency number or crisis hotline immediately. We provide resources for crisis support on our website.",
+  
+  // Crisis Support Page
+  'crisis_support_title': 'Crisis Support & Resources',
+  'crisis_support_subtitle': 'Immediate help and resources for mental health emergencies',
+  'emergency_contact': 'Emergency Contact Information',
+  'emergency_contact_desc': 'If you or someone you know is in immediate danger, please call emergency services right away.',
+  'emergency_services': 'Emergency Services',
+  'emergency_services_desc': 'For immediate life-threatening emergencies',
+  'suicide_prevention': 'Suicide Prevention Lifeline',
+  'suicide_prevention_desc': 'For suicidal thoughts or concerns',
+  'crisis_hotline': 'Crisis Hotline',
+  'crisis_hotline_desc': 'For mental health crises and information',
+  
+  'support_resources': 'Support Resources',
+  'text_support': 'Text Support',
+  'text_support_desc': 'Text-based crisis support for those who prefer not to call',
+  'text_support_contact': 'Text HOME to 741741',
+  'online_chat': 'Online Chat Support',
+  'online_chat_desc': 'Live chat with crisis counselors available 24/7',
+  'online_chat_contact': 'Visit crisischat.org',
+  
+  'recognizing_crisis': 'Recognizing a Mental Health Crisis',
+  'warning_signs': 'Warning Signs',
+  'warning_sign_1': 'Talking about wanting to die or kill oneself',
+  'warning_sign_2': 'Looking for ways to kill oneself',
+  'warning_sign_3': 'Talking about feeling hopeless or having no purpose',
+  'warning_sign_4': 'Talking about feeling trapped or being in unbearable pain',
+  'warning_sign_5': 'Increasing use of alcohol or drugs',
+  
+  'how_to_help': 'How to Help Someone in Crisis',
+  'help_tip_1': 'Take threats of suicide seriously',
+  'help_tip_2': 'Stay with the person; do not leave them alone',
+  'help_tip_3': 'Remove any firearms, alcohol, drugs, or sharp objects',
+  'help_tip_4': 'Call a crisis hotline or emergency services',
+  'help_tip_5': 'Listen without judgment and offer reassurance',
+  
+  'additional_resources': 'Additional Resources',
+  'resource_1_title': 'Mental Health Association',
+  'resource_1_desc': 'Information, referrals, and education on mental health',
+  'resource_2_title': 'Substance Abuse Help',
+  'resource_2_desc': 'Resources for substance abuse and addiction recovery',
+  'resource_3_title': 'Family Support Network',
+  'resource_3_desc': 'Support for family members of those experiencing mental health crises'
 };
 
 export default general;

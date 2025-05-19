@@ -22,6 +22,7 @@ import SessionBooking from "./pages/SessionBooking";
 import AboutUs from "./pages/AboutUs";
 import FAQ from "./pages/FAQ";
 import MentalHealthGuide from "./pages/MentalHealthGuide";
+import CrisisSupport from "./pages/CrisisSupport";
 import NotFound from "./pages/NotFound";
 import CreateAdmin from "./pages/CreateAdmin";
 import React from "react";
@@ -79,6 +80,7 @@ const AppRoutes = () => {
       <Route path="/about-us" element={<AboutUs />} />
       <Route path="/faq" element={<FAQ />} />
       <Route path="/mental-health-guide" element={<MentalHealthGuide />} />
+      <Route path="/crisis-support" element={<CrisisSupport />} />
       <Route path="/create-admin" element={<CreateAdmin />} />
       <Route path="/dashboard" element={<DashboardRoute />} />
       <Route 

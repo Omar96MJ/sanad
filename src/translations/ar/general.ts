@@ -129,8 +129,50 @@ const generalTranslations = {
   "your_appointments": "مواعيدك",
   "view_notes": "عرض الملاحظات",
   "past_appointments": "المواعيد السابقة",
-  "upcoming": "قادمة"
+  "upcoming": "قادمة",
+  
+  // Crisis Support Page
+  'crisis_support_title': 'دعم الأزمات والموارد',
+  'crisis_support_subtitle': 'مساعدة فورية وموارد لحالات الطوارئ الصحة النفسية',
+  'emergency_contact': 'معلومات الاتصال في حالات الطوارئ',
+  'emergency_contact_desc': 'إذا كنت أنت أو شخص تعرفه في خطر مباشر، يرجى الاتصال بخدمات الطوارئ على الفور.',
+  'emergency_services': 'خدمات الطوارئ',
+  'emergency_services_desc': 'لحالات الطوارئ المهددة للحياة',
+  'suicide_prevention': 'خط الوقاية من الانتحار',
+  'suicide_prevention_desc': 'للأفكار الانتحارية أو المخاوف',
+  'crisis_hotline': 'خط الأزمات',
+  'crisis_hotline_desc': 'لأزمات الصحة النفسية والمعلومات',
+  
+  'support_resources': 'موارد الدعم',
+  'text_support': 'دعم الرسائل النصية',
+  'text_support_desc': 'دعم الأزمات عبر الرسائل النصية لمن يفضلون عدم الاتصال',
+  'text_support_contact': 'أرسل HOME إلى 741741',
+  'online_chat': 'دعم الدردشة عبر الإنترنت',
+  'online_chat_desc': 'دردشة مباشرة مع مستشاري الأزمات متاحة على مدار الساعة طوال أيام الأسبوع',
+  'online_chat_contact': 'قم بزيارة crisischat.org',
+  
+  'recognizing_crisis': 'التعرف على أزمة الصحة النفسية',
+  'warning_signs': 'علامات التحذير',
+  'warning_sign_1': 'الحديث عن الرغبة في الموت أو الانتحار',
+  'warning_sign_2': 'البحث عن طرق للانتحار',
+  'warning_sign_3': 'الحديث عن الشعور باليأس أو عدم وجود هدف',
+  'warning_sign_4': 'الحديث عن الشعور بالحبس أو الألم الذي لا يطاق',
+  'warning_sign_5': 'زيادة استخدام الكحول أو المخدرات',
+  
+  'how_to_help': 'كيفية مساعدة شخص في أزمة',
+  'help_tip_1': 'خذ تهديدات الانتحار على محمل الجد',
+  'help_tip_2': 'ابق مع الشخص؛ لا تتركه وحيدًا',
+  'help_tip_3': 'قم بإزالة أي أسلحة نارية أو كحول أو مخدرات أو أشياء حادة',
+  'help_tip_4': 'اتصل بخط أزمات أو خدمات الطوارئ',
+  'help_tip_5': 'استمع دون حكم وقدم الطمأنينة',
+  
+  'additional_resources': 'موارد إضافية',
+  'resource_1_title': 'جمعية الصحة النفسية',
+  'resource_1_desc': 'معلومات وإحالات وتثقيف حول الصحة النفسية',
+  'resource_2_title': 'مساعدة تعاطي المخدرات',
+  'resource_2_desc': 'موارد لتعاطي المخدرات والتعافي من الإدمان',
+  'resource_3_title': 'شبكة دعم العائلة',
+  'resource_3_desc': 'دعم لأفراد الأسرة الذين يعانون من أزمات الصحة النفسية'
 };
 
 export default generalTranslations;
-
