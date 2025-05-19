@@ -1,3 +1,4 @@
+
 const general = {
   'welcome': 'Welcome to Mental Health Support',
   'aboutus': 'About Us',
@@ -168,7 +169,6 @@ const general = {
   'resource_3_desc': 'Support for family members of those experiencing mental health crises',
 
   // Self-Care Tips page
-  'self_care_tips': 'Self-Care Tips',
   'self_care_tips_title': 'Self-Care Tips & Practices',
   'self_care_tips_subtitle': 'Simple ways to nurture your mental, physical, and emotional wellbeing',
   'self_care_intro_text': 'Self-care means taking the time to do things that help you live well and improve both your physical and mental health. When it comes to your mental health, self-care can help you manage stress, lower your risk of illness, and increase your energy.',

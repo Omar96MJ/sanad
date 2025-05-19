@@ -2,7 +2,7 @@
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useLanguage } from '@/hooks/useLanguage';
-import { Leaf, Smile, Spa, Yoga, Heart, Meditation } from 'lucide-react';
+import { Leaf, Smile, Heart, Waves, Brain, FlowerIcon } from 'lucide-react';
 import Footer from '@/components/Footer';
 
 const SelfCareTips = () => {
@@ -16,7 +16,7 @@ const SelfCareTips = () => {
           {/* Header Section */}
           <div className="mb-12 text-center">
             <div className="inline-flex items-center justify-center p-3 bg-green-100 text-green-600 rounded-full mb-4">
-              <Spa className="h-8 w-8" />
+              <FlowerIcon className="h-8 w-8" />
             </div>
             <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('self_care_tips_title')}</h1>
             <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
@@ -37,7 +37,7 @@ const SelfCareTips = () => {
                 textColor="text-red-600"
               />
               <InfoCard 
-                icon={<Meditation className="h-6 w-6" />}
+                icon={<Brain className="h-6 w-6" />}
                 title={t('benefits_of_self_care')}
                 description={t('benefits_of_self_care_desc')}
                 color="bg-indigo-100"
@@ -57,7 +57,7 @@ const SelfCareTips = () => {
           <SelfCareCategory 
             title={t('physical_self_care')}
             description={t('physical_self_care_desc')}
-            icon={<Yoga className="h-8 w-8" />}
+            icon={<Waves className="h-8 w-8" />}
             color="bg-blue-100"
             textColor="text-blue-600"
             tips={[
@@ -72,7 +72,7 @@ const SelfCareTips = () => {
           <SelfCareCategory 
             title={t('mental_self_care')}
             description={t('mental_self_care_desc')}
-            icon={<Meditation className="h-8 w-8" />}
+            icon={<Brain className="h-8 w-8" />}
             color="bg-purple-100"
             textColor="text-purple-600"
             tips={[
