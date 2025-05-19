@@ -25,6 +25,9 @@ import { ThemeProvider } from '@/hooks/useTheme';
 import { LanguageProvider } from '@/hooks/useLanguage';
 import { AuthProvider } from '@/hooks/useAuth';
 import CreateAdmin from './pages/CreateAdmin';
+import TherapistSearch from './pages/TherapistSearch';
+import TherapistProfile from './pages/TherapistProfile';
+import Library from './pages/Library';
 
 const App = () => {
   return (
@@ -54,6 +57,9 @@ const App = () => {
               <Route path="/psychological-tests" element={<PsychologicalTests />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/create-admin" element={<CreateAdmin />} />
+              <Route path="/therapist-search" element={<TherapistSearch />} />
+              <Route path="/therapist/:id" element={<TherapistProfile />} />
+              <Route path="/library" element={<Library />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster closeButton position="top-center" />
