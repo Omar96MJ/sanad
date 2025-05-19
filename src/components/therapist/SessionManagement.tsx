@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -13,6 +12,7 @@ import * as z from "zod";
 
 type Appointment = {
   id: string;
+  patient_id: string; // Added this property to fix the error
   patient_name: string;
   session_date: string;
   session_type: string;
