@@ -156,7 +156,7 @@ const AboutUs = () => {
                   bio: isRTL 
                     ? 'خريج هندسة البرمجيات جامعة السودان للعلوم والتكنولوجيا.'
                     : 'Graduate in Software Engineering, Sudan University of Science and Technology.',
-                  image: omerMahgoubImage
+                  image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7'
                 },
                 {
                   name: isRTL ? 'م. رمزي محمد' : 'Eng. Ramzi Mohamed',
