@@ -11,7 +11,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { PatientDashboardTabs } from "@/components/patient/dashboard/PatientDashboardTabs";
 import { DashboardHeader } from "@/components/patient/dashboard/DashboardHeader";
-import { SessionModal } from "@/components/patient/dashboard/SessionModal";
+import { SessionModal } from "@/components/patient/dashboard/session-modal/SessionModal";
 import { fetchPatientAppointments, PatientAppointment } from "@/services/patientAppointmentService";
 
 // Import mockBlogs instead of mockArticles
