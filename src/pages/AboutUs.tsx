@@ -137,7 +137,7 @@ const AboutUs = () => {
                   bio: isRTL 
                     ? 'خريج هندسة البرمجيات جامعة السودان للعلوم والتكنولوجيا.'
                     : 'Graduate in Software Engineering, Sudan University of Science and Technology.',
-                  image: '/Eng-mustafa.jpg'
+                  image: "/images/Eng-mustafa.jpg"
                 },
                 {
                   name: isRTL ? 'م. عمر عباس' : 'Eng. Omar Abbas',
@@ -153,7 +153,7 @@ const AboutUs = () => {
                   bio: isRTL 
                     ? 'خريج هندسة البرمجيات جامعة السودان للعلوم والتكنولوجيا.'
                     : 'Graduate in Software Engineering, Sudan University of Science and Technology.',
-                  image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a'
+                  image: "/images/Eng-omer-mahgoub.jpg"
                 },
                 {
                   name: isRTL ? 'م. رمزي محمد' : 'Eng. Ramzi Mohamed',
