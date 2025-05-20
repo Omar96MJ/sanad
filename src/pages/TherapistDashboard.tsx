@@ -1,13 +1,16 @@
 
 import { LanguageProvider } from '@/hooks/useLanguage';
 import TherapistDashboardComponent from "./TherapistDashboard/index";
+import { SettingsProvider } from '@/hooks/useSettings';
 
-// Wrap TherapistDashboard with LanguageProvider to ensure useLanguage context is available
+// Wrap TherapistDashboard with LanguageProvider and SettingsProvider to ensure both contexts are available
 const TherapistDashboard = () => {
   return (
-    <LanguageProvider>
-      <TherapistDashboardComponent />
-    </LanguageProvider>
+    <SettingsProvider>
+      <LanguageProvider>
+        <TherapistDashboardComponent />
+      </LanguageProvider>
+    </SettingsProvider>
   );
 };
 
