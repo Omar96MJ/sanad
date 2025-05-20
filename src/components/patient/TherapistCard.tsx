@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -7,11 +8,11 @@ import { useLanguage } from "@/hooks/useLanguage";
 
 interface TherapistCardProps {
   doctor: Doctor;
-  onSelect: () => void;
+  onSelect?: () => void;
   selected?: boolean;
 }
 
-const TherapistCard = ({ doctor, onSelect, selected = false }: TherapistCardProps) => {
+export function TherapistCard({ doctor, onSelect, selected = false }: TherapistCardProps) {
   const { t } = useLanguage();
   
   return (
@@ -40,17 +41,19 @@ const TherapistCard = ({ doctor, onSelect, selected = false }: TherapistCardProp
             </div>
           </div>
           
-          <Button 
-            onClick={onSelect} 
-            className="w-full"
-            variant={selected ? "default" : "outline"}
-          >
-            {selected ? t('selected') : t('view_profile')}
-          </Button>
+          {onSelect && (
+            <Button 
+              onClick={onSelect} 
+              className="w-full"
+              variant={selected ? "default" : "outline"}
+            >
+              {selected ? t('selected') : t('view_profile')}
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
   );
-};
+}
 
 export default TherapistCard;

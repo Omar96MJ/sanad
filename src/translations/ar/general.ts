@@ -101,7 +101,6 @@ const generalTranslations = {
   "error_booking_appointment": "خطأ في حجز الموعد",
   "error_updating_progress": "خطأ في تحديث التقدم",
   "take_test_description": "ابدأ في فهم صحتك النفسية من خلال اختباراتنا النفسية.",
-  "psychological_tests": "الاختبارات النفسية",
   "test_results": "نتائج الاختبار",
   "test_disclaimer": "هذا الاختبار هو أداة فحص أولية فقط ولا ينبغي اعتباره بديلاً للتقييم المهني.",
   "restart_test": "إعادة الاختبار",
@@ -220,6 +219,23 @@ const generalTranslations = {
   "my_therapist": "معالجي",
   "no_therapist_assigned": "لم يتم تعيين معالج",
   "find_therapist_message": "ابحث عن معالج يناسب احتياجاتك",
+  
+  // Patient Dashboard
+  "your_progress": "تقدمك",
+  "therapy_program": "برنامج العلاج",
+  "completed_sessions": "الجلسات المنجزة",
+  "next_session": "الجلسة القادمة",
+  "mood_tracker": "متتبع المزاج",
+  "improving": "يتحسن",
+  "up_this_month": "زيادة هذا الشهر",
+  "weekly_goals": "الأهداف الأسبوعية",
+  "days_remaining": "أيام متبقية",
+  "exercises_completed": "تمارين مكتملة",
+  "from_last_week": "من الأسبوع الماضي",
+  "start_todays_session": "بدء جلسة اليوم",
+  "view_detailed_progress": "عرض تقدم مفصل",
+  "schedule_session": "جدولة جلسة",
+  "your_therapist": "معالجك"
 };
 
 export default generalTranslations;

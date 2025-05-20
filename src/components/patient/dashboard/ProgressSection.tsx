@@ -11,12 +11,12 @@ interface ProgressSectionProps {
   isRTL: boolean;
 }
 
-export const ProgressSection = ({
+export function ProgressSection({
   isVisible,
   progress,
   onStartTherapy,
   isRTL
-}: ProgressSectionProps) => {
+}: ProgressSectionProps) {
   const { t } = useLanguage();
   
   return (
@@ -73,4 +73,4 @@ export const ProgressSection = ({
       </CardContent>
     </Card>
   );
-};
+}
