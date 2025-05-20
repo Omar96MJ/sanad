@@ -71,6 +71,8 @@ const general = {
   'welcome_back': 'Welcome Back',
   'sign_in_to_continue': 'Sign in to continue',
 
+  // Blog and articles
+  'mental_health_resources': 'Mental Health Resources',
   // Mental Health Guide
   'mentalhealthguide': 'Mental Health Guide',
   'mentalhealthguidesubtitle': 'Understanding and caring for your mental wellbeing',
