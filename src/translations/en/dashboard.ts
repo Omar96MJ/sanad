@@ -1,13 +1,6 @@
 
-export default {
-  // Dashboard general
-  "dashboard": "Dashboard",
-  "welcome_back": "Welcome back",
-  "overview": "Overview",
-  "sessions": "Sessions",
-  "resources": "Resources",
-  "messaging": "Messaging",
-  "send_messages_to_your_therapist": "Send secure messages to your therapist and receive responses directly.",
+// Dashboard related translations for English
+const dashboardTranslations = {
   // Patient Dashboard
   'patientdashboard': 'Patient Dashboard',
   'trackyourprogress': 'Track your progress, manage appointments, and access resources for your mental health',
@@ -72,12 +65,14 @@ export default {
 
   // Therapist Dashboard
   'therapistdashboard': 'Therapist Dashboard',
+  'overview': 'Overview',
   'doctorprofile': 'Doctor Profile',
   'manageyourprofileinformation': 'Manage your professional profile information',
   'sessionmanagement': 'Session Management',
   'manageyourtherapysessions': 'Manage your therapy sessions and appointments',
   'evaluations': 'Evaluations',
   'availability': 'Availability',
+  'messaging': 'Messaging',
   'totalpatients': 'Total Patients',
   'upcomingsessions': 'Upcoming Sessions',
   'pendingevaluations': 'Pending Evaluations',
@@ -108,3 +103,5 @@ export default {
   'appointmentupdated': 'Appointment updated successfully',
   'errorloadingdashboard': 'Error loading dashboard data',
 };
+
+export default dashboardTranslations;

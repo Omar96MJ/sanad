@@ -1,20 +1,22 @@
 
-import general from './general';
-import about from './about';
-import auth from './auth';
-import dashboard from './dashboard';
-import profile from './profile';
-import session from './session';
-import tests from './tests';
+import generalTranslations from './general';
+import authTranslations from './auth';
+import dashboardTranslations from './dashboard';
+import profileTranslations from './profile';
+import testsTranslations from './tests';
+import aboutTranslations from './about';
+import sessionTranslations from './session';
 
+// Combine all translation categories
 const enTranslations = {
-  ...general,
-  ...about,
-  ...auth,
-  ...dashboard,
-  ...profile,
-  ...session,
-  ...tests
+  ...generalTranslations,
+  ...authTranslations,
+  ...dashboardTranslations,
+  ...profileTranslations,
+  ...testsTranslations,
+  ...aboutTranslations,
+  ...sessionTranslations,
 };
 
 export default enTranslations;
+

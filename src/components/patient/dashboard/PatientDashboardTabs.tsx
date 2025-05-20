@@ -4,7 +4,6 @@ import { Tabs } from "@/components/ui/tabs";
 import { BlogPost, Doctor } from "@/lib/types";
 import { TabsList } from "./tabs/TabsList";
 import { TabContents } from "./tabs/TabContents";
-import { useAuth } from "@/hooks/useAuth";
 
 interface PatientDashboardTabsProps {
   isVisible: boolean;
@@ -21,7 +20,7 @@ interface PatientDashboardTabsProps {
   calendarLocale: any;
 }
 
-export const PatientDashboardTabs: React.FC<PatientDashboardTabsProps> = ({
+export const PatientDashboardTabs = ({
   isVisible,
   progress,
   mockDoctor,
@@ -34,17 +33,18 @@ export const PatientDashboardTabs: React.FC<PatientDashboardTabsProps> = ({
   formatAppointmentDate,
   formatAppointmentTime,
   calendarLocale
-}) => {
+}: PatientDashboardTabsProps) => {
   const [activeTab, setActiveTab] = useState("overview");
-  const { user } = useAuth();
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
       <TabsList />
       
-      <TabContents 
+      <TabContents
+        activeTab={activeTab}
         isVisible={isVisible}
         progress={progress}
+        mockDoctor={mockDoctor}
         mockAppointments={mockAppointments}
         mockArticles={mockArticles}
         date={date}
@@ -54,11 +54,7 @@ export const PatientDashboardTabs: React.FC<PatientDashboardTabsProps> = ({
         formatAppointmentDate={formatAppointmentDate}
         formatAppointmentTime={formatAppointmentTime}
         calendarLocale={calendarLocale}
-        userId={user?.id}
-        userName={user?.name}
       />
     </Tabs>
   );
 };
-
-export default PatientDashboardTabs;

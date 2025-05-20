@@ -2,16 +2,14 @@
 import { cn } from "@/lib/utils";
 import React from "react";
 
-interface SpinnerProps extends React.HTMLAttributes<HTMLDivElement> {
-  size?: string;
-}
+interface SpinnerProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 export const Spinner = React.forwardRef<HTMLDivElement, SpinnerProps>(
-  ({ className, size = "h-4 w-4", ...props }, ref) => {
+  ({ className, ...props }, ref) => {
     return (
       <div
         ref={ref}
-        className={cn("animate-spin rounded-full border-2 border-t-transparent", size, className)}
+        className={cn("animate-spin rounded-full border-2 border-t-transparent", className)}
         {...props}
       />
     );

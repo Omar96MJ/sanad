@@ -1,6 +1,5 @@
 
-import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguage } from "@/hooks/useLanguage";
 import TherapistProfile from "@/components/therapist/TherapistProfile";
@@ -10,10 +9,6 @@ import EvaluationForms from "@/components/therapist/EvaluationForms";
 import AvailabilityManagement from "@/components/therapist/AvailabilityManagement";
 import MessagingLayout from "@/components/messaging/MessagingLayout";
 import { DashboardOverview } from "@/components/therapist/dashboard/DashboardOverview";
-import TherapistCapabilities from "@/components/therapist/TherapistCapabilities";
-import BlogManagement from "@/components/therapist/BlogManagement";
-import MedicalHistorySection from "@/components/therapist/MedicalHistorySection";
-import { useAuth } from "@/hooks/useAuth";
 
 interface TherapistDashboardTabsProps {
   isLoading: boolean;
@@ -38,43 +33,18 @@ export const TherapistDashboardTabs = ({
   onScheduleSession,
 }: TherapistDashboardTabsProps) => {
   const { t } = useLanguage();
-  const { user } = useAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const tabFromUrl = searchParams.get('tab');
-  const [activeTab, setActiveTab] = useState(tabFromUrl || "overview");
-  
-  // Sample patient data for medical records section - in a real app this would come from selected patient
-  const [selectedPatient, setSelectedPatient] = useState({
-    id: '1',
-    patientName: 'John Doe'
-  });
-
-  // Update URL when tab changes
-  useEffect(() => {
-    if (tabFromUrl !== activeTab) {
-      setSearchParams({ tab: activeTab });
-    }
-  }, [activeTab, tabFromUrl, setSearchParams]);
-  
-  // Update active tab when URL changes
-  useEffect(() => {
-    if (tabFromUrl && tabFromUrl !== activeTab) {
-      setActiveTab(tabFromUrl);
-    }
-  }, [tabFromUrl, activeTab]);
+  const [activeTab, setActiveTab] = useState("overview");
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="grid grid-cols-2 md:grid-cols-9 mb-8">
+      <TabsList className="grid grid-cols-2 md:grid-cols-7 mb-8">
         <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
-        <TabsTrigger value="capabilities">{t('capabilities')}</TabsTrigger>
         <TabsTrigger value="profile">{t('profile')}</TabsTrigger>
         <TabsTrigger value="patients">{t('patients')}</TabsTrigger>
-        <TabsTrigger value="medical-records">{t('medical_records')}</TabsTrigger>
         <TabsTrigger value="sessions">{t('sessions')}</TabsTrigger>
         <TabsTrigger value="evaluations">{t('evaluations')}</TabsTrigger>
         <TabsTrigger value="availability">{t('availability')}</TabsTrigger>
-        <TabsTrigger value="blog">{t('blog')}</TabsTrigger>
+        <TabsTrigger value="messaging">{t('messaging')}</TabsTrigger>
       </TabsList>
       
       <TabsContent value="overview">
@@ -88,23 +58,12 @@ export const TherapistDashboardTabs = ({
         />
       </TabsContent>
       
-      <TabsContent value="capabilities">
-        <TherapistCapabilities />
-      </TabsContent>
-      
       <TabsContent value="profile">
         <TherapistProfile />
       </TabsContent>
       
       <TabsContent value="patients">
         <PatientManagement />
-      </TabsContent>
-      
-      <TabsContent value="medical-records">
-        <MedicalHistorySection 
-          patientId={selectedPatient.id} 
-          patientName={selectedPatient.patientName} 
-        />
       </TabsContent>
       
       <TabsContent value="sessions">
@@ -117,10 +76,6 @@ export const TherapistDashboardTabs = ({
       
       <TabsContent value="availability">
         <AvailabilityManagement />
-      </TabsContent>
-      
-      <TabsContent value="blog">
-        <BlogManagement />
       </TabsContent>
       
       <TabsContent value="messaging">

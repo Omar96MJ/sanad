@@ -1,70 +1,72 @@
 
-import React from 'react';
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "@/hooks/auth";
-import { AuthProvider } from "@/hooks/auth";
-import { LanguageProvider } from "@/hooks/language";
-import { ThemeProvider } from "@/hooks/useTheme";
-import Index from "./pages/Index";
-import AboutUs from "./pages/AboutUs";
-import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Profile from "./pages/Profile";
-import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import PatientDashboard from "./pages/PatientDashboard";
-import TherapistDashboard from "./pages/TherapistDashboard";
-import TherapistRegistration from "./pages/TherapistRegistration";
-import NotFound from "./pages/NotFound";
+import { Routes, Route } from 'react-router-dom';
+import Index from './pages/Index';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import NotFound from './pages/NotFound';
+import AboutUs from './pages/AboutUs';
+import Blog from './pages/Blog';
+import FAQ from './pages/FAQ';
+import SelfCareTips from './pages/SelfCareTips';
+import MentalHealthGuide from './pages/MentalHealthGuide';
+import CrisisSupport from './pages/CrisisSupport';
+import SessionBooking from './pages/SessionBooking';
+import Donation from './pages/Donation';
+import PatientDashboard from './pages/PatientDashboard';
+import TherapistDashboard from './pages/TherapistDashboard';
+import AdminDashboard from './pages/AdminDashboard';
+import PsychologicalTests from './pages/PsychologicalTests';
+import Profile from './pages/Profile';
+import BlogPost from './pages/BlogPost';
+import { Toaster } from 'sonner';
+import { ThemeProvider } from '@/hooks/useTheme';
+import { LanguageProvider } from '@/hooks/useLanguage';
+import { AuthProvider } from '@/hooks/useAuth';
+import CreateAdmin from './pages/CreateAdmin';
+import TherapistSearch from './pages/TherapistSearch';
+import TherapistProfile from './pages/TherapistProfile';
+import Library from './pages/Library';
 
-const App: React.FC = () => {
+const App = () => {
   return (
-    <AuthProvider>
-      <ThemeProvider>
-        <LanguageProvider>
-          <AppRoutes />
-        </LanguageProvider>
-      </ThemeProvider>
-    </AuthProvider>
-  );
-};
-
-const AppRoutes: React.FC = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  // Redirect based on user role, similar to previous logic
-  React.useEffect(() => {
-    if (user && location.pathname === '/login') {
-      if (user.role === 'patient') {
-        navigate('/patient-dashboard');
-      } else if (user.role === 'doctor') {
-        navigate('/therapist-dashboard');
-      } else if (user.role === 'admin') {
-        navigate('/profile');
-      }
-    }
-  }, [user, navigate, location.pathname]);
-
-  return (
-    <Routes>
-      <Route path="/" element={<Index />} />
-      <Route path="/about" element={<AboutUs />} />
-      <Route path="/blog" element={<Blog />} />
-      <Route path="/blog/:postId" element={<BlogPost />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/patient-dashboard" element={<PatientDashboard />} />
-      <Route path="/therapist-dashboard" element={<TherapistDashboard />} />
-      <Route path="/therapist-registration" element={<TherapistRegistration />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <div className="bg-background text-foreground">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/about-us" element={<AboutUs />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:id" element={<BlogPost />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/self-care-tips" element={<SelfCareTips />} />
+              <Route path="/mental-health-guide" element={<MentalHealthGuide />} />
+              <Route path="/crisis-support" element={<CrisisSupport />} />
+              <Route path="/donation" element={<Donation />} />
+              <Route path="/session-booking" element={<SessionBooking />} />
+              <Route path="/patient-dashboard" element={<PatientDashboard />} />
+              <Route path="/therapist-dashboard/*" element={<TherapistDashboard />} />
+              <Route path="/admin-dashboard" element={<AdminDashboard />} />
+              <Route path="/tests" element={<PsychologicalTests />} />
+              <Route path="/psychological-tests" element={<PsychologicalTests />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/create-admin" element={<CreateAdmin />} />
+              <Route path="/therapist-search" element={<TherapistSearch />} />
+              <Route path="/therapist/:id" element={<TherapistProfile />} />
+              <Route path="/library" element={<Library />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <Toaster closeButton position="top-center" />
+          </div>
+        </AuthProvider>
+      </LanguageProvider>
+    </ThemeProvider>
   );
 };
 

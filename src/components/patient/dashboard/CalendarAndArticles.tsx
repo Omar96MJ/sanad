@@ -1,81 +1,87 @@
 
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
-import { BlogPost } from "@/lib/types";
-import { CalendarIcon } from "lucide-react";
+import { Calendar } from "@/components/ui/calendar";
+import BlogCard from "@/components/BlogCard";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export interface CalendarAndArticlesProps {
+interface CalendarAndArticlesProps {
   isVisible: boolean;
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
   calendarLocale: any;
-  mockArticles: BlogPost[];
-  handleBookAppointment: () => void;
+  upcomingAppointments: any[];
+  formatAppointmentDate: (dateString: string) => string;
+  formatAppointmentTime: (dateString: string) => string;
+  mockArticles: any[];
 }
 
-export const CalendarAndArticles: React.FC<CalendarAndArticlesProps> = ({
+export const CalendarAndArticles = ({
   isVisible,
   date,
   setDate,
   calendarLocale,
-  mockArticles,
-  handleBookAppointment
-}) => {
-  const { t } = useLanguage();
-
+  upcomingAppointments,
+  formatAppointmentDate,
+  formatAppointmentTime,
+  mockArticles
+}: CalendarAndArticlesProps) => {
+  const { t, language } = useLanguage();
+  const isRTL = language === 'ar';
+  
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-in fade-in-50 duration-500" 
-      style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.5s' }}>
-      <Card>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <Card 
+        className={`border border-border/50 card-hover transition-all duration-700 delay-300 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        }`}
+      >
         <CardHeader>
-          <CardTitle className="flex justify-between items-center">
-            <span>{t('calendar')}</span>
-            <Button variant="outline" size="sm" onClick={handleBookAppointment}>
-              <CalendarIcon className="h-4 w-4 mr-2" />
-              {t('book_appointment')}
-            </Button>
-          </CardTitle>
+          <CardTitle>{t('calendar')}</CardTitle>
         </CardHeader>
         <CardContent>
           <Calendar
             mode="single"
             selected={date}
             onSelect={setDate}
-            className="mx-auto"
+            className="rounded-md border"
             locale={calendarLocale}
           />
+          <div className="mt-4">
+            <h4 className="font-medium mb-2">{t('upcoming')}</h4>
+            {upcomingAppointments.filter(apt => apt.status === 'upcoming').length > 0 ? (
+              upcomingAppointments
+                .filter(apt => apt.status === 'upcoming')
+                .slice(0, 1)
+                .map(apt => (
+                  <div key={apt.id} className="bg-primary/10 p-3 rounded-lg">
+                    <p className="font-medium text-sm">{formatAppointmentDate(apt.date)}</p>
+                    <p className="text-xs text-muted-foreground">{formatAppointmentTime(apt.date)} • {isRTL ? (apt.type === 'Video Call' ? 'مكالمة فيديو' : 'شخصيًا') : apt.type}</p>
+                    <p className="text-xs mt-1">{apt.doctor}</p>
+                  </div>
+                ))
+            ) : (
+              <p className="text-sm text-muted-foreground">{t('no_upcoming_sessions')}</p>
+            )}
+          </div>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card 
+        className={`md:col-span-2 border border-border/50 card-hover transition-all duration-700 delay-400 ${
+          isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+        }`}
+      >
         <CardHeader>
-          <CardTitle>{t('recent_posts')}</CardTitle>
+          <CardTitle>{t('recommended_articles')}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          {mockArticles.slice(0, 2).map((article, i) => (
-            <div key={i} className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded overflow-hidden shrink-0">
-                <img
-                  src={article.imageUrl}
-                  alt={article.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div>
-                <h4 className="font-medium line-clamp-2 mb-1">{article.title}</h4>
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {article.excerpt}
-                </p>
-              </div>
-            </div>
-          ))}
+        <CardContent>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {mockArticles.map(article => (
+              <BlogCard key={article.id} blog={article} />
+            ))}
+          </div>
         </CardContent>
       </Card>
     </div>
   );
 };
-
-export default CalendarAndArticles;

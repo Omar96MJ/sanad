@@ -1,17 +1,17 @@
 
-import React from "react";
-import { TabsContent } from "@/components/ui/tabs";
 import { useLanguage } from "@/hooks/useLanguage";
-import DashboardOverview from "@/components/patient/dashboard/DashboardOverview";
+import { TabsContent } from "@/components/ui/tabs";
+import MessagingLayout from "@/components/messaging/MessagingLayout";
+import { DashboardOverview } from "@/components/patient/dashboard/DashboardOverview";
 import { AppointmentsTab } from "@/components/patient/dashboard/AppointmentsTab";
 import { ResourcesTab } from "@/components/patient/dashboard/ResourcesTab";
-import { MessagingTab } from "@/components/patient/dashboard/MessagingTab";
-import { BlogPost } from "@/lib/types";
-import MedicalHistorySection from "@/components/therapist/MedicalHistorySection";
+import { BlogPost, Doctor } from "@/lib/types";
 
 interface TabContentsProps {
+  activeTab: string;
   isVisible: boolean;
   progress: number;
+  mockDoctor: Doctor;
   mockAppointments: any[];
   mockArticles: BlogPost[];
   date: Date | undefined;
@@ -21,13 +21,13 @@ interface TabContentsProps {
   formatAppointmentDate: (dateString: string) => string;
   formatAppointmentTime: (dateString: string) => string;
   calendarLocale: any;
-  userId?: string;
-  userName?: string;
 }
 
-export const TabContents: React.FC<TabContentsProps> = ({ 
+export const TabContents = ({
+  activeTab,
   isVisible,
   progress,
+  mockDoctor,
   mockAppointments,
   mockArticles,
   date,
@@ -36,28 +36,30 @@ export const TabContents: React.FC<TabContentsProps> = ({
   handleStartTherapy,
   formatAppointmentDate,
   formatAppointmentTime,
-  calendarLocale,
-  userId,
-  userName
-}) => {
+  calendarLocale
+}: TabContentsProps) => {
   const { t } = useLanguage();
-  
+
   return (
     <>
-      <TabsContent value="overview" className="py-4">
+      <TabsContent value="overview">
         <DashboardOverview 
           isVisible={isVisible}
           progress={progress}
+          doctor={mockDoctor}
+          upcomingAppointments={mockAppointments}
+          mockArticles={mockArticles}
           date={date}
           setDate={setDate}
-          handleBookAppointment={handleBookAppointment}
-          handleStartTherapy={handleStartTherapy}
+          onStartTherapy={handleStartTherapy}
+          onBookAppointment={handleBookAppointment}
+          formatAppointmentDate={formatAppointmentDate}
+          formatAppointmentTime={formatAppointmentTime}
           calendarLocale={calendarLocale}
-          mockArticles={mockArticles}
         />
       </TabsContent>
       
-      <TabsContent value="appointments" className="py-4">
+      <TabsContent value="appointments">
         <AppointmentsTab 
           appointments={mockAppointments}
           onBookAppointment={handleBookAppointment}
@@ -66,26 +68,15 @@ export const TabContents: React.FC<TabContentsProps> = ({
         />
       </TabsContent>
       
-      <TabsContent value="resources" className="py-4">
-        <ResourcesTab 
-          articles={mockArticles} 
-        />
+      <TabsContent value="resources">
+        <ResourcesTab articles={mockArticles} />
       </TabsContent>
       
-      <TabsContent value="messaging" className="py-4">
-        <MessagingTab />
-      </TabsContent>
-      
-      <TabsContent value="medical-records" className="py-4">
-        {userId && userName && (
-          <MedicalHistorySection 
-            patientId={userId}
-            patientName={userName}
-          />
-        )}
+      <TabsContent value="messaging">
+        <div className="mt-4">
+          <MessagingLayout isTherapist={false} />
+        </div>
       </TabsContent>
     </>
   );
 };
-
-export default TabContents;
