@@ -6,9 +6,10 @@ import { BlogPost } from "@/lib/types";
 
 interface ResourcesTabProps {
   articles: BlogPost[];
+  isVisible: boolean; // Added this prop
 }
 
-export const ResourcesTab = ({ articles }: ResourcesTabProps) => {
+export const ResourcesTab = ({ articles, isVisible }: ResourcesTabProps) => {
   const { t } = useLanguage();
   
   return (

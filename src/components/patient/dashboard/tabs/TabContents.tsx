@@ -77,7 +77,7 @@ export const TabContents = ({
       <TabsContent value="resources">
         <ResourcesTab 
           isVisible={isVisible}
-          mockArticles={mockArticles}
+          articles={mockArticles}
         />
       </TabsContent>
     </>

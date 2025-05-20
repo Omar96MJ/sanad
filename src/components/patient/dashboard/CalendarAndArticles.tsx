@@ -51,19 +51,20 @@ export const CalendarAndArticles = ({
   };
   
   // Custom day rendering to highlight days with appointments
-  const renderDay = (day: Date, selectedDay: Date, dayProps: any) => {
+  const renderDay = (props: React.ComponentProps<typeof Calendar.components.Day>) => {
+    const day = props.date;
     const hasAppointment = isDayWithAppointment(day);
     
     if (hasAppointment) {
       return (
-        <div className={`relative ${dayProps.className}`}>
-          {dayProps.children}
+        <div className={`relative ${props.className}`}>
+          {props.children}
           <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"></div>
         </div>
       );
     }
     
-    return <div className={dayProps.className}>{dayProps.children}</div>;
+    return <div className={props.className}>{props.children}</div>;
   };
 
   return (
@@ -86,7 +87,7 @@ export const CalendarAndArticles = ({
                 className="rounded-md border"
                 locale={calendarLocale}
                 components={{
-                  Day: ({ day, selectedDay, ...dayProps }) => renderDay(day, selectedDay, dayProps)
+                  Day: renderDay
                 }}
               />
             </div>

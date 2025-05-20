@@ -28,7 +28,13 @@ export async function fetchPatientAppointments(patientId: string) {
       throw error;
     }
     
-    return data || [];
+    // Convert the status to the correct type
+    const typedAppointments = (data || []).map(appointment => ({
+      ...appointment,
+      status: appointment.status as 'upcoming' | 'completed' | 'cancelled'
+    }));
+    
+    return typedAppointments as PatientAppointment[];
   } catch (error) {
     console.error("Exception fetching appointments:", error);
     throw error;
@@ -65,7 +71,7 @@ export async function createAppointment(appointment: Omit<PatientAppointment, 'i
       // We don't throw here as the main appointment was created successfully
     }
     
-    return data;
+    return data as PatientAppointment;
   } catch (error) {
     console.error("Exception creating appointment:", error);
     throw error;
@@ -117,7 +123,7 @@ export async function updateAppointmentStatus(
       }
     }
     
-    return data;
+    return data as PatientAppointment;
   } catch (error) {
     console.error("Exception updating appointment:", error);
     throw error;
