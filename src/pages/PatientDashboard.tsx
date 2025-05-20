@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -39,6 +40,21 @@ const PatientDashboard = () => {
       toast.error(isRTL ? "يرجى تسجيل الدخول للوصول إلى لوحة التحكم" : "Please log in to access your dashboard");
     }
   }, [user, navigate, isRTL]);
+  
+  // If user is not available yet, show a loading state
+  if (!user) {
+    return (
+      <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
+        <Navbar />
+        <main className="flex-grow flex items-center justify-center">
+          <div className="animate-pulse text-xl">
+            {isRTL ? "جاري التحميل..." : "Loading..."}
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
   
   // Mock patient progress data
   const progress = 65;
