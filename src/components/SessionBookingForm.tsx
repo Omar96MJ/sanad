@@ -30,6 +30,7 @@ import { toast } from "sonner";
 import { CalendarIcon, Clock } from "lucide-react";
 import { TherapistProfile } from "@/lib/therapist-types";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 // Mock data for therapists
 const mockTherapists = [
@@ -79,9 +80,15 @@ const sessionTypes = [
   { value: "emergency", label: { en: "Emergency Session (30 min)", ar: "جلسة طارئة (30 دقيقة)" } },
 ];
 
-const SessionBookingForm = () => {
+interface SessionBookingFormProps {
+  onSuccess?: () => void;
+  inDashboard?: boolean;
+}
+
+const SessionBookingForm = ({ onSuccess, inDashboard = false }: SessionBookingFormProps) => {
   const { language, t } = useLanguage();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const isRTL = language === "ar";
 
   const [therapists, setTherapists] = useState(mockTherapists);
@@ -214,6 +221,16 @@ const SessionBookingForm = () => {
       setSelectedTime("");
       setNotes("");
       
+      // Call onSuccess if provided
+      if (onSuccess) {
+        onSuccess();
+      }
+      
+      // If in dashboard, no need to navigate
+      if (!inDashboard) {
+        navigate("/patient-dashboard");
+      }
+      
     } catch (error) {
       toast.error(isRTL ? "حدث خطأ أثناء حجز الجلسة" : "Error booking your session");
     } finally {
@@ -241,18 +258,20 @@ const SessionBookingForm = () => {
     : [];
 
   return (
-    <Card className="border shadow-sm">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <CalendarIcon className="h-5 w-5 text-primary" />
-          {isRTL ? "حجز جلسة جديدة" : "Schedule a New Session"}
-        </CardTitle>
-        <CardDescription>
-          {isRTL 
-            ? "اختر المعالج والتاريخ والوقت المناسب لك"
-            : "Select your preferred therapist, date, and time"}
-        </CardDescription>
-      </CardHeader>
+    <Card className={`border shadow-sm ${inDashboard ? 'shadow-none border-0' : ''}`}>
+      {!inDashboard && (
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CalendarIcon className="h-5 w-5 text-primary" />
+            {isRTL ? "حجز جلسة جديدة" : "Schedule a New Session"}
+          </CardTitle>
+          <CardDescription>
+            {isRTL 
+              ? "اختر المعالج والتاريخ والوقت المناسب لك"
+              : "Select your preferred therapist, date, and time"}
+          </CardDescription>
+        </CardHeader>
+      )}
       <CardContent className="space-y-6">
         <div className="space-y-2">
           <label htmlFor="therapist">{isRTL ? "المعالج" : "Therapist"}</label>

@@ -20,6 +20,7 @@ const sessionTranslations = {
   'date': 'Date',
   'time': 'Time',
   'pickadate': 'Pick a date',
+  'sessionbooking_description': 'Schedule a session with one of our qualified therapists.',
 };
 
 export default sessionTranslations;

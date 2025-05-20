@@ -31,6 +31,8 @@ const sessionTranslations = {
   "Error booking your session": "حدث خطأ أثناء حجز الجلسة",
   "Error loading therapists": "حدث خطأ أثناء تحميل قائمة المعالجين",
   "Error loading available time slots": "حدث خطأ أثناء تحميل المواعيد المتاحة",
+  "sessionbooking_description": "حدد موعدًا مع أحد معالجينا المؤهلين.",
+  "bookasession": "حجز جلسة",
 };
 
 export default sessionTranslations;

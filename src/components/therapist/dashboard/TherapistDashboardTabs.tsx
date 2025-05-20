@@ -35,6 +35,11 @@ export const TherapistDashboardTabs = ({
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("overview");
 
+  // Handler to automatically switch to the sessions tab
+  const handleSessionsTabClick = () => {
+    setActiveTab("sessions");
+  };
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsList className="grid grid-cols-2 md:grid-cols-7 mb-8">
@@ -53,8 +58,8 @@ export const TherapistDashboardTabs = ({
           doctorStats={doctorStats}
           upcomingAppointments={upcomingAppointments}
           demographics={demographics}
-          onViewSessionDetails={onViewSessionDetails}
-          onScheduleSession={onScheduleSession}
+          onViewSessionDetails={handleSessionsTabClick}
+          onScheduleSession={handleSessionsTabClick}
         />
       </TabsContent>
       

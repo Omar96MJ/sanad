@@ -1,225 +1,121 @@
 
 import { useState, useEffect } from "react";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useAuth } from "@/hooks/useAuth";
+import { format, addDays, parse } from "date-fns";
+import { ar } from "date-fns/locale";
+import { toast } from "sonner";
+
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { toast } from "sonner";
-// Import specific locales from date-fns
-import { ar, enUS } from 'date-fns/locale';
-import { Doctor, BlogPost } from "@/lib/types";
-import { DashboardHeader } from "@/components/patient/dashboard/DashboardHeader";
 import { PatientDashboardTabs } from "@/components/patient/dashboard/PatientDashboardTabs";
-import { supabase } from "@/integrations/supabase/client";
+import { DashboardHeader } from "@/components/patient/dashboard/DashboardHeader";
+import { SessionModal } from "@/components/patient/dashboard/SessionModal";
 
-// Mock data for blog posts that doesn't change with user
-const mockArticles: BlogPost[] = [
-  {
-    id: '1',
-    title: 'Understanding Anxiety: Causes, Symptoms, and Treatments',
-    excerpt: 'Anxiety disorders are the most common mental health concern in the United States. Learn about the causes, symptoms, and effective treatments.',
-    content: '',
-    author: 'Dr. Sarah Johnson',
-    authorId: '1',
-    authorRole: 'doctor',
-    publishedDate: '2023-10-15',
-    imageUrl: 'https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9',
-    tags: ['Anxiety', 'Mental Health', 'Therapy']
-  },
-  {
-    id: '2',
-    title: 'The Power of Mindfulness in Daily Life',
-    excerpt: 'Discover how practicing mindfulness can reduce stress, improve focus, and enhance your overall mental wellbeing.',
-    content: '',
-    author: 'Dr. Michael Lee',
-    authorId: '3',
-    authorRole: 'doctor',
-    publishedDate: '2023-10-10',
-    imageUrl: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb',
-    tags: ['Mindfulness', 'Meditation', 'Stress Management']
-  }
-];
-
-// Default doctor data
-const defaultDoctor: Doctor = {
-  id: '',
-  name: '',
-  email: '',
-  role: 'doctor',
-  profileImage: '',
-  specialization: '',
-  bio: '',
-  patients: 0,
-  yearsOfExperience: 0
-};
+// Mock data
+import { mockArticles } from "@/data/mockBlogs";
 
 const PatientDashboard = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
-  const { t, language } = useLanguage();
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [progress, setProgress] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
-  const [mockDoctor, setMockDoctor] = useState<Doctor>(defaultDoctor);
-  const [mockAppointments, setMockAppointments] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const isRTL = language === 'ar';
+  const { language } = useLanguage();
+  const isRTL = language === "ar";
   
-  // Set the correct locale object based on the selected language
-  const calendarLocale = isRTL ? ar : enUS;
-
+  const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [isVisible, setIsVisible] = useState(false);
+  
+  // Animation on mount
   useEffect(() => {
+    setTimeout(() => setIsVisible(true), 100);
     window.scrollTo(0, 0);
-    
-    // Show loading state
-    setIsLoading(true);
-    
-    if (!user) return;
-    
-    const fetchDashboardData = async () => {
-      try {
-        // Fetch dashboard progress
-        const { data: dashboardData, error: dashboardError } = await supabase
-          .from('patient_dashboard')
-          .select('*')
-          .eq('user_id', user.id)
-          .single();
-          
-        if (dashboardError) {
-          if (dashboardError.code === 'PGRST116') {
-            // No dashboard data exists yet, create it
-            const { error: insertError } = await supabase
-              .from('patient_dashboard')
-              .insert({ user_id: user.id, progress: 0 });
-              
-            if (insertError) {
-              console.error('Error creating dashboard:', insertError);
-            } else {
-              setProgress(0);
-            }
-          } else {
-            console.error('Error fetching dashboard:', dashboardError);
-          }
-        } else if (dashboardData) {
-          setProgress(dashboardData.progress || 0);
-        }
-        
-        // Fetch appointments
-        const { data: appointmentsData, error: appointmentsError } = await supabase
-          .from('patient_appointments')
-          .select('*')
-          .eq('patient_id', user.id)
-          .order('session_date', { ascending: true });
-          
-        if (appointmentsError) {
-          console.error('Error fetching appointments:', appointmentsError);
-        } else if (appointmentsData) {
-          setMockAppointments(appointmentsData.map(apt => ({
-            id: apt.id,
-            date: apt.session_date,
-            doctor: apt.doctor_name,
-            type: apt.session_type,
-            status: apt.status
-          })));
-        }
-        
-        // Fetch assigned doctor (if any)
-        // For now we'll just set a default doctor
-        setMockDoctor({
-          id: '1',
-          name: 'Dr. Sarah Johnson',
-          email: 'doctor@example.com',
-          role: 'doctor',
-          profileImage: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=256',
-          specialization: 'Clinical Psychologist',
-          bio: 'Specializing in anxiety disorders and cognitive behavioral therapy with over 10 years of experience.',
-          patients: 42,
-          yearsOfExperience: 10
-        });
-        
-        // Make the dashboard visible after data is loaded
-        setIsVisible(true);
-      } catch (error) {
-        console.error('Error loading dashboard data:', error);
-        toast.error(t('error_loading_dashboard'));
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    
-    fetchDashboardData();
-  }, [user, t, isRTL]);
-
-  if (!user) {
-    return <Navigate to="/login" />;
-  } else if (user.role !== 'patient') {
-    return <Navigate to="/" />;
-  }
-
-  const handleBookAppointment = async () => {
-    try {
-      // For now just show a toast, but in the future this would create an appointment
-      toast.success(isRTL ? "سيتم إضافة ميزة حجز المواعيد قريبًا!" : "Appointment booking feature coming soon!");
-    } catch (error) {
-      console.error('Error booking appointment:', error);
-      toast.error(t('error_booking_appointment'));
+  }, []);
+  
+  // Check if user is logged in
+  useEffect(() => {
+    if (!user) {
+      navigate('/login', { replace: true });
+      toast.error(isRTL ? "يرجى تسجيل الدخول للوصول إلى لوحة التحكم" : "Please log in to access your dashboard");
     }
+  }, [user, navigate, toast, isRTL]);
+  
+  // Mock patient progress data
+  const progress = 65;
+  
+  // Mock doctor data
+  const mockDoctor = {
+    id: "dr-smith",
+    name: "Dr. Emily Smith",
+    specialization: "Clinical Psychologist",
+    image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
+    rating: 4.9,
+    reviewsCount: 124
   };
-
-  const handleStartTherapy = async () => {
-    try {
-      // Update progress in database
-      const newProgress = Math.min(progress + 10, 100);
-      
-      const { error } = await supabase
-        .from('patient_dashboard')
-        .update({ progress: newProgress })
-        .eq('user_id', user.id);
-        
-      if (error) {
-        throw error;
-      }
-      
-      setProgress(newProgress);
-      toast.success(isRTL ? "سيتم إضافة ميزة جلسة العلاج عبر الإنترنت قريبًا!" : "Online therapy session feature coming soon!");
-    } catch (error) {
-      console.error('Error updating progress:', error);
-      toast.error(t('error_updating_progress'));
+  
+  // Mock appointment data
+  const mockAppointments = [
+    {
+      id: "1",
+      therapist: "Dr. Emily Smith",
+      therapistImage: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
+      date: format(addDays(new Date(), 3), "yyyy-MM-dd'T'HH:mm:ss"),
+      time: "10:00 AM",
+      type: "Therapy Session",
+      status: "upcoming",
+      notes: "Follow-up on anxiety management techniques"
+    },
+    {
+      id: "2",
+      therapist: "Dr. Emily Smith",
+      therapistImage: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
+      date: format(addDays(new Date(), -7), "yyyy-MM-dd'T'HH:mm:ss"),
+      time: "2:30 PM",
+      type: "Initial Consultation",
+      status: "completed",
+      notes: "Initial assessment and treatment planning"
     }
-  };
-
+  ];
+  
+  // Format appointment date for display
   const formatAppointmentDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString(isRTL ? 'ar-SA' : 'en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
+    return format(date, "PPPP", { locale: isRTL ? ar : undefined });
   };
-
+  
+  // Format appointment time for display
   const formatAppointmentTime = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString(isRTL ? 'ar-SA' : 'en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: true
-    });
+    return format(date, "h:mm a");
+  };
+  
+  // Calendar locale for Arabic
+  const calendarLocale = isRTL ? ar : undefined;
+  
+  // Handler for booking appointment button
+  const handleBookAppointment = () => {
+    setIsSessionModalOpen(true);
+  };
+  
+  // Handler for starting therapy session
+  const handleStartTherapy = () => {
+    toast.info(isRTL ? "سيتم إطلاق ميزة العلاج عن بعد قريبًا" : "Telehealth feature coming soon!");
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
       <Navbar />
-      <main className="flex-grow mt-16 md:mt-20 pb-16">
-        <DashboardHeader user={user} isVisible={isVisible} />
-
-        <div className="container-custom mt-8">
-          <PatientDashboardTabs 
+      
+      <main className="flex-grow pt-16 md:pt-20 pb-8 bg-muted/30">
+        <div className="container-custom">
+          <DashboardHeader />
+          
+          <PatientDashboardTabs
             isVisible={isVisible}
             progress={progress}
             mockDoctor={mockDoctor}
             mockAppointments={mockAppointments}
-            mockArticles={mockArticles}
+            mockArticles={mockArticles.slice(0, 3)}
             date={date}
             setDate={setDate}
             handleBookAppointment={handleBookAppointment}
@@ -230,6 +126,12 @@ const PatientDashboard = () => {
           />
         </div>
       </main>
+      
+      <SessionModal 
+        isOpen={isSessionModalOpen}
+        onClose={() => setIsSessionModalOpen(false)}
+      />
+      
       <Footer />
     </div>
   );

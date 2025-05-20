@@ -12,7 +12,6 @@ import FAQ from './pages/FAQ';
 import SelfCareTips from './pages/SelfCareTips';
 import MentalHealthGuide from './pages/MentalHealthGuide';
 import CrisisSupport from './pages/CrisisSupport';
-import SessionBooking from './pages/SessionBooking';
 import Donation from './pages/Donation';
 import PatientDashboard from './pages/PatientDashboard';
 import TherapistDashboard from './pages/TherapistDashboard';
@@ -46,7 +45,6 @@ const App = () => {
               <Route path="/mental-health-guide" element={<MentalHealthGuide />} />
               <Route path="/crisis-support" element={<CrisisSupport />} />
               <Route path="/donation" element={<Donation />} />
-              <Route path="/session-booking" element={<SessionBooking />} />
               <Route path="/patient-dashboard" element={<PatientDashboard />} />
               <Route path="/therapist-dashboard/*" element={<TherapistDashboard />} />
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
