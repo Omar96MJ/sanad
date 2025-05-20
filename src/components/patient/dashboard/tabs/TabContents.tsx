@@ -3,6 +3,7 @@ import { TabsContent } from "@/components/ui/tabs";
 import { DashboardOverview } from "../DashboardOverview";
 import { AppointmentsTab } from "../AppointmentsTab";
 import { SessionTab } from "../SessionTab";
+import MessagingLayout from "@/components/messaging/MessagingLayout";  // Import MessagingLayout
 import { BlogPost, Doctor } from "@/lib/types";
 import { PatientAppointment } from "@/services/patientAppointmentService";
 
@@ -81,6 +82,10 @@ export const TabContents = ({
           formatAppointmentTime={formatAppointmentTime}
           isVisible={isVisible}
         />
+      </TabsContent>
+
+      <TabsContent value="messaging">
+        <MessagingLayout isTherapist={false} />
       </TabsContent>
     </>
   );

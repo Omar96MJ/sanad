@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Message, Conversation } from "@/lib/therapist-types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,10 +10,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import ConversationList from "./ConversationList";
 import MessageList from "./MessageList";
 import MessageInput from "./MessageInput";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/auth";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PatientSearch, Patient } from "@/components/search/PatientSearch";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface MessagingLayoutProps {
   isTherapist?: boolean;
@@ -20,6 +22,7 @@ interface MessagingLayoutProps {
 
 const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true }) => {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState("messages");
   const [searchQuery, setSearchQuery] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -105,45 +108,35 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
       }
     };
     
-    const fetchPatients = async () => {
+    const fetchUsers = async () => {
       try {
-        if (isTherapist) {
-          // This is now handled by the PatientSearch component
-          // We'll still fetch some initial patients for the list
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('id, name')
-            .eq('role', 'patient')
-            .limit(10)
-            .order('name');
-            
-          if (!error && data) {
-            setPatients(data.map(patient => ({
-              id: patient.id,
-              name: patient.name || 'Unknown Patient'
-            })));
-          }
-        } else {
-          // Fetch doctors if user is a patient
-          const { data, error } = await supabase
-            .from('profiles')
-            .select('id, name')
-            .eq('role', 'doctor');
-            
-          if (!error && data) {
-            setPatients(data.map(doctor => ({
-              id: doctor.id,
-              name: doctor.name || 'Unknown Doctor'
-            })));
-          }
+        const userRole = isTherapist ? 'patient' : 'doctor';
+        
+        // Fetch users based on role
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('id, name')
+          .eq('role', userRole)
+          .order('name');
+          
+        if (error) {
+          console.error(`Error fetching ${userRole}s:`, error);
+          return;
+        }
+        
+        if (data) {
+          setPatients(data.map(user => ({
+            id: user.id,
+            name: user.name || `Unknown ${userRole}`
+          })));
         }
       } catch (error) {
-        console.error("Error fetching patients/doctors:", error);
+        console.error("Error fetching users:", error);
       }
     };
     
     fetchConversations();
-    fetchPatients();
+    fetchUsers();
     
     // Subscribe to new messages
     const messagesChannel = supabase
@@ -151,16 +144,49 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
       .on('postgres_changes', 
         { event: 'INSERT', schema: 'public', table: 'messages' }, 
         payload => {
-          const newMessage = payload.new as Message;
+          const newMessage = payload.new as any;
           
           // Only add message to state if it's relevant to current user
-          if (newMessage.senderId === user.id || newMessage.recipientId === user.id) {
-            setMessages(prevMessages => [...prevMessages, newMessage]);
+          if (newMessage.sender_id === user.id || newMessage.recipient_id === user.id) {
+            // Convert to our Message type
+            const formattedMessage: Message = {
+              id: newMessage.id,
+              senderId: newMessage.sender_id,
+              senderName: "", // We'll populate this separately
+              senderRole: "",
+              recipientId: newMessage.recipient_id,
+              content: newMessage.content,
+              timestamp: newMessage.timestamp,
+              isRead: newMessage.is_read
+            };
+            
+            // Fetch sender name if needed
+            if (newMessage.sender_id !== user.id) {
+              supabase
+                .from('profiles')
+                .select('name, role')
+                .eq('id', newMessage.sender_id)
+                .single()
+                .then(({ data }) => {
+                  if (data) {
+                    formattedMessage.senderName = data.name || "Unknown User";
+                    formattedMessage.senderRole = data.role || "unknown";
+                    setMessages(prevMessages => [...prevMessages, formattedMessage]);
+                  }
+                });
+            } else {
+              formattedMessage.senderName = user.name || "You";
+              formattedMessage.senderRole = user.role || "unknown";
+              setMessages(prevMessages => [...prevMessages, formattedMessage]);
+            }
             
             // Update unread count in conversations if message is received
-            if (newMessage.recipientId === user.id && !newMessage.isRead) {
-              updateUnreadCount(newMessage);
+            if (newMessage.recipient_id === user.id && !newMessage.is_read) {
+              updateUnreadCount(formattedMessage);
             }
+            
+            // Update conversation last timestamp
+            updateConversationTimestamp(newMessage.sender_id, newMessage.recipient_id);
           }
         }
       )
@@ -184,6 +210,26 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
     };
   }, [user, isTherapist, activeConversationId]);
   
+  // Update conversation timestamp when messages are sent
+  const updateConversationTimestamp = (senderId: string, recipientId: string) => {
+    // Find conversation with these participants
+    const conversation = conversations.find(c => 
+      c.participantIds.includes(senderId) && 
+      c.participantIds.includes(recipientId)
+    );
+    
+    if (conversation) {
+      // Update local state
+      setConversations(prevConversations => 
+        prevConversations.map(conv => 
+          conv.id === conversation.id 
+            ? { ...conv, lastMessageTimestamp: new Date().toISOString() }
+            : conv
+        )
+      );
+    }
+  };
+  
   // Fetch messages for active conversation
   useEffect(() => {
     if (!user || !activeConversationId) return;
@@ -196,6 +242,7 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
       if (!otherParticipantId) return;
       
       try {
+        // Get all messages between these two users
         const { data, error } = await supabase
           .from('messages')
           .select('*')
@@ -239,6 +286,15 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
               .update({ unread_count: 0 })
               .eq('conversation_id', activeConversationId)
               .eq('user_id', user.id);
+              
+            // Update conversations state to reflect read messages
+            setConversations(prevConversations => 
+              prevConversations.map(conv => 
+                conv.id === activeConversationId 
+                  ? { ...conv, unreadCount: 0 }
+                  : conv
+              )
+            );
           }
           
           // Get user profiles to populate sender names
@@ -256,7 +312,7 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
             
           if (!profilesError && profilesData) {
             const userProfiles = Object.fromEntries(
-              profilesData.map(profile => [profile.id, { name: profile.name, role: profile.role }])
+              profilesData.map(profile => [profile.id, { name: profile.name || 'Unknown', role: profile.role || 'unknown' }])
             );
             
             const messagesWithUserInfo = formattedMessages.map(msg => ({
@@ -346,7 +402,7 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
         
       if (conversationError) {
         console.error("Error creating conversation:", conversationError);
-        toast.error("Failed to start new conversation");
+        toast.error(t('failed_create_conversation') || "Failed to start new conversation");
         return;
       }
       
@@ -362,7 +418,7 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
         
       if (participantError) {
         console.error("Error adding participants:", participantError);
-        toast.error("Failed to add participants to conversation");
+        toast.error(t('failed_add_participants') || "Failed to add participants to conversation");
         return;
       }
       
@@ -378,10 +434,10 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
       setConversations([newConversation, ...conversations]);
       setActiveConversationId(newConversation.id);
       setActiveTab("messages");
-      toast.success("New conversation started");
+      toast.success(t('conversation_started') || "New conversation started");
     } catch (error) {
       console.error("Error in starting conversation:", error);
-      toast.error("Failed to start conversation");
+      toast.error(t('failed_start_conversation') || "Failed to start conversation");
     }
   };
 
@@ -408,27 +464,15 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
       
       if (error) {
         console.error("Error sending message:", error);
-        toast.error("Failed to send message");
+        toast.error(t('failed_send_message') || "Failed to send message");
         return;
       }
       
-      // Convert the database message to our Message type
-      const newMessage: Message = {
-        id: data.id,
-        senderId: data.sender_id,
-        senderName: user.name || "",
-        senderRole: user.role || "",
-        recipientId: data.recipient_id,
-        content: data.content,
-        timestamp: data.timestamp,
-        isRead: data.is_read
-      };
-      
       // Message will be added to state via subscription
-      console.log("Message sent:", newMessage);
+      console.log("Message sent:", data);
     } catch (error) {
       console.error("Error in send message:", error);
-      toast.error("Failed to send message");
+      toast.error(t('failed_send_message') || "Failed to send message");
     }
   };
 
@@ -446,13 +490,13 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
   return (
     <Card className="border border-border/50">
       <CardHeader>
-        <CardTitle>Messaging</CardTitle>
+        <CardTitle>{t('messaging') || "Messaging"}</CardTitle>
       </CardHeader>
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <CardContent>
           <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="messages">Messages</TabsTrigger>
-            <TabsTrigger value="patients">{isTherapist ? 'Patients' : 'Doctors'}</TabsTrigger>
+            <TabsTrigger value="messages">{t('messages') || "Messages"}</TabsTrigger>
+            <TabsTrigger value="patients">{isTherapist ? (t('patients') || "Patients") : (t('doctors') || "Doctors")}</TabsTrigger>
           </TabsList>
           
           <TabsContent value="messages" className="mt-0">
@@ -467,7 +511,7 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
                     <div className="relative">
                       <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="Search conversations..."
+                        placeholder={t('search_conversations') || "Search conversations..."}
                         className="pl-8"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -491,8 +535,8 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
                       <div className="border-b border-border/50 pb-4 mb-4">
                         <h3 className="font-medium">
                           {activeRecipientId ? (
-                            patients.find(p => p.id === activeRecipientId)?.name || "Conversation"
-                          ) : "Conversation"}
+                            patients.find(p => p.id === activeRecipientId)?.name || t('conversation') || "Conversation"
+                          ) : (t('conversation') || "Conversation")}
                         </h3>
                       </div>
                       
@@ -505,7 +549,7 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
                     </>
                   ) : (
                     <div className="h-[300px] flex items-center justify-center text-muted-foreground">
-                      Select a conversation to start messaging
+                      {t('select_conversation') || "Select a conversation to start messaging"}
                     </div>
                   )}
                 </div>
@@ -517,16 +561,18 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
             {isTherapist ? (
               <PatientSearch 
                 onPatientSelect={handlePatientSelect}
-                buttonText="Message"
+                buttonText={t('message') || "Message"}
               />
             ) : (
-              // For non-therapists (patients), keep the existing doctor search functionality
+              // For non-therapists (patients), show the doctor list
               <>
                 <div className="mb-4">
                   <div className="relative">
                     <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
-                      placeholder={`Search ${isTherapist ? 'patients' : 'doctors'}...`}
+                      placeholder={isTherapist ? 
+                        (t('search_patients') || "Search patients...") : 
+                        (t('search_doctors') || "Search doctors...")}
                       className="pl-8"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
@@ -535,26 +581,26 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  {filteredPatients.map((patient) => (
-                    <Card key={patient.id} className="border border-border/50">
+                  {filteredPatients.map((doctor) => (
+                    <Card key={doctor.id} className="border border-border/50">
                       <CardContent className="p-4">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10">
-                            <AvatarImage src={`https://api.dicebear.com/7.x/micah/svg?seed=${patient.id}`} alt={patient.name} />
-                            <AvatarFallback>{patient.name.charAt(0)}</AvatarFallback>
+                            <AvatarImage src={`https://api.dicebear.com/7.x/micah/svg?seed=${doctor.id}`} alt={doctor.name} />
+                            <AvatarFallback>{doctor.name.charAt(0)}</AvatarFallback>
                           </Avatar>
                           <div className="flex-1">
-                            <h4 className="font-medium text-sm">{patient.name}</h4>
-                            <p className="text-xs text-muted-foreground">{isTherapist ? 'Patient' : 'Doctor'}</p>
+                            <h4 className="font-medium text-sm">{doctor.name}</h4>
+                            <p className="text-xs text-muted-foreground">{isTherapist ? t('patient') : t('doctor')}</p>
                           </div>
                         </div>
                         <Button
                           className="w-full mt-4"
                           size="sm"
-                          onClick={() => startNewConversation(patient.id)}
+                          onClick={() => startNewConversation(doctor.id)}
                         >
                           <PlusCircle className="mr-2 h-4 w-4" />
-                          Message
+                          {t('message') || "Message"}
                         </Button>
                       </CardContent>
                     </Card>
@@ -562,7 +608,9 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
                   
                   {filteredPatients.length === 0 && (
                     <div className="col-span-full text-center py-8 text-muted-foreground">
-                      No {isTherapist ? 'patients' : 'doctors'} found
+                      {isTherapist ? 
+                        (t('no_patients_found') || "No patients found") : 
+                        (t('no_doctors_found') || "No doctors found")}
                     </div>
                   )}
                 </div>

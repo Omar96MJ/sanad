@@ -52,7 +52,27 @@ const sessionTranslations = {
   'test_equipment': 'Test Your Equipment',
   'test_equipment_tip': 'Make sure your camera, microphone and internet connection are working properly before the session.',
   'be_prepared': 'Be Prepared',
-  'be_prepared_tip': 'Have any notes or topics you want to discuss ready before the session starts.'
+  'be_prepared_tip': 'Have any notes or topics you want to discuss ready before the session starts.',
+  
+  // Messaging
+  'messaging': 'Messaging',
+  'messages': 'Messages',
+  'message': 'Message',
+  'patients': 'Patients',
+  'doctors': 'Doctors',
+  'patient': 'Patient',
+  'doctor': 'Doctor',
+  'conversation': 'Conversation',
+  'search_conversations': 'Search conversations...',
+  'search_patients': 'Search patients...',
+  'search_doctors': 'Search doctors...',
+  'select_conversation': 'Select a conversation to start messaging',
+  'no_patients_found': 'No patients found',
+  'no_doctors_found': 'No doctors found',
+  'failed_send_message': 'Failed to send message',
+  'failed_create_conversation': 'Failed to start new conversation',
+  'failed_add_participants': 'Failed to add participants to conversation',
+  'conversation_started': 'New conversation started'
 };
 
 export default sessionTranslations;
