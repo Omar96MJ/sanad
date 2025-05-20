@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -15,6 +14,7 @@ import { SessionModal } from "@/components/patient/dashboard/SessionModal";
 
 // Import mockBlogs instead of mockArticles
 import { mockBlogs } from "@/data/mockBlogs";
+import { UserRole } from "@/lib/types";
 
 const PatientDashboard = () => {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const PatientDashboard = () => {
     patients: 245,
     yearsOfExperience: 10,
     email: "dr.smith@example.com",
-    role: "doctor"
+    role: "doctor" as UserRole  // Fix: Cast string to UserRole type
   };
   
   // Mock appointment data
