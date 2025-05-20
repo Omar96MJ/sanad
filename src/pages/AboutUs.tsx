@@ -240,7 +240,8 @@ const AboutUs = () => {
                       */}
                   </ul>
                   
-                  
+                  <Separator className="my-6" />
+
                 </div>
                 
                 <div>
