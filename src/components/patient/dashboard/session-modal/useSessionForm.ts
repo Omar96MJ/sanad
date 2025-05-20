@@ -102,6 +102,7 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
     formData,
     setFormData,
     isLoading,
+    setIsLoading,
     handleBookSession,
     resetForm,
     mockDoctor,

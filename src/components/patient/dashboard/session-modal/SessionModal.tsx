@@ -2,6 +2,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useLanguage } from "@/hooks/useLanguage";
 import { SessionModalForm } from "./SessionModalForm";
+import { useSessionForm } from "./useSessionForm";
 
 interface SessionModalProps {
   isOpen: boolean;
@@ -10,13 +11,22 @@ interface SessionModalProps {
 }
 
 export const SessionModal = ({ isOpen, onClose, onSessionBooked }: SessionModalProps) => {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const isRTL = language === "ar";
+  
+  const { 
+    handleBookSession, 
+    isLoading, 
+    setIsLoading 
+  } = useSessionForm({ 
+    onClose, 
+    onSessionBooked 
+  });
 
   const handleSubmit = async () => {
-    // This function is now just a placeholder
-    // The actual functionality is in the useSessionForm hook
-    // that is used by the SessionModalForm component
+    setIsLoading(true);
+    await handleBookSession();
+    setIsLoading(false);
   };
 
   return (
@@ -30,7 +40,7 @@ export const SessionModal = ({ isOpen, onClose, onSessionBooked }: SessionModalP
         
         <SessionModalForm 
           onSubmit={handleSubmit}
-          isLoading={false}
+          isLoading={isLoading}
           onCancel={onClose}
         />
       </DialogContent>
