@@ -1,4 +1,4 @@
-
+import react from "react";
 import { useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import Navbar from "@/components/Navbar";
