@@ -26,7 +26,6 @@ const EditMedicalRecordDialog = ({
   
   const handleEditRecord = () => {
     if (!currentRecord || !currentRecord.content.trim()) {
-      // Fix: Changed toast.error to toast
       toast(t('please_fill_all_fields'));
       return;
     }
