@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -69,7 +70,6 @@ const Navbar = () => {
               to={link.href} 
               className={`transition-custom px-2 ${isActive(link.href) ? 'text-primary font-medium' : 'hover:text-primary'} flex items-center gap-1`}
             >
-              {link.icon && <link.icon className="h-4 w-4" />}
               {link.label}
             </Link>
           ))}
@@ -148,7 +148,6 @@ const Navbar = () => {
                 to={link.href} 
                 className={`py-2 flex items-center gap-2 ${isActive(link.href) ? 'text-primary font-medium' : ''}`}
               >
-                {link.icon && <link.icon className="h-4 w-4" />}
                 {link.label}
               </Link>
             ))}
