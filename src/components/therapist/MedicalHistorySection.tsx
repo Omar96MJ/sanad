@@ -56,7 +56,6 @@ const MedicalHistorySection = ({ patientId, patientName }: MedicalHistorySection
     // In a real app, this would be an API call to save the record
     setRecords([...records, newRecord]);
     
-    // Fixed: Changed toast(t('record_added_successfully')) to toast.success(t('record_added_successfully'))
     toast.success(t('record_added_successfully'));
     setAddDialogOpen(false);
   };
@@ -69,7 +68,6 @@ const MedicalHistorySection = ({ patientId, patientName }: MedicalHistorySection
       r.id === record.id ? record : r
     ));
     
-    // Fixed: Changed toast(t('record_updated_successfully')) to toast.success(t('record_updated_successfully'))
     toast.success(t('record_updated_successfully'));
     setEditDialogOpen(false);
     setCurrentRecord(null);
