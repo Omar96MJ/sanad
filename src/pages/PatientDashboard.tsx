@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
-import { format, addDays, parse } from "date-fns";
+import { format, addDays } from "date-fns";
 import { ar } from "date-fns/locale";
 import { toast } from "sonner";
 
@@ -13,8 +13,8 @@ import { PatientDashboardTabs } from "@/components/patient/dashboard/PatientDash
 import { DashboardHeader } from "@/components/patient/dashboard/DashboardHeader";
 import { SessionModal } from "@/components/patient/dashboard/SessionModal";
 
-// Mock data
-import { mockArticles } from "@/data/mockBlogs";
+// Import mockBlogs instead of mockArticles
+import { mockBlogs } from "@/data/mockBlogs";
 
 const PatientDashboard = () => {
   const navigate = useNavigate();
@@ -38,7 +38,7 @@ const PatientDashboard = () => {
       navigate('/login', { replace: true });
       toast.error(isRTL ? "يرجى تسجيل الدخول للوصول إلى لوحة التحكم" : "Please log in to access your dashboard");
     }
-  }, [user, navigate, toast, isRTL]);
+  }, [user, navigate, isRTL]);
   
   // Mock patient progress data
   const progress = 65;
@@ -50,7 +50,12 @@ const PatientDashboard = () => {
     specialization: "Clinical Psychologist",
     image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
     rating: 4.9,
-    reviewsCount: 124
+    reviewsCount: 124,
+    bio: "Specialized in anxiety and depression treatment with 10+ years of experience.",
+    patients: 245,
+    yearsOfExperience: 10,
+    email: "dr.smith@example.com",
+    role: "doctor"
   };
   
   // Mock appointment data
@@ -108,14 +113,17 @@ const PatientDashboard = () => {
       
       <main className="flex-grow pt-16 md:pt-20 pb-8 bg-muted/30">
         <div className="container-custom">
-          <DashboardHeader />
+          <DashboardHeader 
+            user={user} 
+            isVisible={isVisible}
+          />
           
           <PatientDashboardTabs
             isVisible={isVisible}
             progress={progress}
             mockDoctor={mockDoctor}
             mockAppointments={mockAppointments}
-            mockArticles={mockArticles.slice(0, 3)}
+            mockArticles={mockBlogs.slice(0, 3)} // Use mockBlogs here instead of mockArticles
             date={date}
             setDate={setDate}
             handleBookAppointment={handleBookAppointment}

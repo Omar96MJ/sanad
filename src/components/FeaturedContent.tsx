@@ -27,7 +27,7 @@ const FeaturedContent = () => {
     return () => observer.disconnect();
   }, []);
 
-  // Filter the blogs to show only the first 6 blogs (rather than using mock blogs directly)
+  // Filter the blogs to show only the first 6 blogs
   const featuredBlogs = mockBlogs.slice(0, 6);
 
   return (

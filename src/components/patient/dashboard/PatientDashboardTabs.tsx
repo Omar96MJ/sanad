@@ -10,7 +10,7 @@ interface PatientDashboardTabsProps {
   progress: number;
   mockDoctor: Doctor;
   mockAppointments: any[];
-  mockArticles: BlogPost[];
+  mockArticles: BlogPost[]; // Keep this as mockArticles for now to minimize changes
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
   handleBookAppointment: () => void;
@@ -25,7 +25,7 @@ export const PatientDashboardTabs = ({
   progress,
   mockDoctor,
   mockAppointments,
-  mockArticles,
+  mockArticles, // Keep the prop name as is
   date,
   setDate,
   handleBookAppointment,
@@ -46,7 +46,7 @@ export const PatientDashboardTabs = ({
         progress={progress}
         mockDoctor={mockDoctor}
         mockAppointments={mockAppointments}
-        mockArticles={mockArticles}
+        mockArticles={mockArticles} // Pass it through
         date={date}
         setDate={setDate}
         handleBookAppointment={handleBookAppointment}
