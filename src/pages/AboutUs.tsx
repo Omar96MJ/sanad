@@ -4,9 +4,9 @@ import { useLanguage } from "@/hooks/useLanguage";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Separator } from "@/components/ui/separator";
-import mustafaImage from "../images/mustafa.jpg";
-import omerMahgoubImage from "../images/omerMahgoub.jpg";
-
+import mustafaImage from "../images/Eng-mustafa.jpg";
+import omerMahgoubImage from "../images/Eng-omer-Mahgoub.jpg";
+ 
 
 const AboutUs = () => {
   const { language, t } = useLanguage();
@@ -143,7 +143,7 @@ const AboutUs = () => {
                   image: mustafaImage,
                 },
                 {
-                  name: isRTL ? 'م.عمر عباس' : 'Eng. Omar Abbas',
+                  name: isRTL ? 'م. عمر عباس' : 'Eng. Omar Abbas',
                   role: isRTL ? 'نائب الرئيس التنفيذي & مهندس برمجيات' : 'EVP & Software Engineer',
                   bio: isRTL 
                     ? 'خريج هندسة البرمجيات جامعة السودان للعلوم والتكنولوجيا.'
@@ -151,7 +151,7 @@ const AboutUs = () => {
                   image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a'
                 },
                 {
-                  name: isRTL ? 'م.عمر محجوب' : 'Eng. Omar Mahgoub',
+                  name: isRTL ? 'م. عمر محجوب' : 'Eng. Omar Mahgoub',
                   role: isRTL ? 'المؤسس & مهندس برمجيات' : 'Founder & Software Engineer',
                   bio: isRTL 
                     ? 'خريج هندسة البرمجيات جامعة السودان للعلوم والتكنولوجيا.'
@@ -159,7 +159,7 @@ const AboutUs = () => {
                   image: omerMahgoubImage,
                 },
                 {
-                  name: isRTL ? 'م.رمزي محمد' : 'Eng. Ramzi Mohamed',
+                  name: isRTL ? 'م. رمزي محمد' : 'Eng. Ramzi Mohamed',
                   role: isRTL ? 'مهندس برمجيات' : 'Software Engineer',
                   bio: isRTL 
                     ? 'خريج هندسة البرمجيات جامعة السودان للعلوم والتكنولوجيا.'
