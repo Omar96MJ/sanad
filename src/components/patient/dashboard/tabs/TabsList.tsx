@@ -9,7 +9,7 @@ export const TabsList = () => {
     <UITabsList className="grid grid-cols-1 sm:grid-cols-4 gap-2">
       <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
       <TabsTrigger value="appointments">{t('sessions')}</TabsTrigger>
-      <TabsTrigger value="resources">{t('resources')}</TabsTrigger>
+      <TabsTrigger value="session">{t('video_session')}</TabsTrigger>
       <TabsTrigger value="messaging">{t('messaging')}</TabsTrigger>
     </UITabsList>
   );
