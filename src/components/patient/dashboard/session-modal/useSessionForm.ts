@@ -24,9 +24,9 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
   
   const [isLoading, setIsLoading] = useState(false);
 
-  // Mock doctor data
+  // Updated mock doctor data with a valid UUID format
   const mockDoctor = {
-    id: "dr-smith",
+    id: "7559db55-42d1-4a29-8523-34af719a740d", // Using a valid UUID instead of "dr-smith"
     name: "Dr. Emily Smith",
     specialization: "Clinical Psychologist",
     image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
@@ -34,13 +34,15 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
 
   // Handle booking session
   const handleBookSession = async (formValues: SessionFormData) => {
-    if (!user || !formValues.sessionDate || !formValues.sessionTime || !formValues.sessionType) {
-      toast.error(isRTL ? "يرجى تعبئة جميع الحقول المطلوبة" : "Please fill in all required fields");
-      setIsLoading(false);
-      return;
-    }
-
+    setIsLoading(true);
+    
     try {
+      if (!user || !formValues.sessionDate || !formValues.sessionTime || !formValues.sessionType) {
+        toast.error(isRTL ? "يرجى تعبئة جميع الحقول المطلوبة" : "Please fill in all required fields");
+        setIsLoading(false);
+        return;
+      }
+
       // Combine date and time
       const [hours, minutes] = formValues.sessionTime.split(':').map(Number);
       const sessionDateTime = new Date(formValues.sessionDate);
