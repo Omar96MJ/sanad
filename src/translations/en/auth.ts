@@ -58,6 +58,8 @@ const authTranslations = {
   'verifying': 'Verifying...',
   'verification_failed': 'Verification failed. Please check the code and try again.',
   'resend_code': 'Resend Code',
+  'sign_in': 'Sign In',
+  'dont_have_account': "Don't have an account?",
 };
 
 export default authTranslations;
