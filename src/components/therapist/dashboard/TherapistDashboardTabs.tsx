@@ -13,6 +13,7 @@ import { DashboardOverview } from "@/components/therapist/dashboard/DashboardOve
 import TherapistCapabilities from "@/components/therapist/TherapistCapabilities";
 import BlogManagement from "@/components/therapist/BlogManagement";
 import MedicalHistorySection from "@/components/therapist/MedicalHistorySection";
+import { useAuth } from "@/hooks/useAuth";
 
 interface TherapistDashboardTabsProps {
   isLoading: boolean;
@@ -37,9 +38,16 @@ export const TherapistDashboardTabs = ({
   onScheduleSession,
 }: TherapistDashboardTabsProps) => {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const tabFromUrl = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState(tabFromUrl || "overview");
+  
+  // Sample patient data for medical records section - in a real app this would come from selected patient
+  const [selectedPatient, setSelectedPatient] = useState({
+    id: '1',
+    patientName: 'John Doe'
+  });
 
   // Update URL when tab changes
   useEffect(() => {
@@ -93,7 +101,10 @@ export const TherapistDashboardTabs = ({
       </TabsContent>
       
       <TabsContent value="medical-records">
-        <MedicalHistorySection />
+        <MedicalHistorySection 
+          patientId={selectedPatient.id} 
+          patientName={selectedPatient.patientName} 
+        />
       </TabsContent>
       
       <TabsContent value="sessions">

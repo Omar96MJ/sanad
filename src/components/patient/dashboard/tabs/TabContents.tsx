@@ -7,6 +7,7 @@ import { AppointmentsTab } from "@/components/patient/dashboard/AppointmentsTab"
 import { ResourcesTab } from "@/components/patient/dashboard/ResourcesTab";
 import { MessagingTab } from "@/components/patient/dashboard/MessagingTab";
 import { BlogPost } from "@/lib/types";
+import MedicalHistorySection from "@/components/therapist/MedicalHistorySection";
 
 interface TabContentsProps {
   isVisible: boolean;
@@ -20,6 +21,8 @@ interface TabContentsProps {
   formatAppointmentDate: (dateString: string) => string;
   formatAppointmentTime: (dateString: string) => string;
   calendarLocale: any;
+  userId?: string;
+  userName?: string;
 }
 
 export const TabContents: React.FC<TabContentsProps> = ({ 
@@ -33,7 +36,9 @@ export const TabContents: React.FC<TabContentsProps> = ({
   handleStartTherapy,
   formatAppointmentDate,
   formatAppointmentTime,
-  calendarLocale
+  calendarLocale,
+  userId,
+  userName
 }) => {
   const { t } = useLanguage();
   
@@ -69,6 +74,15 @@ export const TabContents: React.FC<TabContentsProps> = ({
       
       <TabsContent value="messaging" className="py-4">
         <MessagingTab />
+      </TabsContent>
+      
+      <TabsContent value="medical-records" className="py-4">
+        {userId && userName && (
+          <MedicalHistorySection 
+            patientId={userId}
+            patientName={userName}
+          />
+        )}
       </TabsContent>
     </>
   );
