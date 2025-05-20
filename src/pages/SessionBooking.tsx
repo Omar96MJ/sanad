@@ -1,35 +1,35 @@
 
-import { useEffect, useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
-import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import SessionBookingForm from "@/components/SessionBookingForm";
-import { toast } from "sonner";
+import SessionBookingForm from "@/components/session-booking/SessionBookingForm";
 
 const SessionBooking = () => {
   const { language } = useLanguage();
-  const { user } = useAuth();
-  
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  const isRTL = language === "ar";
 
   return (
-    <div className="min-h-screen flex flex-col" dir={language === 'ar' ? 'rtl' : 'ltr'}>
+    <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
       <Navbar />
-      <main className="flex-grow container-custom mt-24 mb-16">
-        <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl font-bold mb-2">{language === 'ar' ? 'حجز جلسة' : 'Book a Session'}</h1>
-          <p className="text-muted-foreground mb-8">
-            {language === 'ar' 
-              ? 'احجز جلسة مع أحد معالجينا المؤهلين وابدأ رحلة الشفاء الخاصة بك.'
-              : 'Schedule a session with one of our qualified therapists and start your healing journey.'}
-          </p>
+      
+      <main className="flex-grow py-16 md:py-20 bg-muted/30">
+        <div className="container-custom max-w-4xl mx-auto px-4">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold">
+              {isRTL ? "حجز جلسة جديدة" : "Book a Session"}
+            </h1>
+            <p className="text-muted-foreground mt-2">
+              {isRTL 
+                ? "احجز موعدًا مع أحد معالجينا المؤهلين للحصول على الدعم الذي تحتاجه"
+                : "Schedule an appointment with one of our qualified therapists to get the support you need"
+              }
+            </p>
+          </div>
           
           <SessionBookingForm />
         </div>
       </main>
+      
       <Footer />
     </div>
   );
