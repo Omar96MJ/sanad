@@ -17,8 +17,8 @@ const MentalHealthGuide = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background" dir={language === 'ar' ? 'rtl' : 'ltr'}>
       <Navbar />
-      <main className="flex-grow container-custom py-12">
-        <div className="max-w-3xl mx-auto mb-16">
+      <main className="flex-grow container-custom py-16 lg:py-20">
+        <div className="max-w-3xl mx-auto mb-16 py-10">
           <h1 className="text-4xl font-bold mb-4">{t('mentalhealthguide')}</h1>
           <p className="text-xl text-muted-foreground mb-8">
             {t('mentalhealthguidesubtitle')}

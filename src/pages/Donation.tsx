@@ -59,8 +59,8 @@ const Donation = () => {
   return (
     <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
       <Navbar />
-      <div className="flex-grow">
-        <div className="container-custom py-12">
+      <div className="flex-grow py-16 lg:py-20">
+        <div className="container-custom py-10">
           {/* Header */}
           <div className="mb-10 text-center">
             <div className="inline-flex items-center justify-center p-3 bg-red-100 text-red-600 rounded-full mb-4">

@@ -17,8 +17,8 @@ const FAQ = () => {
   return (
     <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
       <Navbar />
-      <main className="flex-grow container-custom py-12">
-        <div className="max-w-4xl mx-auto">
+      <main className="flex-grow container-custom py-16 lg:py-20">
+        <div className="max-w-4xl mx-auto py-10">
           <Card>
             <CardHeader className="text-center pb-2">
               <CardTitle className="text-3xl font-bold">{t('faq')}</CardTitle>

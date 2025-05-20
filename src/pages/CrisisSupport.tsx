@@ -13,8 +13,8 @@ const CrisisSupport = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
-      <div className="flex-grow">
-        <div className="container-custom py-12" dir={isRTL ? 'rtl' : 'ltr'}>
+      <div className="flex-grow py-16 lg:py-20">
+        <div className="container-custom py-10" dir={isRTL ? 'rtl' : 'ltr'}>
           {/* Header Section */}
           <div className="mb-12 text-center">
             <div className="inline-flex items-center justify-center p-3 bg-red-100 text-red-600 rounded-full mb-4">
