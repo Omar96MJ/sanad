@@ -4,6 +4,9 @@ import { useLanguage } from "@/hooks/useLanguage";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Separator } from "@/components/ui/separator";
+import mustafaImage from "../images/mustafa.jpg";
+import omerMahgoubImage from "../images/omerMahgoub.jpg";
+
 
 const AboutUs = () => {
   const { language, t } = useLanguage();
@@ -132,35 +135,35 @@ const AboutUs = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[
                 {
-                  name: isRTL ? 'د. سارة خالد' : 'Dr. Sarah Khalid',
-                  role: isRTL ? 'المؤسس والرئيس التنفيذي' : 'Founder & CEO',
+                  name: isRTL ? 'م. مصطفى هاشم' : 'Eng. Mustafa Hashim',
+                  role: isRTL ? 'الرئيس التنفيذي & مهندس برمجيات' : 'CEO & Software Engineer',
                   bio: isRTL 
-                    ? 'طبيبة نفسية حائزة على جوائز مع أكثر من 15 عامًا من الخبرة في رعاية الصحة النفسية.'
-                    : 'Award-winning psychiatrist with over 15 years of experience in mental health care.',
-                  image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330'
+                    ? 'خريج هندسة البرمجيات جامعة السودان للعلوم والتكنولوجيا.'
+                    : 'Graduate in Software Engineering, Sudan University of Science and Technology.',
+                  image: mustafaImage,
                 },
                 {
-                  name: isRTL ? 'د. أحمد الراشد' : 'Dr. Ahmad Al-Rashid',
-                  role: isRTL ? 'رئيس قسم الطب النفسي' : 'Head of Psychiatry',
+                  name: isRTL ? 'م.عمر عباس' : 'Eng. Omar Abbas',
+                  role: isRTL ? 'نائب الرئيس التنفيذي & مهندس برمجيات' : 'EVP & Software Engineer',
                   bio: isRTL 
-                    ? 'متخصص في علاج الاكتئاب والقلق واضطرابات ما بعد الصدمة.'
-                    : 'Specializes in treating depression, anxiety, and PTSD.',
+                    ? 'خريج هندسة البرمجيات جامعة السودان للعلوم والتكنولوجيا.'
+                    : 'Graduate in Software Engineering, Sudan University of Science and Technology.',
                   image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a'
                 },
                 {
-                  name: isRTL ? 'ليلى عبد الله' : 'Layla Abdullah',
-                  role: isRTL ? 'معالجة نفسية رئيسية' : 'Lead Psychotherapist',
+                  name: isRTL ? 'م.عمر محجوب' : 'Eng. Omar Mahgoub',
+                  role: isRTL ? 'المؤسس & مهندس برمجيات' : 'Founder & Software Engineer',
                   bio: isRTL 
-                    ? 'خبيرة في العلاج السلوكي المعرفي والعلاج بالقبول والالتزام.'
-                    : 'Expert in Cognitive Behavioral Therapy and Acceptance and Commitment Therapy.',
-                  image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956'
+                    ? 'خريج هندسة البرمجيات جامعة السودان للعلوم والتكنولوجيا.'
+                    : 'Graduate in Software Engineering, Sudan University of Science and Technology.',
+                  image: omerMahgoubImage,
                 },
                 {
-                  name: isRTL ? 'عمر حسن' : 'Omar Hassan',
-                  role: isRTL ? 'أخصائي نفسي سريري' : 'Clinical Psychologist',
+                  name: isRTL ? 'م.رمزي محمد' : 'Eng. Ramzi Mohamed',
+                  role: isRTL ? 'مهندس برمجيات' : 'Software Engineer',
                   bio: isRTL 
-                    ? 'متخصص في الصحة النفسية للمراهقين وديناميات الأسرة.'
-                    : 'Specializes in adolescent mental health and family dynamics.',
+                    ? 'خريج هندسة البرمجيات جامعة السودان للعلوم والتكنولوجيا.'
+                    : 'Graduate in Software Engineering, Sudan University of Science and Technology.',
                   image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d'
                 },
                 {
@@ -220,40 +223,24 @@ const AboutUs = () => {
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                       </svg>
-                      <span>+971 4 123 4567</span>
+                      <span>+249 99 141 XXXX</span>
                     </li>
-                    <li className="flex items-start gap-3">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      <span>
-                        {isRTL 
-                          ? 'برج المستقبل، طابق 12، شارع زايد، دبي، الإمارات العربية المتحدة'
-                          : 'Future Tower, 12th Floor, Zayed Road, Dubai, UAE'}
-                      </span>
-                    </li>
+                    {/* Address for future use
+                      <li className="flex items-start gap-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span>
+                          {isRTL 
+                            ? ''
+                            : ''}
+                        </span>
+                      </li>
+                      */}
                   </ul>
                   
-                  <Separator className="my-6" />
                   
-                  <h3 className="text-xl font-medium mb-4">
-                    {isRTL ? 'ساعات العمل' : 'Office Hours'}
-                  </h3>
-                  <ul className="space-y-2">
-                    <li className="flex justify-between">
-                      <span>{isRTL ? 'الإثنين - الجمعة' : 'Monday - Friday'}</span>
-                      <span>9:00 AM - 6:00 PM</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>{isRTL ? 'السبت' : 'Saturday'}</span>
-                      <span>10:00 AM - 4:00 PM</span>
-                    </li>
-                    <li className="flex justify-between">
-                      <span>{isRTL ? 'الأحد' : 'Sunday'}</span>
-                      <span>{isRTL ? 'مغلق' : 'Closed'}</span>
-                    </li>
-                  </ul>
                 </div>
                 
                 <div>
