@@ -50,21 +50,27 @@ export const CalendarAndArticles = ({
     );
   };
   
-  // Custom day rendering to highlight days with appointments
-  const renderDay = (props: React.ComponentProps<typeof Calendar.components.Day>) => {
-    const day = props.date;
-    const hasAppointment = isDayWithAppointment(day);
-    
-    if (hasAppointment) {
-      return (
-        <div className={`relative ${props.className}`}>
-          {props.children}
-          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary"></div>
-        </div>
-      );
+  // Custom modifier for days with appointments
+  const modifiers = {
+    hasAppointment: (day: Date) => isDayWithAppointment(day)
+  };
+
+  // Custom styles for modifiers
+  const modifiersStyles = {
+    hasAppointment: {
+      position: 'relative',
+      '::after': {
+        content: '""',
+        position: 'absolute',
+        bottom: '2px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '4px',
+        height: '4px',
+        borderRadius: '50%',
+        backgroundColor: 'var(--primary)'
+      }
     }
-    
-    return <div className={props.className}>{props.children}</div>;
   };
 
   return (
@@ -86,13 +92,19 @@ export const CalendarAndArticles = ({
                 onSelect={setDate}
                 className="rounded-md border"
                 locale={calendarLocale}
-                components={{
-                  Day: renderDay
+                modifiers={{
+                  hasAppointment: (date) => isDayWithAppointment(date)
                 }}
               />
             </div>
             
             <div className="mt-4">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-3 h-3 rounded-full bg-primary"></div>
+                <span className="text-sm text-muted-foreground">
+                  {isRTL ? 'أيام بها مواعيد' : 'Days with appointments'}
+                </span>
+              </div>
               <h4 className="font-medium mb-2">{t('upcoming_sessions')}</h4>
               {upcomingAppointments.length > 0 ? (
                 <div className="space-y-2">
