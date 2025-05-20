@@ -33,14 +33,14 @@ type DashboardOverviewProps = {
   onScheduleSession: () => void;
 };
 
-export function DashboardOverview({ 
+export const DashboardOverview = ({ 
   isLoading, 
   doctorStats, 
   upcomingAppointments, 
   demographics,
   onViewSessionDetails,
   onScheduleSession
-}: DashboardOverviewProps) {
+}: DashboardOverviewProps) => {
   const { t } = useLanguage();
   
   if (isLoading) {
@@ -66,4 +66,4 @@ export function DashboardOverview({
       </div>
     </>
   );
-}
+};

@@ -11,11 +11,11 @@ interface TherapistCardProps {
   onBookAppointment: () => void;
 }
 
-export function TherapistCard({
+export const TherapistCard = ({
   isVisible,
   doctor,
   onBookAppointment
-}: TherapistCardProps) {
+}: TherapistCardProps) => {
   const { t } = useLanguage();
   
   return (
@@ -38,4 +38,4 @@ export function TherapistCard({
       </CardContent>
     </Card>
   );
-}
+};

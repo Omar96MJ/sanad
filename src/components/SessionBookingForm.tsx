@@ -2,8 +2,7 @@
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { format, addDays, isAfter, isBefore, isSameDay } from "date-fns";
+import { format, addDays, isAfter, isBefore } from "date-fns";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,59 +28,83 @@ import {
 } from "@/components/ui/popover";
 import { toast } from "sonner";
 import { CalendarIcon, Clock } from "lucide-react";
+import { TherapistProfile } from "@/lib/therapist-types";
 import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
+
+// Mock data for therapists
+const mockTherapists = [
+  {
+    id: "1",
+    name: "Dr. Sarah Johnson",
+    email: "sarah@example.com",
+    username: "sarah-johnson",
+    bio: "Specializing in anxiety and depression treatment with 8+ years of experience",
+    avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=256",
+    eventTypes: [
+      { id: "1", title: "Initial Consultation", length: 60 },
+      { id: "2", title: "Follow-up Session", length: 45 },
+      { id: "3", title: "Emergency Session", length: 30 }
+    ]
+  },
+  {
+    id: "2",
+    name: "Dr. Michael Chen",
+    email: "michael@example.com",
+    username: "michael-chen",
+    bio: "Helping families build stronger relationships for over 10 years",
+    avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=256",
+    eventTypes: [
+      { id: "1", title: "Family Therapy Session", length: 60 },
+      { id: "2", title: "Follow-up Session", length: 45 }
+    ]
+  },
+  {
+    id: "3",
+    name: "Dr. Aisha Rahman",
+    email: "aisha@example.com",
+    username: "aisha-rahman",
+    bio: "Specialized in PTSD and trauma recovery with a compassionate approach",
+    avatar: "https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?auto=format&fit=crop&q=80&w=256",
+    eventTypes: [
+      { id: "1", title: "Trauma Therapy", length: 60 },
+      { id: "2", title: "Follow-up Session", length: 45 }
+    ]
+  }
+];
 
 // Session types
 const sessionTypes = [
-  { value: "initial_consultation", label: { en: "Initial Consultation (60 min)", ar: "جلسة استشارية أولى (60 دقيقة)" } },
-  { value: "follow_up", label: { en: "Follow-up Session (45 min)", ar: "جلسة متابعة (45 دقيقة)" } },
-  { value: "therapy_session", label: { en: "Therapy Session (60 min)", ar: "جلسة علاج (60 دقيقة)" } },
+  { value: "initial", label: { en: "Initial Consultation (60 min)", ar: "جلسة استشارية أولى (60 دقيقة)" } },
+  { value: "followup", label: { en: "Follow-up Session (45 min)", ar: "جلسة متابعة (45 دقيقة)" } },
   { value: "emergency", label: { en: "Emergency Session (30 min)", ar: "جلسة طارئة (30 دقيقة)" } },
 ];
 
 const SessionBookingForm = () => {
   const { language, t } = useLanguage();
   const { user } = useAuth();
-  const navigate = useNavigate();
   const isRTL = language === "ar";
 
-  const [therapists, setTherapists] = useState<any[]>([]);
+  const [therapists, setTherapists] = useState(mockTherapists);
   const [selectedTherapist, setSelectedTherapist] = useState("");
   const [selectedTherapistDetails, setSelectedTherapistDetails] = useState<any | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [availableSlots, setAvailableSlots] = useState<any[]>([]);
   const [selectedTime, setSelectedTime] = useState("");
-  const [sessionType, setSessionType] = useState("");
+  const [eventTypeId, setEventTypeId] = useState("");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingTherapists, setLoadingTherapists] = useState(false);
   const [loadingSlots, setLoadingSlots] = useState(false);
 
-  // Fetch therapists from Supabase
+  // Set mock therapists
   useEffect(() => {
-    const fetchTherapists = async () => {
-      if (!user) return;
-      
-      setLoadingTherapists(true);
-      try {
-        const { data, error } = await supabase
-          .from('doctors')
-          .select('*');
-        
-        if (error) throw error;
-        
-        setTherapists(data || []);
-      } catch (error) {
-        console.error('Error fetching therapists:', error);
-        toast.error(t('error_loading_therapists'));
-      } finally {
-        setLoadingTherapists(false);
-      }
-    };
-
-    fetchTherapists();
-  }, [user, t]);
+    setLoadingTherapists(true);
+    // Simulate API call
+    setTimeout(() => {
+      setTherapists(mockTherapists);
+      setLoadingTherapists(false);
+    }, 500);
+  }, []);
 
   // Fetch therapist details when selection changes
   useEffect(() => {
@@ -90,7 +113,7 @@ const SessionBookingForm = () => {
       setSelectedTherapistDetails(therapist || null);
       
       // Reset related fields
-      setSessionType("");
+      setEventTypeId("");
       setSelectedDate(undefined);
       setSelectedTime("");
       setAvailableSlots([]);
@@ -101,139 +124,98 @@ const SessionBookingForm = () => {
 
   // Generate available slots when date changes
   useEffect(() => {
-    const generateAvailability = async () => {
-      if (!selectedTherapist || !sessionType || !selectedDate) return;
+    const generateMockAvailability = async () => {
+      if (!selectedTherapist || !eventTypeId || !selectedDate) return;
 
       setLoadingSlots(true);
       
-      try {
-        // This would be replaced with an actual API call in a production app
-        // For now, we'll generate mock slots similar to before
-        const today = new Date();
-        const dateString = format(selectedDate, 'yyyy-MM-dd');
-        
-        // Generate slots based on date
-        const slots = [];
-        
-        // Morning slots
-        slots.push({ date: dateString, slots: [
-          { startTime: "09:00", endTime: "10:00" },
-          { startTime: "10:00", endTime: "11:00" },
-          { startTime: "11:00", endTime: "12:00" },
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 700));
+      
+      const today = new Date();
+      const dateString = format(selectedDate, 'yyyy-MM-dd');
+      
+      // Generate mock slots based on date
+      const mockSlots = [];
+      
+      // Morning slots
+      mockSlots.push({ date: dateString, slots: [
+        { startTime: "09:00", endTime: "10:00" },
+        { startTime: "10:00", endTime: "11:00" },
+        { startTime: "11:00", endTime: "12:00" },
+      ]});
+      
+      // Afternoon slots - fewer if it's today (pretend some are booked)
+      if (isSameDay(selectedDate, today)) {
+        mockSlots.push({ date: dateString, slots: [
+          { startTime: "14:00", endTime: "15:00" },
         ]});
-        
-        // Afternoon slots - fewer if it's today (pretend some are booked)
-        if (isSameDay(selectedDate, today)) {
-          slots.push({ date: dateString, slots: [
-            { startTime: "14:00", endTime: "15:00" },
-          ]});
-        } else {
-          slots.push({ date: dateString, slots: [
-            { startTime: "14:00", endTime: "15:00" },
-            { startTime: "15:00", endTime: "16:00" },
-            { startTime: "16:00", endTime: "17:00" },
-          ]});
-        }
-        
-        setAvailableSlots(slots);
-      } catch (error) {
-        console.error('Error generating availability:', error);
-        toast.error(t('error_loading_available_time_slots'));
-      } finally {
-        setLoadingSlots(false);
+      } else {
+        mockSlots.push({ date: dateString, slots: [
+          { startTime: "14:00", endTime: "15:00" },
+          { startTime: "15:00", endTime: "16:00" },
+          { startTime: "16:00", endTime: "17:00" },
+        ]});
       }
+      
+      setAvailableSlots(mockSlots);
+      setLoadingSlots(false);
     };
 
-    if (selectedTherapist && sessionType && selectedDate) {
-      generateAvailability();
+    if (selectedTherapist && eventTypeId && selectedDate) {
+      generateMockAvailability();
     }
-  }, [selectedTherapist, sessionType, selectedDate, t]);
+  }, [selectedTherapist, eventTypeId, selectedDate]);
 
   // Handle therapist selection
   const handleTherapistChange = (therapistId: string) => {
     setSelectedTherapist(therapistId);
-    setSessionType("");
+    setEventTypeId("");
     setSelectedDate(undefined);
     setSelectedTime("");
   };
 
-  // Handle session type selection
-  const handleSessionTypeChange = (type: string) => {
-    setSessionType(type);
+  // Handle event type selection
+  const handleEventTypeChange = (typeId: string) => {
+    setEventTypeId(typeId);
     setSelectedDate(undefined);
     setSelectedTime("");
   };
 
   // Handle booking session
   const handleBookSession = async () => {
-    if (!selectedTherapist || !sessionType || !selectedDate || !selectedTime) {
-      toast.error(t('fill_all_required_fields'));
+    if (!selectedTherapist || !eventTypeId || !selectedDate || !selectedTime) {
+      toast.error(isRTL ? "يرجى تعبئة جميع الحقول المطلوبة" : "Please fill in all required fields");
       return;
     }
 
     if (!user) {
-      toast.error(t('login_required_for_booking'));
-      navigate('/login');
+      toast.error(isRTL ? "يجب تسجيل الدخول لحجز جلسة" : "You must be logged in to book a session");
       return;
     }
 
     setLoading(true);
 
     try {
-      // Combine date and time
-      const sessionDate = new Date(selectedDate);
-      const [hours, minutes] = selectedTime.split(':').map(Number);
-      sessionDate.setHours(hours, minutes, 0, 0);
-
-      // Create appointment in Supabase
-      const { data, error } = await supabase
-        .from('appointments')
-        .insert({
-          doctor_id: selectedTherapist,
-          patient_id: user.id,
-          patient_name: user.name,
-          session_date: sessionDate.toISOString(),
-          session_type: sessionType,
-          notes: notes || null,
-          status: 'scheduled'
-        })
-        .select()
-        .single();
+      // Simulate booking API call
+      await new Promise(resolve => setTimeout(resolve, 1500));
       
-      if (error) throw error;
-      
-      // Also create entry in patient_appointments for patient dashboard display
-      const { error: patientApptError } = await supabase
-        .from('patient_appointments')
-        .insert({
-          patient_id: user.id,
-          doctor_id: selectedTherapist,
-          doctor_name: selectedTherapistDetails.name,
-          session_date: sessionDate.toISOString(),
-          session_type: sessionType,
-          status: 'upcoming'
-        });
-        
-      if (patientApptError) {
-        console.error("Error creating patient appointment:", patientApptError);
-      }
-      
-      toast.success(t('appointment_booked_successfully'));
+      toast.success(
+        isRTL 
+          ? "تم حجز جلستك بنجاح! سنرسل لك تأكيدًا عبر البريد الإلكتروني." 
+          : "Your session has been booked successfully! We'll send you a confirmation email."
+      );
       
       // Reset form
       setSelectedTherapist("");
       setSelectedTherapistDetails(null);
-      setSessionType("");
+      setEventTypeId("");
       setSelectedDate(undefined);
       setSelectedTime("");
       setNotes("");
       
-      // Navigate to patient dashboard
-      navigate('/patient-dashboard');
-      
-    } catch (error: any) {
-      console.error('Error booking session:', error);
-      toast.error(t('error_booking_appointment'));
+    } catch (error) {
+      toast.error(isRTL ? "حدث خطأ أثناء حجز الجلسة" : "Error booking your session");
     } finally {
       setLoading(false);
     }
@@ -241,6 +223,14 @@ const SessionBookingForm = () => {
 
   const disablePastDates = (date: Date) => {
     return isBefore(date, new Date()) && !isSameDay(date, new Date());
+  };
+
+  const isSameDay = (date1: Date, date2: Date) => {
+    return (
+      date1.getDate() === date2.getDate() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getFullYear() === date2.getFullYear()
+    );
   };
 
   // Find available time slots for the selected date
@@ -255,34 +245,32 @@ const SessionBookingForm = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CalendarIcon className="h-5 w-5 text-primary" />
-          {t('schedule_new_session')}
+          {isRTL ? "حجز جلسة جديدة" : "Schedule a New Session"}
         </CardTitle>
         <CardDescription>
-          {t('select_preferred_options')}
+          {isRTL 
+            ? "اختر المعالج والتاريخ والوقت المناسب لك"
+            : "Select your preferred therapist, date, and time"}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-2">
-          <label htmlFor="therapist">{t('therapist')}</label>
+          <label htmlFor="therapist">{isRTL ? "المعالج" : "Therapist"}</label>
           <Select value={selectedTherapist} onValueChange={handleTherapistChange}>
             <SelectTrigger id="therapist" className="w-full">
-              <SelectValue placeholder={t('select_therapist')} />
+              <SelectValue placeholder={isRTL ? "اختر معالج" : "Select a therapist"} />
             </SelectTrigger>
             <SelectContent>
               {loadingTherapists ? (
                 <SelectItem value="loading" disabled>
-                  {t('loading_therapists')}
+                  {isRTL ? "جاري تحميل المعالجين..." : "Loading therapists..."}
                 </SelectItem>
-              ) : therapists.length > 0 ? (
+              ) : (
                 therapists.map((therapist) => (
                   <SelectItem key={therapist.id} value={therapist.id}>
                     {therapist.name}
                   </SelectItem>
                 ))
-              ) : (
-                <SelectItem value="none" disabled>
-                  {t('no_therapists_found')}
-                </SelectItem>
               )}
             </SelectContent>
           </Select>
@@ -290,9 +278,9 @@ const SessionBookingForm = () => {
           {selectedTherapistDetails && (
             <div className="mt-4 p-4 bg-muted/40 rounded-lg">
               <div className="flex gap-4 items-start">
-                {selectedTherapistDetails.profile_image && (
+                {selectedTherapistDetails.avatar && (
                   <img 
-                    src={selectedTherapistDetails.profile_image} 
+                    src={selectedTherapistDetails.avatar} 
                     alt={selectedTherapistDetails.name}
                     className="h-16 w-16 rounded-full object-cover"
                   />
@@ -310,15 +298,15 @@ const SessionBookingForm = () => {
 
         {selectedTherapistDetails && (
           <div className="space-y-2">
-            <label htmlFor="session-type">{t('session_type')}</label>
-            <Select value={sessionType} onValueChange={handleSessionTypeChange}>
+            <label htmlFor="session-type">{isRTL ? "نوع الجلسة" : "Session Type"}</label>
+            <Select value={eventTypeId} onValueChange={handleEventTypeChange}>
               <SelectTrigger id="session-type">
-                <SelectValue placeholder={t('select_session_type')} />
+                <SelectValue placeholder={isRTL ? "اختر نوع الجلسة" : "Select session type"} />
               </SelectTrigger>
               <SelectContent>
-                {sessionTypes.map((type) => (
-                  <SelectItem key={type.value} value={type.value}>
-                    {language === 'ar' ? type.label.ar : type.label.en}
+                {selectedTherapistDetails.eventTypes?.map((eventType) => (
+                  <SelectItem key={eventType.id} value={eventType.id}>
+                    {eventType.title} ({eventType.length} min)
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -326,9 +314,9 @@ const SessionBookingForm = () => {
           </div>
         )}
 
-        {sessionType && (
+        {eventTypeId && (
           <div className="space-y-2">
-            <label>{t('date')}</label>
+            <label>{isRTL ? "التاريخ" : "Date"}</label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -338,11 +326,11 @@ const SessionBookingForm = () => {
                     !selectedDate && "text-muted-foreground"
                   )}
                 >
-                  <CalendarIcon className={cn("h-4 w-4", isRTL ? "ml-2" : "mr-2")} />
+                  <CalendarIcon className="mr-2 h-4 w-4" />
                   {selectedDate ? (
                     format(selectedDate, "PPP")
                   ) : (
-                    <span>{t('pick_date')}</span>
+                    <span>{isRTL ? "اختر تاريخًا" : "Pick a date"}</span>
                   )}
                 </Button>
               </PopoverTrigger>
@@ -353,7 +341,7 @@ const SessionBookingForm = () => {
                   onSelect={setSelectedDate}
                   disabled={disablePastDates}
                   initialFocus
-                  className="rounded-md border"
+                  className="rounded-md border pointer-events-auto"
                 />
               </PopoverContent>
             </Popover>
@@ -362,15 +350,15 @@ const SessionBookingForm = () => {
 
         {selectedDate && (
           <div className="space-y-2">
-            <label htmlFor="time">{t('time')}</label>
+            <label htmlFor="time">{isRTL ? "الوقت" : "Time"}</label>
             <Select value={selectedTime} onValueChange={setSelectedTime}>
               <SelectTrigger id="time">
-                <SelectValue placeholder={t('select_time')} />
+                <SelectValue placeholder={isRTL ? "اختر وقتًا" : "Select a time"} />
               </SelectTrigger>
               <SelectContent>
                 {loadingSlots ? (
                   <SelectItem value="loading" disabled>
-                    {t('loading_available_times')}
+                    {isRTL ? "جاري تحميل المواعيد المتاحة..." : "Loading available times..."}
                   </SelectItem>
                 ) : timeSlots.length > 0 ? (
                   timeSlots.map((time) => (
@@ -380,7 +368,7 @@ const SessionBookingForm = () => {
                   ))
                 ) : (
                   <SelectItem value="none" disabled>
-                    {t('no_available_times')}
+                    {isRTL ? "لا توجد مواعيد متاحة في هذا اليوم" : "No available times for this day"}
                   </SelectItem>
                 )}
               </SelectContent>
@@ -389,12 +377,12 @@ const SessionBookingForm = () => {
         )}
 
         <div className="space-y-2">
-          <label htmlFor="notes">{t('additional_notes')}</label>
+          <label htmlFor="notes">{isRTL ? "ملاحظات إضافية (اختياري)" : "Additional Notes (optional)"}</label>
           <Textarea
             id="notes"
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
-            placeholder={t('additional_notes_placeholder')}
+            placeholder={isRTL ? "أضف أي معلومات إضافية قد تساعد المعالج" : "Add any additional information that might help your therapist"}
             className="min-h-[100px]"
           />
         </div>
@@ -402,18 +390,18 @@ const SessionBookingForm = () => {
       <CardFooter>
         <Button 
           onClick={handleBookSession} 
-          disabled={!selectedTherapist || !sessionType || !selectedDate || !selectedTime || loading}
+          disabled={!selectedTherapist || !eventTypeId || !selectedDate || !selectedTime || loading}
           className="w-full"
         >
           {loading ? (
             <span className="flex items-center gap-2">
               <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full"></div>
-              {t('booking')}
+              {isRTL ? "جاري الحجز..." : "Booking..."}
             </span>
           ) : (
             <span className="flex items-center gap-2">
               <CalendarIcon className="h-4 w-4" />
-              {t('confirm_booking')}
+              {isRTL ? "تأكيد الحجز" : "Confirm Booking"}
             </span>
           )}
         </Button>
