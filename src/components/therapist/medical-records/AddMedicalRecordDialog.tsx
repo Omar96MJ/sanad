@@ -23,7 +23,8 @@ const AddMedicalRecordDialog = ({
 
   const handleAddRecord = () => {
     if (!newRecordContent.trim() || !recordType.trim()) {
-      toast(t('please_fill_all_fields'));
+      // Fixed: Changed toast(t('please_fill_all_fields')) to toast.error(t('please_fill_all_fields'))
+      toast.error(t('please_fill_all_fields'));
       return;
     }
     
