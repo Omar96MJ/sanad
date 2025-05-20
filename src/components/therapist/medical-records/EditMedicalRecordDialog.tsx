@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -26,7 +25,7 @@ const EditMedicalRecordDialog = ({
   
   const handleEditRecord = () => {
     if (!currentRecord || !currentRecord.content.trim()) {
-      toast(t('please_fill_all_fields'));
+      toast.error(t('please_fill_all_fields'));
       return;
     }
     
