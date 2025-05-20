@@ -22,12 +22,6 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
   const { user } = useAuth();
   const isRTL = language === "ar";
   
-  const [formData, setFormData] = useState<SessionFormData>({
-    sessionDate: undefined,
-    sessionTime: "",
-    sessionType: "",
-    notes: ""
-  });
   const [isLoading, setIsLoading] = useState(false);
 
   // Mock doctor data
@@ -38,25 +32,14 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
     image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
   };
 
-  // Reset form
-  const resetForm = () => {
-    setFormData({
-      sessionDate: undefined,
-      sessionTime: "",
-      sessionType: "",
-      notes: ""
-    });
-  };
-
   // Handle booking session
   const handleBookSession = async (formValues: SessionFormData) => {
     if (!user || !formValues.sessionDate || !formValues.sessionTime || !formValues.sessionType) {
       toast.error(isRTL ? "يرجى تعبئة جميع الحقول المطلوبة" : "Please fill in all required fields");
+      setIsLoading(false);
       return;
     }
 
-    setIsLoading(true);
-    
     try {
       // Combine date and time
       const [hours, minutes] = formValues.sessionTime.split(':').map(Number);
@@ -78,8 +61,7 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
           : "Your session has been booked successfully!"
       );
       
-      // Reset form and close dialog
-      resetForm();
+      // Close dialog
       onClose();
       
       // Refresh appointments list
@@ -99,12 +81,9 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
   };
 
   return {
-    formData,
-    setFormData,
     isLoading,
     setIsLoading,
     handleBookSession,
-    resetForm,
     mockDoctor,
   };
 };

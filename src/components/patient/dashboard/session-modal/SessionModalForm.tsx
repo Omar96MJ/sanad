@@ -71,7 +71,7 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
       sessionTime: "",
       notes: "",
     },
-    mode: "onChange",
+    mode: "onSubmit", // Changed from onChange to onSubmit
   });
   
   // Get available time slots based on selected date
@@ -106,6 +106,8 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
   const handleFormSubmit = async (values: FormValues) => {
     try {
       // Format the data and submit
+      setIsLoading(true);
+      
       await onSubmit({
         sessionDate: values.sessionDate,
         sessionTime: values.sessionTime,
