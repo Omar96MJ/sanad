@@ -4,7 +4,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Separator } from "@/components/ui/separator";
-import mustafaImage from "../images/Eng-mustafa.jpg";
+import mustafaImage from "./images/Eng-mustafa.jpg";
 import omerMahgoubImage from "../images/Eng-omer-Mahgoub.jpg";
  
 
