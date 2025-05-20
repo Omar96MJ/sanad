@@ -26,7 +26,9 @@ const MedicalRecordsHeader = ({ patientName, onAddRecord }: MedicalRecordsHeader
         </Button>
       </CardTitle>
       <CardDescription>
-        {patientName ? t('medical_history_for', { name: patientName }) : t('patient_medical_history')}
+        {patientName 
+          ? t('medical_history_for', { name: patientName }) 
+          : t('patient_medical_history')}
       </CardDescription>
     </>
   );
