@@ -41,14 +41,14 @@ const testsTranslations = {
   "resilience_description": "قياس قدرتك على التعافي من المحن.",
 
   // Test names
-  "depression_test": "اختبار الاكتئاب",
-  "anxiety_test": "اختبار القلق",
-  "personality_test": "اختبار الشخصية",
-  "adhd_test": "اختبار فرط الحركة ونقص الانتباه",
-  "children_test": "اختبار الحالة النفسية للأطفال",
-  "jealousy_test": "اختبار الغيرة",
-  "love_test": "اختبار الحب",
-  "passion_test": "اختبار الشغف",
+  "depression_test": "الاكتئاب",
+  "anxiety_test": "القلق",
+  "personality_test": "الشخصية",
+  "adhd_test": "فرط الحركة ونقص الانتباه",
+  "children_test": "الحالة النفسية للأطفال",
+  "jealousy_test": "الغيرة",
+  "love_test": "الحب",
+  "passion_test": "الشغف",
   
   // Test interface
   "question": "سؤال",
@@ -59,7 +59,7 @@ const testsTranslations = {
   "back": "رجوع",
   "start_test": "ابدأ الاختبار",
   "select": "اختر",
-  "take_this_test": "قم بإجراء هذا الاختبار لتقييم",
+  "take_this_test": "قم بإجراء هذا الاختبار لتقييم مدى",
   "not_at_all": "ليس على الإطلاق",
   "several_days": "عدة أيام",
   "more_than_half_days": "أكثر من نصف الأيام",

@@ -14,6 +14,23 @@ const testsTranslations = {
   'testquestions': 'Questions',
   'minutes': 'minutes',
   'testdescription': 'Description',
+  'psychological_tests': 'Psychological Tests',
+  'take_test_description': 'Take one of our psychological tests to learn more about yourself',
+
+  // Test Names
+  'depression_test': 'Depression',
+  'anxiety_test': 'Anxiety',
+  'personality_test': 'Personality',
+  'adhd_test': 'ADHD',
+  'children_test': 'Children\'s Mental Health',
+  'jealousy_test': 'Jealousy',
+  'love_test': 'Love',
+  'passion_test': 'Passion',
+
+
+  //Test interface
+  'take_this_test': 'Take this test to evaluate the extent of',
+
 
   // Mental Health Info
   'mentalhealthtitle': 'Understanding Mental Health',
