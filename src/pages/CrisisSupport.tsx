@@ -1,4 +1,5 @@
 
+import Navbar from "@/components/Navbar";
 import { useLanguage } from '@/hooks/useLanguage';
 import { Card } from '@/components/ui/card';
 import { AlertTriangle, Phone, MessageSquare, LifeBuoy, HelpingHand } from 'lucide-react';
@@ -11,6 +12,7 @@ const CrisisSupport = () => {
   
   return (
     <div className="min-h-screen flex flex-col">
+      <Navbar />
       <div className="flex-grow">
         <div className="container-custom py-12" dir={isRTL ? 'rtl' : 'ltr'}>
           {/* Header Section */}

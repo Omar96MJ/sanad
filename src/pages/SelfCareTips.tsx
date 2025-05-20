@@ -1,4 +1,4 @@
-
+import Navbar from "@/components/Navbar";
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -11,6 +11,7 @@ const SelfCareTips = () => {
 
   return (
     <div className="min-h-screen flex flex-col">
+      <Navbar />
       <div className="flex-grow">
         <div className="container-custom py-12" dir={isRTL ? 'rtl' : 'ltr'}>
           {/* Header Section */}
