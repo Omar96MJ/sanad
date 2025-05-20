@@ -13,6 +13,11 @@ interface MedicalRecordsHeaderProps {
 const MedicalRecordsHeader = ({ patientName, onAddRecord }: MedicalRecordsHeaderProps) => {
   const { t } = useLanguage();
   
+  // Create the translation string with the patient name directly
+  const medicalHistoryText = patientName 
+    ? `${t('medical_history_for')} ${patientName}`
+    : t('patient_medical_history');
+  
   return (
     <>
       <CardTitle className="flex justify-between items-center">
@@ -26,9 +31,7 @@ const MedicalRecordsHeader = ({ patientName, onAddRecord }: MedicalRecordsHeader
         </Button>
       </CardTitle>
       <CardDescription>
-        {patientName 
-          ? t('medical_history_for', { name: patientName }) 
-          : t('patient_medical_history')}
+        {medicalHistoryText}
       </CardDescription>
     </>
   );
