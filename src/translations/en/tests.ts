@@ -29,8 +29,93 @@ const testsTranslations = {
 
 
   //Test interface
+  'question': 'Question',
   'take_this_test': 'Take this test to evaluate the extent of',
   'select': 'Select',
+  'test_consists_of': 'This test consists of',
+  'questions_and_will_take': 'questions and will take approximately',
+  'minutes_to_complete': 'minutes to complete',
+  'answer_honestly': 'Please answer each question honestly for the most accurate results.',
+  'start_test': 'Start Test',
+  'not_at_all': 'Not at all',
+  'several_days': 'Several days',
+  'more_than_half_days': 'More than half the days',
+  'nearly_every_day': 'Nearly every day',
+  'test_results': 'Test Results',
+  'test_disclaimer': 'This test is for educational purposes only and should not be used for self-diagnosis. Please consult a mental health professional for proper diagnosis and treatment.',
+  'restart_test': 'Restart Test',
+  'choose_another_test': 'Choose Another Test',
+  'your_score_is': 'Your score is',
+  'consult_professional': 'Please consult a professional for interpretation.',
+  
+
+  // Depression test questions
+  'depression_q1': 'I feel sad or depressed most of the day',
+  'depression_q2': 'I have lost interest in activities I used to enjoy',
+  'depression_q3': 'I have trouble sleeping or sleep a lot',
+  'depression_q4': 'I feel tired or lack of energy',
+  'depression_q5': 'I have a weak appetite or overeat',
+
+  'depression_result_minimal': 'Minimal or No Depression',
+  'depression_result_mild': 'Mild Depression',
+  'depression_result_moderate': 'Moderate Depression',
+  'depression_result_severe': 'Severe Depression',
+
+  // Anxiety test questions
+  'anxiety_q1': 'I feel stressed or anxious',
+  'anxiety_q2': 'I worry a lot about different things',
+  'anxiety_q3': 'I have trouble relaxing',
+  'anxiety_q4': 'I feel restless and have difficulty sitting still',
+  'anxiety_q5': 'I get upset or provoked easily',
+
+  'anxiety_result_minimal': 'Minimal or No Anxiety',
+  'anxiety_result_mild': 'Mild Anxiety',
+  'anxiety_result_moderate': 'Moderate Anxiety',
+  'anxiety_result_severe': 'Severe Anxiety',
+
+  // Personality test questions
+  'personality_q1': 'I enjoy being the center of attention',
+  'personality_q2': 'I prefer quiet, solitary activities',
+  'personality_q3': 'I consider myself organized and detail-oriented',
+  'personality_q4': 'I feel comfortable in new social situations',
+  'personality_q5': 'I am more practical than creative',
+
+
+  // ADHD test questions
+  'adhd_q1': 'I have trouble staying focused',
+  'adhd_q2': 'I get easily distracted',
+  'adhd_q3': 'I struggle to complete tasks',
+  'adhd_q4': 'I often lose things necessary for tasks',
+  'adhd_q5': 'I often fidget or feel restless',
+
+  // Children test questions
+  'children_q1': 'child has difficulty concentrating',
+  'children_q2': 'child appears anxious or stressed',
+  'children_q3': 'child suffers from frequent mood swings',
+  'children_q4': 'child has difficulty making friends',
+  'children_q5': 'child has lost interest in activities that he used to enjoy',
+
+  // Jealousy test questions
+  'jealousy_q1': 'I worry a lot about my partner cheating on me',
+  'jealousy_q2': 'I check my partner\'s phone or his social media',
+  'jealousy_q3': 'I feel uncomfortable when my partner talks to others',
+  'jealousy_q4': 'I get angry when my partner gives attention to others',
+  'jealousy_q5': 'I often need reassurance from my partner',
+
+  // Love test questions
+  'love_q1': 'I think about this person constantly',
+  'love_q2': 'I feel happy when I am with this person',
+  'love_q3': 'I prioritize this person\'s needs over my own',
+  'love_q4': 'I can see a future with this person',
+  'love_q5': 'I accept this person\'s faults',
+
+  // Passion test questions
+  'passion_q1': 'I lose track of time when I am busy with this activity',
+  'passion_q2': 'I feel energized when I do this activity',
+  'passion_q3': 'I constantly want to improve in this field',
+  'passion_q4': 'I think about this activity even when I\'m not doing it',
+  'passion_q5': 'I will engage in this activity even if I do not receive payment or recognition for it',
+
 
   // Mental Health Info
   'mentalhealthtitle': 'Understanding Mental Health',
