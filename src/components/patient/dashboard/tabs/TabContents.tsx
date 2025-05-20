@@ -1,18 +1,18 @@
 
-import { useLanguage } from "@/hooks/useLanguage";
 import { TabsContent } from "@/components/ui/tabs";
-import MessagingLayout from "@/components/messaging/MessagingLayout";
-import { DashboardOverview } from "@/components/patient/dashboard/DashboardOverview";
-import { AppointmentsTab } from "@/components/patient/dashboard/AppointmentsTab";
-import { ResourcesTab } from "@/components/patient/dashboard/ResourcesTab";
+import { DashboardOverview } from "../DashboardOverview";
+import { AppointmentsTab } from "../AppointmentsTab";
+import { ResourcesTab } from "../ResourcesTab";
 import { BlogPost, Doctor } from "@/lib/types";
+import { PatientAppointment } from "@/services/patientAppointmentService";
 
 interface TabContentsProps {
   activeTab: string;
   isVisible: boolean;
   progress: number;
   mockDoctor: Doctor;
-  mockAppointments: any[];
+  appointments: PatientAppointment[];
+  isLoadingAppointments?: boolean;
   mockArticles: BlogPost[];
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
@@ -21,6 +21,7 @@ interface TabContentsProps {
   formatAppointmentDate: (dateString: string) => string;
   formatAppointmentTime: (dateString: string) => string;
   calendarLocale: any;
+  onAppointmentUpdated: () => void;
 }
 
 export const TabContents = ({
@@ -28,7 +29,8 @@ export const TabContents = ({
   isVisible,
   progress,
   mockDoctor,
-  mockAppointments,
+  appointments,
+  isLoadingAppointments = false,
   mockArticles,
   date,
   setDate,
@@ -36,18 +38,20 @@ export const TabContents = ({
   handleStartTherapy,
   formatAppointmentDate,
   formatAppointmentTime,
-  calendarLocale
+  calendarLocale,
+  onAppointmentUpdated
 }: TabContentsProps) => {
-  const { t } = useLanguage();
-
+  // Get upcoming appointments for overview tab
+  const upcomingAppointments = appointments.filter(apt => apt.status === 'upcoming');
+  
   return (
     <>
       <TabsContent value="overview">
-        <DashboardOverview 
+        <DashboardOverview
           isVisible={isVisible}
           progress={progress}
           doctor={mockDoctor}
-          upcomingAppointments={mockAppointments}
+          upcomingAppointments={upcomingAppointments}
           mockArticles={mockArticles}
           date={date}
           setDate={setDate}
@@ -61,21 +65,20 @@ export const TabContents = ({
       
       <TabsContent value="appointments">
         <AppointmentsTab 
-          appointments={mockAppointments}
+          appointments={appointments}
           onBookAppointment={handleBookAppointment}
           formatAppointmentDate={formatAppointmentDate}
           formatAppointmentTime={formatAppointmentTime}
+          onAppointmentUpdated={onAppointmentUpdated}
+          isLoading={isLoadingAppointments}
         />
       </TabsContent>
       
       <TabsContent value="resources">
-        <ResourcesTab articles={mockArticles} />
-      </TabsContent>
-      
-      <TabsContent value="messaging">
-        <div className="mt-4">
-          <MessagingLayout isTherapist={false} />
-        </div>
+        <ResourcesTab 
+          isVisible={isVisible}
+          mockArticles={mockArticles}
+        />
       </TabsContent>
     </>
   );

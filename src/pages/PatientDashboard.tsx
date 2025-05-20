@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
-import { format, addDays } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { ar } from "date-fns/locale";
 import { toast } from "sonner";
 
@@ -12,6 +12,7 @@ import Footer from "@/components/Footer";
 import { PatientDashboardTabs } from "@/components/patient/dashboard/PatientDashboardTabs";
 import { DashboardHeader } from "@/components/patient/dashboard/DashboardHeader";
 import { SessionModal } from "@/components/patient/dashboard/SessionModal";
+import { fetchPatientAppointments, PatientAppointment } from "@/services/patientAppointmentService";
 
 // Import mockBlogs instead of mockArticles
 import { mockBlogs } from "@/data/mockBlogs";
@@ -26,6 +27,8 @@ const PatientDashboard = () => {
   const [isSessionModalOpen, setIsSessionModalOpen] = useState(false);
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [isVisible, setIsVisible] = useState(false);
+  const [appointments, setAppointments] = useState<PatientAppointment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   
   // Animation on mount
   useEffect(() => {
@@ -40,6 +43,26 @@ const PatientDashboard = () => {
       toast.error(isRTL ? "يرجى تسجيل الدخول للوصول إلى لوحة التحكم" : "Please log in to access your dashboard");
     }
   }, [user, navigate, isRTL]);
+  
+  // Fetch appointments data
+  useEffect(() => {
+    const loadAppointments = async () => {
+      if (!user) return;
+      
+      try {
+        setIsLoading(true);
+        const data = await fetchPatientAppointments(user.id);
+        setAppointments(data);
+      } catch (error) {
+        console.error("Error loading appointments:", error);
+        toast.error(isRTL ? "حدث خطأ أثناء تحميل المواعيد" : "Error loading appointments");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    loadAppointments();
+  }, [user, isRTL]);
   
   // If user is not available yet, show a loading state
   if (!user) {
@@ -71,42 +94,18 @@ const PatientDashboard = () => {
     patients: 245,
     yearsOfExperience: 10,
     email: "dr.smith@example.com",
-    role: "doctor" as UserRole  // Fix: Cast string to UserRole type
+    role: "doctor" as UserRole
   };
-  
-  // Mock appointment data
-  const mockAppointments = [
-    {
-      id: "1",
-      therapist: "Dr. Emily Smith",
-      therapistImage: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
-      date: format(addDays(new Date(), 3), "yyyy-MM-dd'T'HH:mm:ss"),
-      time: "10:00 AM",
-      type: "Therapy Session",
-      status: "upcoming",
-      notes: "Follow-up on anxiety management techniques"
-    },
-    {
-      id: "2",
-      therapist: "Dr. Emily Smith",
-      therapistImage: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
-      date: format(addDays(new Date(), -7), "yyyy-MM-dd'T'HH:mm:ss"),
-      time: "2:30 PM",
-      type: "Initial Consultation",
-      status: "completed",
-      notes: "Initial assessment and treatment planning"
-    }
-  ];
   
   // Format appointment date for display
   const formatAppointmentDate = (dateString: string) => {
-    const date = new Date(dateString);
+    const date = parseISO(dateString);
     return format(date, "PPPP", { locale: isRTL ? ar : undefined });
   };
   
   // Format appointment time for display
   const formatAppointmentTime = (dateString: string) => {
-    const date = new Date(dateString);
+    const date = parseISO(dateString);
     return format(date, "h:mm a");
   };
   
@@ -121,6 +120,19 @@ const PatientDashboard = () => {
   // Handler for starting therapy session
   const handleStartTherapy = () => {
     toast.info(isRTL ? "سيتم إطلاق ميزة العلاج عن بعد قريبًا" : "Telehealth feature coming soon!");
+  };
+  
+  // Handler for appointment updates
+  const handleAppointmentUpdated = async () => {
+    try {
+      setIsLoading(true);
+      const data = await fetchPatientAppointments(user.id);
+      setAppointments(data);
+    } catch (error) {
+      console.error("Error refreshing appointments:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -138,8 +150,9 @@ const PatientDashboard = () => {
             isVisible={isVisible}
             progress={progress}
             mockDoctor={mockDoctor}
-            mockAppointments={mockAppointments}
-            mockArticles={mockBlogs.slice(0, 3)} // Use mockBlogs here instead of mockArticles
+            appointments={appointments}
+            isLoadingAppointments={isLoading}
+            mockArticles={mockBlogs.slice(0, 3)} // Use mockBlogs here
             date={date}
             setDate={setDate}
             handleBookAppointment={handleBookAppointment}
@@ -147,6 +160,7 @@ const PatientDashboard = () => {
             formatAppointmentDate={formatAppointmentDate}
             formatAppointmentTime={formatAppointmentTime}
             calendarLocale={calendarLocale}
+            onAppointmentUpdated={handleAppointmentUpdated}
           />
         </div>
       </main>
@@ -154,6 +168,7 @@ const PatientDashboard = () => {
       <SessionModal 
         isOpen={isSessionModalOpen}
         onClose={() => setIsSessionModalOpen(false)}
+        onSessionBooked={handleAppointmentUpdated}
       />
       
       <Footer />

@@ -4,12 +4,14 @@ import { Tabs } from "@/components/ui/tabs";
 import { BlogPost, Doctor } from "@/lib/types";
 import { TabsList } from "./tabs/TabsList";
 import { TabContents } from "./tabs/TabContents";
+import { PatientAppointment } from "@/services/patientAppointmentService";
 
 interface PatientDashboardTabsProps {
   isVisible: boolean;
   progress: number;
   mockDoctor: Doctor;
-  mockAppointments: any[];
+  appointments: PatientAppointment[];
+  isLoadingAppointments?: boolean;
   mockArticles: BlogPost[]; // Keep this as mockArticles for now to minimize changes
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
@@ -18,13 +20,15 @@ interface PatientDashboardTabsProps {
   formatAppointmentDate: (dateString: string) => string;
   formatAppointmentTime: (dateString: string) => string;
   calendarLocale: any;
+  onAppointmentUpdated: () => void;
 }
 
 export const PatientDashboardTabs = ({
   isVisible,
   progress,
   mockDoctor,
-  mockAppointments,
+  appointments,
+  isLoadingAppointments = false,
   mockArticles, // Keep the prop name as is
   date,
   setDate,
@@ -32,7 +36,8 @@ export const PatientDashboardTabs = ({
   handleStartTherapy,
   formatAppointmentDate,
   formatAppointmentTime,
-  calendarLocale
+  calendarLocale,
+  onAppointmentUpdated
 }: PatientDashboardTabsProps) => {
   const [activeTab, setActiveTab] = useState("overview");
 
@@ -45,7 +50,8 @@ export const PatientDashboardTabs = ({
         isVisible={isVisible}
         progress={progress}
         mockDoctor={mockDoctor}
-        mockAppointments={mockAppointments}
+        appointments={appointments}
+        isLoadingAppointments={isLoadingAppointments}
         mockArticles={mockArticles} // Pass it through
         date={date}
         setDate={setDate}
@@ -54,6 +60,7 @@ export const PatientDashboardTabs = ({
         formatAppointmentDate={formatAppointmentDate}
         formatAppointmentTime={formatAppointmentTime}
         calendarLocale={calendarLocale}
+        onAppointmentUpdated={onAppointmentUpdated}
       />
     </Tabs>
   );
