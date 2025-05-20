@@ -23,12 +23,6 @@ export const SessionModal = ({ isOpen, onClose, onSessionBooked }: SessionModalP
     onSessionBooked 
   });
 
-  const handleSubmit = async () => {
-    setIsLoading(true);
-    await handleBookSession();
-    setIsLoading(false);
-  };
-
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent>
@@ -39,8 +33,9 @@ export const SessionModal = ({ isOpen, onClose, onSessionBooked }: SessionModalP
         </DialogHeader>
         
         <SessionModalForm 
-          onSubmit={handleSubmit}
+          onSubmit={handleBookSession}
           isLoading={isLoading}
+          setIsLoading={setIsLoading}
           onCancel={onClose}
         />
       </DialogContent>

@@ -49,8 +49,8 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
   };
 
   // Handle booking session
-  const handleBookSession = async () => {
-    if (!user || !formData.sessionDate || !formData.sessionTime || !formData.sessionType) {
+  const handleBookSession = async (formValues: SessionFormData) => {
+    if (!user || !formValues.sessionDate || !formValues.sessionTime || !formValues.sessionType) {
       toast.error(isRTL ? "يرجى تعبئة جميع الحقول المطلوبة" : "Please fill in all required fields");
       return;
     }
@@ -59,8 +59,8 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
     
     try {
       // Combine date and time
-      const [hours, minutes] = formData.sessionTime.split(':').map(Number);
-      const sessionDateTime = new Date(formData.sessionDate);
+      const [hours, minutes] = formValues.sessionTime.split(':').map(Number);
+      const sessionDateTime = new Date(formValues.sessionDate);
       sessionDateTime.setHours(hours, minutes, 0, 0);
       
       await createAppointment({
@@ -68,7 +68,7 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
         doctor_id: mockDoctor.id,
         doctor_name: mockDoctor.name,
         session_date: sessionDateTime.toISOString(),
-        session_type: formData.sessionType,
+        session_type: formValues.sessionType,
         status: 'upcoming'
       });
       

@@ -9,7 +9,7 @@ import { format, isBefore, isSameDay } from "date-fns";
 import { ar } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { TherapistInfo } from "./TherapistInfo";
-import { useSessionForm } from "./useSessionForm";
+import { useSessionForm, SessionFormData } from "./useSessionForm";
 import {
   Form,
   FormControl,
@@ -50,21 +50,18 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 interface SessionModalFormProps {
-  onSubmit: () => Promise<void>;
+  onSubmit: (data: SessionFormData) => Promise<void>;
   isLoading: boolean;
+  setIsLoading: (isLoading: boolean) => void;
   onCancel: () => void;
 }
 
-export const SessionModalForm = ({ onSubmit, isLoading, onCancel }: SessionModalFormProps) => {
+export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }: SessionModalFormProps) => {
   const { language } = useLanguage();
   const isRTL = language === "ar";
   const calendarLocale = isRTL ? ar : undefined;
   
-  const {
-    formData,
-    setFormData,
-    mockDoctor,
-  } = useSessionForm({ onClose: onCancel });
+  const { mockDoctor } = useSessionForm({ onClose: onCancel });
   
   // Initialize form with React Hook Form
   const form = useForm<FormValues>({
@@ -107,16 +104,18 @@ export const SessionModalForm = ({ onSubmit, isLoading, onCancel }: SessionModal
   
   // Handle form submission
   const handleFormSubmit = async (values: FormValues) => {
-    // Update the form data in the parent component
-    setFormData({
-      sessionDate: values.sessionDate,
-      sessionTime: values.sessionTime,
-      sessionType: values.sessionType,
-      notes: values.notes || "",
-    });
-    
-    // Call the onSubmit function from props
-    await onSubmit();
+    try {
+      // Format the data and submit
+      await onSubmit({
+        sessionDate: values.sessionDate,
+        sessionTime: values.sessionTime,
+        sessionType: values.sessionType,
+        notes: values.notes || "",
+      });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -200,43 +199,42 @@ export const SessionModalForm = ({ onSubmit, isLoading, onCancel }: SessionModal
         />
         
         {/* Time selection */}
-        {selectedDate && (
-          <FormField
-            control={form.control}
-            name="sessionTime"
-            render={({ field }) => (
-              <FormItem className="space-y-2">
-                <FormLabel>
-                  {isRTL ? "الوقت" : "Time"}
-                </FormLabel>
-                <Select 
-                  onValueChange={field.onChange} 
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder={isRTL ? "اختر وقتًا" : "Select a time"} />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {timeSlots.length > 0 ? (
-                      timeSlots.map((time) => (
-                        <SelectItem key={time} value={time}>
-                          {time}
-                        </SelectItem>
-                      ))
-                    ) : (
-                      <SelectItem value="none" disabled>
-                        {isRTL ? "لا توجد أوقات متاحة" : "No available times"}
+        <FormField
+          control={form.control}
+          name="sessionTime"
+          render={({ field }) => (
+            <FormItem className="space-y-2">
+              <FormLabel>
+                {isRTL ? "الوقت" : "Time"}
+              </FormLabel>
+              <Select 
+                onValueChange={field.onChange} 
+                defaultValue={field.value}
+                disabled={!selectedDate || timeSlots.length === 0}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={isRTL ? "اختر وقتًا" : "Select a time"} />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {timeSlots.length > 0 ? (
+                    timeSlots.map((time) => (
+                      <SelectItem key={time} value={time}>
+                        {time}
                       </SelectItem>
-                    )}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
+                    ))
+                  ) : (
+                    <SelectItem value="none" disabled>
+                      {isRTL ? "لا توجد أوقات متاحة" : "No available times"}
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         
         {/* Notes */}
         <FormField
@@ -268,7 +266,7 @@ export const SessionModalForm = ({ onSubmit, isLoading, onCancel }: SessionModal
           </Button>
           <Button 
             type="submit"
-            disabled={!form.formState.isValid || isLoading}
+            disabled={isLoading}
           >
             {isLoading ? (
               <>
