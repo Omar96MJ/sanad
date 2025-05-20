@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
+import Navbar from "@/components/Navbar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -57,6 +58,7 @@ const Donation = () => {
 
   return (
     <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
+      <Navbar />
       <div className="flex-grow">
         <div className="container-custom py-12">
           {/* Header */}
