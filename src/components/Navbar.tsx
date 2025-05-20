@@ -1,9 +1,8 @@
-
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguage } from '@/hooks/useLanguage';
-import { Menu, X, HelpingHand, ShieldAlert, Calendar } from 'lucide-react';
+import { Menu, X, HelpingHand, ShieldAlert } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -45,7 +44,6 @@ const Navbar = () => {
     { href: "/about-us", label: t('About Us') },
     { href: "/blog", label: t('Blog') },
     { href: "/psychological-tests", label: t('Psychological Tests') },
-    { href: "/book-session", label: t('Book a Session'), icon: Calendar },
   ];
 
   return (
