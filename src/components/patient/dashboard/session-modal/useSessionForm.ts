@@ -34,13 +34,15 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
 
   // Handle booking session
   const handleBookSession = async (formValues: SessionFormData) => {
-    if (!user || !formValues.sessionDate || !formValues.sessionTime || !formValues.sessionType) {
-      toast.error(isRTL ? "يرجى تعبئة جميع الحقول المطلوبة" : "Please fill in all required fields");
-      setIsLoading(false);
-      return;
-    }
-
+    setIsLoading(true);
+    
     try {
+      if (!user || !formValues.sessionDate || !formValues.sessionTime || !formValues.sessionType) {
+        toast.error(isRTL ? "يرجى تعبئة جميع الحقول المطلوبة" : "Please fill in all required fields");
+        setIsLoading(false);
+        return;
+      }
+
       // Combine date and time
       const [hours, minutes] = formValues.sessionTime.split(':').map(Number);
       const sessionDateTime = new Date(formValues.sessionDate);

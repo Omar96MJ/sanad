@@ -43,6 +43,13 @@ export async function fetchPatientAppointments(patientId: string) {
 
 export async function createAppointment(appointment: Omit<PatientAppointment, 'id' | 'created_at' | 'updated_at'>) {
   try {
+    console.log("Creating appointment with data:", appointment);
+    
+    // Validate input
+    if (!appointment.patient_id || !appointment.doctor_id || !appointment.session_date) {
+      throw new Error("Missing required appointment data");
+    }
+    
     const { data, error } = await supabase
       .from('patient_appointments')
       .insert(appointment)
@@ -53,6 +60,8 @@ export async function createAppointment(appointment: Omit<PatientAppointment, 'i
       console.error("Error creating appointment:", error);
       throw error;
     }
+    
+    console.log("Patient appointment created successfully:", data);
     
     // Also create entry in appointments table for the doctor's side
     const { error: doctorApptError } = await supabase
@@ -69,6 +78,8 @@ export async function createAppointment(appointment: Omit<PatientAppointment, 'i
     if (doctorApptError) {
       console.error("Error creating doctor appointment:", doctorApptError);
       // We don't throw here as the main appointment was created successfully
+    } else {
+      console.log("Doctor appointment created successfully");
     }
     
     return data as PatientAppointment;
