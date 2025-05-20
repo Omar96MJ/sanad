@@ -115,11 +115,11 @@ const generalTranslations = {
   'full_name': 'Full Name',
   'i_am_a': 'I am a',
   'find_therapist': 'Find a Therapist',
-  'find_therapist_description': 'Connect with a professional therapist who can help you on your mental health journey.',
+  'find_therapist_description': 'Browse our network of qualified mental health professionals to find the right match for your needs.',
   'search_therapists': 'Search therapists by name or specialization',
   'all_specializations': 'All Specializations',
-  'no_therapists_found': 'No therapists found matching your criteria',
-  'error_loading_therapists': 'Error loading therapists',
+  'no_therapists_found': 'No therapists match your search criteria',
+  'error_loading_therapists': 'Error loading therapists data',
   'about': 'About',
   'schedule': 'Schedule',
   'reviews': 'Reviews',
@@ -195,4 +195,11 @@ const generalTranslations = {
   'my_therapist': 'My Therapist',
   'no_therapist_assigned': 'No therapist assigned',
   'find_therapist_message': 'Find a therapist that suits your needs',
+  'patients': 'Patients',
+  'years_experience': 'Yrs Exp',
+  'selected': 'Selected',
+  'view_profile': 'View Profile',
+  'error_loading_therapists': 'Error loading therapists data',
 };
+
+export default generalTranslations;
