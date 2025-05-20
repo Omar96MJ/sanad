@@ -6,6 +6,7 @@ import { SessionTab } from "../SessionTab";
 import MessagingLayout from "@/components/messaging/MessagingLayout";  // Import MessagingLayout
 import { BlogPost, Doctor } from "@/lib/types";
 import { PatientAppointment } from "@/services/patientAppointmentService";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface TabContentsProps {
   activeTab: string;
@@ -42,6 +43,8 @@ export const TabContents = ({
   calendarLocale,
   onAppointmentUpdated
 }: TabContentsProps) => {
+  const { t } = useLanguage(); // Add useLanguage hook for translations
+  
   // Get upcoming appointments for overview tab
   const upcomingAppointments = appointments.filter(apt => apt.status === 'upcoming');
   
