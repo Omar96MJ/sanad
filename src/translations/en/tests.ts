@@ -30,7 +30,7 @@ const testsTranslations = {
 
   //Test interface
   'take_this_test': 'Take this test to evaluate the extent of',
-
+  'select': 'Select',
 
   // Mental Health Info
   'mentalhealthtitle': 'Understanding Mental Health',
