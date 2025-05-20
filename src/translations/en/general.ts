@@ -73,6 +73,9 @@ const general = {
 
   // Blog and articles
   'mental_health_resources': 'Mental Health Resources',
+  'explore_mental_health_blog': 'Explore Mental Health Blog',
+  'discover_insights': 'Discover insights, tips, and resources to support your mental health journey',
+  'search_articles': 'Search Articles',
   // Mental Health Guide
   'mentalhealthguide': 'Mental Health Guide',
   'mentalhealthguidesubtitle': 'Understanding and caring for your mental wellbeing',
