@@ -56,10 +56,7 @@ const Register = () => {
       
       // If user came from therapy selection, show a success toast
       if (therapyType) {
-        toast({
-          title: t('account_created'),
-          description: t('therapy_preference_saved'),
-        });
+        toast.success(`${t('account_created')} - ${t('therapy_preference_saved')}`);
         // Clear the therapy type from localStorage after successful registration
         localStorage.removeItem('selectedTherapyType');
       }
