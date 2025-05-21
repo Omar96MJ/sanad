@@ -1,6 +1,7 @@
 
 import { useLanguage } from "@/hooks/useLanguage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { AppointmentList } from "./session/AppointmentList";
 import { AppointmentFilter } from "./session/AppointmentFilter";
 import { AppointmentDialog } from "./session/AppointmentDialog";
