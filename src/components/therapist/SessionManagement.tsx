@@ -44,17 +44,23 @@ const SessionManagement = () => {
     
     try {
       setIsSaving(true);
+      console.log("Creating appointment with user ID:", user.id, "and values:", values);
       
       // Create the appointment
       const newAppointment = await createAppointment(user.id, values);
       
-      // Add the new appointment to the list
-      setAppointments([...appointments, newAppointment]);
-      toast.success(t('appointment_created_success'));
-      setIsDialogOpen(false);
-    } catch (error) {
+      if (newAppointment) {
+        // Add the new appointment to the list
+        setAppointments([...appointments, newAppointment]);
+        toast.success(t('appointment_created_success'));
+        setIsDialogOpen(false);
+      } else {
+        toast.error(t('error_creating_appointment'));
+      }
+    } catch (error: any) {
       console.error("Error in appointment creation:", error);
-      toast.error(t('error_creating_appointment'));
+      const errorMessage = error.message || t('error_creating_appointment');
+      toast.error(errorMessage);
     } finally {
       setIsSaving(false);
     }

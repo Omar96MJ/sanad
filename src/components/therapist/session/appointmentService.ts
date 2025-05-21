@@ -27,6 +27,14 @@ export const createAppointment = async (doctorId: string, values: AppointmentFor
   }
   
   try {
+    console.log("Creating appointment with:", {
+      doctor_id: doctorId,
+      patient_id: patientId,
+      patient_name: values.patient_name,
+      session_date: sessionDateTime.toISOString(),
+      session_type: values.session_type
+    });
+    
     // Create the appointment
     const { data, error } = await supabase
       .from('appointments')
