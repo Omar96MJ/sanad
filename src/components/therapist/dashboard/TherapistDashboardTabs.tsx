@@ -5,10 +5,10 @@ import { useLanguage } from "@/hooks/useLanguage";
 import TherapistProfile from "@/components/therapist/TherapistProfile";
 import PatientManagement from "@/components/therapist/PatientManagement";
 import SessionManagement from "@/components/therapist/SessionManagement";
-import EvaluationForms from "@/components/therapist/EvaluationForms";
 import AvailabilityManagement from "@/components/therapist/AvailabilityManagement";
 import MessagingLayout from "@/components/messaging/MessagingLayout";
 import { DashboardOverview } from "@/components/therapist/dashboard/DashboardOverview";
+import TherapistVideoSession from "@/components/therapist/TherapistVideoSession";
 
 interface TherapistDashboardTabsProps {
   isLoading: boolean;
@@ -47,7 +47,7 @@ export const TherapistDashboardTabs = ({
         <TabsTrigger value="profile">{t('profile')}</TabsTrigger>
         <TabsTrigger value="patients">{t('patients')}</TabsTrigger>
         <TabsTrigger value="sessions">{t('sessions')}</TabsTrigger>
-        <TabsTrigger value="evaluations">{t('evaluations')}</TabsTrigger>
+        <TabsTrigger value="video_session">{t('video_session')}</TabsTrigger>
         <TabsTrigger value="availability">{t('availability')}</TabsTrigger>
         <TabsTrigger value="messaging">{t('messaging')}</TabsTrigger>
       </TabsList>
@@ -75,8 +75,8 @@ export const TherapistDashboardTabs = ({
         <SessionManagement />
       </TabsContent>
       
-      <TabsContent value="evaluations">
-        <EvaluationForms />
+      <TabsContent value="video_session">
+        <TherapistVideoSession />
       </TabsContent>
       
       <TabsContent value="availability">

@@ -79,7 +79,7 @@ const dashboardTranslations = {
   // Therapist Dashboard translations
   "therapist_dashboard": "لوحة المعالج",
   "sessions": "الجلسات",
-  "evaluations": "التقييمات",
+  "video_session": "جلسة فيديو",
   "availability": "التوفر",
   "messaging": "الرسائل",
   "total_patients": "إجمالي المرضى",
@@ -140,6 +140,39 @@ const dashboardTranslations = {
   "professional_bio": "السيرة الذاتية المهنية",
   "bio_description": "شارك نهجك في العلاج ومجالات خبرتك",
   "session_notes_placeholder": "أدخل أي ملاحظات أو موضوعات ترغب في مناقشتها",
+  
+  // Video Session translations
+  "join_session": "الانضمام للجلسة",
+  "end_session": "إنهاء الجلسة",
+  "live_session": "جلسة مباشرة",
+  "disable_video": "تعطيل الفيديو",
+  "enable_video": "تفعيل الفيديو",
+  "end_call": "إنهاء المكالمة",
+  "connecting": "جاري الاتصال...",
+  "waiting_for_therapist": "بانتظار انضمام المعالج...",
+  "session_joined": "تم الانضمام للجلسة",
+  "session_ended": "انتهت الجلسة",
+  "session_summary_email": "سيتم إرسال ملخص جلستك عبر البريد الإلكتروني.",
+  "video_disabled": "تم تعطيل الفيديو",
+  "audio_only_mode": "أنت الآن في وضع الصوت فقط.",
+  "video_enabled": "تم تفعيل الفيديو",
+  "upcoming_session": "لديك جلسة قادمة",
+  "at": "في",
+  "no_scheduled_sessions": "لا توجد جلسات مجدولة",
+  "schedule_session_to_start": "قم بجدولة جلسة لبدء رحلة العلاج.",
+  "no_scheduled_session": "لا توجد جلسة مجدولة",
+  "please_schedule_session_first": "يرجى جدولة جلسة قبل الانضمام.",
+  "session_tips": "نصائح الجلسة",
+  "quiet_environment": "ابحث عن بيئة هادئة",
+  "find_quiet_space_tip": "اختر مكانًا خاصًا وهادئًا حيث لن تتم مقاطعتك خلال الجلسة.",
+  "test_equipment": "اختبر معداتك",
+  "test_equipment_tip": "تأكد من أن الكاميرا والميكروفون واتصال الإنترنت يعملون بشكل صحيح قبل الجلسة.",
+  "be_prepared": "كن مستعدًا",
+  "be_prepared_tip": "جهز أي ملاحظات أو مواضيع ترغب في مناقشتها قبل بدء الجلسة.",
+  "you": "أنت",
+  "patient": "المريض",
+  "error_connecting_to_session": "خطأ في الاتصال بالجلسة",
+  "error_starting_session": "خطأ في بدء الجلسة"
 };
 
 export default dashboardTranslations;
