@@ -33,11 +33,25 @@ const SessionManagement = () => {
     updateAppointmentStatus
   } = useAppointments();
 
+  // Load patients for validation and selection
+  const { patients } = usePatients();
+
   const onSubmit = async (values: AppointmentFormValues) => {
     if (!user) return;
     
     try {
       setIsSaving(true);
+      
+      // Validate patient name exists if needed
+      if (!values.patient_name.trim()) {
+        toast({
+          title: t('error'),
+          description: t('patient_name_required'),
+          variant: "destructive",
+        });
+        setIsSaving(false);
+        return;
+      }
       
       // Create the appointment
       const newAppointment = await createAppointment(user.id, values);
@@ -46,6 +60,7 @@ const SessionManagement = () => {
       setAppointments([...appointments, newAppointment]);
       toast({
         title: t('appointment_created'),
+        description: t('appointment_created_success'),
         variant: "default",
       });
       setIsDialogOpen(false);
@@ -53,6 +68,7 @@ const SessionManagement = () => {
       console.error("Error in appointment creation:", error);
       toast({
         title: t('error_creating_appointment'),
+        description: String(error),
         variant: "destructive",
       });
     } finally {

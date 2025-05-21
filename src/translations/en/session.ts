@@ -22,6 +22,16 @@ const sessionTranslations = {
   'pickadate': 'Pick a date',
   'sessionbooking_description': 'Schedule a session with one of our qualified therapists.',
   
+  // Patient selection
+  'quick_select': 'Quick select patient',
+  'search_patients': 'Search Patients',
+  'enter_patient_name': 'Enter patient name',
+  'patient_name_required': 'Patient name is required',
+  'cancel': 'Cancel',
+  'appointment_created': 'Appointment Created',
+  'appointment_created_success': 'The appointment was created successfully',
+  'error': 'Error',
+  
   // Video Session
   'video_session': 'Video Session',
   'join_session': 'Join Session',

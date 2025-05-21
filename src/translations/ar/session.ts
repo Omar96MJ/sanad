@@ -33,6 +33,31 @@ const sessionTranslations = {
   "Error loading available time slots": "حدث خطأ أثناء تحميل المواعيد المتاحة",
   "sessionbooking_description": "حدد موعدًا مع أحد معالجينا المؤهلين.",
   "bookasession": "حجز جلسة",
+
+  // Patient selection
+  "quick_select": "اختيار سريع للمريض",
+  "search_patients": "البحث عن المرضى",
+  "enter_patient_name": "أدخل اسم المريض",
+  "patient_name_required": "اسم المريض مطلوب",
+  "cancel": "إلغاء",
+  "appointment_created": "تم إنشاء الموعد",
+  "appointment_created_success": "تم إنشاء الموعد بنجاح",
+  "error": "خطأ",
+  
+  // Video session
+  "video_session": "جلسة فيديو",
+  "join_session": "الانضمام للجلسة",
+  "end_session": "إنهاء الجلسة",
+  "disable_video": "إيقاف الفيديو",
+  "enable_video": "تشغيل الفيديو",
+  "end_call": "إنهاء المكالمة",
+  "connecting": "جاري الاتصال...",
+  "waiting_for_therapist": "بانتظار انضمام المعالج...",
+  "session_joined": "تم الانضمام للجلسة",
+  "session_ended": "انتهت الجلسة",
+  "video_disabled": "تم إيقاف الفيديو",
+  "audio_only_mode": "أنت الآن في وضع الصوت فقط",
+  "video_enabled": "تم تشغيل الفيديو"
 };
 
 export default sessionTranslations;

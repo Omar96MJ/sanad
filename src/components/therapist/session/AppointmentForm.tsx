@@ -8,11 +8,13 @@ import { Calendar } from "@/components/ui/calendar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { CalendarIcon, UserIcon } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { cn } from "@/lib/utils";
 import { AppointmentFormValues } from "./types";
 import { PatientSearch, Patient } from "@/components/search/PatientSearch";
+import { usePatients } from "./usePatients";
+import { Badge } from "@/components/ui/badge";
 
 interface AppointmentFormProps {
   onSubmit: (values: AppointmentFormValues) => Promise<void>;
@@ -24,8 +26,9 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [showPatientSearch, setShowPatientSearch] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const { patients, defaultPatients, isLoading: loadingPatients } = usePatients();
   
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<AppointmentFormValues>({
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<AppointmentFormValues>({
     defaultValues: {
       patient_name: "",
       patient_id: undefined,
@@ -36,11 +39,19 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
     }
   });
 
+  const patientName = watch("patient_name");
+
   const handlePatientSelect = (patient: Patient) => {
     setSelectedPatient(patient);
     setValue("patient_name", patient.name);
     setValue("patient_id", patient.id);
     setShowPatientSearch(false);
+  };
+
+  const handleQuickPatientSelect = (defaultPatient: Patient) => {
+    setSelectedPatient(defaultPatient);
+    setValue("patient_name", defaultPatient.name);
+    setValue("patient_id", defaultPatient.id);
   };
   
   return (
@@ -74,6 +85,23 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
             value={selectedPatient.id} 
           />
         )}
+
+        {/* Quick patient selection */}
+        <div className="mt-2">
+          <p className="text-sm text-muted-foreground mb-2">{t('quick_select')}</p>
+          <div className="flex flex-wrap gap-2">
+            {defaultPatients?.map(patient => (
+              <Badge 
+                key={patient.id}
+                variant={patientName === patient.name ? "default" : "outline"}
+                className="cursor-pointer"
+                onClick={() => handleQuickPatientSelect(patient)}
+              >
+                <UserIcon className="h-3 w-3 mr-1" /> {patient.name}
+              </Badge>
+            ))}
+          </div>
+        </div>
       </div>
       
       <div className="grid grid-cols-2 gap-4">
@@ -165,6 +193,23 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
           {isSaving ? t('scheduling') + "..." : t('schedule_session')}
         </Button>
       </div>
+
+      {/* Patient search dialog (hidden by default) */}
+      {showPatientSearch && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <h3 className="text-lg font-medium mb-4">{t('search_patients')}</h3>
+            <PatientSearch onSelect={handlePatientSelect} />
+            <Button 
+              variant="outline"
+              className="mt-4 w-full"
+              onClick={() => setShowPatientSearch(false)}
+            >
+              {t('cancel')}
+            </Button>
+          </div>
+        </div>
+      )}
     </form>
   );
 };
