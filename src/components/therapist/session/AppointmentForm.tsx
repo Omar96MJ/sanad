@@ -46,6 +46,11 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
 
   const handlePatientNameChange = (name: string) => {
     setValue("patient_name", name);
+    // If manually typing a name, clear the selected patient ID
+    if (!selectedPatient || selectedPatient.name !== name) {
+      setValue("patient_id", undefined);
+      setSelectedPatient(null);
+    }
   };
 
   const handleTimeChange = (time: string) => {
@@ -96,6 +101,12 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
       if (date) {
         values.session_date = date;
       }
+      
+      // Ensure values.patient_id is undefined rather than an invalid string
+      if (values.patient_id && typeof values.patient_id === 'string' && 
+          values.patient_id.startsWith('default-')) {
+        values.patient_id = undefined;
+      }
 
       await onSubmit(values);
     } catch (error) {
@@ -138,15 +149,6 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
         notes={notes}
         setNotes={handleNotesChange}
       />
-      
-      {/* Hidden input for patient_id */}
-      {selectedPatient && (
-        <input 
-          type="hidden" 
-          {...register("patient_id")}
-          value={selectedPatient.id} 
-        />
-      )}
       
       {validationError && (
         <p className="text-red-500 text-sm">{validationError}</p>

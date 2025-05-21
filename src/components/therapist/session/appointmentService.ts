@@ -2,6 +2,7 @@
 import { supabase } from "@/integrations/supabase/client";
 import { AppointmentFormValues } from "./types";
 import { toast } from "sonner";
+import { v4 as uuidv4 } from "uuid";
 
 export const createAppointment = async (doctorId: string, values: AppointmentFormValues) => {
   // Combine date and time for session_date
@@ -17,7 +18,13 @@ export const createAppointment = async (doctorId: string, values: AppointmentFor
   const sessionDateTime = new Date(dateObj);
   sessionDateTime.setHours(hours, minutes, 0);
   
-  const patientId = values.patient_id || null;
+  // Check if patient_id is a valid UUID, if not set it to null
+  // This handles cases where we have a patient name but no valid patient ID
+  let patientId = null;
+  if (values.patient_id && 
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(values.patient_id)) {
+    patientId = values.patient_id;
+  }
   
   try {
     // Create the appointment
@@ -25,7 +32,7 @@ export const createAppointment = async (doctorId: string, values: AppointmentFor
       .from('appointments')
       .insert({
         doctor_id: doctorId,
-        patient_id: patientId,
+        patient_id: patientId, // Use the sanitized patientId
         patient_name: values.patient_name,
         session_date: sessionDateTime.toISOString(),
         session_type: values.session_type,
