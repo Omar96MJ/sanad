@@ -276,13 +276,6 @@ const generalTranslations = {
   'impact_25': 'يوفر ساعة من الاستشارة النفسية لشخص لا يستطيع تحمل تكلفتها',
   'impact_100': 'يدعم برنامج توعية في المدارس حول الصحة النفسية',
   'impact_250': 'يساعد في تدريب متطوع لخط المساعدة في الأزمات',
-  
-  // Add the new export-related translations in Arabic
-  export_csv: 'تصدير CSV',
-  export_successful: 'تم تصدير بيانات المستخدم بنجاح',
-  export_failed: 'فشل تصدير بيانات المستخدم',
-  user_data_updated: 'تم تحديث بيانات المستخدم',
-  appointment_data_updated: 'تم تحديث بيانات المواعيد',
 };
 
 export default generalTranslations;
