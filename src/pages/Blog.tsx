@@ -16,7 +16,7 @@ const Blog = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   // Get all unique tags
-  const allTags = getAllUniqueTags(mockBlogs);
+  const allTags = getAllUniqueTags(mockBlogs, language);
 
   useEffect(() => {
     window.scrollTo(0, 0);

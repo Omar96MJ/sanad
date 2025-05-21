@@ -63,9 +63,11 @@ export const formatDate = (dateString: string, language: string) => {
 };
 
 // Get unique tags from blog posts
-export const getAllUniqueTags = (blogs: BlogPost[]): string[] => {
+export const getAllUniqueTags = (blogs: BlogPost[], language: string): string[] => {
   return Array.from(
-    new Set(blogs.flatMap(blog => blog.tags))
+    new Set(blogs.flatMap(blog => 
+      language === 'ar' && blog.tagsAr ? blog.tagsAr : blog.tags
+    ))
   ).sort();
 };
 
