@@ -32,22 +32,26 @@ const Blog = () => {
     
     // Filter by search term
     if (searchTerm) {
-      result = result.filter(blog => 
-        blog.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      result = result.filter(blog => {
+      const tagsToSearch = language === 'ar' && blog.tagsAr ? blog.tagsAr : blog.tags;
+      return (
+        blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        blog.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+        tagsToSearch.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
       );
-    }
+    });
+  }
     
     // Filter by active tag
     if (activeTag) {
-      result = result.filter(blog => 
-        blog.tags.some(tag => tag.toLowerCase() === activeTag.toLowerCase())
-      );
-    }
+      result = result.filter(blog => {
+      const tagsToSearch = language === 'ar' && blog.tagsAr ? blog.tagsAr : blog.tags;
+      return tagsToSearch.some(tag => tag.toLowerCase() === activeTag.toLowerCase());
+    });
+  }
     
     setFilteredBlogs(result);
-  }, [searchTerm, activeTag]);
+  }, [searchTerm, activeTag, language]);
 
   const handleTagClick = (tag: string) => {
     setActiveTag(activeTag === tag ? null : tag);
