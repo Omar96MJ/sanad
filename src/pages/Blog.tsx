@@ -31,27 +31,28 @@ const Blog = () => {
     let result = mockBlogs;
     
     // Filter by search term
-    if (searchTerm) {
-      result = result.filter(blog => {
-      const tagsToSearch = language === 'ar' && blog.tagsAr ? blog.tagsAr : blog.tags;
-      return (
-        blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        blog.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        tagsToSearch.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    });
-  }
-    
-    // Filter by active tag
-    if (activeTag) {
-      result = result.filter(blog => {
-      const tagsToSearch = language === 'ar' && blog.tagsAr ? blog.tagsAr : blog.tags;
-      return tagsToSearch.some(tag => tag.toLowerCase() === activeTag.toLowerCase());
-    });
-  }
-    
-    setFilteredBlogs(result);
-  }, [searchTerm, activeTag, language]);
+    const normalizedSearch = searchTerm.toLowerCase();
+
+  result = result.filter(blog => {
+    // Determine proper language fields
+    const title = language === 'ar' && blog.titleAr ? blog.titleAr : blog.title;
+    const excerpt = language === 'ar' && blog.excerptAr ? blog.excerptAr : blog.excerpt;
+    const tags = language === 'ar' && blog.tagsAr ? blog.tagsAr : blog.tags;
+
+    const matchesSearch = 
+      title.toLowerCase().includes(normalizedSearch) ||
+      excerpt.toLowerCase().includes(normalizedSearch) ||
+      tags.some(tag => tag.toLowerCase().includes(normalizedSearch));
+
+    const matchesTag = activeTag
+      ? tags.some(tag => tag.toLowerCase() === activeTag.toLowerCase())
+      : true;
+
+    return matchesSearch && matchesTag;
+  });
+
+  setFilteredBlogs(result);
+}, [searchTerm, activeTag, language]);
 
   const handleTagClick = (tag: string) => {
     setActiveTag(activeTag === tag ? null : tag);
