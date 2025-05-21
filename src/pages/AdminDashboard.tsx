@@ -62,7 +62,6 @@ const AdminDashboard = () => {
     { label: t('new_users'), value: '38', change: '+12%', trend: 'up' },
     { label: t('active_sessions'), value: '156', change: '+24%', trend: 'up' },
     { label: t('completed_tests'), value: '89', change: '+5%', trend: 'up' },
-    { label: t('revenue'), value: '$12,450', change: '+18%', trend: 'up' },
   ];
 
   return (
@@ -93,7 +92,7 @@ const AdminDashboard = () => {
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {analyticsData.map((item, index) => (
                   <Card key={index}>
                     <CardContent className="p-6">
@@ -200,6 +199,15 @@ const AdminDashboard = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
+                  <div className="mb-4">
+                    <div className="bg-primary/10 p-4 rounded-md flex justify-between items-center">
+                      <div>
+                        <h3 className="font-medium">{t('authenticated_users')}</h3>
+                        <p className="text-sm text-muted-foreground">{t('total_registered_users')}</p>
+                      </div>
+                      <div className="text-3xl font-bold">3</div>
+                    </div>
+                  </div>
                   <div className="space-y-4">
                     <div className="border rounded-md p-4">
                       <div className="flex justify-between items-center mb-2">

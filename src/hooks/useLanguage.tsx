@@ -1,7 +1,7 @@
 
-import { useLanguage, LanguageProvider } from './language';
+import { useLanguage as useLanguageHook, LanguageProvider } from './language';
 
 /**
- * Re-export the language hook and provider for backward compatibility
+ * Re-export the language hook and provider for better import experience
  */
-export { useLanguage, LanguageProvider };
+export { useLanguageHook as useLanguage, LanguageProvider };
