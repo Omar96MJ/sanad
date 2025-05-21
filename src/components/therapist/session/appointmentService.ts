@@ -40,7 +40,7 @@ export const createAppointment = async (doctorId: string, values: AppointmentFor
       .from('appointments')
       .insert({
         doctor_id: doctorId,
-        patient_id: patientId, // Use the sanitized patientId
+        patient_id: patientId, // Now patientId can be null
         patient_name: values.patient_name,
         session_date: sessionDateTime.toISOString(),
         session_type: values.session_type,

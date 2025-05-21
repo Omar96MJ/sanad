@@ -15,7 +15,7 @@ export type Database = {
           doctor_id: string
           id: string
           notes: string | null
-          patient_id: string
+          patient_id: string | null
           patient_name: string
           session_date: string
           session_type: string
@@ -26,7 +26,7 @@ export type Database = {
           doctor_id: string
           id?: string
           notes?: string | null
-          patient_id: string
+          patient_id?: string | null
           patient_name: string
           session_date: string
           session_type: string
@@ -37,7 +37,7 @@ export type Database = {
           doctor_id?: string
           id?: string
           notes?: string | null
-          patient_id?: string
+          patient_id?: string | null
           patient_name?: string
           session_date?: string
           session_type?: string
