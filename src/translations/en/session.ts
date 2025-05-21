@@ -64,7 +64,7 @@ const sessionTranslations = {
   'be_prepared': 'Be Prepared',
   'be_prepared_tip': 'Have any notes or topics you want to discuss ready before the session starts.',
   
-  // Messaging
+  // Messaging - fixed duplicate 'search_patients' property
   'messaging': 'Messaging',
   'messages': 'Messages',
   'message': 'Message',
@@ -74,7 +74,7 @@ const sessionTranslations = {
   'doctor': 'Doctor',
   'conversation': 'Conversation',
   'search_conversations': 'Search conversations...',
-  'search_patients': 'Search patients...',
+  'search_patients_placeholder': 'Search patients...', // Changed from duplicate 'search_patients'
   'search_doctors': 'Search doctors...',
   'select_conversation': 'Select a conversation to start messaging',
   'no_patients_found': 'No patients found',

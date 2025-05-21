@@ -13,6 +13,7 @@ export interface Patient {
   name: string;
   email: string;
   profile_image?: string;
+  role?: string;  // Make role optional to match with existing code
 }
 
 interface PatientSearchProps {

@@ -199,7 +199,7 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
         <div className="fixed inset-0 flex items-center justify-center z-50 bg-black/50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
             <h3 className="text-lg font-medium mb-4">{t('search_patients')}</h3>
-            <PatientSearch onSelect={handlePatientSelect} />
+            <PatientSearch onPatientSelect={handlePatientSelect} />
             <Button 
               variant="outline"
               className="mt-4 w-full"
