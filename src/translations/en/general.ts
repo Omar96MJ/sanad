@@ -70,7 +70,9 @@ const general = {
   'learn_about_mental_health_conditions': 'Learn more about common mental health conditions and how to recognize their signs and symptoms',
   'welcome_back': 'Welcome Back',
   'sign_in_to_continue': 'Sign in to continue',
+  'join_us_for_therapy': 'Join us and take a step towards wellness',
 
+  
   // Blog and articles
   'mental_health_resources': 'Mental Health Resources',
   'explore_mental_health_blog': 'Explore Mental Health Blog',

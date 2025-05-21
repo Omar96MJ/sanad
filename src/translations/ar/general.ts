@@ -43,7 +43,7 @@ const generalTranslations = {
   "understanding_mental_health": "فهم الصحة النفسية",
   "Your_comprehensive_guide_to_mental_health": "دليلك الشامل للصحة النفسية",
   "learn_about_mental_health_conditions": "تعرف على المزيد حول حالات الصحة النفسية الشائعة وكيفية التعرف على علاماتها وأعراضها.",
-
+  "join_us_for_therapy": "انضم إلينا وابدأ بخطوة نحو العافية", 
   
   // Blog and articles
   "mental_health_resources": "موارد الصحة النفسية",
