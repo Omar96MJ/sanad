@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { useLanguage } from "@/hooks/useLanguage";
+import { useLanguage } from "@/hooks/language";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -10,7 +10,6 @@ interface AdminDashboardStats {
   newUsers: string;
   activeSessions: string;
   completedTests: string;
-  revenue: string;
 }
 
 export const useAdminDashboard = () => {
@@ -25,8 +24,7 @@ export const useAdminDashboard = () => {
   const [stats, setStats] = useState<AdminDashboardStats>({
     newUsers: "0",
     activeSessions: "0",
-    completedTests: "0",
-    revenue: "$0"
+    completedTests: "0"
   });
 
   useEffect(() => {
@@ -68,16 +66,13 @@ export const useAdminDashboard = () => {
         setAppointments(appointmentsData || []);
         
         // Calculate some stats
-        const patientCount = profilesData?.filter(p => p.role === 'patient').length || 0;
-        const doctorCount = profilesData?.filter(p => p.role === 'doctor').length || 0;
-        const adminCount = profilesData?.filter(p => p.role === 'admin').length || 0;
+        const authenticatedUserCount = profilesData?.length || 0;
         
         // Update the stats
         setStats({
-          newUsers: String(profilesData?.length || 0),
+          newUsers: String(authenticatedUserCount),
           activeSessions: String(appointmentsData?.filter(a => a.status === 'upcoming').length || 0),
           completedTests: String(Math.floor(Math.random() * 100)), // This would ideally come from a real data source
-          revenue: `$${Math.floor(Math.random() * 10000)}` // This would ideally come from a real data source
         });
         
       } catch (err: any) {

@@ -59,7 +59,7 @@ const UsersTab = ({ users }: UsersTabProps) => {
         <div>
           <CardTitle>{t('manage_users')}</CardTitle>
           <CardDescription>
-            {t('view_and_manage_all_users')}
+            {t('view_and_manage_all_users')} ({users.length} {t('authenticated_users')})
           </CardDescription>
         </div>
         <Button 

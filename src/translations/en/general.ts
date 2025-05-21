@@ -1,3 +1,4 @@
+
 export default {
   admin_dashboard: 'Admin Dashboard',
   manage_users: 'Manage Users',
@@ -50,4 +51,6 @@ export default {
   export_failed: 'Failed to export user data',
   user_data_updated: 'User data has been updated',
   appointment_data_updated: 'Appointment data has been updated',
+  authenticated_users: 'authenticated users',
 };
+

@@ -1,5 +1,5 @@
 
-import { useLanguage } from "@/hooks/useLanguage";
+import { useLanguage } from "@/hooks/language";
 import { useTheme } from "@/hooks/useTheme";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,6 @@ import {
   Users,
   Activity,
   Settings,
-  CalendarIcon
 } from "lucide-react";
 
 interface OverviewTabProps {
@@ -17,7 +16,6 @@ interface OverviewTabProps {
     newUsers: string;
     activeSessions: string;
     completedTests: string;
-    revenue: string;
   };
   onTabChange: (tab: string) => void;
   settings: any;
@@ -31,7 +29,7 @@ const OverviewTab = ({ users, appointments, stats, onTabChange, settings }: Over
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -65,18 +63,6 @@ const OverviewTab = ({ users, appointments, stats, onTabChange, settings }: Over
               </div>
             </div>
             <p className="text-3xl font-bold mt-2">{stats.completedTests}</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-muted-foreground">{t('revenue')}</p>
-              <div className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800">
-                +{Math.floor(Math.random() * 25)}%
-              </div>
-            </div>
-            <p className="text-3xl font-bold mt-2">{stats.revenue}</p>
           </CardContent>
         </Card>
       </div>
