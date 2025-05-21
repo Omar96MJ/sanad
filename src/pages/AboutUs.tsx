@@ -145,7 +145,7 @@ const AboutUs = () => {
                   bio: isRTL 
                     ? 'خريج هندسة البرمجيات جامعة السودان للعلوم والتكنولوجيا.'
                     : 'Graduate in Software Engineering, Sudan University of Science and Technology.',
-                  image: "/images/Eng-omer-abbas.jpg"
+                  image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a'
                 },
                 {
                   name: isRTL ? 'م. عمر محجوب' : 'Eng. Omar Mahgoub',
@@ -164,12 +164,12 @@ const AboutUs = () => {
                   image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d'
                 },
                 {
-                  name: isRTL ? 'د. أمل الكناني' : 'Dr. Amel Alkenani',
-                  role: isRTL ? 'طبيبة & رئيسة أطباء المنصة' : 'Doctor & Head of Platform Doctors',
+                  name: isRTL ? 'نور الهاشمي' : 'Noor Al-Hashimi',
+                  role: isRTL ? 'أخصائية اجتماعية' : 'Social Worker',
                   bio: isRTL 
-                    ? 'طبيبة نائب اخصائي في الطب النفسي، وتملك أكثر من ٤ سنوات من الخبرة في مجال الصحة النفسية. تعمل حالياً في تقديم خدمات الطب النفسي عن بُعد عبر منصة STEP. وقد عملت سابقاً كرئيسة لقسم العلاج الكهربائي (ECT)، حيث أشرفت على تقديم هذا النوع من العلاجات. الدكتورة أمل شغوفة بتقديم خدمات نفسية ميسّرة، إنسانية، ومركزة على احتياجات المريض.'
-                    : 'Dr. Amel Alkenani is a psychiatry registrar with over 4 years of experience in mental health. She provides telepsychiatry services through the STEP platform. Previously, she worked as the head of the ECT department, overseeing and delivering ECT treatments. Dr Amel is passionate about accessible, patient-centered mental health services.',
-                  image: '/images/Dr-aml-alkenani.jpg'
+                    ? 'مكرسة لمساعدة الأفراد في التنقل في تحديات الحياة والعثور على موارد دعم مجتمعية.'
+                    : 'Dedicated to helping individuals navigate life challenges and find community support resources.',
+                  image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df'
                 },
                 {
                   name: isRTL ? 'فيصل العمري' : 'Faisal Al-Omari',
