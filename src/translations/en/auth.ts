@@ -60,6 +60,33 @@ const authTranslations = {
   'resend_code': 'Resend Code',
   'sign_in': 'Sign In',
   'dont_have_account': "Don't have an account?",
+  
+  // Therapist Registration
+  'therapist_register': 'Register as a Therapist',
+  'therapist_register_subtitle': 'Join our professional network to provide mental health support',
+  'basic_information': 'Basic Information',
+  'professional_information': 'Professional Information',
+  'documents': 'Required Documents',
+  'specialization': 'Specialization',
+  'specialization_placeholder': 'E.g., Clinical Psychology, CBT, Family Therapy',
+  'years_of_experience': 'Years of Experience',
+  'years_of_experience_placeholder': 'Enter number of years',
+  'professional_bio': 'Professional Bio',
+  'professional_bio_placeholder': 'Please provide a brief description of your professional background and approach to therapy',
+  'cv_resume': 'CV/Resume',
+  'cv_upload_instructions': 'Click to upload your CV/Resume',
+  'cv_file_formats': 'PDF, DOC or DOCX (Max 5MB)',
+  'certifications': 'Certifications',
+  'certifications_upload_instructions': 'Click to upload your certifications',
+  'certification_file_formats': 'PDF, JPG, PNG (Max 5MB each)',
+  'files_selected': 'files selected',
+  'submitting': 'Submitting...',
+  'submit_application': 'Submit Application',
+  'are_you_a_therapist': 'Are you a mental health professional?',
+  'register_as_therapist': 'Register as a Therapist',
+  'register_as_patient': 'Register as a Patient',
+  'looking_for_patient_account': 'Looking for patient registration?',
+  'therapist_registration_success': 'Your therapist application has been submitted successfully. Our team will review your credentials and contact you soon.',
 };
 
 export default authTranslations;
