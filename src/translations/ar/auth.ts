@@ -42,6 +42,33 @@ const authTranslations = {
   "verifying": "جاري التحقق...",
   "verification_failed": "فشل التحقق. يرجى التحقق من الرمز والمحاولة مرة أخرى.",
   "resend_code": "إعادة إرسال الرمز",
+  
+  // Therapist Registration
+  'therapist_register': 'التسجيل كمعالج نفسي',
+  'therapist_register_subtitle': 'انضم إلى شبكتنا المهنية لتقديم الدعم النفسي',
+  'basic_information': 'المعلومات الأساسية',
+  'professional_information': 'المعلومات المهنية',
+  'documents': 'المستندات المطلوبة',
+  'specialization': 'التخصص',
+  'specialization_placeholder': 'مثل: علم النفس السريري، العلاج المعرفي السلوكي، علاج الأسرة',
+  'years_of_experience': 'سنوات الخبرة',
+  'years_of_experience_placeholder': 'أدخل عدد السنوات',
+  'professional_bio': 'السيرة المهنية',
+  'professional_bio_placeholder': 'يرجى تقديم وصف موجز لخلفيتك المهنية ونهجك في العلاج',
+  'cv_resume': 'السيرة الذاتية',
+  'cv_upload_instructions': 'انقر لتحميل السيرة الذاتية',
+  'cv_file_formats': 'PDF أو DOC أو DOCX (بحد أقصى 5 ميجابايت)',
+  'certifications': 'الشهادات',
+  'certifications_upload_instructions': 'انقر لتحميل الشهادات',
+  'certification_file_formats': 'PDF أو JPG أو PNG (بحد أقصى 5 ميجابايت لكل ملف)',
+  'files_selected': 'الملفات المحددة',
+  'submitting': 'جاري الإرسال...',
+  'submit_application': 'إرسال الطلب',
+  'are_you_a_therapist': 'هل أنت أخصائي صحة نفسية؟',
+  'register_as_therapist': 'سجل كمعالج نفسي',
+  'register_as_patient': 'سجل كمريض',
+  'looking_for_patient_account': 'تبحث عن تسجيل المرضى؟',
+  'therapist_registration_success': 'تم تقديم طلب المعالج النفسي بنجاح. سيقوم فريقنا بمراجعة مؤهلاتك والاتصال بك قريبًا.',
 };
 
 export default authTranslations;

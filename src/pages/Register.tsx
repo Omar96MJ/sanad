@@ -17,19 +17,17 @@ import {
   SelectValue
 } from "@/components/ui/select";
 import { UserRole } from "@/lib/types";
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 
 const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<UserRole>("patient");
   const [therapyType, setTherapyType] = useState<string | null>(null);
   
   const { register, isLoading, user } = useAuth();
   const { t, language } = useLanguage();
   const navigate = useNavigate();
-  const { toast } = useToast();
   
   const isRTL = language === 'ar';
 
@@ -38,22 +36,23 @@ const Register = () => {
     const savedTherapyType = localStorage.getItem('selectedTherapyType');
     if (savedTherapyType) {
       setTherapyType(savedTherapyType);
-      // Default to patient role when coming from therapy selection
-      setRole("patient");
     }
   }, []);
 
   // Redirect if already logged in
-  if (user) {
-    navigate("/");
-    return null;
-  }
+  useEffect(() => {
+    if (user) {
+      navigate("/");
+      return;
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
     try {
-      await register(name, email, password, role);
+      // Always register as patient from this page
+      await register(name, email, password, 'patient');
       
       // If user came from therapy selection, show a success toast
       if (therapyType) {
@@ -134,33 +133,6 @@ const Register = () => {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="role">{t('i_am_a')} :</Label>
-                <Select 
-                  value={role} 
-                  onValueChange={(value) => setRole(value as UserRole)}
-                  disabled={!!therapyType} // Disable if coming from therapy selection
-                >
-                  <SelectTrigger className={`${isRTL ? 'flex-row-reverse text-right' : 'flex-row text-left'}`}>
-                    <SelectValue placeholder={t('i_am_a')} />
-                  </SelectTrigger>
-                  <SelectContent className={isRTL ? 'text-right' : 'text-left'}>
-                    <SelectItem 
-                      value="patient"
-                      className={`flex items-center ${isRTL ? 'justify-end text-right' : 'justify-start text-left'}`}
-                    >
-                      {t('person_seeking_guidance')}
-                    </SelectItem>
-                    <SelectItem 
-                    value="doctor"
-                    className={`flex items-center ${isRTL ? 'justify-end text-right' : 'justify-start text-left'}`}
-                    >
-                      {t('support_specialist')}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
               <Button 
                 type="submit" 
                 className="w-full btn-primary" 
@@ -178,6 +150,17 @@ const Register = () => {
                 {t('login')}
               </Link>
             </p>
+            <div className="mt-4 pt-4 border-t border-border/30">
+              <p className="text-sm font-medium">
+                {t('are_you_a_therapist')}
+              </p>
+              <Link 
+                to="/therapist-register" 
+                className="mt-2 inline-block text-primary hover:underline text-sm"
+              >
+                {t('register_as_therapist')}
+              </Link>
+            </div>
           </div>
         </div>
       </main>
