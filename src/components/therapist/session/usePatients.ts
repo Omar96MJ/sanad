@@ -36,11 +36,12 @@ export function usePatients() {
         }
         
         if (data) {
-          const formattedPatients = data.map(patient => ({
+          // Ensure role is always defined as a non-optional string for each patient
+          const formattedPatients: Patient[] = data.map(patient => ({
             id: patient.id,
             name: patient.name || 'Unknown Patient',
             email: patient.email || 'No email',
-            role: 'patient' as string // Explicitly define role as string
+            role: "patient" // Always provide the role property
           }));
           
           // Combine real patients with default ones
@@ -50,7 +51,11 @@ export function usePatients() {
           
           for (const defaultPatient of defaultPatients) {
             if (!existingNames.has(defaultPatient.name.toLowerCase())) {
-              combinedPatients.push(defaultPatient);
+              // Ensure defaultPatient has the role property defined
+              combinedPatients.push({
+                ...defaultPatient,
+                role: defaultPatient.role || "patient" // Provide a fallback if role is not defined
+              });
             }
           }
           
