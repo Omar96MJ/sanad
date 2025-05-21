@@ -21,7 +21,7 @@ import Profile from './pages/Profile';
 import BlogPost from './pages/BlogPost';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/hooks/useTheme';
-import { LanguageProvider } from '@/hooks/useLanguage';
+import { LanguageProvider } from '@/hooks/language';
 import { AuthProvider } from '@/hooks/useAuth';
 import CreateAdmin from './pages/CreateAdmin';
 
