@@ -9,6 +9,8 @@ import { createAppointment } from "./session/appointmentService";
 import { AppointmentFormValues } from "./session/types";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
+import { usePatients } from "./session/usePatients";
 
 const SessionManagement = () => {
   const { user } = useAuth();
@@ -37,15 +39,22 @@ const SessionManagement = () => {
     try {
       setIsSaving(true);
       
+      // Create the appointment
       const newAppointment = await createAppointment(user.id, values);
       
       // Add the new appointment to the list
       setAppointments([...appointments, newAppointment]);
-      toast.success(t('appointment_created'));
+      toast({
+        title: t('appointment_created'),
+        variant: "default",
+      });
       setIsDialogOpen(false);
     } catch (error) {
       console.error("Error in appointment creation:", error);
-      toast.error(t('error_creating_appointment'));
+      toast({
+        title: t('error_creating_appointment'),
+        variant: "destructive",
+      });
     } finally {
       setIsSaving(false);
     }

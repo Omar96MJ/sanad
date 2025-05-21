@@ -40,16 +40,20 @@ export const TherapistDashboardTabs = ({
     setActiveTab("sessions");
   };
 
+  // Handler to automatically switch to the video session tab
+  const handleVideoTabClick = () => {
+    setActiveTab("video_session");
+  };
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="grid grid-cols-2 md:grid-cols-7 mb-8">
+      <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-8">
         <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
         <TabsTrigger value="profile">{t('profile')}</TabsTrigger>
         <TabsTrigger value="patients">{t('patients')}</TabsTrigger>
         <TabsTrigger value="sessions">{t('sessions')}</TabsTrigger>
         <TabsTrigger value="video_session">{t('video_session')}</TabsTrigger>
         <TabsTrigger value="availability">{t('availability')}</TabsTrigger>
-        <TabsTrigger value="messaging">{t('messaging')}</TabsTrigger>
       </TabsList>
       
       <TabsContent value="overview">
@@ -81,10 +85,6 @@ export const TherapistDashboardTabs = ({
       
       <TabsContent value="availability">
         <AvailabilityManagement />
-      </TabsContent>
-      
-      <TabsContent value="messaging">
-        <MessagingLayout isTherapist={true} />
       </TabsContent>
     </Tabs>
   );

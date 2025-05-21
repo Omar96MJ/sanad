@@ -1,457 +1,297 @@
 
-import { useState, useEffect, useRef } from "react";
-import { useLanguage } from "@/hooks/useLanguage";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { useLanguage } from "@/hooks/useLanguage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Video, VideoOff, Webcam } from "lucide-react";
-import { toast } from "sonner";
+import { useToast } from "@/components/ui/use-toast";
+import { Video, VideoOff, Mic, MicOff, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { format } from "date-fns";
 
 const TherapistVideoSession = () => {
-  const { t } = useLanguage();
   const { user } = useAuth();
-  
+  const { t } = useLanguage();
+  const { toast } = useToast();
+
+  // Video call state
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true);
+  const [isConnecting, setIsConnecting] = useState(false);
   const [upcomingSession, setUpcomingSession] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  
+
+  // Refs for video elements
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
-  
-  const localStreamRef = useRef<MediaStream | null>(null);
+
+  // WebRTC states
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
-  const channelRef = useRef<any>(null);
-  
+  const localStreamRef = useRef<MediaStream | null>(null);
+
+  // Fetch upcoming session
   useEffect(() => {
     const fetchUpcomingSession = async () => {
       if (!user) return;
-      
+
       try {
-        setIsLoading(true);
-        // Fetch the closest upcoming session for the therapist
+        const now = new Date();
         const { data, error } = await supabase
           .from('appointments')
-          .select('*, patient:patient_id(*)')
+          .select('*')
           .eq('doctor_id', user.id)
           .eq('status', 'scheduled')
-          .gte('session_date', new Date().toISOString())
+          .gte('session_date', now.toISOString())
           .order('session_date', { ascending: true })
-          .limit(1);
-          
-        if (error) {
+          .limit(1)
+          .single();
+
+        if (error && error.code !== 'PGRST116') {
           console.error("Error fetching upcoming session:", error);
-          return;
         }
         
-        if (data && data.length > 0) {
-          setUpcomingSession(data[0]);
+        if (data) {
+          setUpcomingSession(data);
         }
       } catch (error) {
-        console.error("Error in fetching session:", error);
-      } finally {
-        setIsLoading(false);
+        console.error("Error fetching upcoming session:", error);
       }
     };
-    
+
     fetchUpcomingSession();
-    
-    // Set up realtime subscription for session updates
-    const channel = supabase
-      .channel('public:appointments')
-      .on('postgres_changes', 
-        { 
-          event: 'UPDATE', 
-          schema: 'public', 
-          table: 'appointments',
-          filter: `doctor_id=eq.${user?.id}`
-        }, 
-        (payload) => {
-          // Refresh the session data when there's an update
-          fetchUpcomingSession();
-        }
-      )
-      .subscribe();
-      
-    return () => {
-      supabase.removeChannel(channel);
-      // Clean up WebRTC connections
-      if (localStreamRef.current) {
-        localStreamRef.current.getTracks().forEach(track => track.stop());
-      }
-      if (peerConnectionRef.current) {
-        peerConnectionRef.current.close();
-      }
-    };
   }, [user]);
 
-  const setupWebRTC = async () => {
+  // Initialize WebRTC
+  const initializeWebRTC = async () => {
     try {
-      // Get local media stream
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: isVideoEnabled, 
-        audio: true 
+      setIsConnecting(true);
+      
+      // Get media stream
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: isVideoEnabled,
+        audio: isAudioEnabled
       });
+      
+      localStreamRef.current = stream;
       
       if (localVideoRef.current) {
         localVideoRef.current.srcObject = stream;
       }
       
-      localStreamRef.current = stream;
-      
-      // Create and configure peer connection
+      // Create peer connection
       const configuration = { 
         iceServers: [
-          { urls: 'stun:stun.l.google.com:19302' },
-          { urls: 'stun:stun1.l.google.com:19302' },
+          { urls: 'stun:stun.l.google.com:19302' }
         ] 
       };
       
-      const peerConnection = new RTCPeerConnection(configuration);
-      peerConnectionRef.current = peerConnection;
+      peerConnectionRef.current = new RTCPeerConnection(configuration);
       
-      // Add local tracks to the connection
+      // Add tracks to peer connection
       stream.getTracks().forEach(track => {
-        peerConnection.addTrack(track, stream);
+        if (peerConnectionRef.current) {
+          peerConnectionRef.current.addTrack(track, stream);
+        }
       });
       
-      // Set up event handlers for peer connection
-      peerConnection.ontrack = (event) => {
-        if (remoteVideoRef.current && event.streams[0]) {
+      // Handle remote tracks
+      peerConnectionRef.current.ontrack = (event) => {
+        if (remoteVideoRef.current && event.streams && event.streams[0]) {
           remoteVideoRef.current.srcObject = event.streams[0];
         }
       };
       
-      // Listen for signaling through Supabase Realtime
-      const channel = supabase.channel(`video-session-${upcomingSession.id}`);
-      
-      channel.on('broadcast', { event: 'offer' }, async (payload) => {
-        if (payload.payload.sender !== user?.id) {
-          try {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(payload.payload.offer));
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-            
-            channel.send({
-              type: 'broadcast',
-              event: 'answer',
-              payload: {
-                answer,
-                sender: user?.id
-              }
-            });
-          } catch (error) {
-            console.error("Error handling offer:", error);
-            toast.error(t("error_connecting_to_session"));
-          }
-        }
-      });
-      
-      channel.on('broadcast', { event: 'answer' }, async (payload) => {
-        if (payload.payload.sender !== user?.id) {
-          try {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(payload.payload.answer));
-          } catch (error) {
-            console.error("Error handling answer:", error);
-          }
-        }
-      });
-      
-      channel.on('broadcast', { event: 'ice-candidate' }, async (payload) => {
-        if (payload.payload.sender !== user?.id) {
-          try {
-            await peerConnection.addIceCandidate(new RTCIceCandidate(payload.payload.candidate));
-          } catch (error) {
-            console.error("Error adding ICE candidate:", error);
-          }
-        }
-      });
-      
-      peerConnection.onicecandidate = (event) => {
-        if (event.candidate) {
-          channel.send({
-            type: 'broadcast',
-            event: 'ice-candidate',
-            payload: {
-              candidate: event.candidate,
-              sender: user?.id
-            }
-          });
-        }
-      };
-      
-      channelRef.current = channel;
-      await channel.subscribe();
-      
-      // If the therapist is the one initiating
-      const offer = await peerConnection.createOffer();
-      await peerConnection.setLocalDescription(offer);
-      
-      channel.send({
-        type: 'broadcast',
-        event: 'offer',
-        payload: {
-          offer,
-          sender: user?.id
-        }
-      });
-      
-      toast.success(t("session_joined"));
-    } catch (error) {
-      console.error("Error setting up WebRTC:", error);
-      toast.error(t("error_connecting_to_session"));
-    }
-  };
-
-  const handleStartSession = async () => {
-    try {
-      await setupWebRTC();
       setIsSessionActive(true);
+      setIsConnecting(false);
       
-      // Update session status in the database
-      if (upcomingSession) {
-        const { error } = await supabase
-          .from('appointments')
-          .update({ status: 'in-progress' })
-          .eq('id', upcomingSession.id);
-          
-        if (error) {
-          console.error("Error updating session status:", error);
-        }
-      }
+      toast({
+        title: t('session_joined'),
+        description: upcomingSession ? 
+          `${t('session_with')} ${upcomingSession.patient_name}` : 
+          t('session_active'),
+      });
     } catch (error) {
-      console.error("Error starting session:", error);
-      toast.error(t("error_starting_session"));
+      console.error("Error initializing WebRTC:", error);
+      setIsConnecting(false);
+      toast({
+        title: t('error_starting_session'),
+        variant: "destructive",
+      });
     }
   };
 
-  const handleEndSession = async () => {
-    try {
-      // Stop all media tracks
+  // Toggle video
+  const toggleVideo = () => {
+    if (localStreamRef.current) {
+      const videoTracks = localStreamRef.current.getVideoTracks();
+      videoTracks.forEach(track => {
+        track.enabled = !isVideoEnabled;
+      });
+      setIsVideoEnabled(!isVideoEnabled);
+      
+      toast({
+        title: !isVideoEnabled ? t('video_enabled') : t('video_disabled'),
+        description: !isVideoEnabled ? '' : t('audio_only_mode'),
+      });
+    }
+  };
+
+  // Toggle audio
+  const toggleAudio = () => {
+    if (localStreamRef.current) {
+      const audioTracks = localStreamRef.current.getAudioTracks();
+      audioTracks.forEach(track => {
+        track.enabled = !isAudioEnabled;
+      });
+      setIsAudioEnabled(!isAudioEnabled);
+    }
+  };
+
+  // End session
+  const endSession = () => {
+    if (localStreamRef.current) {
+      localStreamRef.current.getTracks().forEach(track => track.stop());
+      localStreamRef.current = null;
+    }
+    
+    if (peerConnectionRef.current) {
+      peerConnectionRef.current.close();
+      peerConnectionRef.current = null;
+    }
+    
+    setIsSessionActive(false);
+    
+    toast({
+      title: t('session_ended'),
+      description: t('session_summary_email'),
+    });
+  };
+
+  // Clean up on unmount
+  useEffect(() => {
+    return () => {
       if (localStreamRef.current) {
         localStreamRef.current.getTracks().forEach(track => track.stop());
       }
-      
-      // Close peer connection
       if (peerConnectionRef.current) {
         peerConnectionRef.current.close();
       }
-      
-      // Clean up Supabase channel
-      if (channelRef.current) {
-        await supabase.removeChannel(channelRef.current);
-      }
-      
-      setIsSessionActive(false);
-      toast.info(t("session_ended"));
-      
-      // Update session status in the database
-      if (upcomingSession) {
-        const { error } = await supabase
-          .from('appointments')
-          .update({ status: 'completed' })
-          .eq('id', upcomingSession.id);
-          
-        if (error) {
-          console.error("Error updating session status:", error);
-        }
-      }
-    } catch (error) {
-      console.error("Error ending session:", error);
-    }
-  };
-
-  const toggleVideo = async () => {
-    try {
-      if (localStreamRef.current) {
-        const videoTracks = localStreamRef.current.getVideoTracks();
-        videoTracks.forEach(track => {
-          track.enabled = !isVideoEnabled;
-        });
-        setIsVideoEnabled(!isVideoEnabled);
-        
-        toast.info(isVideoEnabled ? t("video_disabled") : t("video_enabled"));
-      }
-    } catch (error) {
-      console.error("Error toggling video:", error);
-    }
-  };
-
-  const formatSessionTime = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString(undefined, { 
-      hour: '2-digit', 
-      minute: '2-digit'
-    });
-  };
-
-  const formatSessionDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString(undefined, { 
-      weekday: 'long',
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric'
-    });
-  };
+    };
+  }, []);
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t('video_session')}</CardTitle>
-        <CardDescription>
-          {isSessionActive 
-            ? t('live_session')
-            : t('manage_your_therapy_sessions')}
-        </CardDescription>
+        <CardDescription>{t('manage_your_therapy_sessions')}</CardDescription>
       </CardHeader>
       
-      <CardContent>
-        {isLoading ? (
-          <div className="flex justify-center py-8">
-            <div className="animate-pulse text-center space-y-2">
-              <div className="h-4 bg-muted rounded w-48 mx-auto"></div>
-              <div className="h-4 bg-muted rounded w-32 mx-auto"></div>
-            </div>
-          </div>
-        ) : isSessionActive ? (
+      <CardContent className="space-y-6">
+        {isSessionActive ? (
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-[400px]">
-              <div className="relative bg-black/10 rounded-md overflow-hidden">
-                <video 
-                  ref={localVideoRef} 
-                  autoPlay 
-                  muted 
-                  playsInline
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-2 left-2 bg-background/80 px-2 py-1 rounded text-xs font-medium">
-                  {t('you')}
-                </div>
-              </div>
-              
-              <div className="relative bg-black/10 rounded-md overflow-hidden">
+            <div className="relative">
+              <div className="w-full aspect-video bg-black rounded-lg overflow-hidden">
+                {/* Remote video (patient) */}
                 <video 
                   ref={remoteVideoRef} 
+                  className="w-full h-full object-cover" 
                   autoPlay 
                   playsInline
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute bottom-2 left-2 bg-background/80 px-2 py-1 rounded text-xs font-medium">
-                  {upcomingSession?.patient?.name || t('patient')}
-                </div>
+                ></video>
+              </div>
+              
+              {/* Local video (therapist) */}
+              <div className="absolute bottom-4 right-4 w-1/4 aspect-video bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+                <video 
+                  ref={localVideoRef} 
+                  className="w-full h-full object-cover" 
+                  autoPlay 
+                  playsInline 
+                  muted
+                ></video>
               </div>
             </div>
             
-            <div className="flex justify-center space-x-4 pt-4">
+            <div className="flex justify-center gap-4">
               <Button 
-                variant="outline" 
-                size="sm" 
-                className="flex items-center gap-2"
+                variant={isVideoEnabled ? "default" : "outline"} 
                 onClick={toggleVideo}
+                className="rounded-full p-3 h-12 w-12"
               >
-                {isVideoEnabled ? (
-                  <>
-                    <VideoOff className="h-4 w-4" />
-                    <span>{t('disable_video')}</span>
-                  </>
-                ) : (
-                  <>
-                    <Video className="h-4 w-4" />
-                    <span>{t('enable_video')}</span>
-                  </>
-                )}
+                {isVideoEnabled ? <Video size={18} /> : <VideoOff size={18} />}
+              </Button>
+              
+              <Button 
+                variant={isAudioEnabled ? "default" : "outline"} 
+                onClick={toggleAudio}
+                className="rounded-full p-3 h-12 w-12"
+              >
+                {isAudioEnabled ? <Mic size={18} /> : <MicOff size={18} />}
               </Button>
               
               <Button 
                 variant="destructive" 
-                size="sm" 
-                className="flex items-center gap-2"
-                onClick={handleEndSession}
+                onClick={endSession}
+                className="rounded-full p-3 h-12 w-12"
               >
-                <Webcam className="h-4 w-4" />
-                <span>{t('end_call')}</span>
+                <Phone size={18} className="rotate-135" />
               </Button>
             </div>
+            
+            <div className="text-center text-sm text-muted-foreground">
+              {upcomingSession ? (
+                <p>{t('session_with')} <strong>{upcomingSession.patient_name}</strong></p>
+              ) : (
+                <p>{t('live_session')}</p>
+              )}
+            </div>
+          </div>
+        ) : isConnecting ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary mb-4"></div>
+            <p>{t('connecting')}</p>
           </div>
         ) : upcomingSession ? (
-          <div className="space-y-6">
-            <div className="bg-muted/50 rounded-lg p-4 border border-border">
-              <h3 className="text-lg font-semibold">
-                {t('upcoming_session')}
-              </h3>
-              
-              <div className="mt-4 space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">{t('patient_name')}:</span>
-                  <span className="font-medium">{upcomingSession.patient?.name || '-'}</span>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">{t('date')}:</span>
-                  <span className="font-medium">{formatSessionDate(upcomingSession.session_date)}</span>
-                </div>
-                
-                <div className="flex justify-between items-center">
-                  <span className="text-muted-foreground">{t('time')}:</span>
-                  <span className="font-medium">{formatSessionTime(upcomingSession.session_date)}</span>
-                </div>
-                
-                <Separator className="my-4" />
-                
-                <div className="text-center">
-                  <Button onClick={handleStartSession}>
-                    {t('join_session')}
-                  </Button>
-                </div>
-              </div>
+          <div className="space-y-6 py-6">
+            <div className="text-center space-y-2">
+              <h3 className="text-xl font-medium">{t('upcoming_session')}</h3>
+              <p className="text-primary text-2xl font-semibold">
+                {upcomingSession.patient_name}
+              </p>
+              <p>
+                {format(new Date(upcomingSession.session_date), 'PPP')} {t('at')} {format(new Date(upcomingSession.session_date), 'p')}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {upcomingSession.session_type}
+              </p>
             </div>
             
-            <div className="space-y-4">
-              <h3 className="font-semibold text-lg">{t('session_tips')}</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-card p-4 rounded-lg border border-border">
-                  <h4 className="font-medium">{t('quiet_environment')}</h4>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {t('find_quiet_space_tip')}
-                  </p>
-                </div>
-                
-                <div className="bg-card p-4 rounded-lg border border-border">
-                  <h4 className="font-medium">{t('test_equipment')}</h4>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {t('test_equipment_tip')}
-                  </p>
-                </div>
-                
-                <div className="bg-card p-4 rounded-lg border border-border">
-                  <h4 className="font-medium">{t('be_prepared')}</h4>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {t('be_prepared_tip')}
-                  </p>
-                </div>
+            <div className="flex justify-center">
+              <Button onClick={initializeWebRTC}>
+                {t('join_session')}
+              </Button>
+            </div>
+            
+            <div className="border rounded-lg p-4 space-y-4 bg-muted/30">
+              <h4 className="font-medium">{t('session_tips')}</h4>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">{t('quiet_environment')}</p>
+                <p className="text-xs text-muted-foreground">{t('find_quiet_space_tip')}</p>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">{t('test_equipment')}</p>
+                <p className="text-xs text-muted-foreground">{t('test_equipment_tip')}</p>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium">{t('be_prepared')}</p>
+                <p className="text-xs text-muted-foreground">{t('be_prepared_tip')}</p>
               </div>
             </div>
           </div>
         ) : (
           <div className="text-center py-12">
-            <Webcam className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold">{t('no_scheduled_sessions')}</h3>
-            <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-              {t('schedule_session_to_start')}
-            </p>
-            <Button 
-              className="mt-4" 
-              variant="outline"
-              onClick={() => document.querySelector('[data-value="sessions"]')?.dispatchEvent(
-                new MouseEvent('click', { bubbles: true })
-              )}
-            >
-              {t('schedule_session')}
-            </Button>
+            <h3 className="text-xl font-medium mb-2">{t('no_scheduled_session')}</h3>
+            <p className="text-muted-foreground mb-6">{t('please_schedule_session_first')}</p>
           </div>
         )}
       </CardContent>

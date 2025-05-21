@@ -5,6 +5,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { Appointment } from "./types";
+import { updateAppointment } from "./appointmentService";
 
 export function useAppointments() {
   const { user } = useAuth();
@@ -34,7 +35,10 @@ export function useAppointments() {
         
         if (error) {
           console.error("Error fetching appointments:", error);
-          toast.error(t('error_loading_appointments'));
+          toast({
+            title: t('error_loading_appointments'),
+            variant: "destructive",
+          });
           return;
         }
         
@@ -43,7 +47,10 @@ export function useAppointments() {
         }
       } catch (error) {
         console.error("Error in appointments fetch:", error);
-        toast.error(t('error_loading_appointments'));
+        toast({
+          title: t('error_loading_appointments'),
+          variant: "destructive",
+        });
       } finally {
         setIsLoading(false);
       }
@@ -77,45 +84,32 @@ export function useAppointments() {
     setFilteredAppointments(filtered);
   }, [appointments, searchQuery, activeTab]);
 
+  // Update appointment status
   const updateAppointmentStatus = async (id: string, status: string) => {
     try {
-      const { error } = await supabase
-        .from('appointments')
-        .update({ status })
-        .eq('id', id);
-      
-      if (error) {
-        console.error("Error updating appointment:", error);
-        toast.error(t('error_updating_appointment'));
-        return;
-      }
+      setIsSaving(true);
+      const updatedAppointment = await updateAppointment(id, status);
       
       // Update local state
       setAppointments(appointments.map(apt => 
         apt.id === id ? { ...apt, status } : apt
       ));
       
-      // Also update the corresponding patient appointment
-      const appointmentToUpdate = appointments.find(apt => apt.id === id);
-      if (appointmentToUpdate) {
-        const patientStatus = status === "scheduled" ? "upcoming" : 
-                             status === "completed" ? "completed" : "cancelled";
-                             
-        const { error: patientApptError } = await supabase
-          .from('patient_appointments')
-          .update({ status: patientStatus })
-          .eq('patient_id', appointmentToUpdate.patient_id)
-          .eq('session_date', appointmentToUpdate.session_date);
-          
-        if (patientApptError) {
-          console.error("Error updating patient appointment:", patientApptError);
-        }
-      }
+      toast({
+        title: t('appointment_updated'),
+        variant: "default",
+      });
       
-      toast.success(t('appointment_updated'));
+      setIsSaving(false);
+      return updatedAppointment;
     } catch (error) {
       console.error("Error in appointment update:", error);
-      toast.error(t('error_updating_appointment'));
+      toast({
+        title: t('error_updating_appointment'),
+        variant: "destructive",
+      });
+      setIsSaving(false);
+      throw error;
     }
   };
 

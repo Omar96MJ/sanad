@@ -1,4 +1,3 @@
-
 // Dashboard related translations for Arabic
 const dashboardTranslations = {
   // Patient Dashboard translations
@@ -121,10 +120,21 @@ const dashboardTranslations = {
   "follow_up": "متابعة",
   "therapy_session": "جلسة علاج",
   "assessment": "تقييم",
+  "evaluation": "تقييم",
+  "optional": "اختياري",
   "pick_a_date": "اختر تاريخ",
+  "select_date": "اختر تاريخ",
   "save": "حفظ",
   "cancel": "إلغاء",
-  "saving": "جاري الحفظ...",
+  "scheduling": "جاري الجدولة",
+  "saving": "جاري الحفظ",
+  "search": "بحث",
+  "enter_patient_name": "أدخل اسم المريض",
+  "patient_name_required": "اسم المريض مطلوب",
+  "date_required": "التاريخ مطلوب",
+  "time_required": "الوقت مطلوب",
+  "session_type_required": "نوع الجلسة مطلوب",
+  "enter_session_notes": "أدخل ملاحظات الجلسة",
   "error_loading_appointments": "خطأ في تحميل المواعيد",
   "error_creating_appointment": "خطأ في إنشاء الموعد",
   "appointment_created": "تم إنشاء الموعد بنجاح",
@@ -134,12 +144,8 @@ const dashboardTranslations = {
   "error_loading_profile": "خطأ في تحميل بيانات الملف الشخصي",
   "error_updating_profile": "خطأ في تحديث الملف الشخصي",
   "profile_updated": "تم تحديث الملف الشخصي بنجاح",
-  "profile_image_url": "عنوان URL لصورة الملف الشخصي",
-  "specialization": "التخصص",
-  "years_of_experience": "سنوات الخبرة",
-  "professional_bio": "السيرة الذاتية المهنية",
-  "bio_description": "شارك نهجك في العلاج ومجالات خبرتك",
-  "session_notes_placeholder": "أدخل أي ملاحظات أو موضوعات ترغب في مناقشتها",
+  "search_patient": "بحث عن مريض",
+  "select": "اختيار",
   
   // Video Session translations
   "join_session": "الانضمام للجلسة",
@@ -172,7 +178,8 @@ const dashboardTranslations = {
   "you": "أنت",
   "patient": "المريض",
   "error_connecting_to_session": "خطأ في الاتصال بالجلسة",
-  "error_starting_session": "خطأ في بدء الجلسة"
+  "error_starting_session": "خطأ في بدء الجلسة",
+  "session_with": "جلسة مع"
 };
 
 export default dashboardTranslations;

@@ -1,4 +1,3 @@
-
 // Dashboard related translations for English
 const dashboardTranslations = {
   // Patient Dashboard
@@ -120,6 +119,29 @@ const dashboardTranslations = {
   'error_updating_appointment': 'Error updating appointment',
   'appointment_updated': 'Appointment updated successfully',
   'error_loading_dashboard': 'Error loading dashboard data',
+  'date': 'Date',
+  'time': 'Time',
+  'select_date': 'Select date',
+  'session_type': 'Session Type',
+  'select_session_type': 'Select session type',
+  'initial_consultation': 'Initial Consultation',
+  'follow_up': 'Follow-up',
+  'therapy_session': 'Therapy Session',
+  'assessment': 'Assessment',
+  'evaluation': 'Evaluation',
+  'save': 'Save',
+  'cancel': 'Cancel',
+  'scheduling': 'Scheduling',
+  'optional': 'Optional',
+  'search': 'Search',
+  'select': 'Select',
+  'enter_patient_name': 'Enter patient name',
+  'patient_name_required': 'Patient name is required',
+  'date_required': 'Date is required',
+  'time_required': 'Time is required',
+  'session_type_required': 'Session type is required',
+  'enter_session_notes': 'Enter session notes',
+  'search_patient': 'Search Patient',
   
   // Video Session
   'join_session': 'Join Session',
@@ -152,7 +174,8 @@ const dashboardTranslations = {
   'you': 'You',
   'patient': 'Patient',
   'error_connecting_to_session': 'Error connecting to session',
-  'error_starting_session': 'Error starting session'
+  'error_starting_session': 'Error starting session',
+  'session_with': 'Session with'
 };
 
 export default dashboardTranslations;
