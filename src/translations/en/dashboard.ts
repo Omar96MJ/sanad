@@ -79,10 +79,10 @@ const dashboardTranslations = {
   'disabled': 'Disabled',
   'manage_content': 'Manage Content',
   'unauthorized_access': 'Unauthorized Access',
+  'manage_settings': 'Manage Settings',
 
   // Therapist Dashboard
   'therapist_dashboard': 'Therapist Dashboard',
-  'overview': 'Overview',
   'doctor_profile': 'Doctor Profile',
   'manage_your_profile_information': 'Manage your professional profile information',
   'session_management': 'Session Management',
@@ -96,7 +96,7 @@ const dashboardTranslations = {
   'available_hours': 'Available Hours',
   'todays_schedule': 'Today\'s Schedule',
   'your_upcoming_sessions': 'Your upcoming sessions',
-  'patient_demographics': 'Patient Demographics',
+  'patient_demographics': 'Patient overview',
   'patient_overview': 'Patient overview',
   'view_details': 'View Details',
   'no_upcoming_sessions': 'No upcoming sessions',
