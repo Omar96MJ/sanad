@@ -70,7 +70,7 @@ const dashboardTranslations = {
   "active_sessions": "الجلسات النشطة",
   "completed_tests": "الاختبارات المكتملة",
   "save_changes": "حفظ التغييرات",
-  "signup": "تسجيل الدخول",
+  "signup": "تسجيل",
   "enabled": "مفعل",
   "disabled": "معطل",
   "admin_panel": "لوحة المسؤول",
