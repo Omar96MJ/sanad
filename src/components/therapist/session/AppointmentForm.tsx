@@ -9,6 +9,7 @@ import { PatientSelector } from "./components/PatientSelector";
 import { DateTimeSelector } from "./components/DateTimeSelector";
 import { SessionTypeSelector } from "./components/SessionTypeSelector";
 import { NotesField } from "./components/NotesField";
+import { toast } from "sonner";
 
 interface AppointmentFormProps {
   onSubmit: (values: AppointmentFormValues) => Promise<void>;
@@ -19,6 +20,7 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
   const { t } = useLanguage();
   const [date, setDate] = useState<Date | undefined>(undefined);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [validationError, setValidationError] = useState<string | null>(null);
   
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<AppointmentFormValues>({
     defaultValues: {
@@ -58,14 +60,58 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
     setValue("notes", newNotes);
   };
 
+  const validateForm = () => {
+    if (!patientName.trim()) {
+      setValidationError(t('patient_name_required'));
+      return false;
+    }
+
+    if (!date) {
+      setValidationError(t('date_required'));
+      return false;
+    }
+
+    if (!sessionTime.trim()) {
+      setValidationError(t('time_required'));
+      return false;
+    }
+
+    if (!sessionType.trim()) {
+      setValidationError(t('session_type_required'));
+      return false;
+    }
+
+    setValidationError(null);
+    return true;
+  };
+
+  const handleFormSubmit = async (values: AppointmentFormValues) => {
+    try {
+      if (!validateForm()) {
+        toast.error(validationError || t('please_fill_all_fields'));
+        return;
+      }
+
+      // Set the date in the form data
+      if (date) {
+        values.session_date = date;
+      }
+
+      await onSubmit(values);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error(t('error_scheduling_session'));
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-4">
       <PatientSelector 
         patientName={patientName}
         onPatientSelect={handlePatientSelect}
         onPatientNameChange={handlePatientNameChange}
         selectedPatient={selectedPatient}
-        error={!!errors.patient_name}
+        error={!!errors.patient_name || (validationError?.includes('patient') || false)}
       />
       
       <DateTimeSelector 
@@ -78,14 +124,14 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
         }}
         time={sessionTime}
         setTime={handleTimeChange}
-        dateError={!!errors.session_date}
-        timeError={!!errors.session_time}
+        dateError={!!errors.session_date || (validationError?.includes('date') || false)}
+        timeError={!!errors.session_time || (validationError?.includes('time') || false)}
       />
       
       <SessionTypeSelector 
         sessionType={sessionType}
         setSessionType={handleSessionTypeChange}
-        error={!!errors.session_type}
+        error={!!errors.session_type || (validationError?.includes('session_type') || false)}
       />
       
       <NotesField 
@@ -100,6 +146,10 @@ export const AppointmentForm = ({ onSubmit, isSaving }: AppointmentFormProps) =>
           {...register("patient_id")}
           value={selectedPatient.id} 
         />
+      )}
+      
+      {validationError && (
+        <p className="text-red-500 text-sm">{validationError}</p>
       )}
       
       <div className="flex justify-end pt-2">

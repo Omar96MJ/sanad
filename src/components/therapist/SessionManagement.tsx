@@ -8,14 +8,13 @@ import { useAppointments } from "./session/useAppointments";
 import { createAppointment } from "./session/appointmentService";
 import { AppointmentFormValues } from "./session/types";
 import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/components/ui/use-toast";
+import { toast } from "sonner";
 import { useState } from "react";
 import { usePatients } from "./session/usePatients";
 
 const SessionManagement = () => {
   const { user } = useAuth();
   const { t } = useLanguage();
-  const { toast } = useToast();
   
   const {
     isLoading,
@@ -37,40 +36,24 @@ const SessionManagement = () => {
   const { patients } = usePatients();
 
   const onSubmit = async (values: AppointmentFormValues) => {
-    if (!user) return;
+    if (!user) {
+      toast.error(t('must_be_logged_in'));
+      return;
+    }
     
     try {
       setIsSaving(true);
-      
-      // Validate patient name exists if needed
-      if (!values.patient_name.trim()) {
-        toast({
-          title: t('error'),
-          description: t('patient_name_required'),
-          variant: "destructive",
-        });
-        setIsSaving(false);
-        return;
-      }
       
       // Create the appointment
       const newAppointment = await createAppointment(user.id, values);
       
       // Add the new appointment to the list
       setAppointments([...appointments, newAppointment]);
-      toast({
-        title: t('appointment_created'),
-        description: t('appointment_created_success'),
-        variant: "default",
-      });
+      toast.success(t('appointment_created_success'));
       setIsDialogOpen(false);
     } catch (error) {
       console.error("Error in appointment creation:", error);
-      toast({
-        title: t('error_creating_appointment'),
-        description: String(error),
-        variant: "destructive",
-      });
+      toast.error(t('error_creating_appointment'));
     } finally {
       setIsSaving(false);
     }
@@ -84,12 +67,11 @@ const SessionManagement = () => {
             <CardTitle>{t('session_management')}</CardTitle>
             <CardDescription>{t('manage_your_therapy_sessions')}</CardDescription>
           </div>
-          <AppointmentDialog 
-            isOpen={isDialogOpen}
-            onOpenChange={setIsDialogOpen}
-            onSubmit={onSubmit}
-            isSaving={isSaving}
-          />
+          <Button 
+            onClick={() => setIsDialogOpen(true)} 
+            className="whitespace-nowrap">
+            {t('schedule_session')}
+          </Button>
         </div>
       </CardHeader>
       
@@ -109,6 +91,13 @@ const SessionManagement = () => {
           />
         </div>
       </CardContent>
+
+      <AppointmentDialog 
+        isOpen={isDialogOpen}
+        onOpenChange={setIsDialogOpen}
+        onSubmit={onSubmit}
+        isSaving={isSaving}
+      />
     </Card>
   );
 };
