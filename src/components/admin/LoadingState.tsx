@@ -1,4 +1,6 @@
 
+import { useLanguage } from "@/hooks/useLanguage";
+
 const LoadingState = () => {
   return (
     <div className="flex justify-center items-center h-64">

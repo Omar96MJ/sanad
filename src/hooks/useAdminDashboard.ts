@@ -90,6 +90,77 @@ export const useAdminDashboard = () => {
     };
     
     fetchDashboardData();
+    
+    // Set up real-time subscription
+    const profilesChannel = supabase
+      .channel('admin-dashboard-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'profiles',
+        },
+        async (payload) => {
+          console.log('Real-time update received:', payload);
+          toast.info(t('user_data_updated'));
+          
+          // Refresh profiles data
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('*');
+            
+          if (!error && data) {
+            setUsers(data);
+            
+            // Update user count in stats
+            setStats(prevStats => ({
+              ...prevStats,
+              newUsers: String(data.length || 0)
+            }));
+          }
+        }
+      )
+      .subscribe();
+    
+    const appointmentsChannel = supabase
+      .channel('admin-appointments-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'patient_appointments',
+        },
+        async (payload) => {
+          console.log('Real-time appointment update received:', payload);
+          toast.info(t('appointment_data_updated'));
+          
+          // Refresh appointments data
+          const { data, error } = await supabase
+            .from('patient_appointments')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(5);
+            
+          if (!error && data) {
+            setAppointments(data);
+            
+            // Update active sessions count in stats
+            setStats(prevStats => ({
+              ...prevStats,
+              activeSessions: String(data.filter(a => a.status === 'upcoming').length || 0)
+            }));
+          }
+        }
+      )
+      .subscribe();
+
+    // Clean up subscriptions when component unmounts
+    return () => {
+      supabase.removeChannel(profilesChannel);
+      supabase.removeChannel(appointmentsChannel);
+    };
   }, [user, isAdmin, t]);
 
   return {
