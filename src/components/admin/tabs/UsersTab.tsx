@@ -1,9 +1,9 @@
 
-import { useLanguage } from "@/hooks/useLanguage";
+import { useLanguage } from "@/hooks/language";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
-import { FileText, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { toast } from "sonner";
 
 interface UsersTabProps {
