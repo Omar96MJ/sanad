@@ -43,7 +43,7 @@ const generalTranslations = {
   "understanding_mental_health": "فهم الصحة النفسية",
   "Your_comprehensive_guide_to_mental_health": "دليلك الشامل للصحة النفسية",
   "learn_about_mental_health_conditions": "تعرف على المزيد حول حالات الصحة النفسية الشائعة وكيفية التعرف على علاماتها وأعراضها.",
-
+  "join_us_for_therapy": "انضم إلينا وابدأ بخطوة نحو العافية", 
   
   // Blog and articles
   "mental_health_resources": "موارد الصحة النفسية",
@@ -276,13 +276,6 @@ const generalTranslations = {
   'impact_25': 'يوفر ساعة من الاستشارة النفسية لشخص لا يستطيع تحمل تكلفتها',
   'impact_100': 'يدعم برنامج توعية في المدارس حول الصحة النفسية',
   'impact_250': 'يساعد في تدريب متطوع لخط المساعدة في الأزمات',
-  
-  // Add the new export-related translations in Arabic
-  export_csv: 'تصدير CSV',
-  export_successful: 'تم تصدير بيانات المستخدم بنجاح',
-  export_failed: 'فشل تصدير بيانات المستخدم',
-  user_data_updated: 'تم تحديث بيانات المستخدم',
-  appointment_data_updated: 'تم تحديث بيانات المواعيد',
 };
 
 export default generalTranslations;
