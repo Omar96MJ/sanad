@@ -29,6 +29,13 @@ const BlogCard = ({ blog }: BlogCardProps) => {
   const excerpt = language === 'ar' && blog.excerptAr ? blog.excerptAr : blog.excerpt;
   const author = language === 'ar' && blog.authorAr ? blog.authorAr : blog.author;
 
+  // Use Arabic tags if available and language is Arabic and map to the first two tags to display
+  const tags = blog.tags.slice(0, 2).map((tag, index) =>
+    language === 'ar' && blog.tagsAr && blog.tagsAr[index]
+      ? blog.tagsAr[index]
+      : tag
+  );
+
   return (
     <Link to={`/blog/${blog.id}`}>
       <Card className="overflow-hidden h-full transition-all duration-300 hover:shadow-md border-border/40 rounded-xl">
@@ -36,7 +43,7 @@ const BlogCard = ({ blog }: BlogCardProps) => {
           <div className={`absolute inset-0 bg-muted animate-pulse ${imageLoaded ? 'hidden' : 'block'}`}></div>
           <img
             src={blog.imageUrl}
-            alt={title}
+            alt={language === 'ar' && blog.titleAr ? blog.titleAr : blog.title}
             className={`w-full h-full object-cover transition-all duration-700 ${
               imageLoaded ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
             }`}
@@ -46,9 +53,9 @@ const BlogCard = ({ blog }: BlogCardProps) => {
         </div>
         <CardContent className="pt-5">
           <div className="flex flex-wrap gap-2 mb-2">
-            {blog.tags.slice(0, 2).map((tag, index) => (
+            {tags.slice(0, 2).map((tag, index) => (
               <Badge key={tag} variant="outline" className="text-xs font-normal px-2 py-0.5 rounded-md bg-secondary/30">
-                {language === 'ar' && blog.tagsAr && blog.tagsAr[index] ? blog.tagsAr[index] : tag}
+                {tag}
               </Badge>
             ))}
           </div>

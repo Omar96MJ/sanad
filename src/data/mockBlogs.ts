@@ -1,730 +1,278 @@
 import { BlogPost } from "@/lib/types";
 
+
 // Updated blog data with comprehensive content
 export const mockBlogs: BlogPost[] = [
   {
     id: '1',
-    title: 'Understanding Anxiety: Causes, Symptoms, and Treatment',
-    excerpt: 'Anxiety disorders affect millions of people worldwide. Learn about the causes, symptoms, and available treatments.',
+    title: 'Why is mental health the cornerstone of human life?',
+    titleAr: 'لماذا تُعد الصحة النفسية حجر الأساس في حياة الإنسان؟',
+    excerpt: 'In the busyness of life, and with the accelerating pace of events around us, we often tend to focus on physical health and neglect an aspect that is no less important, and may even be the basis for everything else: mental health.',
+    excerptAr: 'في زحمة الحياة، ومع تسارع وتيرة الأحداث من حولنا، نميل في كثير من الأحيان إلى التركيز على الصحة الجسدية ونهمل جانبًا لا يقل أهمية عنها، بل قد يكون الأساس لكل ما سواه: الصحة النفسية.',
     content: `
-      <h2>Understanding Anxiety: Causes, Symptoms, and Treatment</h2>
-      <p>Anxiety is a normal and often healthy emotion. However, when a person regularly feels disproportionate levels of anxiety, it might become a medical disorder.</p>
+      <h2 class="mb-1 text-2xl font-bold">Introduction:</h2>
+      <p class="mb-6">In the busyness of life, and with the accelerating pace of events around us, we often tend to focus on physical health and neglect an aspect that is no less important, and may even be the basis for everything else: mental health.
+      Mental health is not a luxury, nor is it exclusive to those who suffer from severe disorders, but rather it is a right for every human being and a necessity to lead a balanced, productive, and fulfilling life.
+      </p>
       
-      <h3>What Causes Anxiety?</h3>
-      <p>Anxiety disorders can be caused by a complex set of risk factors including:</p>
-      <ul>
-        <li><strong>Genetics:</strong> Family history plays a role in increasing the likelihood that a person will develop anxiety. This suggests that the tendency to develop anxiety may be hereditary.</li>
-        <li><strong>Brain chemistry:</strong> Anxiety disorders may result from abnormal functioning of nerve cell pathways that connect brain regions involved in thinking and emotion.</li>
-        <li><strong>Environmental factors:</strong> Trauma, stressful events such as abuse, death of a loved one, divorce, changing jobs or schools, may trigger anxiety disorders in susceptible individuals.</li>
-        <li><strong>Medical factors:</strong> Certain medical conditions like thyroid problems or heart arrhythmias can mimic anxiety symptoms.</li>
-        <li><strong>Substance use:</strong> Drugs, alcohol, and caffeine can aggravate existing anxiety.</li>
+      <h3 class="text-xl font-semibold mb-1">What is meant by mental health?</h3>
+      <p class="mb-2">Mental health is a state of mental and emotional well-being, in which a person is able to:</p>
+      <ol class="ms-6 mb-3 list-decimal">
+        <li><strong>Realizing his abilities.</li></strong>
+        <li><strong>Dealing with life's pressures.</li></strong>
+        <li><strong>Work efficiently.</li></strong>
+        <li><strong>And contribute to society.</li></strong>
+      </ol>
+      <p class="mb-6">It includes everything related to our feelings, thoughts, the way we deal with others, and how we make decisions. When our mental health is strong, we are better able to overcome crises, maintain healthy relationships, and work creatively and effectively.</p>
+      
+
+      <h3 class="text-xl font-semibold mb-1">What is the relationship between mental and physical health?</h3>
+      <p class="mb-2">Many studies have proven that the relationship between mental and physical health is mutual and influential:</p>
+      <ul class="ms-6 mb-3 list-disc">
+        <li>Chronic anxiety and stress can lead to diseases such as high blood pressure and heart disease.</li>
+        <li>Depression can affect the immune system and make a person vulnerable to diseases.</li>
+        <li>On the other hand, suffering from chronic diseases may increase the risk of developing psychological disorders.</li>
       </ul>
-      
-      <h3>Common Symptoms of Anxiety</h3>
-      <p>Anxiety symptoms can include:</p>
-      <ul>
-        <li>Feeling nervous, restless or tense</li>
-        <li>Having a sense of impending danger, panic or doom</li>
-        <li>Increased heart rate and rapid breathing</li>
-        <li>Sweating and trembling</li>
-        <li>Feeling weak or tired</li>
-        <li>Difficulty concentrating or thinking about anything other than the present worry</li>
-        <li>Having trouble sleeping</li>
-        <li>Experiencing gastrointestinal (GI) problems</li>
-        <li>Difficulty controlling worry</li>
-        <li>Having the urge to avoid things that trigger anxiety</li>
+      <div class="mb-6">
+        <span class="italic">🧪 scientific example:</span>
+        <p>People with anxiety disorders often suffer from sleep disturbances, stomach problems, and chronic headaches, which are all physical reflections of a disturbed psychological state.</p>
+      </div>
+
+      <p class="mb-2 text-xl font-semibold">Why should we care about mental health on a daily basis?</p>
+      <ul class="ms-6 mb-3 list-disc">
+        <li>To enhance our ability to focus and be productive.</li>
+        <li>To strengthen our social and marital relationships.</li>
+        <li>To protect our children from inheriting stress or anxiety.</li>
+        <li>To reduce the chances of burnout or collapse.</li>
       </ul>
-      
-      <h3>Types of Anxiety Disorders</h3>
-      <p>There are several types of anxiety disorders, including:</p>
-      <ul>
-        <li><strong>Generalized Anxiety Disorder (GAD):</strong> Characterized by persistent and excessive worry about various things.</li>
-        <li><strong>Social Anxiety Disorder:</strong> Involves high levels of anxiety, fear and avoidance of social situations.</li>
-        <li><strong>Panic Disorder:</strong> Characterized by recurrent panic attacks, which are sudden periods of intense fear.</li>
-        <li><strong>Phobias:</strong> Characterized by major anxiety when exposed to a specific object or situation and a desire to avoid it.</li>
-        <li><strong>Separation Anxiety Disorder:</strong> Characterized by fear of separation from home or from people to whom a person is attached.</li>
+      <p class="mb-6">Paying attention to mental health does not mean waiting for a collapse or crisis to occur, but rather adopting daily preventive habits that maintain our psychological balance.</p>
+
+      <h3 class="text-xl font-semibold mb-1">How do I know I need to support myself?</h3>
+      <p class="mb-2">You don't have to reach the breaking point to ask for help. Some signs that your mental health needs attention:</p>
+      <ul class="ms-6 mb-3 list-disc">
+        <li>Loss of motivation for anything.</li>
+        <li>Frequent tantrums or excessive sensitivity.</li>
+        <li>Irregular sleep or frequent nightmares.</li>
+        <li>Sudden social withdrawal.</li>
       </ul>
-      
-      <h3>Treatment Options</h3>
-      <p>The two main treatments for anxiety disorders are psychotherapy and medications. You may benefit most from a combination of the two.</p>
-      
-      <h4>Psychotherapy</h4>
-      <p>Cognitive behavioral therapy (CBT) is the most effective form of psychotherapy for anxiety disorders. It focuses on teaching specific skills to improve symptoms and gradually return to activities that were avoided because of anxiety.</p>
-      
-      <h4>Medications</h4>
-      <p>Several types of medications are used to help relieve symptoms, depending on the type of anxiety disorder you have and whether you also have other mental or physical health issues. For example:</p>
-      <ul>
-        <li><strong>Anti-anxiety medications:</strong> Benzodiazepines may be prescribed for short-term relief of anxiety symptoms.</li>
-        <li><strong>Antidepressants:</strong> Many antidepressants are also effective for anxiety disorders.</li>
-        <li><strong>Beta-blockers:</strong> These medications can help reduce the physical symptoms of anxiety, such as rapid heartbeat, shaking, and trembling.</li>
-      </ul>
-      
-      <h3>Self-Help Strategies</h3>
-      <p>In addition to professional treatment, these self-care steps can help you manage anxiety:</p>
-      <ul>
-        <li><strong>Stay physically active:</strong> Regular exercise can help reduce anxiety.</li>
-        <li><strong>Avoid alcohol and recreational drugs:</strong> These substances can cause or worsen anxiety.</li>
-        <li><strong>Quit smoking and cut back or quit drinking caffeinated beverages:</strong> Both nicotine and caffeine can worsen anxiety.</li>
-        <li><strong>Use stress management and relaxation techniques:</strong> Techniques such as meditation, deep breathing, and yoga can help manage anxiety.</li>
-        <li><strong>Make sleep a priority:</strong> Do what you can to make sure you're getting enough good sleep.</li>
-        <li><strong>Eat healthy foods:</strong> A healthy diet can help manage stress levels.</li>
-      </ul>
-      
-      <p>If you're experiencing anxiety that disrupts your daily activities, consider talking to a mental health professional. With proper treatment, many people with anxiety disorders can lead normal, fulfilling lives.</p>
+
+      <h3 class="text-xl font-semibold mb-1">When do I need a psychologist?</h3>
+      <p class="mb-6">If psychological symptoms last more than two weeks and begin to affect the quality of your life, work, relationships, or sleep, it is best to speak with a licensed psychologist. Early intervention reduces the severity of symptoms and improves response to treatment.</p>
+
+      <h3 class="mb-1 text-xl font-semibold">Conclusion:</h3>
+      <p class="mb-6">Mental health is neither a luxury nor an additional option in our lives. It is the basic building block on which the rest of life is built. Remember that taking care of yourself is not selfishness, but courage. Asking for help is not weakness, but rather evidence of awareness and maturity.</p>
     `,
-    author: 'Dr. Sarah Johnson',
+    contentAr: `
+      <h2 class="mb-1 text-2xl font-bold">مقدمة:</h2>
+      <p class="mb-6">في زحمة الحياة، ومع تسارع وتيرة الأحداث من حولنا، نميل في كثير من الأحيان إلى التركيز على الصحة الجسدية ونهمل جانبًا لا يقل أهمية عنها، بل قد يكون الأساس لكل ما سواه: الصحة النفسية.
+      الصحة النفسية ليست رفاهية، وليست حكرًا على من يعانون من اضطرابات شديدة، بل هي حق لكل إنسان وضرورة لممارسة حياة متوازنة، منتجة، ومليئة بالرضا.
+      </p>
+         
+      <h3 class="text-xl font-semibold mb-1">ما المقصود بالصحة النفسية؟</h3>
+      <p class="mb-2">الصحة النفسية هي حالة من العافية العقلية والعاطفية، يتمكن فيها الإنسان من:</p>
+  
+      <ol class="ms-6  mb-3 list-decimal">
+        <li><strong>إدراك قدراته.</li></strong>
+        <li><strong>التعامل مع ضغوط الحياة.</li></strong>
+        <li><strong>العمل بكفاءة.</li></strong>
+        <li><strong>والمساهمة في المجتمع.</li></strong>
+      </ol>
+      <p class="mb-6">وهي تشمل كل ما يتعلق بمشاعرنا، أفكارنا، طريقة تعاملنا مع الآخرين، وكيفية اتخاذ القرارات. حين تكون صحتنا النفسية قوية، فإننا نكون أكثر قدرة على تجاوز الأزمات، والحفاظ على علاقات صحية، والعمل بإبداع وفعالية.</p>
+      
+
+      <h3 class="mb-1 text-xl font-semibold">ما العلاقة بين الصحة النفسية والجسدية؟</h3>
+      <p class="mb-2">أثبتت العديد من الدراسات أن العلاقة بين الصحة النفسية والجسدية علاقة متبادلة وتأثيرية:</p>
+      <ul class="ms-6 mb-6 list-disc">
+        <li>القلق المزمن والتوتر يمكن أن يؤدي إلى أمراض مثل الضغط العالي، وأمراض القلب.</li>
+        <li>الاكتئاب يمكن أن يؤثر على جهاز المناعة ويجعل الشخص عرضة للأمراض.</li>
+        <li>وفي المقابل، الإصابة بأمراض مزمنة قد تزيد خطر الإصابة بالاضطرابات النفسية.</li>
+      </ul>
+      
+       <div class="mb-6">
+        <span class="italic">🧪 مثال علمي:</span>
+        <p>الأشخاص الذين يعانون من اضطرابات القلق يعانون غالبًا من اضطرابات النوم، ومشاكل في المعدة، وصداع مزمن، وهي كلها انعكاسات جسدية لحالة نفسية مضطربة.</p>
+      </div>
+      
+
+      <p class="mb-2 text-xl font-semibold">لماذا يجب أن نهتم بالصحة النفسية يوميًا؟</p>
+      <ul class="ms-6 mb-3 list-disc">
+        <li>لتعزيز قدرتنا على التركيز والإنتاجية.</li>
+        <li>لتقوية علاقاتنا الاجتماعية والزوجية.</li>
+        <li>لحماية أطفالنا من أن يرثوا التوتر أو القلق.</li>
+        <li>لتقليل فرص الإصابة بالاحتراق النفسي أو الانهيار.</li>
+      </ul>
+      <p class="mb-6">الاهتمام بالصحة النفسية لا يعني انتظار حدوث انهيار أو أزمة، بل تبني عادات وقائية يومية تحافظ على توازننا النفسي.</p>
+
+
+      <h3 class="mb-1 text-xl font-semibold">كيف أعرف أنني أحتاج إلى دعم نفسي؟</h3>
+      <p class="mb-2">ليس من الضروري أن تصل إلى مرحلة الانهيار حتى تطلب المساعدة. بعض العلامات التي تدل على أن صحتك النفسية تحتاج إلى اهتمام:</p>
+      <ul class="ms-6 mb-3 list-disc">
+        <li>فقدان الحافز لأي شيء.</li>
+        <li>نوبات غضب متكررة أو حساسية زائدة.</li>
+        <li>نوم غير منتظم أو كوابيس متكررة.</li>
+        <li>انسحاب اجتماعي مفاجئ.</li>
+      </ul>
+
+      <h3 class="mb-1 text-xl font-semibold">متى أحتاج إلى مختص نفسي؟</h3>
+      <p class="mb-6">إذا استمرت الأعراض النفسية أكثر من أسبوعين، وبدأت تؤثر على جودة حياتك، عملك، علاقاتك، أو نومك، فمن الأفضل التحدث مع أخصائي نفسي مرخّص. التدخل المبكر يقلل من شدة الأعراض ويحسّن الاستجابة للعلاج.</p>
+
+      <h3 class="mb-1 text-xl font-semibold">خاتمة:</h3>
+      <p class="mb-6">الصحة النفسية ليست رفاهية ولا خيارًا إضافيًا في حياتنا. إنها اللبنة الأساسية التي تبنى عليها باقي أركان الحياة. تذكّر أن الاعتناء بنفسك ليس أنانية، بل شجاعة. وأن طلب المساعدة ليس ضعفًا، بل دليل وعي ونضج.</p>
+    `,
+    author: 'The Platform Team',
+    authorAr: 'فريق المنصة',
     authorId: '1',
-    authorRole: 'doctor',
-    publishedDate: '2023-10-15',
-    imageUrl: 'https://images.unsplash.com/photo-1513008128329-ee3c5b73dd1f',
-    tags: ['Anxiety', 'Mental Health', 'Treatment']
+    authorRole: 'admin',
+    publishedDate: '2025-05-15',
+    imageUrl: 'https://images.unsplash.com/photo-1645460281741-cec233710746?q=80&w=1530&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    tags: ['Anxiety', 'Mental Health', 'Treatment'],
+    tagsAr: ['قلق', 'صحة نفسية', 'علاج']
   },
   {
     id: '2',
-    title: 'How to Overcome Social Anxiety',
-    excerpt: 'If you struggle with social anxiety, you\'re not alone. Discover effective strategies for overcoming anxiety in social situations.',
+    title: 'Mental health of children and adolescents: the foundation for a healthy future',
+    titleAr: 'الصحة النفسية للأطفال والمراهقين: أساس مستقبل سليم',
+    excerpt: 'When we think about mental health, we often tend to focus on adults, forgetting that the roots of psychological balance begin in childhood.',
     content: `
-      <h2>How to Overcome Social Anxiety</h2>
-      <p>Social anxiety disorder, also called social phobia, is an anxiety disorder in which a person has an excessive and unreasonable fear of social situations. Anxiety and self-consciousness arise from a fear of being closely watched, judged, and criticized by others.</p>
+    <h2 class="mb-1 text-2xl font-bold">Introduction:</h2>
+      <p class="mb-6">In When we think about mental health, we often tend to focus on adults, forgetting that the roots of psychological balance begin in childhood.
+        A psychologically happy child today is a balanced adolescent tomorrow, a young person with self-confidence and the ability to build positive relationships and make sound decisions.
+
+        Mental health for children and adolescents is not just the absence of psychological problems, but rather includes feelings of safety, love, understanding, and support. If it is neglected, the effects do not stop only in childhood, but extend to the behaviors of adolescence and even adulthood. </p>
+              
+      <h3 class="text-xl font-semibold mb-1">What is mental health in children and adolescents?</h3>
+      <p class="mb-2">It is the ability of a child or adolescent to:</p>
+      <ol class="ms-6 mb-3 list-decimal">
+        <li><strong>Deal with his feelings flexibly.</li></strong>
+        <li><strong>Form positive social relationships.</li></strong>
+        <li><strong>Learn effectively and interact with his surroundings.</li></strong>
+        <li><strong>Adapting to natural changes and pressures.</li></strong>
+      </ol>
+      <p class="mb-6">Good mental health does not mean that the child does not become sad or angry, but rather that he can express his feelings and recover from them in a healthy way.</p>
       
-      <h3>Understanding Social Anxiety</h3>
-      <p>People with social anxiety disorder suffer from distorted thinking, including false beliefs about social situations and the negative opinions of others. Without treatment, social anxiety disorder can be debilitating. It can interfere with work, school, relationships or enjoyment of life.</p>
-      
-      <h3>Common Symptoms</h3>
-      <p>Social anxiety disorder symptoms can include:</p>
-      <ul>
-        <li>Fear of situations where you may be judged negatively</li>
-        <li>Worry about embarrassing or humiliating yourself</li>
-        <li>Intense fear of interacting with strangers</li>
-        <li>Fear that others will notice you're anxious</li>
-        <li>Physical symptoms of anxiety or panic, including fast heartbeat, dizziness, muscle tension, or flushing</li>
-        <li>Avoiding doing things or speaking to people out of fear of embarrassment</li>
-        <li>Avoiding situations where you might be the center of attention</li>
-      </ul>
-      
-      <h3>Effective Strategies for Overcoming Social Anxiety</h3>
-      
-      <h4>1. Challenge Negative Thoughts</h4>
-      <p>Learn to identify and challenge the negative thoughts that underlie your fear of social situations. Ask yourself if these thoughts are realistic and look for alternative explanations for situations.</p>
-      <p>For example, if you think, "Everyone will laugh at me if I make a mistake," challenge this by asking, "Is this really true? Do I laugh at others when they make small mistakes? Probably not."</p>
-      
-      <h4>2. Gradual Exposure</h4>
-      <p>Gradually expose yourself to feared social situations. Start with situations that cause you less anxiety and work your way up to more challenging ones.</p>
-      <p>You might start by making eye contact with a cashier, then progress to asking a question, having a brief conversation, and eventually attending social gatherings. Each successful experience will build your confidence.</p>
-      
-      <h4>3. Shift Focus Away from Yourself</h4>
-      <p>During social interactions, focus on others and your surroundings rather than monitoring your own behavior or physical symptoms.</p>
-      <p>Try asking questions and genuinely listening to the answers. This not only takes attention away from your anxiety but also helps you connect with others.</p>
-      
-      <h4>4. Learn Relaxation Techniques</h4>
-      <p>Practice deep breathing, progressive muscle relaxation, or mindfulness meditation to manage physical symptoms of anxiety.</p>
-      <p>Before entering a social situation, take a few minutes to breathe deeply: inhale for a count of four, hold for a count of two, and exhale for a count of six. This can help calm your nervous system.</p>
-      
-      <h4>5. Develop Social Skills</h4>
-      <p>If you feel you lack certain social skills, consider taking a class or working with a therapist to develop them.</p>
-      <p>Basic social skills include making eye contact, smiling, asking open-ended questions, and actively listening. These can be practiced and improved over time.</p>
-      
-      <h4>6. Take Care of Your Physical Health</h4>
-      <p>Regular exercise, adequate sleep, and a healthy diet can all help manage anxiety.</p>
-      <p>Physical activity releases endorphins, which are natural mood lifters. Aim for at least 30 minutes of moderate exercise most days of the week.</p>
-      
-      <h4>7. Seek Professional Help</h4>
-      <p>Cognitive-behavioral therapy (CBT) is highly effective for social anxiety. Medications, such as selective serotonin reuptake inhibitors (SSRIs), may also be helpful.</p>
-      <p>A mental health professional can provide a proper diagnosis and create a treatment plan tailored to your specific needs.</p>
-      
-      <h3>Remember: You're Not Alone</h3>
-      <p>Social anxiety is one of the most common mental health conditions. Millions of people struggle with it, and many have found ways to manage their symptoms and live fulfilling lives.</p>
-      
-      <p>With patience, practice, and perhaps professional help, you can learn to manage social anxiety and participate more fully in life's social experiences.</p>
-    `,
-    author: 'Dr. Ahmed Al-Shamri',
-    authorId: '3',
-    authorRole: 'doctor',
-    publishedDate: '2023-10-10',
-    imageUrl: 'https://images.unsplash.com/photo-1507537297725-24a1c029d3ca',
-    tags: ['Social Anxiety', 'Stress Management', 'Mental Health']
-  },
-  {
-    id: '3',
-    title: 'The Relationship Between Trauma and Mental Health',
-    excerpt: 'Psychological trauma affects our mental health in numerous ways. Learn how to recover from trauma and build psychological resilience.',
-    content: `
-      <h2>The Relationship Between Trauma and Mental Health</h2>
-      <p>Trauma is the response to a deeply distressing or disturbing event that overwhelms an individual's ability to cope, causes feelings of helplessness, diminishes their sense of self and their ability to feel a full range of emotions and experiences.</p>
-      
-      <h3>Understanding Trauma</h3>
-      <p>Trauma can result from a single event, a series of events, or a set of circumstances that is experienced by an individual as physically or emotionally harmful or life-threatening. Examples include:</p>
-      <ul>
-        <li><strong>Accidents and natural disasters:</strong> Car accidents, floods, earthquakes, fires</li>
-        <li><strong>Acts of violence:</strong> Physical or sexual assault, combat exposure, witnessing violence</li>
-        <li><strong>Childhood abuse or neglect:</strong> Physical, sexual, or emotional abuse, neglect</li>
-        <li><strong>Medical trauma:</strong> Invasive procedures, chronic illness, sudden health emergencies</li>
-        <li><strong>Grief and loss:</strong> Death of a loved one, especially if sudden or violent</li>
-        <li><strong>Systemic trauma:</strong> Poverty, discrimination, political violence</li>
-      </ul>
-      
-      <h3>How Trauma Affects Mental Health</h3>
-      
-      <h4>Post-Traumatic Stress Disorder (PTSD)</h4>
-      <p>PTSD is perhaps the most well-known trauma-related condition, characterized by:</p>
-      <ul>
-        <li><strong>Intrusive memories:</strong> Flashbacks, nightmares, and unwanted memories of the traumatic event</li>
-        <li><strong>Avoidance:</strong> Avoiding people, places, activities, or thoughts that remind one of the trauma</li>
-        <li><strong>Negative changes in thinking and mood:</strong> Negative thoughts about oneself or the world, feeling detached from others, difficulty experiencing positive emotions</li>
-        <li><strong>Changes in physical and emotional reactions:</strong> Being easily startled, always on guard, trouble sleeping, angry outbursts, overwhelming guilt or shame</li>
-      </ul>
-      
-      <h4>Complex PTSD</h4>
-      <p>Complex PTSD may develop in people who experience prolonged, repeated trauma, especially during childhood. In addition to PTSD symptoms, it may include:</p>
-      <ul>
-        <li>Difficulty regulating emotions</li>
-        <li>Negative self-perception</li>
-        <li>Distorted perceptions of the perpetrator</li>
-        <li>Difficulties in relationships</li>
-        <li>Loss of a system of meaning</li>
-      </ul>
-      
-      <h4>Other Mental Health Conditions</h4>
-      <p>Trauma increases the risk of developing:</p>
-      <ul>
-        <li><strong>Depression:</strong> Persistent sadness, loss of interest, feelings of worthlessness</li>
-        <li><strong>Anxiety disorders:</strong> Excessive worry, panic attacks, phobias</li>
-        <li><strong>Substance use disorders:</strong> Using alcohol or drugs to cope with overwhelming emotions</li>
-        <li><strong>Eating disorders:</strong> Using food to cope with difficult emotions or gain a sense of control</li>
-        <li><strong>Dissociative disorders:</strong> Disconnection between thoughts, surroundings, actions, and identity</li>
-      </ul>
-      
-      <h3>Building Resilience After Trauma</h3>
-      
-      <h4>1. Seek Professional Help</h4>
-      <p>Evidence-based treatments for trauma include:</p>
-      <ul>
-        <li><strong>Trauma-focused cognitive-behavioral therapy (TF-CBT):</strong> Helps you process traumatic memories and change unhelpful beliefs related to the trauma</li>
-        <li><strong>Eye movement desensitization and reprocessing (EMDR):</strong> A structured therapy that helps you process traumatic memories</li>
-        <li><strong>Prolonged exposure therapy:</strong> Gradually exposes you to trauma-related memories and situations that you've been avoiding</li>
-        <li><strong>Medications:</strong> Antidepressants, anti-anxiety medications, or sleep aids may be prescribed to manage symptoms</li>
-      </ul>
-      
-      <h4>2. Practice Self-Care</h4>
-      <p>Prioritize physical health through:</p>
-      <ul>
-        <li>Regular exercise</li>
-        <li>Balanced nutrition</li>
-        <li>Adequate sleep</li>
-        <li>Avoiding substances that can worsen symptoms, like alcohol and drugs</li>
-      </ul>
-      
-      <h4>3. Build a Support Network</h4>
-      <p>Connect with understanding friends, family members, or support groups. Sharing your experiences with others who have gone through similar situations can be particularly helpful.</p>
-      
-      <h4>4. Develop Coping Skills</h4>
-      <p>Learn techniques to manage distressing emotions and physical sensations:</p>
-      <ul>
-        <li>Mindfulness practices</li>
-        <li>Deep breathing exercises</li>
-        <li>Grounding techniques</li>
-        <li>Journaling</li>
-        <li>Creative expression through art, music, or writing</li>
-      </ul>
-      
-      <h4>5. Find Meaning</h4>
-      <p>Many trauma survivors find that helping others or advocating for change helps them find meaning in their experiences. This might involve:</p>
-      <ul>
-        <li>Volunteering</li>
-        <li>Participating in advocacy work</li>
-        <li>Sharing your story to help others</li>
-        <li>Reconnecting with values and beliefs that are important to you</li>
-      </ul>
-      
-      <h3>Remember: Recovery Is Possible</h3>
-      <p>While trauma can have profound effects on mental health, recovery is possible. With appropriate support and treatment, many people not only recover from trauma but experience post-traumatic growth, developing new insights, perspectives, and strengths as a result of their healing journey.</p>
-    `,
-    author: 'Dr. Noura Al-Otaibi',
-    authorId: '4',
-    authorRole: 'doctor',
-    publishedDate: '2023-09-25',
-    imageUrl: 'https://images.unsplash.com/photo-1611762348135-5a62e6d3a784',
-    tags: ['Psychological Trauma', 'Recovery', 'Resilience']
-  },
-  {
-    id: '4',
-    title: 'Cognitive Behavioral Therapy (CBT) Techniques for Negative Thinking',
-    excerpt: 'CBT is one of the most effective therapeutic approaches. Learn how it can help you change negative thought patterns and improve your mental health.',
-    content: `
-      <h2>Cognitive Behavioral Therapy (CBT) Techniques for Negative Thinking</h2>
-      <p>Cognitive Behavioral Therapy (CBT) is one of the most widely used and effective therapeutic approaches for a range of mental health conditions. At its core, CBT is based on the understanding that our thoughts, feelings, and behaviors are interconnected, and by changing one, we can influence the others.</p>
-      
-      <h3>Understanding CBT and Its Benefits</h3>
-      <p>CBT is a structured, time-limited approach that focuses on current problems and practical solutions. It's been proven effective for treating:</p>
-      <ul>
-        <li>Depression</li>
-        <li>Anxiety disorders</li>
-        <li>Post-traumatic stress disorder (PTSD)</li>
-        <li>Obsessive-compulsive disorder (OCD)</li>
-        <li>Substance use disorders</li>
-        <li>Eating disorders</li>
-        <li>Sleep difficulties</li>
-        <li>Chronic pain</li>
-      </ul>
-      
-      <h3>The Cognitive Model: How Thoughts Influence Feelings and Behaviors</h3>
-      <p>CBT is based on the cognitive model, which suggests that it's not events themselves that affect us emotionally, but rather our interpretations of those events. This model includes:</p>
-      <ul>
-        <li><strong>Automatic thoughts:</strong> Immediate, unquestioned thoughts that pop into our minds in response to situations</li>
-        <li><strong>Intermediate beliefs:</strong> Attitudes, rules, and assumptions that influence how we interpret events</li>
-        <li><strong>Core beliefs:</strong> Fundamental, deeply held beliefs about ourselves, others, and the world</li>
-      </ul>
-      <p>When these thoughts are negative, distorted, or unhelpful, they can lead to emotional distress and unhealthy behaviors.</p>
-      
-      <h3>Common Cognitive Distortions</h3>
-      <p>CBT helps identify and challenge cognitive distortions, which are irrational thought patterns such as:</p>
-      <ul>
-        <li><strong>All-or-nothing thinking:</strong> Seeing things in black and white categories</li>
-        <li><strong>Overgeneralization:</strong> Viewing a single negative event as a never-ending pattern of defeat</li>
-        <li><strong>Mental filtering:</strong> Focusing on negatives while filtering out positives</li>
-        <li><strong>Disqualifying the positive:</strong> Rejecting positive experiences by insisting they "don't count"</li>
-        <li><strong>Jumping to conclusions:</strong> Making negative interpretations without definite facts (includes mind reading and fortune telling)</li>
-        <li><strong>Catastrophizing:</strong> Expecting disaster; blowing things way out of proportion</li>
-        <li><strong>Emotional reasoning:</strong> Assuming that feelings reflect reality ("I feel like a failure, so I must be one")</li>
-        <li><strong>Should statements:</strong> Using "should," "must," or "ought" statements that set up unrealistic expectations</li>
-        <li><strong>Labeling:</strong> Attaching negative labels to yourself or others</li>
-        <li><strong>Personalization:</strong> Seeing yourself as the cause of external negative events</li>
-      </ul>
-      
-      <h3>Key CBT Techniques for Overcoming Negative Thinking</h3>
-      
-      <h4>1. Thought Records</h4>
-      <p>Thought records help you identify and challenge negative thoughts by:</p>
-      <ul>
-        <li>Describing a situation that triggered distress</li>
-        <li>Identifying automatic thoughts and associated emotions</li>
-        <li>Noting evidence that supports and contradicts these thoughts</li>
-        <li>Developing a balanced alternative perspective</li>
-        <li>Re-rating your emotional response</li>
-      </ul>
-      
-      <h4>2. Cognitive Restructuring</h4>
-      <p>This technique involves:</p>
-      <ul>
-        <li>Identifying negative thoughts</li>
-        <li>Challenging the evidence for these thoughts</li>
-        <li>Examining the utility of these thoughts</li>
-        <li>Generating more balanced, helpful alternative thoughts</li>
-      </ul>
-      
-      <h4>3. Behavioral Experiments</h4>
-      <p>These experiments test the validity of negative beliefs by:</p>
-      <ul>
-        <li>Identifying a negative prediction or belief</li>
-        <li>Designing an experiment to test it</li>
-        <li>Carrying out the experiment</li>
-        <li>Analyzing the results and drawing conclusions</li>
-      </ul>
-      
-      <h4>4. Graded Exposure</h4>
-      <p>For anxiety and fear-related issues, gradual exposure involves:</p>
-      <ul>
-        <li>Creating a hierarchy of feared situations</li>
-        <li>Gradually exposing yourself to these situations, starting with the least frightening</li>
-        <li>Using relaxation techniques during exposure</li>
-        <li>Staying in the situation until anxiety decreases</li>
-      </ul>
-      
-      <h4>5. Activity Scheduling and Behavioral Activation</h4>
-      <p>Particularly helpful for depression, these techniques involve:</p>
-      <ul>
-        <li>Scheduling activities that provide a sense of pleasure or mastery</li>
-        <li>Gradually increasing activity levels</li>
-        <li>Breaking tasks into manageable steps</li>
-        <li>Monitoring mood in relation to activities</li>
-      </ul>
-      
-      <h4>6. Problem-Solving</h4>
-      <p>CBT teaches structured problem-solving by:</p>
-      <ul>
-        <li>Defining problems clearly</li>
-        <li>Generating multiple solutions</li>
-        <li>Evaluating pros and cons of each solution</li>
-        <li>Selecting and implementing a solution</li>
-        <li>Reviewing the outcome</li>
-      </ul>
-      
-      <h3>Implementing CBT in Daily Life</h3>
-      <p>To incorporate CBT principles into your daily routine:</p>
-      <ul>
-        <li><strong>Practice awareness:</strong> Notice when your mood changes and identify the thoughts behind these changes</li>
-        <li><strong>Question your thoughts:</strong> Ask yourself, "What's the evidence for and against this thought?" and "Is there another way to look at this situation?"</li>
-        <li><strong>Use reminders:</strong> Set phone reminders to check in with your thoughts throughout the day</li>
-        <li><strong>Keep a thought journal:</strong> Track negative thoughts and practice reframing them</li>
-        <li><strong>Celebrate progress:</strong> Acknowledge improvements, no matter how small</li>
-      </ul>
-      
-      <h3>When to Seek Professional Help</h3>
-      <p>While you can apply many CBT techniques on your own, working with a trained CBT therapist is recommended if:</p>
-      <ul>
-        <li>Your symptoms are severe or persistent</li>
-        <li>You're finding it difficult to apply techniques consistently</li>
-        <li>You're dealing with complex issues or trauma</li>
-        <li>You're not seeing improvement with self-help approaches</li>
-      </ul>
-      
-      <p>A therapist can provide personalized guidance, help you develop a structured treatment plan, and offer support throughout your journey to healthier thinking patterns.</p>
-    `,
-    author: 'Dr. Mohammed Al-Salem',
-    authorId: '5',
-    authorRole: 'doctor',
-    publishedDate: '2023-09-15',
-    imageUrl: 'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b',
-    tags: ['Cognitive Behavioral Therapy', 'Positive Thinking', 'Mental Health']
-  },
-  {
-    id: '5',
-    title: 'Managing Stress in Daily Life',
-    excerpt: 'Stress affects our physical and mental health. Learn effective strategies for managing daily stress and improving your overall wellbeing.',
-    content: `
-      <h2>Managing Stress in Daily Life</h2>
-      <p>Stress is a natural physical and psychological response to life's demands. While some stress can be motivating and even beneficial, chronic or excessive stress can have serious consequences for both physical and mental health.</p>
-      
-      <h3>Understanding Stress</h3>
-      <p>When you encounter a perceived threat—whether it's a deadline at work, a conflict with a loved one, or a financial concern—your body activates a stress response. This response, often called "fight or flight," releases hormones like cortisol and adrenaline that prepare your body to face the challenge or flee from it.</p>
-      <p>This stress response can be lifesaving in emergency situations. However, when stress persists over time, it can lead to a variety of health problems including:</p>
-      <ul>
-        <li>Anxiety and depression</li>
-        <li>Digestive problems</li>
-        <li>Headaches</li>
-        <li>Heart disease and high blood pressure</li>
-        <li>Sleep disturbances</li>
-        <li>Weight gain</li>
-        <li>Memory and concentration impairment</li>
-        <li>Weakened immune system</li>
-      </ul>
-      
-      <h3>Common Sources of Stress</h3>
-      <p>Stress can come from many sources, including:</p>
-      <ul>
-        <li><strong>Work-related stress:</strong> Heavy workloads, job insecurity, conflicts with colleagues</li>
-        <li><strong>Financial stress:</strong> Debt, insufficient income, unexpected expenses</li>
-        <li><strong>Relationship stress:</strong> Conflicts with partners, family members, or friends</li>
-        <li><strong>Major life changes:</strong> Moving, changing jobs, getting married or divorced</li>
-        <li><strong>Health concerns:</strong> Chronic illness, injury, caring for sick family members</li>
-        <li><strong>Environmental factors:</strong> Noise, overcrowding, pollution</li>
-        <li><strong>Daily hassles:</strong> Traffic, household chores, technology issues</li>
-      </ul>
-      
-      <h3>Recognizing Stress Symptoms</h3>
-      <p>Being able to recognize stress symptoms is the first step toward managing them. Symptoms can be physical, emotional, cognitive, or behavioral:</p>
-      
-      <h4>Physical Symptoms</h4>
-      <ul>
-        <li>Headaches and muscle tension</li>
-        <li>Fatigue</li>
-        <li>Chest pain or rapid heartbeat</li>
-        <li>Insomnia</li>
-        <li>Digestive problems</li>
-        <li>Changes in appetite</li>
-        <li>Frequent illness</li>
-      </ul>
-      
-      <h4>Emotional Symptoms</h4>
-      <ul>
-        <li>Anxiety or restlessness</li>
-        <li>Irritability or anger</li>
-        <li>Sadness or depression</li>
-        <li>Feeling overwhelmed</li>
-        <li>Lack of motivation or focus</li>
-        <li>Feeling lonely or isolated</li>
-      </ul>
-      
-      <h4>Cognitive Symptoms</h4>
-      <ul>
-        <li>Racing thoughts</li>
-        <li>Constant worry</li>
-        <li>Difficulty concentrating</li>
-        <li>Poor judgment</li>
-        <li>Forgetfulness</li>
-        <li>Negative thinking</li>
-      </ul>
-      
-      <h4>Behavioral Symptoms</h4>
-      <ul>
-        <li>Changes in eating habits</li>
-        <li>Procrastination</li>
-        <li>Increased use of alcohol, drugs, or cigarettes</li>
-        <li>Nervous behaviors (nail biting, pacing)</li>
-        <li>Social withdrawal</li>
-        <li>Sleep problems</li>
-      </ul>
-      
-      <h3>Effective Stress Management Techniques</h3>
-      
-      <h4>1. Physical Activity</h4>
-      <p>Regular exercise is one of the most effective stress relievers. It releases endorphins, improves mood, boosts energy, and enhances sleep. Aim for at least 30 minutes of moderate activity most days of the week. This could include:</p>
-      <ul>
-        <li>Walking or jogging</li>
-        <li>Swimming or cycling</li>
-        <li>Dancing or aerobics</li>
-        <li>Yoga or tai chi</li>
-        <li>Team sports or fitness classes</li>
-      </ul>
-      
-      <h4>2. Relaxation Techniques</h4>
-      <p>Relaxation practices can activate your body's relaxation response, reducing stress hormones and promoting a sense of calm. Effective techniques include:</p>
-      <ul>
-        <li><strong>Deep breathing:</strong> Slowly breathe in through your nose, hold for a few seconds, and exhale through your mouth</li>
-        <li><strong>Progressive muscle relaxation:</strong> Tense and then release each muscle group, moving from head to toe</li>
-        <li><strong>Meditation:</strong> Focus your attention and eliminate the stream of thoughts that may be crowding your mind</li>
-        <li><strong>Guided imagery:</strong> Visualize calm, peaceful scenes</li>
-        <li><strong>Body scan:</strong> Mentally scan your body for areas of tension and consciously relax them</li>
-      </ul>
-      
-      <h4>3. Mindfulness Practices</h4>
-      <p>Mindfulness involves staying present and fully engaged in the current moment, without judgment. Mindfulness can reduce rumination, lower stress, and improve focus. Ways to practice mindfulness include:</p>
-      <ul>
-        <li>Mindful eating (focusing on the taste, texture, and smell of food)</li>
-        <li>Mindful walking (paying attention to each step and your surroundings)</li>
-        <li>Mindfulness meditation (focusing on your breath or sensations)</li>
-        <li>Mindful listening (giving your full attention when others speak)</li>
-        <li>Mindful observation (noticing details in your environment)</li>
-      </ul>
-      
-      <h4>4. Healthy Lifestyle Habits</h4>
-      <p>Your overall lifestyle can significantly impact your stress levels. Prioritize:</p>
-      <ul>
-        <li><strong>Sleep hygiene:</strong> Aim for 7-9 hours of quality sleep with consistent sleep/wake times</li>
-        <li><strong>Balanced nutrition:</strong> Eat regular meals with plenty of fruits, vegetables, whole grains, and lean proteins</li>
-        <li><strong>Hydration:</strong> Drink adequate water throughout the day</li>
-        <li><strong>Limit stimulants:</strong> Reduce consumption of caffeine, nicotine, and alcohol</li>
-        <li><strong>Time in nature:</strong> Spend time outdoors regularly, as nature exposure reduces stress</li>
-      </ul>
-      
-      <h4>5. Time Management</h4>
-      <p>Poor time management can cause significant stress. To manage your time effectively:</p>
-      <ul>
-        <li>Prioritize tasks using importance and urgency</li>
-        <li>Break large projects into smaller steps</li>
-        <li>Use calendars, planners, or digital tools to schedule time</li>
-        <li>Set realistic goals and deadlines</li>
-        <li>Learn to delegate when possible</li>
-        <li>Build in buffer time between commitments</li>
-        <li>Practice saying "no" to additional responsibilities when you're overloaded</li>
-      </ul>
-      
-      <h4>6. Social Connection</h4>
-      <p>Strong social support can buffer against stress. To build and maintain social connections:</p>
-      <ul>
-        <li>Make time for friends and family regularly</li>
-        <li>Join groups or clubs related to your interests</li>
-        <li>Volunteer in your community</li>
-        <li>Seek support from trusted individuals when needed</li>
-        <li>Consider joining a support group if you're facing specific challenges</li>
-      </ul>
-      
-      <h4>7. Cognitive Reframing</h4>
-      <p>How you think about stressors can magnify or reduce their impact. Cognitive reframing involves:</p>
-      <ul>
-        <li>Challenging catastrophic thinking</li>
-        <li>Looking for alternative perspectives</li>
-        <li>Focusing on aspects you can control</li>
-        <li>Practicing self-compassion</li>
-        <li>Finding potential benefits or learning opportunities in difficult situations</li>
-      </ul>
-      
-      <h4>8. Creative Expression</h4>
-      <p>Creative activities can serve as emotional outlets and promote flow states that reduce stress. Consider:</p>
-      <ul>
-        <li>Drawing, painting, or coloring</li>
-        <li>Playing or listening to music</li>
-        <li>Writing, journaling, or poetry</li>
-        <li>Dancing or movement</li>
-        <li>Crafting, woodworking, or gardening</li>
-      </ul>
-      
-      <h3>Creating a Personalized Stress Management Plan</h3>
-      <p>To develop an effective stress management plan:</p>
-      <ol>
-        <li><strong>Identify your stress triggers</strong> by keeping a stress journal for 1-2 weeks</li>
-        <li><strong>Recognize your typical stress responses</strong> (physical, emotional, cognitive, behavioral)</li>
-        <li><strong>Select a variety of stress management techniques</strong> that appeal to you</li>
-        <li><strong>Schedule these activities</strong> into your daily and weekly routines</li>
-        <li><strong>Track your progress</strong> and note which strategies work best for you</li>
-        <li><strong>Adjust your plan</strong> as needed based on changing circumstances</li>
+
+      <h3 class="text-xl font-semibold mb-2">The most important influences on mental health at this stage:</h3>
+      <ol class="ms-6 mb-3 list-decimal">
+        <li><strong>Family:</strong> relationship with parents, upbringing method, home environment.</li>
+        <li><strong>School:</strong> interaction with colleagues and teachers, academic pressures, bullying.</li>
+        <li><strong>Media:</strong> especially digital content, electronic games, and social media.</li>
+        <li><strong>Friends:</strong> social influence, acceptance, and belonging.</li>
+       <li><strong>Traumatic life events:</strong>  such as separation, illness, or loss of a family member.</li>
+
       </ol>
       
-      <h3>When to Seek Professional Help</h3>
-      <p>Consider seeking professional help if:</p>
-      <ul>
-        <li>Your stress feels overwhelming or unmanageable</li>
-        <li>You're using unhealthy coping mechanisms (e.g., substance use)</li>
-        <li>Stress is significantly impacting your daily functioning</li>
-        <li>You're experiencing symptoms of depression or anxiety</li>
-        <li>You've experienced trauma or major life changes</li>
+      <p class="mb-6">Traumatic life events: such as separation, illness, or loss of a family member.</p>
+
+      <p class="mb-2 text-xl font-semibold">The most common psychological problems in this category:</p>
+      <ul class="ms-6 mb-3 list-disc">
+        <li>Excessive anxiety and fear.</li>
+        <li>Depression or loss of interest.</li>
+        <li>Attention Deficit Hyperactivity Disorder (ADHD).</li>
+        <li>Behavior problems such as aggression or isolation.</li>
+        <li>Eating or sleep disorders.</li>
       </ul>
-      <p>Mental health professionals can provide additional tools, support, and guidance for managing stress effectively.</p>
+      <div class="mb-6">
+        <span class="italic">🧠 common example:</span>
+        <p>A child who seems "very naughty" in class may not be stubborn by nature, but rather tries to express internal anxiety or a desire to attract attention due to a lack of tenderness at home.</p>
+      </div>
+
+      <h3 class="text-xl font-semibold mb-1">How do we detect a psychological problem in a child or teenager?</h3>
+      <p class="mb-2">By observation, you should pay attention to signs such as:</p>
+      <ul class="ms-6 mb-3 list-disc">
+        <li>Sudden change in behavior (silence, crying, aggression).</li>
+        <li>Difficulties sleeping or eating.</li>
+        <li>Unjustified decline in academic performance.</li>
+        <li>Isolation or loss of interest in his friends.</li>
+        <li>Frequent physical complaints (headache, abdominal pain without an organic cause)..</li>
+      </ul>
+
+
+      <h3 class="text-xl font-semibold mb-2">When do we need the intervention of a psychologist?</h3>
+      <ul class="ms-6 mb-3 list-disc">
+        <li>If symptoms persist for more than two weeks and affect the child's life.</li>
+        <li>If the child begins to harm himself or show suicidal thoughts.</li>
+        <li>If parents or teachers notice a sharp change in the child's personality.</li>
+      </ul>
+      <p class="mb-6">💬 Remember: Early psychological intervention <span class="font-bold">is not a stigma,</span> but an opportunity to save a child's future before their condition worsens.</p>
+
       
-      <h3>Remember</h3>
-      <p>Stress management is not a one-size-fits-all approach. It's about finding what works for you and integrating stress-reducing practices into your daily life. With consistent practice and attention, you can build resilience and reduce the negative impact of stress on your health and wellbeing.</p>
-    `,
-    author: 'Dr. Layla Al-Maliki',
-    authorId: '6',
-    authorRole: 'doctor',
-    publishedDate: '2023-09-05',
-    imageUrl: 'https://images.unsplash.com/photo-1485546784815-e380f3c5a786',
-    tags: ['Stress Management', 'Relaxation', 'Mental Health']
+      <h3 class="mb-1 text-xl font-semibold">Conclusion:</h3>
+      <p class="mb-6">Children are neither "too young to grieve" nor "innocent to worry". They are human beings in the making, and they need the same psychological care that we give their bodies.
+      Let us start today by providing a psychologically supportive environment at home and at school, and let us be the security they need at the beginning of their lives.</p>
+      `,
+      contentAr: `
+      <h2 class="mb-1 text-2xl font-bold">مقدمة:</h2>
+      <p class="mb-6">حين نفكر في الصحة النفسية، نميل غالبًا إلى التركيز على البالغين، متناسين أن جذور التوازن النفسي تبدأ منذ الطفولة.
+        الطفل السعيد نفسيًا اليوم هو المراهق المتوازن غدًا، وهو الشاب الذي يتمتع بثقة بالنفس وقدرة على بناء علاقات إيجابية واتخاذ قرارات سليمة.
+
+        الصحة النفسية للأطفال والمراهقين ليست مجرد غياب للمشكلات النفسية، بل تشمل مشاعر الأمان، الحب، الفهم، والدعم. وإذا تم إهمالها، فإن آثار ذلك لا تتوقف عند الطفولة فقط، بل تمتد إلى سلوكيات المراهقة وحتى مراحل الرشد.
+      </p>
+      
+      <h3 class="text-xl font-semibold mb-1">ما هي الصحة النفسية لدى الأطفال والمراهقين؟</h3>
+      <p class="mb-2">هي قدرة الطفل أو المراهق على:</p>
+      <ol class="ms-6 mb-3 list-decimal">
+        <li><strong>التعامل مع مشاعره بمرونة.</li></strong>
+        <li><strong>تكوين علاقات اجتماعية إيجابية.</li></strong>
+        <li><strong>التعلم بفاعلية والتفاعل مع محيطه.</li></strong>
+        <li><strong>التكيّف مع التغيرات والضغوط الطبيعية.</li></strong>
+      </ol>
+      <p class="mb-6">الصحة النفسية الجيدة لا تعني أن الطفل لا يحزن أو يغضب، بل تعني أنه يستطيع التعبير عن مشاعره والتعافي منها بطريقة صحية.</p>
+      
+
+      <h3 class="text-xl font-semibold mb-2">أهم المؤثرات على الصحة النفسية في هذه المرحلة:</h3>
+      <ol class="ms-6 mb-3 list-decimal">
+        <li><strong>العائلة:</strong> العلاقة مع الوالدين، طريقة التربية، بيئة المنزل.</li>
+        <li><strong>المدرسة:</strong> التفاعل مع الزملاء والمعلمين، الضغوط الدراسية، التنمر.</li>
+        <li><strong>وسائل الإعلام:</strong> خاصة المحتوى الرقمي والألعاب الإلكترونية ووسائل التواصل.</li>
+        <li><strong>الأصدقاء:</strong> التأثير الاجتماعي والتقبّل والانتماء.</li>
+       <li><strong>أحداث الحياة الصادمة:</strong> مثل الانفصال، المرض، أو فقدان أحد أفراد الأسرة.</li>
+      </ol>
+
+        <p class="mb-2 text-xl font-semibold">أبرز المشكلات النفسية الشائعة في هذه الفئة:</p>
+      <ul class="ms-6 mb-3 list-disc">
+        <li>القلق والخوف المفرط.</li>
+        <li>الاكتئاب أو فقدان الاهتمام.</li>
+        <li>فرط النشاط وتشتت الانتباه (ADHD).</li>
+        <li>مشاكل في السلوك مثل العدوانية أو الانعزال.</li>
+        <li>اضطرابات الطعام أو النوم.</li>
+      </ul>
+      <div class="mb-6">
+        <span class="italic">🧠 مثال شائع:</span>
+        <p>طفل يبدو "مشاغبًا جدًا" في الصف قد لا يكون عنيدًا بطبعه، بل يحاول التعبير عن قلق داخلي أو رغبة في لفت الانتباه بسبب قلة الحنان في المنزل.</p>
+      </div>
+
+
+      <h3 class="text-xl font-semibold mb-1">كيف نكتشف وجود مشكلة نفسية عند الطفل أو المراهق؟</h3>
+      <p class="mb-2">من خلال الملاحظة، يجب الانتباه إلى علامات مثل:</p>
+      <ul class="ms-6 mb-3 list-disc">
+        <li>تغيّر مفاجئ في السلوك (صمت، بكاء، عدوانية).</li>
+        <li>صعوبات في النوم أو الأكل.</li>
+        <li>تراجع الأداء الدراسي بشكل غير مبرر.</li>
+        <li>العزلة أو فقدان الاهتمام بأصدقائه.</li>
+        <li>الشكاوى الجسدية المتكررة (صداع، آلام في البطن دون سبب عضوي).</li>
+      </ul>
+
+
+      <h3 class="text-xl font-semibold mb-2">متى نحتاج إلى تدخل مختص نفسي؟</h3>
+      <ul class="ms-6 mb-3 list-disc">
+        <li>إذا استمرت الأعراض لأكثر من أسبوعين وأثرت على حياة الطفل.</li>
+        <li>إذا بدأ الطفل بإيذاء نفسه أو إظهار أفكار انتحارية.</li>
+        <li>إذا لاحظ الأهل أو المعلمون تغيّرًا حادًا في شخصية الطفل.</li>
+      </ul>
+      <p class="mb-6">💬 تذكّر: التدخل النفسي المبكر <span class="font-bold">ليس وصمة</span>، بل فرصة لإنقاذ مستقبل طفل قبل أن تتفاقم حالته.</p>
+
+
+      <h3 class="mb-1 text-xl font-semibold">خاتمة:</h3>
+          <p class="mb-6">الأطفال ليسوا "صغارًا على الحزن" ولا "أبرياء من القلق". هم بشر في طور التكوين، ويحتاجون إلى نفس الرعاية النفسية التي نمنحها لأجسادهم.
+          فلنبدأ من اليوم بتوفير بيئة داعمة نفسيًا في المنزل والمدرسة، ولنكن نحن الأمان الذي يحتاجون إليه في بداية حياتهم.</p>
+        `,
+    author: 'فريق المنصة',
+    authorId: '2',
+    authorRole: 'admin',
+    publishedDate: '2025-05-17',
+    imageUrl: 'https://images.unsplash.com/photo-1542913019-7341c3d3f4d4?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+    tagsAr: ['نفسية المراهقين', 'الدعم النفسي', 'أطفالنا أمانة'],
+    tags: ['children are a trust', 'teen mental health', 'psychological support']
   },
-  {
-    id: '6',
-    title: 'The Impact of Sleep on Mental Health',
-    excerpt: 'Good sleep is essential for mental health. Discover the relationship between sleep and mental wellbeing, and how to improve your sleep habits.',
-    content: `
-      <h2>The Impact of Sleep on Mental Health</h2>
-      <p>Sleep is far more than just a time when your body shuts down. It's an active period during which critical processing, restoration, and strengthening occurs. Quality sleep is as essential to survival as food and water. Despite this, many people view sleep as a luxury rather than a necessity, and a large portion of the population suffers from poor sleep quality or inadequate sleep duration.</p>
-      
-      <h3>The Science of Sleep and Mental Health</h3>
-      <p>The relationship between sleep and mental health is complex and bidirectional. Mental health issues can disrupt sleep, and sleep problems can contribute to the onset and worsening of mental health challenges.</p>
-      
-      <p>During sleep, your brain cycles through different stages, each serving important functions:</p>
-      <ul>
-        <li><strong>Non-REM (NREM) sleep:</strong> Includes light sleep and deep sleep phases where physical restoration occurs, immune function is supported, and memories begin consolidating</li>
-        <li><strong>REM (Rapid Eye Movement) sleep:</strong> When most dreaming occurs, emotional processing takes place, and learning and memory consolidation continues</li>
-      </ul>
-      
-      <p>These sleep stages help regulate mood, process emotional information, and maintain cognitive functions like attention, learning, and memory.</p>
-      
-      <h3>How Sleep Deprivation Affects Mental Health</h3>
-      <p>Even short-term sleep deprivation can significantly impact your mental state. The effects include:</p>
-      <ul>
-        <li><strong>Mood changes:</strong> Irritability, stress, anger, and emotional volatility</li>
-        <li><strong>Cognitive impairment:</strong> Reduced concentration, problem-solving abilities, creativity, and judgment</li>
-        <li><strong>Decreased impulse control:</strong> Difficulty regulating behavior and emotions</li>
-        <li><strong>Heightened stress response:</strong> Increased cortisol production and stress reactivity</li>
-        <li><strong>Reduced positive emotional responses:</strong> Diminished ability to experience pleasure</li>
-      </ul>
-      
-      <p>Chronic sleep problems are even more concerning and are linked to:</p>
-      <ul>
-        <li><strong>Depression:</strong> People with insomnia are 10 times more likely to develop depression</li>
-        <li><strong>Anxiety disorders:</strong> Sleep disturbances can trigger or worsen anxiety symptoms</li>
-        <li><strong>Bipolar disorder:</strong> Sleep disruptions can precipitate manic episodes</li>
-        <li><strong>ADHD-like symptoms:</strong> Attention problems, hyperactivity, and impulsivity</li>
-        <li><strong>Psychosis:</strong> Severe sleep deprivation can lead to hallucinations and delusions</li>
-        <li><strong>Suicidal thoughts:</strong> Poor sleep is associated with increased suicidal ideation</li>
-      </ul>
-      
-      <h3>Common Sleep Disorders</h3>
-      <p>Several sleep disorders can impact mental health:</p>
-      <ul>
-        <li><strong>Insomnia:</strong> Difficulty falling asleep, staying asleep, or waking too early</li>
-        <li><strong>Sleep apnea:</strong> Breathing interruptions during sleep that cause awakenings</li>
-        <li><strong>Restless legs syndrome:</strong> Uncomfortable sensations causing an urge to move the legs</li>
-        <li><strong>Circadian rhythm disorders:</strong> Misalignment between your internal clock and external environment</li>
-        <li><strong>Narcolepsy:</strong> Excessive daytime sleepiness and sudden sleep attacks</li>
-        <li><strong>Parasomnias:</strong> Abnormal behaviors during sleep like nightmares, sleep walking, or sleep talking</li>
-      </ul>
-      
-      <h3>Sleep Improvement Strategies</h3>
-      
-      <h4>1. Sleep Hygiene Practices</h4>
-      <p>Good sleep hygiene includes habits and practices that promote quality sleep:</p>
-      <ul>
-        <li><strong>Consistent schedule:</strong> Go to bed and wake up at the same time every day, even on weekends</li>
-        <li><strong>Create a sleep-friendly environment:</strong> Keep your bedroom dark, quiet, cool (60-67°F or 15-19°C), and comfortable</li>
-        <li><strong>Remove electronics:</strong> Keep TVs, phones, and computers out of the bedroom, and avoid screens for at least 1 hour before bed</li>
-        <li><strong>Limit stimulants:</strong> Avoid caffeine after noon and nicotine close to bedtime</li>
-        <li><strong>Be careful with alcohol:</strong> While it might help you fall asleep initially, alcohol disrupts sleep quality</li>
-        <li><strong>Dinner timing:</strong> Finish eating 2-3 hours before bedtime</li>
-        <li><strong>Exercise regularly:</strong> But complete vigorous exercise at least 3-4 hours before bed</li>
-        <li><strong>Manage fluids:</strong> Drink enough to avoid waking up thirsty but not so much that you need nighttime bathroom trips</li>
-        <li><strong>Get sunlight exposure:</strong> Spend time outside during daylight hours to help regulate your circadian rhythm</li>
-      </ul>
-      
-      <h4>2. Relaxation Techniques</h4>
-      <p>Prepare your mind and body for sleep with relaxation practices:</p>
-      <ul>
-        <li><strong>Progressive muscle relaxation:</strong> Tense and then release each muscle group</li>
-        <li><strong>Deep breathing:</strong> Practice slow, diaphragmatic breathing</li>
-        <li><strong>Meditation:</strong> Use guided meditations designed for sleep</li>
-        <li><strong>Visualization:</strong> Imagine peaceful, calming scenes</li>
-        <li><strong>Gentle stretching:</strong> Perform relaxing stretches before bed</li>
-        <li><strong>Warm bath or shower:</strong> The subsequent temperature drop signals your body it's time to sleep</li>
-      </ul>
-      
-      <h4>3. Cognitive Behavioral Therapy for Insomnia (CBT-I)</h4>
-      <p>CBT-I is the first-line treatment for chronic insomnia and includes several components:</p>
-      <ul>
-        <li><strong>Stimulus control:</strong> Strengthening the association between bed and sleep</li>
-        <li><strong>Sleep restriction:</strong> Temporarily limiting time in bed to build sleep pressure</li>
-        <li><strong>Cognitive restructuring:</strong> Changing unhelpful beliefs about sleep</li>
-        <li><strong>Relaxation training:</strong> Learning techniques to reduce physical and mental arousal</li>
-        <li><strong>Sleep hygiene education:</strong> Understanding habits that promote good sleep</li>
-      </ul>
-      
-      <h4>4. Managing Racing Thoughts</h4>
-      <p>If your mind is active at bedtime:</p>
-      <ul>
-        <li>Schedule "worry time" earlier in the day to address concerns</li>
-        <li>Keep a notepad by your bed to jot down thoughts for tomorrow</li>
-        <li>Practice mindfulness to observe thoughts without engaging with them</li>
-        <li>Listen to calming audio like meditation guides, gentle music, or sleep stories</li>
-      </ul>
-      
-      <h4>5. When to Consider Sleep Medication</h4>
-      <p>While behavioral approaches should be the first line of treatment, medication may sometimes be appropriate:</p>
-      <ul>
-        <li>Consult with a healthcare provider before taking any sleep medications</li>
-        <li>Consider short-term use for acute insomnia due to temporary stressors</li>
-        <li>Be aware of potential side effects, dependency risks, and interactions</li>
-        <li>Even with medication, continue practicing good sleep hygiene</li>
-      </ul>
-      
-      <h3>Special Considerations</h3>
-      
-      <h4>Sleep and Trauma</h4>
-      <p>Trauma survivors often experience sleep disturbances, including:</p>
-      <ul>
-        <li>Nightmares and night terrors</li>
-        <li>Hypervigilance making it difficult to relax</li>
-        <li>Fear of sleep due to nightmares or vulnerability</li>
-      </ul>
-      <p>Trauma-informed sleep care may include specialized approaches like imagery rehearsal therapy for nightmares.</p>
-      
-      <h4>Sleep Across the Lifespan</h4>
-      <p>Sleep needs and patterns change throughout life:</p>
-      <ul>
-        <li><strong>Children and adolescents:</strong> Require more sleep than adults; shifts in circadian rhythm during puberty naturally delay sleep timing</li>
-        <li><strong>Adults:</strong> Most need 7-9 hours of sleep per night</li>
-        <li><strong>Older adults:</strong> Often experience changes in sleep architecture with more fragmented sleep and earlier waking</li>
-      </ul>
-      
-      <h3>Tracking Sleep and Progress</h3>
-      <p>Monitoring your sleep can provide valuable insights:</p>
-      <ul>
-        <li>Keep a sleep diary noting bedtime, wake time, and quality</li>
-        <li>Notice patterns in factors that help or hinder your sleep</li>
-        <li>Consider using sleep tracking apps or devices, but don't become obsessed with the data</li>
-        <li>Track daytime energy, mood, and functioning alongside sleep metrics</li>
-      </ul>
-      
-      <h3>When to Seek Professional Help</h3>
-      <p>Consult a healthcare professional if:</p>
-      <ul>
-        <li>Sleep problems persist despite good sleep hygiene</li>
-        <li>You experience excessive daytime sleepiness</li>
-        <li>Your bed partner notices breathing pauses during sleep</li>
-        <li>Sleep issues significantly impact your daily functioning</li>
-        <li>You have concerns about sleep medication use</li>
-        <li>You experience symptoms of other sleep disorders</li>
-      </ul>
-      
-      <h3>Remember</h3>
-      <p>Improving sleep is one of the most powerful steps you can take for better mental health. Even small changes to your sleep habits can yield significant benefits for your mood, cognitive function, and emotional resilience.</p>
-      <p>Don't view better sleep as a luxury—it's a fundamental pillar of mental health and overall wellbeing.</p>
-    `,
-    author: 'Dr. Sarah Johnson',
-    authorId: '1',
-    authorRole: 'doctor',
-    publishedDate: '2023-08-28',
-    imageUrl: 'https://images.unsplash.com/photo-1522621032211-ac0031dfbddc',
-    tags: ['Sleep', 'Mental Health', 'Wellness']
-  },
-  // ... more blog posts with full content
+    // ... more blog posts with full content
 ];
