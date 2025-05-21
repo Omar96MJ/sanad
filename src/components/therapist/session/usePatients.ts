@@ -40,7 +40,7 @@ export function usePatients() {
             id: patient.id,
             name: patient.name || 'Unknown Patient',
             email: patient.email || 'No email',
-            role: 'patient'
+            role: 'patient' as string // Explicitly define role as string
           }));
           
           // Combine real patients with default ones
