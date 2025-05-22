@@ -161,7 +161,7 @@ const AboutUs = () => {
                   bio: isRTL 
                     ? 'خريج هندسة البرمجيات جامعة السودان للعلوم والتكنولوجيا.'
                     : 'Graduate in Software Engineering, Sudan University of Science and Technology.',
-                  image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d'
+                  image: "/images/Eng-ramzi.jpg"
                 },
                 {
                   name: isRTL ? 'د. أمل الكناني' : 'Dr. Amel Alkenani',
@@ -169,16 +169,9 @@ const AboutUs = () => {
                   bio: isRTL 
                     ? 'طبيبة نائب اخصائي في الطب النفسي، وتملك أكثر من ٤ سنوات من الخبرة في مجال الصحة النفسية. تعمل حالياً في تقديم خدمات الطب النفسي عن بُعد عبر منصة STEP. وقد عملت سابقاً كرئيسة لقسم العلاج الكهربائي (ECT)، حيث أشرفت على تقديم هذا النوع من العلاجات. الدكتورة أمل شغوفة بتقديم خدمات نفسية ميسّرة، إنسانية، ومركزة على احتياجات المريض.'
                     : 'Dr. Amel Alkenani is a psychiatry registrar with over 4 years of experience in mental health. She provides telepsychiatry services through the STEP platform. Previously, she worked as the head of the ECT department, overseeing and delivering ECT treatments. Dr Amel is passionate about accessible, patient-centered mental health services.',
-                  image: '/images/Dr-aml-alkenani.jpg'
+                  image: "/images/Dr-aml-alkenani.jpg"
                 },
-                {
-                  name: isRTL ? 'فيصل العمري' : 'Faisal Al-Omari',
-                  role: isRTL ? 'مدير التكنولوجيا' : 'Technology Director',
-                  bio: isRTL 
-                    ? 'يقود تطوير منصتنا الرقمية لجعل الرعاية الصحية النفسية أكثر سهولة وإمكانية الوصول إليها.'
-                    : 'Leads the development of our digital platform to make mental health care easier and more accessible.',
-                  image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7'
-                }
+                
               ].map((member, index) => (
                 <div key={index} className="flex flex-col items-center text-center p-4">
                   <div className="h-40 w-40 rounded-full overflow-hidden mb-4">
