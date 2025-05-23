@@ -16,13 +16,19 @@ export function usePatients() {
       try {
         setIsLoading(true);
         
+        // Fetch real patients from the database
         const realPatients = await fetchPatients();
+        console.log("Fetched real patients:", realPatients);
+        
+        // Combine with default patients, ensuring real patients take precedence
         const combinedPatients = combineWithDefaultPatients(realPatients);
+        console.log("Combined patients:", combinedPatients);
         
         setPatients(combinedPatients);
       } catch (error) {
         console.error("Error loading patients:", error);
-        setPatients(defaultPatients); // Fallback to defaults on error
+        // Fallback to default patients on error
+        setPatients(defaultPatients);
       } finally {
         setIsLoading(false);
       }

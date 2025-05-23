@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -12,7 +13,7 @@ export interface Patient {
   name: string;
   email: string;
   profile_image?: string;
-  role?: string;  // Make role optional to match with existing code
+  role?: string;
 }
 
 interface PatientSearchProps {
@@ -39,12 +40,16 @@ export const PatientSearch = ({
       }, 500);
       
       return () => clearTimeout(timer);
+    } else {
+      setPatients([]);
+      setHasSearched(false);
     }
   }, [searchQuery]);
 
   const searchPatients = async () => {
     if (searchQuery.trim().length === 0) {
       setPatients([]);
+      setHasSearched(false);
       return;
     }
     
@@ -56,17 +61,29 @@ export const PatientSearch = ({
         .from('profiles')
         .select('id, name, email, profile_image')
         .eq('role', 'patient')
-        .ilike('name', `%${searchQuery}%`)
-        .order('name', { ascending: true });
+        .or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`)
+        .order('name', { ascending: true })
+        .limit(10);
         
       if (error) {
         console.error("Error searching patients:", error);
+        setPatients([]);
         return;
       }
       
-      setPatients(data || []);
+      // Ensure each patient has a unique key and proper structure
+      const formattedPatients: Patient[] = (data || []).map(patient => ({
+        id: patient.id, // This is the unique UUID from Supabase
+        name: patient.name || 'Unknown Patient',
+        email: patient.email || 'No email',
+        profile_image: patient.profile_image || undefined,
+        role: 'patient'
+      }));
+      
+      setPatients(formattedPatients);
     } catch (error) {
       console.error("Error in patient search:", error);
+      setPatients([]);
     } finally {
       setIsLoading(false);
     }
@@ -83,27 +100,36 @@ export const PatientSearch = ({
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder={t('search_patients')}
+            placeholder={t('search_patients') || "Search patients by name or email..."}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-8"
           />
         </div>
-        <Button type="submit" variant="outline" size="sm">
-          {t('search')}
+        <Button type="submit" variant="outline" size="sm" disabled={isLoading}>
+          {isLoading ? t('searching') || "Searching..." : t('search') || "Search"}
         </Button>
       </form>
       
       <div className="space-y-2 max-h-72 overflow-y-auto">
         {isLoading ? (
-          <p className="text-center text-muted-foreground py-4">{t('searching')}...</p>
+          <div className="flex justify-center items-center py-4">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            <span className="ml-2 text-muted-foreground">{t('searching') || "Searching"}...</span>
+          </div>
         ) : (
           <>
             {patients.length === 0 && hasSearched ? (
-              <p className="text-center text-muted-foreground py-4">{t('no_patients_found')}</p>
+              <div className="text-center py-4">
+                <p className="text-muted-foreground">
+                  {searchQuery.trim() 
+                    ? (t('no_patients_found') || "No patients found matching your search.") 
+                    : (t('enter_search_term') || "Enter a name or email to search for patients.")}
+                </p>
+              </div>
             ) : (
               patients.map((patient) => (
-                <Card key={patient.id} className="overflow-hidden border border-border/50">
+                <Card key={patient.id} className="overflow-hidden border border-border/50 hover:shadow-sm transition-shadow">
                   <CardContent className="p-3 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-8 w-8">
@@ -131,6 +157,12 @@ export const PatientSearch = ({
           </>
         )}
       </div>
+      
+      {!hasSearched && searchQuery.trim().length === 0 && (
+        <div className="text-center py-4 text-muted-foreground text-sm">
+          {t('start_typing_to_search') || "Start typing to search for patients..."}
+        </div>
+      )}
     </div>
   );
 };
