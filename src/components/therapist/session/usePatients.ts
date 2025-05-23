@@ -11,10 +11,14 @@ export function usePatients() {
 
   useEffect(() => {
     const loadPatients = async () => {
-      if (!user) return;
+      if (!user) {
+        console.log("No user, skipping patient fetch");
+        return;
+      }
       
       try {
         setIsLoading(true);
+        console.log("Loading patients for user:", user.id);
         
         // Fetch real patients from the database
         const realPatients = await fetchPatients();
@@ -28,6 +32,7 @@ export function usePatients() {
       } catch (error) {
         console.error("Error loading patients:", error);
         // Fallback to default patients on error
+        console.log("Using fallback default patients");
         setPatients(defaultPatients);
       } finally {
         setIsLoading(false);

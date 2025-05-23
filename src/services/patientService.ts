@@ -15,12 +15,16 @@ export const defaultPatients: Patient[] = [
  */
 export async function fetchPatients(): Promise<Patient[]> {
   try {
+    console.log("Fetching all patients from database...");
+    
     // Fetch all patients from profiles where role is patient
     const { data, error } = await supabase
       .from('profiles')
       .select('id, name, email, profile_image')
       .eq('role', 'patient')
       .order('name', { ascending: true });
+    
+    console.log("Database query result:", { data, error });
     
     if (error) {
       console.error("Error fetching patients:", error);
@@ -37,6 +41,7 @@ export async function fetchPatients(): Promise<Patient[]> {
         role: "patient"
       }));
       
+      console.log("Formatted patients from database:", formattedPatients);
       return formattedPatients;
     }
     
@@ -53,8 +58,11 @@ export async function fetchPatients(): Promise<Patient[]> {
 export async function searchPatients(query: string): Promise<Patient[]> {
   try {
     if (!query.trim()) {
+      console.log("Empty query, returning empty results");
       return [];
     }
+
+    console.log("Searching patients with query:", query);
 
     const { data, error } = await supabase
       .from('profiles')
@@ -63,6 +71,8 @@ export async function searchPatients(query: string): Promise<Patient[]> {
       .or(`name.ilike.%${query}%,email.ilike.%${query}%`)
       .order('name', { ascending: true })
       .limit(20);
+    
+    console.log("Search query result:", { data, error });
     
     if (error) {
       console.error("Error searching patients:", error);
@@ -78,6 +88,7 @@ export async function searchPatients(query: string): Promise<Patient[]> {
         role: "patient"
       }));
       
+      console.log("Search results formatted:", formattedPatients);
       return formattedPatients;
     }
     

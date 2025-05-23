@@ -57,6 +57,8 @@ export const PatientSearch = ({
     setHasSearched(true);
     
     try {
+      console.log("Searching for patients with query:", searchQuery);
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('id, name, email, profile_image')
@@ -65,6 +67,9 @@ export const PatientSearch = ({
         .order('name', { ascending: true })
         .limit(10);
         
+      console.log("Search results:", data);
+      console.log("Search error:", error);
+      
       if (error) {
         console.error("Error searching patients:", error);
         setPatients([]);
@@ -80,6 +85,7 @@ export const PatientSearch = ({
         role: 'patient'
       }));
       
+      console.log("Formatted patients:", formattedPatients);
       setPatients(formattedPatients);
     } catch (error) {
       console.error("Error in patient search:", error);
@@ -126,6 +132,9 @@ export const PatientSearch = ({
                     ? (t('no_patients_found') || "No patients found matching your search.") 
                     : (t('enter_search_term') || "Enter a name or email to search for patients.")}
                 </p>
+                <p className="text-xs text-muted-foreground mt-2">
+                  Debug: Query "{searchQuery}", Found {patients.length} patients
+                </p>
               </div>
             ) : (
               patients.map((patient) => (
@@ -141,6 +150,7 @@ export const PatientSearch = ({
                         {showEmail && (
                           <p className="text-xs text-muted-foreground">{patient.email}</p>
                         )}
+                        <p className="text-xs text-green-600">Real patient (ID: {patient.id.substring(0, 8)}...)</p>
                       </div>
                     </div>
                     <Button 
