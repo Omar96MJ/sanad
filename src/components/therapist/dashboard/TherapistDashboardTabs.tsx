@@ -22,6 +22,8 @@ interface TherapistDashboardTabsProps {
   demographics: { name: string; percentage: number }[];
   onViewSessionDetails: () => void;
   onScheduleSession: () => void;
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
 }
 
 export const TherapistDashboardTabs = ({
@@ -31,9 +33,10 @@ export const TherapistDashboardTabs = ({
   demographics,
   onViewSessionDetails,
   onScheduleSession,
+  activeTab,
+  setActiveTab,
 }: TherapistDashboardTabsProps) => {
   const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState("overview");
 
   // Handler to automatically switch to the sessions tab
   const handleSessionsTabClick = () => {
@@ -45,13 +48,19 @@ export const TherapistDashboardTabs = ({
     setActiveTab("video_session");
   };
 
+  // Handler to automatically switch to the messages tab
+  const handleMessagesTabClick = () => {
+    setActiveTab("messages");
+  };
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-8">
+      <TabsList className="grid grid-cols-2 md:grid-cols-7 mb-8">
         <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
         <TabsTrigger value="profile">{t('profile')}</TabsTrigger>
         <TabsTrigger value="patients">{t('patients')}</TabsTrigger>
         <TabsTrigger value="sessions">{t('sessions')}</TabsTrigger>
+        <TabsTrigger value="messages">{t('messages')}</TabsTrigger>
         <TabsTrigger value="video_session">{t('video_session')}</TabsTrigger>
         <TabsTrigger value="availability">{t('availability')}</TabsTrigger>
       </TabsList>
@@ -77,6 +86,10 @@ export const TherapistDashboardTabs = ({
       
       <TabsContent value="sessions">
         <SessionManagement />
+      </TabsContent>
+      
+      <TabsContent value="messages">
+        <MessagingLayout isTherapist={true} />
       </TabsContent>
       
       <TabsContent value="video_session">
