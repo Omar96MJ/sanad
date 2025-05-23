@@ -37,7 +37,7 @@ export const PatientSearch = ({
     if (searchQuery.trim().length > 0) {
       const timer = setTimeout(() => {
         searchPatients();
-      }, 500);
+      }, 300); // Reduced debounce time
       
       return () => clearTimeout(timer);
     } else {
@@ -59,30 +59,50 @@ export const PatientSearch = ({
     try {
       console.log("Searching for patients with query:", searchQuery);
       
-      const { data, error } = await supabase
+      // First, try to search for users with role 'patient'
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
-        .select('id, name, email, profile_image')
+        .select('id, name, email, profile_image, role')
         .eq('role', 'patient')
         .or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`)
         .order('name', { ascending: true })
         .limit(10);
         
-      console.log("Search results:", data);
-      console.log("Search error:", error);
+      console.log("Profile search results:", profileData);
+      console.log("Profile search error:", profileError);
       
-      if (error) {
-        console.error("Error searching patients:", error);
+      // Also search in all profiles (in case role is not set correctly)
+      const { data: allProfilesData, error: allProfilesError } = await supabase
+        .from('profiles')
+        .select('id, name, email, profile_image, role')
+        .or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`)
+        .order('name', { ascending: true })
+        .limit(10);
+        
+      console.log("All profiles search results:", allProfilesData);
+      console.log("All profiles search error:", allProfilesError);
+      
+      if (profileError && allProfilesError) {
+        console.error("Error searching patients:", profileError, allProfilesError);
         setPatients([]);
         return;
       }
       
-      // Ensure each patient has a unique key and proper structure
-      const formattedPatients: Patient[] = (data || []).map(patient => ({
-        id: patient.id, // This is the unique UUID from Supabase
+      // Combine results, prioritizing those with patient role
+      const patientProfiles = profileData || [];
+      const otherProfiles = (allProfilesData || []).filter(profile => 
+        !patientProfiles.some(p => p.id === profile.id)
+      );
+      
+      const combinedResults = [...patientProfiles, ...otherProfiles];
+      
+      // Format the results
+      const formattedPatients: Patient[] = combinedResults.map(patient => ({
+        id: patient.id,
         name: patient.name || 'Unknown Patient',
         email: patient.email || 'No email',
         profile_image: patient.profile_image || undefined,
-        role: 'patient'
+        role: patient.role || "patient"
       }));
       
       console.log("Formatted patients:", formattedPatients);
@@ -135,6 +155,9 @@ export const PatientSearch = ({
                 <p className="text-xs text-muted-foreground mt-2">
                   Debug: Query "{searchQuery}", Found {patients.length} patients
                 </p>
+                <p className="text-xs text-blue-600 mt-1">
+                  Tip: Try searching for common names like "ahmed", "sara", or "omar"
+                </p>
               </div>
             ) : (
               patients.map((patient) => (
@@ -150,7 +173,9 @@ export const PatientSearch = ({
                         {showEmail && (
                           <p className="text-xs text-muted-foreground">{patient.email}</p>
                         )}
-                        <p className="text-xs text-green-600">Real patient (ID: {patient.id.substring(0, 8)}...)</p>
+                        <p className="text-xs text-green-600">
+                          {patient.role === 'patient' ? 'Patient' : 'User'} (ID: {patient.id.substring(0, 8)}...)
+                        </p>
                       </div>
                     </div>
                     <Button 
@@ -170,7 +195,8 @@ export const PatientSearch = ({
       
       {!hasSearched && searchQuery.trim().length === 0 && (
         <div className="text-center py-4 text-muted-foreground text-sm">
-          {t('start_typing_to_search') || "Start typing to search for patients..."}
+          <p>{t('start_typing_to_search') || "Start typing to search for patients..."}</p>
+          <p className="text-xs mt-1">Try searching for names like "ahmed", "sara", "omar", or "test"</p>
         </div>
       )}
     </div>
