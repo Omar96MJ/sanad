@@ -1,16 +1,14 @@
 
-import { useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguage } from "@/hooks/useLanguage";
-import TherapistProfile from "@/components/therapist/TherapistProfile";
-import PatientManagement from "@/components/therapist/PatientManagement";
-import SessionManagement from "@/components/therapist/SessionManagement";
-import AvailabilityManagement from "@/components/therapist/AvailabilityManagement";
+import { DashboardOverview } from "./DashboardOverview";
+import SessionManagement from "../SessionManagement";
+import PatientManagement from "../PatientManagement";
+import AvailabilityManagement from "../AvailabilityManagement";
+import EvaluationForms from "../EvaluationForms";
 import MessagingLayout from "@/components/messaging/MessagingLayout";
-import { DashboardOverview } from "@/components/therapist/dashboard/DashboardOverview";
-import TherapistVideoSession from "@/components/therapist/TherapistVideoSession";
 
-interface TherapistDashboardTabsProps {
+type TherapistDashboardTabsProps = {
   isLoading: boolean;
   doctorStats: {
     patients_count: number;
@@ -19,10 +17,12 @@ interface TherapistDashboardTabsProps {
     available_hours: number;
   };
   upcomingAppointments: any[];
-  demographics: { name: string; percentage: number }[];
+  demographics: Array<{ name: string; percentage: number }>;
   onViewSessionDetails: () => void;
   onScheduleSession: () => void;
-}
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+};
 
 export const TherapistDashboardTabs = ({
   isLoading,
@@ -31,60 +31,51 @@ export const TherapistDashboardTabs = ({
   demographics,
   onViewSessionDetails,
   onScheduleSession,
+  activeTab,
+  setActiveTab,
 }: TherapistDashboardTabsProps) => {
   const { t } = useLanguage();
-  const [activeTab, setActiveTab] = useState("overview");
-
-  // Handler to automatically switch to the sessions tab
-  const handleSessionsTabClick = () => {
-    setActiveTab("sessions");
-  };
-
-  // Handler to automatically switch to the video session tab
-  const handleVideoTabClick = () => {
-    setActiveTab("video_session");
-  };
 
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <TabsList className="grid grid-cols-2 md:grid-cols-6 mb-8">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+      <TabsList className="grid w-full grid-cols-6">
         <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
-        <TabsTrigger value="profile">{t('profile')}</TabsTrigger>
-        <TabsTrigger value="patients">{t('patients')}</TabsTrigger>
         <TabsTrigger value="sessions">{t('sessions')}</TabsTrigger>
-        <TabsTrigger value="video_session">{t('video_session')}</TabsTrigger>
+        <TabsTrigger value="messages">{t('messages')}</TabsTrigger>
+        <TabsTrigger value="patients">{t('patients')}</TabsTrigger>
         <TabsTrigger value="availability">{t('availability')}</TabsTrigger>
+        <TabsTrigger value="evaluations">{t('evaluations')}</TabsTrigger>
       </TabsList>
-      
-      <TabsContent value="overview">
-        <DashboardOverview 
+
+      <TabsContent value="overview" className="space-y-6">
+        <DashboardOverview
           isLoading={isLoading}
           doctorStats={doctorStats}
           upcomingAppointments={upcomingAppointments}
           demographics={demographics}
-          onViewSessionDetails={handleSessionsTabClick}
-          onScheduleSession={handleSessionsTabClick}
+          onViewSessionDetails={onViewSessionDetails}
+          onScheduleSession={onScheduleSession}
         />
       </TabsContent>
-      
-      <TabsContent value="profile">
-        <TherapistProfile />
-      </TabsContent>
-      
-      <TabsContent value="patients">
-        <PatientManagement />
-      </TabsContent>
-      
-      <TabsContent value="sessions">
+
+      <TabsContent value="sessions" className="space-y-6">
         <SessionManagement />
       </TabsContent>
-      
-      <TabsContent value="video_session">
-        <TherapistVideoSession />
+
+      <TabsContent value="messages" className="space-y-6">
+        <MessagingLayout isTherapist={true} />
       </TabsContent>
-      
-      <TabsContent value="availability">
+
+      <TabsContent value="patients" className="space-y-6">
+        <PatientManagement />
+      </TabsContent>
+
+      <TabsContent value="availability" className="space-y-6">
         <AvailabilityManagement />
+      </TabsContent>
+
+      <TabsContent value="evaluations" className="space-y-6">
+        <EvaluationForms />
       </TabsContent>
     </Tabs>
   );

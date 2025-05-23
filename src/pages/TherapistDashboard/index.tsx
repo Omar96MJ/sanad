@@ -37,6 +37,7 @@ const TherapistDashboard = () => {
     available_hours: 0
   });
   const [upcomingAppointments, setUpcomingAppointments] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState("overview");
   
   useEffect(() => {
     // Redirect if not logged in or not a doctor
@@ -145,18 +146,16 @@ const TherapistDashboard = () => {
     toast.info(t("notifications_coming_soon"));
   };
 
+  const handleMessageClick = () => {
+    setActiveTab("messages");
+  };
+
   const handleViewSessionDetails = () => {
-    // Using the tabs component state to switch tabs
-    document.querySelector('[data-value="sessions"]')?.dispatchEvent(
-      new MouseEvent('click', { bubbles: true })
-    );
+    setActiveTab("sessions");
   };
 
   const handleScheduleSession = () => {
-    // Using the tabs component state to switch tabs
-    document.querySelector('[data-value="sessions"]')?.dispatchEvent(
-      new MouseEvent('click', { bubbles: true })
-    );
+    setActiveTab("sessions");
   };
 
   return (
@@ -167,7 +166,7 @@ const TherapistDashboard = () => {
           <DashboardHeader 
             doctorName={doctorProfile?.name || user.name || ''}
             notificationsCount={notificationsCount}
-            onMessageClick={handleViewSessionDetails}
+            onMessageClick={handleMessageClick}
             onNotificationClick={handleNotificationClick}
           />
           
@@ -178,6 +177,8 @@ const TherapistDashboard = () => {
             demographics={demographics}
             onViewSessionDetails={handleViewSessionDetails}
             onScheduleSession={handleScheduleSession}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
           />
         </div>
       </main>
