@@ -31,8 +31,12 @@ const MentalHealthInfo = () => {
 
   const mentalHealthCategories = [
     {
-      title: "الاكتئاب",
-      description: "الاكتئاب هو حالة نفسية تتميز بالحزن المستمر وفقدان الاهتمام وصعوبة في القيام بالأنشطة اليومية. يمكن أن يسبب مجموعة واسعة من المشكلات العاطفية والجسدية.",
+      title: isRTL
+      ? "الاكتئاب"
+      : "Depression",
+      description: isRTL 
+      ? "الاكتئاب هو حالة نفسية تتميز بالحزن المستمر وفقدان الاهتمام وصعوبة في القيام بالأنشطة اليومية. يمكن أن يسبب مجموعة واسعة من المشكلات العاطفية والجسدية."
+      : "Depression is a psychological condition characterized by persistent sadness, loss of interest, and difficulty performing daily activities. It can cause a wide range of emotional and physical problems.",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
           <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
@@ -43,8 +47,12 @@ const MentalHealthInfo = () => {
       )
     },
     {
-      title: "القلق",
-      description: "اضطرابات القلق تتميز بمشاعر قوية من الخوف والقلق. يشعر الأشخاص المصابون بالقلق بالتوتر والعصبية ويمكن أن يعانوا من تغيرات جسدية مثل زيادة معدل ضربات القلب.",
+      title: isRTL
+      ? "القلق"
+      : "Anxiety",
+      description: isRTL
+      ? "اضطرابات القلق تتميز بمشاعر قوية من الخوف والقلق. يشعر الأشخاص المصابون بالقلق بالتوتر والعصبية ويمكن أن يعانوا من تغيرات جسدية مثل زيادة معدل ضربات القلب."
+      : "Anxiety disorders are characterized by strong feelings of fear and anxiety. People with anxiety feel stressed and nervous and can experience physical changes such as an increased heart rate.",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
           <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
@@ -56,8 +64,12 @@ const MentalHealthInfo = () => {
       )
     },
     {
-      title: "التوتر",
-      description: "التوتر هو استجابة الجسم للضغوط. يمكن أن يسبب أعراضًا جسدية مثل الصداع وآلام العضلات، وأعراضًا عاطفية مثل القلق والاكتئاب، وأعراضًا سلوكية مثل تغيرات في النوم والشهية.",
+      title: isRTL
+      ? "التوتر"
+      : "Stress",
+      description: isRTL
+      ? "التوتر هو استجابة الجسم للضغوط. يمكن أن يسبب أعراضًا جسدية مثل الصداع وآلام العضلات، وأعراضًا عاطفية مثل القلق والاكتئاب، وأعراضًا سلوكية مثل تغيرات في النوم والشهية."
+      : "Stress is the body's response to stress. It can cause physical symptoms such as headaches and muscle aches, emotional symptoms such as anxiety and depression, and behavioral symptoms such as changes in sleep and appetite.",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
           <path d="M12 20v-6M12 8V2M2 12h20M17 12a5 5 0 0 1-10 0" />
@@ -65,8 +77,12 @@ const MentalHealthInfo = () => {
       )
     },
     {
-      title: "الصدمة النفسية",
-      description: "الصدمة النفسية هي استجابة عاطفية لحدث مؤلم. يمكن أن تسبب مجموعة من ردود الفعل الجسدية والعاطفية، بما في ذلك صعوبة النوم، والذكريات المتطفلة، والتجنب.",
+      title: isRTL
+      ? "الصدمة النفسية"
+      : "psychological Trauma",
+      description: isRTL
+      ? "الصدمة النفسية هي استجابة عاطفية لحدث مؤلم. يمكن أن تسبب مجموعة من ردود الفعل الجسدية والعاطفية، بما في ذلك صعوبة النوم، والذكريات المتطفلة، والتجنب."
+      : "Psychological Trauma is an emotional response to a traumatic event. They can cause a range of physical and emotional reactions, including difficulty sleeping, intrusive memories, and avoidance.",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
           <path d="m3 8 4 2 4-5 4 5 4-2" />
@@ -76,8 +92,12 @@ const MentalHealthInfo = () => {
       )
     },
     {
-      title: "اضطرابات الأكل",
-      description: "اضطرابات الأكل هي حالات نفسية تتميز بعادات أكل غير صحية وقلق شديد بشأن وزن الجسم أو شكله. تشمل الأنواع الشائعة فقدان الشهية العصبي والشره المرضي العصبي.",
+      title: isRTL
+      ? "اضطرابات الأكل"
+      : "Eating Disorders",
+      description: isRTL
+      ? "اضطرابات الأكل هي حالات نفسية تتميز بعادات أكل غير صحية وقلق شديد بشأن وزن الجسم أو شكله. تشمل الأنواع الشائعة فقدان الشهية العصبي والشره المرضي العصبي."
+      : "Eating disorders are psychological conditions characterized by unhealthy eating habits and intense anxiety about body weight or shape. Common types include anorexia nervosa and bulimia nervosa.",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
           <path d="M18 6h-9a6 6 0 1 0 0 12h9" />
@@ -86,8 +106,12 @@ const MentalHealthInfo = () => {
       )
     },
     {
-      title: "اضطرابات النوم",
-      description: "اضطرابات النوم هي حالات تؤثر على قدرتك على النوم بشكل جيد بانتظام. يمكن أن تؤثر اضطرابات النوم على صحتك العامة وجودة حياتك وسلامتك.",
+      title: isRTL
+      ? "اضطرابات النوم"
+      : "Sleep Disorders",
+      description: isRTL
+      ? "اضطرابات النوم هي حالات تؤثر على قدرتك على النوم بشكل جيد بانتظام. يمكن أن تؤثر اضطرابات النوم على صحتك العامة وجودة حياتك وسلامتك."
+      : "Sleep disorders are conditions that affect your ability to sleep well regularly. Sleep disorders can affect your overall health, quality of life, and safety.",
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-primary">
           <path d="M12 2a7 7 0 0 0-7 7c0 1.462.473 2.814 1.277 3.91L12 21l5.723-8.09A7.003 7.003 0 0 0 19 9a7 7 0 0 0-7-7z" />
