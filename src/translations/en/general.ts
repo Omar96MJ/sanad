@@ -82,6 +82,10 @@ const general = {
   'featured_mental_health_articles': 'Featured Mental Health Articles',
   'explore_latest_articles': 'Explore the latest articles and resources to support your mental health journey',
   'view_all_articles': 'View All Articles',
+
+  // Blog post page translations
+  'back_to_all_posts': 'Back to All Posts',
+  'min_read': 'minute To Read',
   // Mental Health Guide
   'mentalhealthguide': 'Mental Health Guide',
   'mentalhealthguidesubtitle': 'Understanding and caring for your mental wellbeing',
