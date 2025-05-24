@@ -12,12 +12,19 @@ import { Heart, CreditCard, Landmark, WalletCards, Smartphone, Copy } from "luci
 import Footer from "@/components/Footer";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import {useEffect} from "react";
+
 
 const Donation = () => {
   const { language, t } = useLanguage();
   const isRTL = language === 'ar';
   const { toast } = useToast();
   
+  useEffect(() => {
+      window.scrollTo(0, 0);
+      document.title = language === 'ar' ? 'سند - تبرع الآن' : 'Sanad - Donation Now';
+    }, [language]);
+
   const [amount, setAmount] = useState<string>('');
   const [customAmount, setCustomAmount] = useState<string>('');
   const [paymentMethod, setPaymentMethod] = useState<string>('card');
