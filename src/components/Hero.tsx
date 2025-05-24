@@ -97,7 +97,7 @@ const Hero = () => {
           >
             <div className="relative rounded-xl overflow-hidden">
               <img 
-                src="/lovable-uploads/0e3cf0d5-fc00-4468-90df-ea4b401e4c9e.png" 
+                src="/images/heroPhoto.png" 
                 alt={isRTL ? "معالج نفسي" : "Therapist"}
                 className="w-full object-cover rounded-xl shadow-lg"
               />
