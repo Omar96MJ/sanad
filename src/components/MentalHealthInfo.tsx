@@ -170,9 +170,17 @@ const MentalHealthInfo = () => {
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`}
           >
-            <h3 className="text-2xl font-bold mb-4">كيف تحافظ على صحتك النفسية؟</h3>
+            <h3 className="text-2xl font-bold mb-4">
+              {isRTL 
+              ? "كيف تحافظ على صحتك النفسية؟" 
+              : "How Do You Maintain Your Mental Health?"
+              }
+            </h3>
             <p className="text-muted-foreground mb-6">
-              الصحة النفسية هي جزء أساسي من الصحة العامة وتؤثر على كيفية تفكيرنا وشعورنا وتصرفنا. إليك بعض النصائح للحفاظ على صحتك النفسية:
+              {isRTL 
+              ? "الصحة النفسية هي جزء أساسي من الصحة العامة وتؤثر على كيفية تفكيرنا وشعورنا وتصرفنا. إليك بعض النصائح للحفاظ على صحتك النفسية:"
+              : "Mental health is an essential part of overall health and affects how we think, feel and act. Here are some tips to maintain your mental health:"
+              }
             </p>
             <ul className="text-right space-y-3">
               <li className="flex items-center gap-2">
@@ -182,7 +190,12 @@ const MentalHealthInfo = () => {
                     <path d="m9 12 2 2 4-4" />
                   </svg>
                 </div>
-                <span>حافظ على نشاطك البدني والتمارين المنتظمة</span>
+                <span>
+                  {isRTL
+                  ? "حافظ على نشاطك البدني والتمارين المنتظمة"
+                  : "Stay physically active and exercise regularly"
+                  }
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <div className="bg-primary/10 text-primary p-1 rounded-full">
@@ -191,7 +204,12 @@ const MentalHealthInfo = () => {
                     <path d="m9 12 2 2 4-4" />
                   </svg>
                 </div>
-                <span>تناول نظام غذائي متوازن ومغذي</span>
+                <span>
+                  {isRTL
+                  ? "تناول نظام غذائي متوازن ومغذي"
+                  : "Eat a balanced and nutritious diet"
+                  }
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <div className="bg-primary/10 text-primary p-1 rounded-full">
@@ -200,7 +218,12 @@ const MentalHealthInfo = () => {
                     <path d="m9 12 2 2 4-4" />
                   </svg>
                 </div>
-                <span>احصل على قسط كاف من النوم</span>
+                <span>
+                  {isRTL
+                  ? "احصل على قسط كاف من النوم"
+                  : "Get enough sleep"
+                  }
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <div className="bg-primary/10 text-primary p-1 rounded-full">
@@ -209,7 +232,12 @@ const MentalHealthInfo = () => {
                     <path d="m9 12 2 2 4-4" />
                   </svg>
                 </div>
-                <span>تعلم مهارات إدارة التوتر مثل التأمل واليوغا</span>
+                <span>
+                  {isRTL
+                  ? "تعلم مهارات إدارة التوتر مثل التأمل واليوغا"
+                  : "Learn stress management skills such as meditation and yoga"
+                  }
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <div className="bg-primary/10 text-primary p-1 rounded-full">
@@ -218,7 +246,12 @@ const MentalHealthInfo = () => {
                     <path d="m9 12 2 2 4-4" />
                   </svg>
                 </div>
-                <span>احتفظ بعلاقات اجتماعية إيجابية وداعمة</span>
+                <span>
+                  {isRTL
+                  ? "احتفظ بعلاقات اجتماعية إيجابية وداعمة"
+                  : "Maintain positive and supportive social relationships"
+                  }
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <div className="bg-primary/10 text-primary p-1 rounded-full">
@@ -227,7 +260,12 @@ const MentalHealthInfo = () => {
                     <path d="m9 12 2 2 4-4" />
                   </svg>
                 </div>
-                <span>اطلب المساعدة المهنية عندما تحتاج إليها</span>
+                <span>
+                  {isRTL
+                  ? "اطلب المساعدة المهنية عندما تحتاج إليها"
+                  : "Seek professional help when you need it"
+                  }
+                </span>
               </li>
             </ul>
           </div>
