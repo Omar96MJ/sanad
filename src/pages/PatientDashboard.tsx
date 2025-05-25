@@ -13,6 +13,7 @@ import { PatientDashboardTabs } from "@/components/patient/dashboard/PatientDash
 import { DashboardHeader } from "@/components/patient/dashboard/DashboardHeader";
 import { SessionModal } from "@/components/patient/dashboard/session-modal/SessionModal";
 import { fetchPatientAppointments, PatientAppointment } from "@/services/patientAppointmentService";
+import {fetchPatientProgress} from "@/services/fetchPatientProgress";
 
 // Import mockBlogs instead of mockArticles
 import { mockBlogs } from "@/data/mockBlogs";
@@ -29,7 +30,25 @@ const PatientDashboard = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [appointments, setAppointments] = useState<PatientAppointment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState<number | null>(null);
   
+  useEffect(() => {
+    const loadProgress = async () => {
+    if (!user) return;
+
+    try {
+      const progressValue = await fetchPatientProgress(user.id);
+      setProgress(progressValue);
+    } catch (error) {
+      console.error("Error loading progress:", error);
+      toast.error(isRTL ? "حدث خطأ أثناء تحميل التقدم" : "Error loading progress");
+    }
+  };
+
+  loadProgress();
+}, [user, isRTL]);
+
+
   // Animation on mount
   useEffect(() => {
     setTimeout(() => setIsVisible(true), 100);
@@ -79,8 +98,6 @@ const PatientDashboard = () => {
     );
   }
   
-  // Mock patient progress data
-  const progress = 65;
   
   // Mock doctor data
   const mockDoctor = {
@@ -148,7 +165,7 @@ const PatientDashboard = () => {
           
           <PatientDashboardTabs
             isVisible={isVisible}
-            progress={progress}
+            progress={progress ?? 0}
             mockDoctor={mockDoctor}
             appointments={appointments}
             isLoadingAppointments={isLoading}
