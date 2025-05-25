@@ -1,9 +1,10 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
 import { createAppointment } from "@/services/patientAppointmentService";
+import { fetchAllDoctors, DoctorProfile } from "@/services/doctorService";
 
 export interface SessionFormData {
   sessionDate: Date | undefined;
@@ -23,14 +24,31 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
   const isRTL = language === "ar";
   
   const [isLoading, setIsLoading] = useState(false);
+  const [doctors, setDoctors] = useState<DoctorProfile[]>([]);
+  const [isLoadingDoctors, setIsLoadingDoctors] = useState(true);
+  const [selectedDoctor, setSelectedDoctor] = useState<DoctorProfile | null>(null);
 
-  // Updated mock doctor data with a valid UUID format
-  const mockDoctor = {
-    id: "7559db55-42d1-4a29-8523-34af719a740d", // Using a valid UUID instead of "dr-smith"
-    name: "Dr. Emily Smith",
-    specialization: "Clinical Psychologist",
-    image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
-  };
+  // Load doctors on component mount
+  useEffect(() => {
+    const loadDoctors = async () => {
+      try {
+        setIsLoadingDoctors(true);
+        const doctorsData = await fetchAllDoctors();
+        setDoctors(doctorsData);
+        // Auto-select first doctor if available
+        if (doctorsData.length > 0) {
+          setSelectedDoctor(doctorsData[0]);
+        }
+      } catch (error) {
+        console.error("Error loading doctors:", error);
+        toast.error(isRTL ? "حدث خطأ أثناء تحميل بيانات الأطباء" : "Error loading doctors data");
+      } finally {
+        setIsLoadingDoctors(false);
+      }
+    };
+
+    loadDoctors();
+  }, [isRTL]);
 
   // Handle booking session
   const handleBookSession = async (formValues: SessionFormData) => {
@@ -43,6 +61,12 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
         return;
       }
 
+      if (!selectedDoctor) {
+        toast.error(isRTL ? "لا يوجد طبيب متاح حاليًا" : "No doctor available at the moment");
+        setIsLoading(false);
+        return;
+      }
+
       // Combine date and time
       const [hours, minutes] = formValues.sessionTime.split(':').map(Number);
       const sessionDateTime = new Date(formValues.sessionDate);
@@ -50,8 +74,8 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
       
       await createAppointment({
         patient_id: user.id,
-        doctor_id: mockDoctor.id,
-        doctor_name: mockDoctor.name,
+        doctor_id: selectedDoctor.id,
+        doctor_name: selectedDoctor.name,
         session_date: sessionDateTime.toISOString(),
         session_type: formValues.sessionType,
         status: 'upcoming'
@@ -86,6 +110,9 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
     isLoading,
     setIsLoading,
     handleBookSession,
-    mockDoctor,
+    doctors,
+    isLoadingDoctors,
+    selectedDoctor,
+    setSelectedDoctor,
   };
 };

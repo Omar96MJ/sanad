@@ -39,7 +39,7 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
   const { language } = useLanguage();
   const isRTL = language === "ar";
   
-  const { mockDoctor } = useSessionForm({ onClose: onCancel });
+  const { selectedDoctor, isLoadingDoctors } = useSessionForm({ onClose: onCancel });
   
   // Initialize form with React Hook Form
   const form = useForm<FormValues>({
@@ -74,7 +74,7 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 py-4">
         {/* Therapist info */}
-        <TherapistInfo therapist={mockDoctor} />
+        <TherapistInfo doctor={selectedDoctor} isLoading={isLoadingDoctors} />
         
         {/* Session type */}
         <SessionTypeField control={form.control} />

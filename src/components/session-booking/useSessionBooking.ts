@@ -5,47 +5,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
 import { format, isSameDay } from "date-fns";
 import { toast } from "sonner";
-
-// Mock data for therapists
-const mockTherapists = [
-  {
-    id: "1",
-    name: "Dr. Sarah Johnson",
-    email: "sarah@example.com",
-    username: "sarah-johnson",
-    bio: "Specializing in anxiety and depression treatment with 8+ years of experience",
-    avatar: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=256",
-    eventTypes: [
-      { id: "1", title: "Initial Consultation", length: 60 },
-      { id: "2", title: "Follow-up Session", length: 45 },
-      { id: "3", title: "Emergency Session", length: 30 }
-    ]
-  },
-  {
-    id: "2",
-    name: "Dr. Michael Chen",
-    email: "michael@example.com",
-    username: "michael-chen",
-    bio: "Helping families build stronger relationships for over 10 years",
-    avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=256",
-    eventTypes: [
-      { id: "1", title: "Family Therapy Session", length: 60 },
-      { id: "2", title: "Follow-up Session", length: 45 }
-    ]
-  },
-  {
-    id: "3",
-    name: "Dr. Aisha Rahman",
-    email: "aisha@example.com",
-    username: "aisha-rahman",
-    bio: "Specialized in PTSD and trauma recovery with a compassionate approach",
-    avatar: "https://images.unsplash.com/photo-1614608682850-e0d6ed316d47?auto=format&fit=crop&q=80&w=256",
-    eventTypes: [
-      { id: "1", title: "Trauma Therapy", length: 60 },
-      { id: "2", title: "Follow-up Session", length: 45 }
-    ]
-  }
-];
+import { fetchAllDoctors, DoctorProfile } from "@/services/doctorService";
 
 interface UseSessionBookingProps {
   onSuccess?: () => void;
@@ -58,9 +18,9 @@ export const useSessionBooking = ({ onSuccess, inDashboard = false }: UseSession
   const navigate = useNavigate();
   const isRTL = language === "ar";
 
-  const [therapists, setTherapists] = useState(mockTherapists);
+  const [therapists, setTherapists] = useState<DoctorProfile[]>([]);
   const [selectedTherapist, setSelectedTherapist] = useState("");
-  const [selectedTherapistDetails, setSelectedTherapistDetails] = useState<any | null>(null);
+  const [selectedTherapistDetails, setSelectedTherapistDetails] = useState<DoctorProfile | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [availableSlots, setAvailableSlots] = useState<any[]>([]);
   const [selectedTime, setSelectedTime] = useState("");
@@ -70,15 +30,24 @@ export const useSessionBooking = ({ onSuccess, inDashboard = false }: UseSession
   const [loadingTherapists, setLoadingTherapists] = useState(false);
   const [loadingSlots, setLoadingSlots] = useState(false);
 
-  // Set mock therapists
+  // Fetch real therapists from Supabase
   useEffect(() => {
-    setLoadingTherapists(true);
-    // Simulate API call
-    setTimeout(() => {
-      setTherapists(mockTherapists);
-      setLoadingTherapists(false);
-    }, 500);
-  }, []);
+    const loadTherapists = async () => {
+      setLoadingTherapists(true);
+      try {
+        const doctorsData = await fetchAllDoctors();
+        console.log("Loaded therapists:", doctorsData);
+        setTherapists(doctorsData);
+      } catch (error) {
+        console.error("Error loading therapists:", error);
+        toast.error(isRTL ? "حدث خطأ أثناء تحميل بيانات المعالجين" : "Error loading therapists data");
+      } finally {
+        setLoadingTherapists(false);
+      }
+    };
+
+    loadTherapists();
+  }, [isRTL]);
 
   // Fetch therapist details when selection changes
   useEffect(() => {
