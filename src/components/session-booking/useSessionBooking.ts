@@ -35,9 +35,16 @@ export const useSessionBooking = ({ onSuccess, inDashboard = false }: UseSession
     const loadTherapists = async () => {
       setLoadingTherapists(true);
       try {
+        console.log("Loading therapists for session booking...");
         const doctorsData = await fetchAllDoctors();
-        console.log("Loaded therapists:", doctorsData);
+        console.log("Loaded therapists for session booking:", doctorsData);
         setTherapists(doctorsData);
+        
+        // Auto-select first therapist if available
+        if (doctorsData.length > 0 && !selectedTherapist) {
+          setSelectedTherapist(doctorsData[0].id);
+          console.log("Auto-selected first therapist:", doctorsData[0]);
+        }
       } catch (error) {
         console.error("Error loading therapists:", error);
         toast.error(isRTL ? "حدث خطأ أثناء تحميل بيانات المعالجين" : "Error loading therapists data");
@@ -47,7 +54,7 @@ export const useSessionBooking = ({ onSuccess, inDashboard = false }: UseSession
     };
 
     loadTherapists();
-  }, [isRTL]);
+  }, [isRTL, selectedTherapist]);
 
   // Fetch therapist details when selection changes
   useEffect(() => {

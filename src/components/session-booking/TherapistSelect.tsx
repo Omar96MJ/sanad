@@ -41,7 +41,7 @@ export const TherapistSelect = ({
             ))
           ) : (
             <SelectItem value="no-therapists" disabled>
-              {isRTL ? "لا يوجد معالجين متاحين" : "No therapists available"}
+              {isRTL ? "لا يوجد معالجين متاحين حاليًا. يرجى المحاولة لاحقًا." : "No therapists available at the moment. Please try again later."}
             </SelectItem>
           )}
         </SelectContent>
