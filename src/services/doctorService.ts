@@ -122,7 +122,7 @@ export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
       for (const profile of doctorProfiles) {
         const existingDoctor = existingDoctorsMap.get(profile.id);
         
-        const doctorData = {
+        const doctorData: any = {
           user_id: profile.id,
           name: profile.name || "Dr. " + (profile.email?.split('@')[0] || "Unknown"),
           specialization: existingDoctor?.specialization || "Mental Health Specialist",
