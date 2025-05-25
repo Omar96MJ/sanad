@@ -27,7 +27,17 @@ export const fetchDoctorById = async (doctorId: string): Promise<DoctorProfile |
   }
 
   console.log("Doctor data fetched:", data);
-  return data;
+  // Map the database fields to the interface
+  return {
+    id: data.id,
+    user_id: data.user_id,
+    name: data.name,
+    specialization: data.specialization,
+    bio: data.bio,
+    profile_image: data.profile_image,
+    patients_count: data.patients, // Map 'patients' to 'patients_count'
+    years_of_experience: data.years_of_experience
+  };
 };
 
 export const fetchDoctorByUserId = async (userId: string): Promise<DoctorProfile | null> => {
@@ -45,7 +55,17 @@ export const fetchDoctorByUserId = async (userId: string): Promise<DoctorProfile
   }
 
   console.log("Doctor data fetched by user_id:", data);
-  return data;
+  // Map the database fields to the interface
+  return {
+    id: data.id,
+    user_id: data.user_id,
+    name: data.name,
+    specialization: data.specialization,
+    bio: data.bio,
+    profile_image: data.profile_image,
+    patients_count: data.patients, // Map 'patients' to 'patients_count'
+    years_of_experience: data.years_of_experience
+  };
 };
 
 export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
@@ -72,7 +92,17 @@ export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
 
     if (profilesError) {
       console.error("Error fetching doctor profiles:", profilesError);
-      return existingDoctors || [];
+      // Map existing doctors to the correct interface
+      return existingDoctors ? existingDoctors.map(doctor => ({
+        id: doctor.id,
+        user_id: doctor.user_id,
+        name: doctor.name,
+        specialization: doctor.specialization,
+        bio: doctor.bio,
+        profile_image: doctor.profile_image,
+        patients_count: doctor.patients, // Map 'patients' to 'patients_count'
+        years_of_experience: doctor.years_of_experience
+      })) : [];
     }
 
     console.log("Doctor profiles found:", doctorProfiles || []);
@@ -98,7 +128,7 @@ export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
           specialization: existingDoctor?.specialization || "Mental Health Specialist",
           bio: existingDoctor?.bio || "Experienced mental health professional dedicated to helping patients achieve their wellness goals.",
           profile_image: profile.profile_image || existingDoctor?.profile_image,
-          patients_count: existingDoctor?.patients_count || 0,
+          patients: existingDoctor?.patients || 0, // Use 'patients' for database
           years_of_experience: existingDoctor?.years_of_experience || 5
         };
 
@@ -123,15 +153,44 @@ export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
 
       if (upsertError) {
         console.error("Error upserting doctor records:", upsertError);
-        return existingDoctors || [];
+        // Map existing doctors to the correct interface
+        return existingDoctors ? existingDoctors.map(doctor => ({
+          id: doctor.id,
+          user_id: doctor.user_id,
+          name: doctor.name,
+          specialization: doctor.specialization,
+          bio: doctor.bio,
+          profile_image: doctor.profile_image,
+          patients_count: doctor.patients, // Map 'patients' to 'patients_count'
+          years_of_experience: doctor.years_of_experience
+        })) : [];
       }
 
       console.log("Successfully upserted doctors:", upsertedDoctors);
-      return upsertedDoctors || [];
+      // Map upserted doctors to the correct interface
+      return upsertedDoctors ? upsertedDoctors.map(doctor => ({
+        id: doctor.id,
+        user_id: doctor.user_id,
+        name: doctor.name,
+        specialization: doctor.specialization,
+        bio: doctor.bio,
+        profile_image: doctor.profile_image,
+        patients_count: doctor.patients, // Map 'patients' to 'patients_count'
+        years_of_experience: doctor.years_of_experience
+      })) : [];
     }
 
-    // If no doctor profiles found, return existing doctors
-    return existingDoctors || [];
+    // If no doctor profiles found, return existing doctors mapped to the correct interface
+    return existingDoctors ? existingDoctors.map(doctor => ({
+      id: doctor.id,
+      user_id: doctor.user_id,
+      name: doctor.name,
+      specialization: doctor.specialization,
+      bio: doctor.bio,
+      profile_image: doctor.profile_image,
+      patients_count: doctor.patients, // Map 'patients' to 'patients_count'
+      years_of_experience: doctor.years_of_experience
+    })) : [];
   } catch (error) {
     console.error("Error in fetchAllDoctors:", error);
     return [];
@@ -156,7 +215,7 @@ export const ensureDoctorRecord = async (userId: string, userName: string): Prom
       name: userName || "Doctor",
       specialization: "Mental Health Specialist",
       bio: "Experienced mental health professional",
-      patients_count: 0,
+      patients: 0, // Use 'patients' for database
       years_of_experience: 5
     })
     .select()
@@ -168,5 +227,15 @@ export const ensureDoctorRecord = async (userId: string, userName: string): Prom
   }
 
   console.log("Created new doctor record:", data);
-  return data;
+  // Map the database fields to the interface
+  return {
+    id: data.id,
+    user_id: data.user_id,
+    name: data.name,
+    specialization: data.specialization,
+    bio: data.bio,
+    profile_image: data.profile_image,
+    patients_count: data.patients, // Map 'patients' to 'patients_count'
+    years_of_experience: data.years_of_experience
+  };
 };

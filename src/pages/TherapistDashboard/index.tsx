@@ -73,7 +73,7 @@ const TherapistDashboard = () => {
                 specialization: '',
                 bio: '',
                 years_of_experience: 0,
-                patients_count: 0,
+                patients: 0, // Use 'patients' for database
                 profile_image: user.profileImage || '',
               });
               
@@ -88,16 +88,34 @@ const TherapistDashboard = () => {
                 .single();
                 
               if (newProfileData) {
-                setDoctorProfile(newProfileData);
+                // Map the database fields to the interface
+                setDoctorProfile({
+                  id: newProfileData.id,
+                  name: newProfileData.name,
+                  specialization: newProfileData.specialization,
+                  bio: newProfileData.bio,
+                  years_of_experience: newProfileData.years_of_experience,
+                  patients_count: newProfileData.patients, // Map 'patients' to 'patients_count'
+                  profile_image: newProfileData.profile_image,
+                });
               }
             }
           }
         } else if (profileData) {
-          setDoctorProfile(profileData);
+          // Map the database fields to the interface
+          setDoctorProfile({
+            id: profileData.id,
+            name: profileData.name,
+            specialization: profileData.specialization,
+            bio: profileData.bio,
+            years_of_experience: profileData.years_of_experience,
+            patients_count: profileData.patients, // Map 'patients' to 'patients_count'
+            profile_image: profileData.profile_image,
+          });
           
           // Use the profile data for stats
           const stats = {
-            patients_count: profileData.patients_count || 0,
+            patients_count: profileData.patients || 0, // Use mapped field
             upcoming_sessions: 0,
             pending_evaluations: 5, // Default value
             available_hours: 16, // Default value
