@@ -17,12 +17,12 @@ export interface PatientAppointment {
   doctor?: any;
 }
 
-// دالة لجلب اسم المريض الحقيقي من جدول patients
+// دالة جلب اسم المريض
 async function fetchPatientName(patientId: string): Promise<string | null> {
   const { data, error } = await supabase
-    .from('profiles')  // غيّر هذا إلى اسم جدول المرضى الحقيقي
-    .select('name') // غيّر هذا إلى اسم عمود الاسم الحقيقي
-    .eq('id', patientId)
+    .from("profiles") // تأكد من أن اسم الجدول "profile" وليس "profiles"
+    .select("name")
+    .eq("id", patientId)
     .single();
 
   if (error) {
@@ -30,7 +30,7 @@ async function fetchPatientName(patientId: string): Promise<string | null> {
     return null;
   }
 
-  return data?.name || null;
+  return data?.name ?? null;
 }
 
 // جلب مواعيد المريض
@@ -59,55 +59,68 @@ export async function fetchPatientAppointments(patientId: string): Promise<Patie
     throw error;
   }
 }
-
-// إنشاء موعد جديد مع جلب اسم المريض الحقيقي
 export async function createAppointment(appointment: Omit<PatientAppointment, 'id' | 'created_at' | 'updated_at'>) {
   try {
     if (!appointment.patient_id || !appointment.doctor_id || !appointment.session_date) {
       throw new Error("Missing required appointment data");
     }
 
-    // جلب اسم المريض الحقيقي
+    // جلب اسم المريض
     const patientName = await fetchPatientName(appointment.patient_id) || "Patient";
 
-    // إنشاء موعد المريض
+    console.log("📥 Creating patient appointment with:", appointment);
+
+    // إنشاء موعد في جدول patient_appointments
     const { data, error } = await supabase
-      .from('patient_appointments')
-      .insert(appointment)
+      .from("patient_appointments")
+      .insert([appointment]) // ← لاحظ أننا نرسل كمصفوفة
       .select()
       .single();
 
     if (error) {
-      console.error("Error creating patient appointment:", error);
+      console.error("❌ Error creating patient appointment:", error);
+      toast.error("فشل إنشاء الموعد للمريض");
       throw error;
     }
 
-    // إنشاء موعد للطبيب مع اسم المريض الحقيقي
+    console.log("✅ Patient appointment created:", data);
+
+    // إنشاء موعد في جدول appointments للطبيب
     const { error: doctorApptError } = await supabase
-      .from('appointments')
-      .insert({
+      .from("appointments")
+      .insert([{
         doctor_id: appointment.doctor_id,
         patient_id: appointment.patient_id,
         patient_name: patientName,
         session_date: appointment.session_date,
         session_type: appointment.session_type,
         status: 'scheduled'
-      });
+      }]);
 
+      console.log("Appointment for doctor:", {
+  doctor_id: appointment.doctor_id,
+  patient_id: appointment.patient_id,
+  patient_name: patientName,
+  session_date: appointment.session_date,
+  session_type: appointment.session_type,
+  status: 'scheduled'
+});
     if (doctorApptError) {
-      console.error("Error creating doctor appointment:", doctorApptError);
+      console.error("❌ Error creating doctor appointment:", doctorApptError);
+      toast.warning("تم إنشاء الموعد للمريض ولكن فشل للطبيب");
     } else {
-      console.log("Doctor appointment created successfully");
+      console.log("✅ Doctor appointment created");
     }
 
+    toast.success("تم حجز الموعد بنجاح");
     return data as PatientAppointment;
 
   } catch (error) {
-    console.error("Exception creating appointment:", error);
+    console.error("❗ Exception creating appointment:", error);
+    toast.error("حدث خطأ أثناء حجز الموعد");
     throw error;
   }
 }
-
 // تحديث حالة الموعد (والتاريخ عند إعادة الجدولة)
 export async function updateAppointmentStatus(
   appointmentId: string,
