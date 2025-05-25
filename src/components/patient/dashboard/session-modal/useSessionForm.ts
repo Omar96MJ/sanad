@@ -46,10 +46,13 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
           console.log("Auto-selected doctor:", doctorsData[0]);
         } else {
           console.log("No doctors available for selection");
+          // Set selected doctor to null to show fallback message
+          setSelectedDoctor(null);
         }
       } catch (error) {
         console.error("Error loading doctors:", error);
         toast.error(isRTL ? "حدث خطأ أثناء تحميل بيانات الأطباء" : "Error loading doctors data");
+        setSelectedDoctor(null);
       } finally {
         setIsLoadingDoctors(false);
       }
@@ -69,7 +72,14 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
         return;
       }
 
-      if (!selectedDoctor) {
+      // If no doctor is selected but doctors are available, select the first one
+      let doctorToUse = selectedDoctor;
+      if (!doctorToUse && doctors.length > 0) {
+        doctorToUse = doctors[0];
+        setSelectedDoctor(doctorToUse);
+      }
+
+      if (!doctorToUse) {
         toast.error(isRTL ? "لا يوجد طبيب متاح حاليًا" : "No doctor available at the moment");
         setIsLoading(false);
         return;
@@ -82,8 +92,8 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
       
       await createAppointment({
         patient_id: user.id,
-        doctor_id: selectedDoctor.id,
-        doctor_name: selectedDoctor.name,
+        doctor_id: doctorToUse.id,
+        doctor_name: doctorToUse.name,
         session_date: sessionDateTime.toISOString(),
         session_type: formValues.sessionType,
         status: 'upcoming'

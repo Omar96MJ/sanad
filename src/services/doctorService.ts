@@ -49,24 +49,22 @@ export const fetchDoctorByUserId = async (userId: string): Promise<DoctorProfile
 };
 
 export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
-  console.log("Fetching all doctors");
+  console.log("Fetching all doctors from database...");
   
-  // First try to get doctors from the doctors table
-  const { data: doctorsData, error: doctorsError } = await supabase
-    .from("doctors")
-    .select("*")
-    .order("name");
+  try {
+    // First, get all existing doctors from the doctors table
+    const { data: existingDoctors, error: doctorsError } = await supabase
+      .from("doctors")
+      .select("*")
+      .order("name");
 
-  if (doctorsError) {
-    console.error("Error fetching from doctors table:", doctorsError);
-  }
+    if (doctorsError) {
+      console.error("Error fetching from doctors table:", doctorsError);
+    }
 
-  console.log("Doctors from doctors table:", doctorsData || []);
+    console.log("Existing doctors from doctors table:", existingDoctors || []);
 
-  // If no doctors in the doctors table, try to get doctor profiles and create doctor records
-  if (!doctorsData || doctorsData.length === 0) {
-    console.log("No doctors found in doctors table, checking profiles table for users with doctor role");
-    
+    // Get all users with doctor role from profiles
     const { data: doctorProfiles, error: profilesError } = await supabase
       .from("profiles")
       .select("*")
@@ -74,42 +72,70 @@ export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
 
     if (profilesError) {
       console.error("Error fetching doctor profiles:", profilesError);
-      return [];
+      return existingDoctors || [];
     }
 
     console.log("Doctor profiles found:", doctorProfiles || []);
 
-    // Create doctor records for profiles that don't have them yet
-    if (doctorProfiles && doctorProfiles.length > 0) {
-      const doctorsToCreate = doctorProfiles.map(profile => ({
-        user_id: profile.id,
-        name: profile.name || "Doctor",
-        specialization: "General Practice",
-        bio: "Experienced healthcare professional",
-        profile_image: profile.profile_image,
-        patients_count: 0,
-        years_of_experience: 5
-      }));
+    // Create a map of existing doctors by user_id for quick lookup
+    const existingDoctorsMap = new Map();
+    if (existingDoctors) {
+      existingDoctors.forEach(doctor => {
+        existingDoctorsMap.set(doctor.user_id, doctor);
+      });
+    }
 
-      const { data: createdDoctors, error: createError } = await supabase
+    // Prepare doctors to create/update
+    const doctorsToUpsert = [];
+    
+    if (doctorProfiles && doctorProfiles.length > 0) {
+      for (const profile of doctorProfiles) {
+        const existingDoctor = existingDoctorsMap.get(profile.id);
+        
+        const doctorData = {
+          user_id: profile.id,
+          name: profile.name || "Dr. " + (profile.email?.split('@')[0] || "Unknown"),
+          specialization: existingDoctor?.specialization || "Mental Health Specialist",
+          bio: existingDoctor?.bio || "Experienced mental health professional dedicated to helping patients achieve their wellness goals.",
+          profile_image: profile.profile_image || existingDoctor?.profile_image,
+          patients_count: existingDoctor?.patients_count || 0,
+          years_of_experience: existingDoctor?.years_of_experience || 5
+        };
+
+        // If doctor already exists, include the ID for update
+        if (existingDoctor) {
+          doctorData.id = existingDoctor.id;
+        }
+
+        doctorsToUpsert.push(doctorData);
+      }
+
+      console.log("Upserting doctors:", doctorsToUpsert);
+
+      // Upsert all doctors
+      const { data: upsertedDoctors, error: upsertError } = await supabase
         .from("doctors")
-        .upsert(doctorsToCreate, { 
+        .upsert(doctorsToUpsert, { 
           onConflict: 'user_id',
           ignoreDuplicates: false 
         })
         .select();
 
-      if (createError) {
-        console.error("Error creating doctor records:", createError);
-        return [];
+      if (upsertError) {
+        console.error("Error upserting doctor records:", upsertError);
+        return existingDoctors || [];
       }
 
-      console.log("Created/updated doctor records:", createdDoctors);
-      return createdDoctors || [];
+      console.log("Successfully upserted doctors:", upsertedDoctors);
+      return upsertedDoctors || [];
     }
-  }
 
-  return doctorsData || [];
+    // If no doctor profiles found, return existing doctors
+    return existingDoctors || [];
+  } catch (error) {
+    console.error("Error in fetchAllDoctors:", error);
+    return [];
+  }
 };
 
 // Function to ensure a doctor record exists for a user
@@ -128,8 +154,8 @@ export const ensureDoctorRecord = async (userId: string, userName: string): Prom
     .insert({
       user_id: userId,
       name: userName || "Doctor",
-      specialization: "General Practice",
-      bio: "Experienced healthcare professional",
+      specialization: "Mental Health Specialist",
+      bio: "Experienced mental health professional",
       patients_count: 0,
       years_of_experience: 5
     })

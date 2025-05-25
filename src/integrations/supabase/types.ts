@@ -98,8 +98,10 @@ export type Database = {
           created_at: string
           id: string
           name: string
-          patients_count: number | null
+          patients: number | null
           profile_image: string | null
+          rating: number | null
+          role: string | null
           specialization: string | null
           updated_at: string
           user_id: string
@@ -110,8 +112,10 @@ export type Database = {
           created_at?: string
           id?: string
           name: string
-          patients_count?: number | null
+          patients?: number | null
           profile_image?: string | null
+          rating?: number | null
+          role?: string | null
           specialization?: string | null
           updated_at?: string
           user_id: string
@@ -122,8 +126,10 @@ export type Database = {
           created_at?: string
           id?: string
           name?: string
-          patients_count?: number | null
+          patients?: number | null
           profile_image?: string | null
+          rating?: number | null
+          role?: string | null
           specialization?: string | null
           updated_at?: string
           user_id?: string
