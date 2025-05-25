@@ -118,20 +118,9 @@ const PatientDashboard = () => {
     );
   }
   
-  // Get the first available doctor (or null if no doctors)
-  const assignedDoctor = doctors.length > 0 ? {
-    id: doctors[0].id,
-    name: doctors[0].name,
-    specialization: doctors[0].specialization || "Psychologist",
-    image: doctors[0].profile_image || "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
-    rating: 4.9,
-    reviewsCount: 124,
-    bio: doctors[0].bio || "Experienced mental health professional",
-    patients: doctors[0].patients_count || 0,
-    yearsOfExperience: doctors[0].years_of_experience || 0,
-    email: `${doctors[0].name.toLowerCase().replace(' ', '.')}@example.com`,
-    role: "doctor" as const
-  } : null;
+const upcomingAppointment = appointments.find(app => app.status === 'upcoming');
+const assignedDoctor = upcomingAppointment?.doctor ?? null;
+
   
   // Format appointment date for display
   const formatAppointmentDate = (dateString: string) => {
