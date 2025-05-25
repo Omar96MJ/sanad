@@ -33,11 +33,19 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
     const loadDoctors = async () => {
       try {
         setIsLoadingDoctors(true);
+        console.log("Loading doctors for session form...");
+        
         const doctorsData = await fetchAllDoctors();
+        console.log("Doctors loaded for session form:", doctorsData);
+        
         setDoctors(doctorsData);
+        
         // Auto-select first doctor if available
         if (doctorsData.length > 0) {
           setSelectedDoctor(doctorsData[0]);
+          console.log("Auto-selected doctor:", doctorsData[0]);
+        } else {
+          console.log("No doctors available for selection");
         }
       } catch (error) {
         console.error("Error loading doctors:", error);

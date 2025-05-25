@@ -29,15 +29,15 @@ export const TherapistInfo = ({ doctor, isLoading = false }: TherapistInfoProps)
       <div className="flex gap-3 items-center p-3 bg-muted/30 rounded-lg">
         <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center">
           <span className="text-muted-foreground text-sm">
-            {isRTL ? "لا يوجد" : "N/A"}
+            {isRTL ? "طبيب" : "Dr"}
           </span>
         </div>
         <div>
           <p className="font-medium text-muted-foreground">
-            {isRTL ? "لا يوجد طبيب متاح" : "No doctor available"}
+            {isRTL ? "سيتم تعيين طبيب لك قريباً" : "A doctor will be assigned to you soon"}
           </p>
           <p className="text-sm text-muted-foreground">
-            {isRTL ? "يرجى المحاولة لاحقًا" : "Please try again later"}
+            {isRTL ? "يمكنك المتابعة مع حجز الجلسة" : "You can proceed with booking your session"}
           </p>
         </div>
       </div>
