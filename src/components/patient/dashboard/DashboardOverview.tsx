@@ -1,14 +1,28 @@
 
 import { useLanguage } from "@/hooks/useLanguage";
-import { Doctor } from "@/lib/types";
 import { ProgressSection } from "./ProgressSection";
 import { TherapistCard } from "./TherapistCard";
 import { CalendarAndArticles } from "./CalendarAndArticles";
 
+interface AssignedDoctor {
+  id: string;
+  name: string;
+  specialization: string;
+  image: string;
+  rating: number;
+  reviewsCount: number;
+  bio: string;
+  patients: number;
+  yearsOfExperience: number;
+  email: string;
+  role: "doctor";
+}
+
 interface DashboardOverviewProps {
   isVisible: boolean;
   progress: number;
-  doctor: Doctor;
+  doctor: AssignedDoctor | null;
+  isLoadingDoctor?: boolean;
   upcomingAppointments: any[];
   mockArticles: any[];
   date: Date | undefined;
@@ -24,6 +38,7 @@ export const DashboardOverview = ({
   isVisible,
   progress,
   doctor,
+  isLoadingDoctor = false,
   upcomingAppointments,
   mockArticles,
   date,
@@ -50,6 +65,7 @@ export const DashboardOverview = ({
         <TherapistCard 
           isVisible={isVisible}
           doctor={doctor}
+          isLoadingDoctor={isLoadingDoctor}
           onBookAppointment={onBookAppointment}
         />
       </div>

@@ -13,11 +13,11 @@ import { PatientDashboardTabs } from "@/components/patient/dashboard/PatientDash
 import { DashboardHeader } from "@/components/patient/dashboard/DashboardHeader";
 import { SessionModal } from "@/components/patient/dashboard/session-modal/SessionModal";
 import { fetchPatientAppointments, PatientAppointment } from "@/services/patientAppointmentService";
-import {fetchPatientProgress} from "@/services/fetchPatientProgress";
+import { fetchPatientProgress } from "@/services/fetchPatientProgress";
+import { fetchAllDoctors, DoctorProfile } from "@/services/doctorService";
 
 // Import mockBlogs instead of mockArticles
 import { mockBlogs } from "@/data/mockBlogs";
-import { UserRole } from "@/lib/types";
 
 const PatientDashboard = () => {
   const navigate = useNavigate();
@@ -31,23 +31,43 @@ const PatientDashboard = () => {
   const [appointments, setAppointments] = useState<PatientAppointment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState<number | null>(null);
+  const [doctors, setDoctors] = useState<DoctorProfile[]>([]);
+  const [isLoadingDoctors, setIsLoadingDoctors] = useState(true);
   
   useEffect(() => {
     const loadProgress = async () => {
-    if (!user) return;
+      if (!user) return;
 
-    try {
-      const progressValue = await fetchPatientProgress(user.id);
-      setProgress(progressValue);
-    } catch (error) {
-      console.error("Error loading progress:", error);
-      toast.error(isRTL ? "حدث خطأ أثناء تحميل التقدم" : "Error loading progress");
-    }
-  };
+      try {
+        const progressValue = await fetchPatientProgress(user.id);
+        setProgress(progressValue);
+      } catch (error) {
+        console.error("Error loading progress:", error);
+        toast.error(isRTL ? "حدث خطأ أثناء تحميل التقدم" : "Error loading progress");
+      }
+    };
 
-  loadProgress();
-}, [user, isRTL]);
+    loadProgress();
+  }, [user, isRTL]);
 
+  // Load doctors data
+  useEffect(() => {
+    const loadDoctors = async () => {
+      try {
+        setIsLoadingDoctors(true);
+        const doctorsData = await fetchAllDoctors();
+        console.log("Loaded doctors:", doctorsData);
+        setDoctors(doctorsData);
+      } catch (error) {
+        console.error("Error loading doctors:", error);
+        toast.error(isRTL ? "حدث خطأ أثناء تحميل بيانات الأطباء" : "Error loading doctors data");
+      } finally {
+        setIsLoadingDoctors(false);
+      }
+    };
+
+    loadDoctors();
+  }, [isRTL]);
 
   // Animation on mount
   useEffect(() => {
@@ -98,21 +118,20 @@ const PatientDashboard = () => {
     );
   }
   
-  
-  // Mock doctor data
-  const mockDoctor = {
-    id: "dr-smith",
-    name: "Dr. Emily Smith",
-    specialization: "Clinical Psychologist",
-    image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
+  // Get the first available doctor (or null if no doctors)
+  const assignedDoctor = doctors.length > 0 ? {
+    id: doctors[0].id,
+    name: doctors[0].name,
+    specialization: doctors[0].specialization || "Psychologist",
+    image: doctors[0].profile_image || "https://images.unsplash.com/photo-1594824476967-48c8b964273f?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&h=150&q=80",
     rating: 4.9,
     reviewsCount: 124,
-    bio: "Specialized in anxiety and depression treatment with 10+ years of experience.",
-    patients: 245,
-    yearsOfExperience: 10,
-    email: "dr.smith@example.com",
-    role: "doctor" as UserRole
-  };
+    bio: doctors[0].bio || "Experienced mental health professional",
+    patients: doctors[0].patients_count || 0,
+    yearsOfExperience: doctors[0].years_of_experience || 0,
+    email: `${doctors[0].name.toLowerCase().replace(' ', '.')}@example.com`,
+    role: "doctor" as const
+  } : null;
   
   // Format appointment date for display
   const formatAppointmentDate = (dateString: string) => {
@@ -166,10 +185,11 @@ const PatientDashboard = () => {
           <PatientDashboardTabs
             isVisible={isVisible}
             progress={progress ?? 0}
-            mockDoctor={mockDoctor}
+            assignedDoctor={assignedDoctor}
+            isLoadingDoctor={isLoadingDoctors}
             appointments={appointments}
             isLoadingAppointments={isLoading}
-            mockArticles={mockBlogs.slice(0, 3)} // Use mockBlogs here
+            mockArticles={mockBlogs.slice(0, 3)}
             date={date}
             setDate={setDate}
             handleBookAppointment={handleBookAppointment}

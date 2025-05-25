@@ -1,18 +1,33 @@
 
 import { useState } from "react";
 import { Tabs } from "@/components/ui/tabs";
-import { BlogPost, Doctor } from "@/lib/types";
+import { BlogPost } from "@/lib/types";
 import { TabsList } from "./tabs/TabsList";
 import { TabContents } from "./tabs/TabContents";
 import { PatientAppointment } from "@/services/patientAppointmentService";
 
+interface AssignedDoctor {
+  id: string;
+  name: string;
+  specialization: string;
+  image: string;
+  rating: number;
+  reviewsCount: number;
+  bio: string;
+  patients: number;
+  yearsOfExperience: number;
+  email: string;
+  role: "doctor";
+}
+
 interface PatientDashboardTabsProps {
   isVisible: boolean;
   progress: number;
-  mockDoctor: Doctor;
+  assignedDoctor: AssignedDoctor | null;
+  isLoadingDoctor?: boolean;
   appointments: PatientAppointment[];
   isLoadingAppointments?: boolean;
-  mockArticles: BlogPost[]; // Keep this as mockArticles for now to minimize changes
+  mockArticles: BlogPost[];
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
   handleBookAppointment: () => void;
@@ -26,10 +41,11 @@ interface PatientDashboardTabsProps {
 export const PatientDashboardTabs = ({
   isVisible,
   progress,
-  mockDoctor,
+  assignedDoctor,
+  isLoadingDoctor = false,
   appointments,
   isLoadingAppointments = false,
-  mockArticles, // Keep the prop name as is
+  mockArticles,
   date,
   setDate,
   handleBookAppointment,
@@ -49,10 +65,11 @@ export const PatientDashboardTabs = ({
         activeTab={activeTab}
         isVisible={isVisible}
         progress={progress}
-        mockDoctor={mockDoctor}
+        assignedDoctor={assignedDoctor}
+        isLoadingDoctor={isLoadingDoctor}
         appointments={appointments}
         isLoadingAppointments={isLoadingAppointments}
-        mockArticles={mockArticles} // Pass it through
+        mockArticles={mockArticles}
         date={date}
         setDate={setDate}
         handleBookAppointment={handleBookAppointment}

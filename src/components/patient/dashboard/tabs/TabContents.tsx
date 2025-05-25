@@ -3,16 +3,31 @@ import { TabsContent } from "@/components/ui/tabs";
 import { DashboardOverview } from "../DashboardOverview";
 import { AppointmentsTab } from "../AppointmentsTab";
 import { SessionTab } from "../SessionTab";
-import MessagingLayout from "@/components/messaging/MessagingLayout";  // Import MessagingLayout
-import { BlogPost, Doctor } from "@/lib/types";
+import MessagingLayout from "@/components/messaging/MessagingLayout";
+import { BlogPost } from "@/lib/types";
 import { PatientAppointment } from "@/services/patientAppointmentService";
 import { useLanguage } from "@/hooks/useLanguage";
+
+interface AssignedDoctor {
+  id: string;
+  name: string;
+  specialization: string;
+  image: string;
+  rating: number;
+  reviewsCount: number;
+  bio: string;
+  patients: number;
+  yearsOfExperience: number;
+  email: string;
+  role: "doctor";
+}
 
 interface TabContentsProps {
   activeTab: string;
   isVisible: boolean;
   progress: number;
-  mockDoctor: Doctor;
+  assignedDoctor: AssignedDoctor | null;
+  isLoadingDoctor?: boolean;
   appointments: PatientAppointment[];
   isLoadingAppointments?: boolean;
   mockArticles: BlogPost[];
@@ -30,7 +45,8 @@ export const TabContents = ({
   activeTab,
   isVisible,
   progress,
-  mockDoctor,
+  assignedDoctor,
+  isLoadingDoctor = false,
   appointments,
   isLoadingAppointments = false,
   mockArticles,
@@ -43,7 +59,7 @@ export const TabContents = ({
   calendarLocale,
   onAppointmentUpdated
 }: TabContentsProps) => {
-  const { t } = useLanguage(); // Add useLanguage hook for translations
+  const { t } = useLanguage();
   
   // Get upcoming appointments for overview tab
   const upcomingAppointments = appointments.filter(apt => apt.status === 'upcoming');
@@ -54,7 +70,8 @@ export const TabContents = ({
         <DashboardOverview
           isVisible={isVisible}
           progress={progress}
-          doctor={mockDoctor}
+          doctor={assignedDoctor}
+          isLoadingDoctor={isLoadingDoctor}
           upcomingAppointments={upcomingAppointments}
           mockArticles={mockArticles}
           date={date}

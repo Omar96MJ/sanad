@@ -2,18 +2,34 @@
 import { useLanguage } from "@/hooks/useLanguage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Doctor } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
 import { DoctorCard } from "@/components/UserCard";
+
+interface AssignedDoctor {
+  id: string;
+  name: string;
+  specialization: string;
+  image: string;
+  rating: number;
+  reviewsCount: number;
+  bio: string;
+  patients: number;
+  yearsOfExperience: number;
+  email: string;
+  role: "doctor";
+}
 
 interface TherapistCardProps {
   isVisible: boolean;
-  doctor: Doctor;
+  doctor: AssignedDoctor | null;
+  isLoadingDoctor?: boolean;
   onBookAppointment: () => void;
 }
 
 export const TherapistCard = ({
   isVisible,
   doctor,
+  isLoadingDoctor = false,
   onBookAppointment
 }: TherapistCardProps) => {
   const { t } = useLanguage();
@@ -28,13 +44,44 @@ export const TherapistCard = ({
         <CardTitle>{t('your_therapist')}</CardTitle>
       </CardHeader>
       <CardContent>
-        <DoctorCard doctor={doctor} />
-        <Button 
-          onClick={onBookAppointment} 
-          className="w-full mt-6 btn-primary"
-        >
-          {t('schedule_session')}
-        </Button>
+        {isLoadingDoctor ? (
+          <div className="space-y-4">
+            <div className="flex items-center space-x-4">
+              <Skeleton className="h-16 w-16 rounded-full" />
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-[200px]" />
+                <Skeleton className="h-4 w-[150px]" />
+              </div>
+            </div>
+            <Skeleton className="h-20 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+        ) : doctor ? (
+          <>
+            <DoctorCard doctor={{
+              ...doctor,
+              profileImage: doctor.image
+            }} />
+            <Button 
+              onClick={onBookAppointment} 
+              className="w-full mt-6 btn-primary"
+            >
+              {t('schedule_session')}
+            </Button>
+          </>
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground mb-4">
+              {t('no_therapist_assigned')}
+            </p>
+            <Button 
+              onClick={onBookAppointment} 
+              className="btn-primary"
+            >
+              {t('find_therapist')}
+            </Button>
+          </div>
+        )}
       </CardContent>
     </Card>
   );
