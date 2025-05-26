@@ -15,35 +15,50 @@ export type Database = {
           doctor_id: string
           id: string
           notes: string | null
-          patient_id: string | null
-          patient_name: string
+          patient_id: string
           session_date: string
           session_type: string
           status: string
+          updated_at: string
         }
         Insert: {
           created_at?: string
           doctor_id: string
           id?: string
           notes?: string | null
-          patient_id?: string | null
-          patient_name: string
+          patient_id: string
           session_date: string
           session_type: string
           status?: string
+          updated_at?: string
         }
         Update: {
           created_at?: string
           doctor_id?: string
           id?: string
           notes?: string | null
-          patient_id?: string | null
-          patient_name?: string
+          patient_id?: string
           session_date?: string
           session_type?: string
           status?: string
+          updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "appointments_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "appointments_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       conversation_participants: {
         Row: {
@@ -104,6 +119,7 @@ export type Database = {
           status: Database["public"]["Enums"]["doctor_status"] | null
           updated_at: string
           user_id: string
+          weekly_available_hours: number | null
           years_of_experience: number | null
         }
         Insert: {
@@ -117,6 +133,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["doctor_status"] | null
           updated_at?: string
           user_id: string
+          weekly_available_hours?: number | null
           years_of_experience?: number | null
         }
         Update: {
@@ -130,126 +147,236 @@ export type Database = {
           status?: Database["public"]["Enums"]["doctor_status"] | null
           updated_at?: string
           user_id?: string
+          weekly_available_hours?: number | null
           years_of_experience?: number | null
         }
         Relationships: []
       }
+      evaluations: {
+        Row: {
+          created_at: string
+          details: string | null
+          doctor_id: string | null
+          due_date: string | null
+          id: string
+          patient_id: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          doctor_id?: string | null
+          due_date?: string | null
+          id?: string
+          patient_id?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          doctor_id?: string | null
+          due_date?: string | null
+          id?: string
+          patient_id?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "evaluations_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "evaluations_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           content: string
+          conversation_id: string
+          created_at: string
           id: string
-          is_read: boolean
-          recipient_id: string
           sender_id: string
-          timestamp: string
         }
         Insert: {
           content: string
+          conversation_id: string
+          created_at?: string
           id?: string
-          is_read?: boolean
-          recipient_id: string
           sender_id: string
-          timestamp?: string
         }
         Update: {
           content?: string
+          conversation_id?: string
+          created_at?: string
           id?: string
-          is_read?: boolean
-          recipient_id?: string
           sender_id?: string
-          timestamp?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
-      patient_appointments: {
+      notifications: {
         Row: {
-          created_at: string | null
-          doctor_id: string
-          doctor_name: string
+          created_at: string
           id: string
-          patient_id: string
-          session_date: string
-          session_type: string
-          status: string
-          updated_at: string | null
+          is_read: boolean
+          link: string | null
+          message: string
+          recipient_user_id: string
+          type: string | null
         }
         Insert: {
-          created_at?: string | null
-          doctor_id: string
-          doctor_name: string
+          created_at?: string
           id?: string
-          patient_id: string
-          session_date: string
-          session_type: string
-          status?: string
-          updated_at?: string | null
+          is_read?: boolean
+          link?: string | null
+          message: string
+          recipient_user_id: string
+          type?: string | null
         }
         Update: {
-          created_at?: string | null
-          doctor_id?: string
-          doctor_name?: string
+          created_at?: string
           id?: string
-          patient_id?: string
-          session_date?: string
-          session_type?: string
-          status?: string
-          updated_at?: string | null
+          is_read?: boolean
+          link?: string | null
+          message?: string
+          recipient_user_id?: string
+          type?: string | null
         }
         Relationships: []
       }
       patient_dashboard: {
         Row: {
-          created_at: string | null
+          created_at: string
           id: string
-          progress: number | null
-          updated_at: string | null
+          progress: number
+          updated_at: string
           user_id: string
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           id?: string
-          progress?: number | null
-          updated_at?: string | null
+          progress?: number
+          updated_at?: string
           user_id: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           id?: string
-          progress?: number | null
-          updated_at?: string | null
+          progress?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
       }
-      profiles: {
+      patient_diagnoses: {
         Row: {
+          condition_tag: string
           created_at: string
-          email: string | null
+          diagnosis_date: string
+          doctor_id: string | null
           id: string
-          name: string | null
-          profile_image: string | null
-          role: string | null
+          notes: string | null
+          patient_id: string
           updated_at: string
         }
         Insert: {
+          condition_tag: string
           created_at?: string
-          email?: string | null
-          id: string
-          name?: string | null
-          profile_image?: string | null
-          role?: string | null
+          diagnosis_date?: string
+          doctor_id?: string | null
+          id?: string
+          notes?: string | null
+          patient_id: string
           updated_at?: string
         }
         Update: {
+          condition_tag?: string
+          created_at?: string
+          diagnosis_date?: string
+          doctor_id?: string | null
+          id?: string
+          notes?: string | null
+          patient_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_diagnoses_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_diagnoses_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          assigned_doctor_id: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string
+          profile_image: string | null
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          assigned_doctor_id?: string | null
+          created_at?: string
+          email?: string | null
+          id: string
+          name: string
+          profile_image?: string | null
+          role: string
+          updated_at?: string
+        }
+        Update: {
+          assigned_doctor_id?: string | null
           created_at?: string
           email?: string | null
           id?: string
-          name?: string | null
+          name?: string
           profile_image?: string | null
-          role?: string | null
+          role?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_assigned_doctor_id_fkey"
+            columns: ["assigned_doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

@@ -52,9 +52,11 @@ export const TherapistDashboardTabs = ({
   const handleMessagesTabClick = () => {
     setActiveTab("messages");
   };
-
+  const { language } = useLanguage();
+  const isRTL = language === "ar";
+  
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full" dir={isRTL ? "rtl" : "ltr"}>
       <TabsList className="grid grid-cols-2 md:grid-cols-7 mb-8">
         <TabsTrigger value="overview">{t('overview')}</TabsTrigger>
         <TabsTrigger value="profile">{t('profile')}</TabsTrigger>

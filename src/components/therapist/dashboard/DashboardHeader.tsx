@@ -6,6 +6,7 @@ import { Bell, MessageCircle } from "lucide-react";
 type DashboardHeaderProps = {
   doctorName: string;
   notificationsCount: number;
+  unreadMessagesCount: number;
   onMessageClick: () => void;
   onNotificationClick: () => void;
 };
@@ -13,6 +14,7 @@ type DashboardHeaderProps = {
 export const DashboardHeader = ({ 
   doctorName, 
   notificationsCount, 
+   unreadMessagesCount,
   onMessageClick, 
   onNotificationClick 
 }: DashboardHeaderProps) => {
@@ -30,9 +32,11 @@ export const DashboardHeader = ({
       <div className="flex gap-2">
         <Button variant="outline" className="relative" onClick={onMessageClick}>
           <MessageCircle className="h-5 w-5" />
-          <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
-            2
-          </span>
+          {unreadMessagesCount > 0 && (
+            <span className="absolute -top-2 -right-2 bg-primary text-primary-foreground text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              {unreadMessagesCount}
+            </span>
+          )}
         </Button>
         <Button variant="outline" className="relative" onClick={onNotificationClick}>
           <Bell className="h-5 w-5" />
