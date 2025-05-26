@@ -27,7 +27,9 @@ const dashboardTranslations = {
   "educational_material": "المواد التعليمية",
   "learn_about_mental_health": "تعلم عن حالات الصحة النفسية والعلاجات واستراتيجيات التأقلم",
   "start_learning": "ابدأ التعلم",
-
+  "no_therapist_assigned": "لم يتم تعيين معالج حتى الآن",
+  "find_therapist": "إيجاد معالج",
+  "recent_articles": "المقالات الحديثة",
   // Admin Dashboard translations
   "admin_dashboard": "لوحة تحكم المسؤول",
   "manage_system_wide_settings": "إدارة إعدادات النظام بأكمله",

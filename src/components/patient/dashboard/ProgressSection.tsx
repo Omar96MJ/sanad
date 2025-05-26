@@ -25,10 +25,10 @@ export const ProgressSection = ({
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
       }`}
     >
-      <CardHeader>
-        <CardTitle>{t('your_progress')}</CardTitle>
+      <CardHeader dir={isRTL ? "rtl" : "ltr"}>
+        <CardTitle >{t('your_progress')}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent dir={isRTL ? "rtl" : "ltr"}>
         <div className="space-y-6">
           <div className="space-y-2">
             <div className="flex justify-between text-sm">

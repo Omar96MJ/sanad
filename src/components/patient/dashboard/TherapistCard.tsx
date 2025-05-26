@@ -32,18 +32,18 @@ export const TherapistCard = ({
   isLoadingDoctor = false,
   onBookAppointment
 }: TherapistCardProps) => {
-  const { t } = useLanguage();
-  
+   const {t, language } = useLanguage();
+  const isRTL = language === 'ar';
   return (
     <Card 
       className={`border border-border/50 card-hover transition-all duration-700 delay-200 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
       }`}
     >
-      <CardHeader>
+      <CardHeader dir={isRTL ? "rtl" : "ltr"}>
         <CardTitle>{t('your_therapist')}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent dir={isRTL ? "rtl" : "ltr"}>
         {isLoadingDoctor ? (
           <div className="space-y-4">
             <div className="flex items-center space-x-4">

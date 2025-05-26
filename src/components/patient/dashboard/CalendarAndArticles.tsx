@@ -78,7 +78,7 @@ export const CalendarAndArticles = ({
       isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
     }`}>
       <div className="col-span-1 md:col-span-2">
-        <Card className="h-full">
+        <Card className="h-full" dir={isRTL ? "rtl" : "ltr"}>
           <CardHeader>
             <h3 className="text-lg font-medium">
               {t('calendar')}
@@ -137,7 +137,7 @@ export const CalendarAndArticles = ({
         </Card>
       </div>
       
-      <Card className="h-full">
+      <Card className="h-full" dir={isRTL ? "rtl" : "ltr"}>
         <CardHeader>
           <h3 className="text-lg font-medium">
             {t('recent_articles')}
