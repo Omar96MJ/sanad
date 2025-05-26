@@ -9,19 +9,7 @@ import { TherapistDashboardTabs } from "@/components/therapist/dashboard/Therapi
 import { DashboardHeader } from "@/components/therapist/dashboard/DashboardHeader";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-
-// نفس تعريف النوع الذي كان لديك
-type DoctorProfile = {
-  id: string;
-  name: string;
-  specialization: string;
-  bio: string;
-  years_of_experience: number;
-  patients_count: number; // سنقوم بحسابه ونخزنه هنا أيضًا لتمريره للمكونات الفرعية
-  profile_image: string;
-  weekly_available_hours: number; // افترضنا أن هذا الحقل موجود في profileData
-};
-
+import { DoctorProfile } from "@/lib/therapist-types"; 
 // أنواع البيانات للمواعيد والبيانات الديموغرافية (يمكن تحسينها أو نقلها لملف types)
 type Appointment = {
   id: string;
@@ -353,6 +341,7 @@ const TherapistDashboard = () => {
             onScheduleSession={handleScheduleSession}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
+            doctorProfile={doctorProfile} // افترضنا أن doctorProfile هو اسم الحالة في TherapistDashboard
           />
         </div>
       </main>

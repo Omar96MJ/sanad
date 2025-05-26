@@ -112,3 +112,16 @@ export interface Conversation {
   lastMessageTimestamp: string;
   unreadCount: number;
 }
+
+
+// نفس تعريف  نوع الطبيب
+export type DoctorProfile = {
+  id: string;
+  name: string;
+  specialization: string;
+  bio: string;
+  years_of_experience: number;
+  patients_count: number; // سنقوم بحسابه ونخزنه هنا أيضًا لتمريره للمكونات الفرعية
+  profile_image: string;
+  weekly_available_hours: number; // افترضنا أن هذا الحقل موجود في profileData
+};

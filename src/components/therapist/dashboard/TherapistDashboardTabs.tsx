@@ -9,6 +9,7 @@ import AvailabilityManagement from "@/components/therapist/AvailabilityManagemen
 import MessagingLayout from "@/components/messaging/MessagingLayout";
 import { DashboardOverview } from "@/components/therapist/dashboard/DashboardOverview";
 import TherapistVideoSession from "@/components/therapist/TherapistVideoSession";
+import {DoctorProfile as DoctorProfileType} from "@/lib/therapist-types";
 
 interface TherapistDashboardTabsProps {
   isLoading: boolean;
@@ -24,6 +25,7 @@ interface TherapistDashboardTabsProps {
   onScheduleSession: () => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  doctorProfile: DoctorProfileType | null;
 }
 
 export const TherapistDashboardTabs = ({
@@ -35,6 +37,7 @@ export const TherapistDashboardTabs = ({
   onScheduleSession,
   activeTab,
   setActiveTab,
+  doctorProfile,
 }: TherapistDashboardTabsProps) => {
   const { t } = useLanguage();
 
@@ -79,7 +82,7 @@ export const TherapistDashboardTabs = ({
       </TabsContent>
       
       <TabsContent value="profile">
-        <TherapistProfile />
+        <TherapistProfile initialDoctorProfile={doctorProfile} />
       </TabsContent>
       
       <TabsContent value="patients">

@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2, Upload } from "lucide-react";
+import { DoctorProfile as DoctorProfileType} from "@/lib/therapist-types";
 
 // Form schema for doctor profile
 const profileFormSchema = z.object({
@@ -24,110 +25,62 @@ const profileFormSchema = z.object({
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
-const TherapistProfile = () => {
+interface TherapistProfileProps {
+  initialDoctorProfile: DoctorProfileType | null;
+  onProfileUpdate?: () => void; // دالة اختيارية يتم استدعاؤها بعد تحديث ناجح للملف الشخصي (لإعادة جلب البيانات في الأب)
+}
+
+const TherapistProfile = ({ initialDoctorProfile, onProfileUpdate }: TherapistProfileProps) => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const isRTL = language === 'ar';
-  const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [doctorProfile, setDoctorProfile] = useState<any>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues: {
-      name: '',
-      specialization: '',
-      bio: '',
-      years_of_experience: 0,
+    defaultValues: { // القيم الافتراضية ستأتي من initialDoctorProfile
+      name: initialDoctorProfile?.name || '',
+      specialization: initialDoctorProfile?.specialization || '',
+      bio: initialDoctorProfile?.bio || '',
+      years_of_experience: initialDoctorProfile?.years_of_experience || 0,
+      // weekly_available_hours: initialDoctorProfile?.weekly_available_hours || 0, // إذا كان جزءًا من النموذج
     },
   });
 
-  // Fetch doctor profile from Supabase
+  // useEffect لتحديث النموذج والصورة إذا تغيرت initialDoctorProfile من الأعلى
   useEffect(() => {
-    const fetchDoctorProfile = async () => {
-      if (!user) return;
-      
-      try {
-        setIsLoading(true);
-        const { data, error } = await supabase
-          .from('doctors')
-          .select('*')
-          .eq('user_id', user.id)
-          .single();
-        
-        if (error) {
-          console.error("Error fetching doctor profile:", error);
-          
-          // If no doctor profile exists, create one
-          if (error.code === 'PGRST116') {
-            const { error: insertError } = await supabase
-              .from('doctors')
-              .insert({
-                user_id: user.id,
-                name: user.name || '',
-                specialization: '',
-                bio: '',
-                years_of_experience: 0,
-                patients_count: 0,
-                profile_image: user.profileImage || '',
-              });
-              
-            if (insertError) {
-              console.error("Error creating doctor profile:", insertError);
-              toast.error(t('error_creating_profile'));
-            } else {
-              // Fetch again after creating
-              const { data: newProfileData } = await supabase
-                .from('doctors')
-                .select('*')
-                .eq('user_id', user.id)
-                .single();
-                
-              if (newProfileData) {
-                setDoctorProfile(newProfileData);
-                setProfileImage(newProfileData.profile_image);
-                form.reset({
-                  name: newProfileData.name || '',
-                  specialization: newProfileData.specialization || '',
-                  bio: newProfileData.bio || '',
-                  years_of_experience: newProfileData.years_of_experience || 0,
-                });
-              }
-            }
-          } else {
-            toast.error(t('error_loading_profile'));
-          }
-          
-          return;
-        }
-        
-        if (data) {
-          setDoctorProfile(data);
-          setProfileImage(data.profile_image);
-          form.reset({
-            name: data.name || '',
-            specialization: data.specialization || '',
-            bio: data.bio || '',
-            years_of_experience: data.years_of_experience || 0,
-          });
-        }
-      } catch (error) {
-        console.error("Error in profile fetch:", error);
-        toast.error(t('error_loading_profile'));
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    if (initialDoctorProfile) {
+      form.reset({
+        name: initialDoctorProfile.name || '',
+        specialization: initialDoctorProfile.specialization || '',
+        bio: initialDoctorProfile.bio || '',
+        years_of_experience: initialDoctorProfile.years_of_experience || 0,
+        // weekly_available_hours: initialDoctorProfile.weekly_available_hours || 0,
+      });
+      setProfileImage(initialDoctorProfile.profile_image || null);
+    } else {
+      // التعامل مع حالة عدم وجود ملف شخصي (مثلاً، تعيين قيم فارغة للنموذج)
+      form.reset({
+        name: user?.name || '', // يمكن استخدام اسم المستخدم من Auth كقيمة أولية إذا لم يوجد ملف
+        specialization: '',
+        bio: '',
+        years_of_experience: 0,
+        // weekly_available_hours: 0,
+      });
+      setProfileImage(user?.profileImage || null); // يمكن استخدام صورة المستخدم من Auth
+    }
+  }, [initialDoctorProfile, form, user]); // أضف user إذا كنت تستخدمه في القيم الافتراضية
 
-    fetchDoctorProfile();
-  }, [user, t, form]);
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (!file || !user) return;
+    if (!file || !user || !initialDoctorProfile) { // نحتاج initialDoctorProfile.id للتحديث أو user.id
+        toast.error(t('error_user_or_profile_not_found'));
+        return;
+    };
     
     try {
       setIsUploading(true);
@@ -139,16 +92,16 @@ const TherapistProfile = () => {
       
       // Upload to Supabase storage without using onUploadProgress
       // This is compatible with the FileOptions type
-      const { error: uploadError } = await supabase.storage
-        .from('doctor_profiles')
+        const { error: uploadError } = await supabase.storage
+        .from('doctor-profile-images') // تأكد من أن هذا هو اسم الـ bucket الصحيح
         .upload(fileName, file, {
           cacheControl: '3600',
-          upsert: false
+          upsert: false // أو true إذا كنت تريد الكتابة فوق الملفات بنفس الاسم
         });
         
       if (uploadError) {
         console.error("Error uploading image:", uploadError);
-        toast.error(t('error_uploading_image'));
+        toast.error(t('error_uploading_image') + `: ${uploadError.message}`);
         return;
       }
       
@@ -157,7 +110,7 @@ const TherapistProfile = () => {
       
       // Get the public URL 
       const { data: urlData } = supabase.storage
-        .from('doctor_profiles')
+        .from('doctor-profile-images')
         .getPublicUrl(fileName);
         
       if (urlData?.publicUrl) {
@@ -167,20 +120,19 @@ const TherapistProfile = () => {
         // Immediately update the profile image in database
         const { error: updateError } = await supabase
           .from('doctors')
-          .update({
-            profile_image: urlData.publicUrl,
-            updated_at: new Date().toISOString(),
-          })
-          .eq('user_id', user.id);
+          .update({ profile_image: urlData.publicUrl }) 
+          .eq('id', initialDoctorProfile.id); // استخدام id الطبيب من initialDoctorProfile
           
         if (updateError) {
-          console.error("Error updating profile image:", updateError);
-          toast.error(t('error_updating_profile_image'));
+          console.error("Error updating profile image in DB:", updateError);
+          toast.error(t('error_updating_profile_image_db'));
+        }else {
+            onProfileUpdate?.(); // إعلام المكون الأب بأن هناك تحديثًا
         }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Image upload error:", error);
-      toast.error(t('error_uploading_image'));
+      toast.error(t('error_uploading_image')  + `: ${error.message}`);
     } finally {
       setIsUploading(false);
       // Keep progress at 100% for a short time before resetting
@@ -189,55 +141,62 @@ const TherapistProfile = () => {
   };
 
   const onSubmit = async (values: ProfileFormValues) => {
-    if (!user) return;
+    if (!user || !initialDoctorProfile) {
+      toast.error(t('profile_data_not_loaded_cannot_save'));
+      return;
+    }
     
-    try {
+     try {
       setIsSaving(true);
-      
+      const updates = {
+        ...values,
+        profile_image: profileImage,
+        // updated_at: new Date().toISOString(), // تمت الإزالة، قاعدة البيانات ستتولى ذلك
+      };
+
       // Update the doctor profile in Supabase
-      const { error } = await supabase
+     const { error } = await supabase
         .from('doctors')
-        .update({
-          name: values.name,
-          specialization: values.specialization,
-          bio: values.bio,
-          years_of_experience: values.years_of_experience,
-          profile_image: profileImage,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('user_id', user.id);
-      
-      if (error) {
+        .update(updates)
+        .eq('id', initialDoctorProfile.id); // استخدام id الطبيب من initialDoctorProfile
+  
+       if (error) {
         console.error("Error updating doctor profile:", error);
-        toast.error(t('error_updating_profile'));
+        toast.error(t('error_updating_profile') + `: ${error.message}`);
         return;
       }
       
-      toast.success(t('profile_updated'));
+      toast.success(t('profile_updated_successfully'));
       
       // Also update auth metadata for consistency
-      await supabase.auth.updateUser({
-        data: {
-          name: values.name,
-          profile_image: profileImage
-        }
-      });
-    } catch (error) {
-      console.error("Error in profile update:", error);
-      toast.error(t('error_updating_profile'));
+      if (values.name !== initialDoctorProfile.name || profileImage !== initialDoctorProfile.profile_image) {
+        await supabase.auth.updateUser({
+          data: {
+            name: values.name,
+            profile_image: profileImage // تأكد من أن metadata في auth تدعم هذا
+          }
+        });
+      }
+      onProfileUpdate?.(); // إعلام المكون الأب بأن هناك تحديثًا
+    } catch (error: any) {
+      console.error("Error in profile update submit:", error);
+      toast.error(t('error_updating_profile') + `: ${error.message}`);
     } finally {
       setIsSaving(false);
     }
   };
 
-  if (isLoading) {
+  // حالة التحميل الرئيسية الآن تعتمد على المكون الأب
+  // إذا كان initialDoctorProfile هو null ولم يكن هناك مستخدم (أثناء التحميل الأولي للتطبيق)
+  if (!user && !initialDoctorProfile) {
     return (
       <div className="flex justify-center items-center p-8">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
       </div>
     );
   }
-
+  if (user && !initialDoctorProfile) {
+  }
   return (
     <Card>
       <CardHeader>
@@ -252,7 +211,9 @@ const TherapistProfile = () => {
               <div className="w-full md:w-1/3 flex flex-col items-center gap-4">
                 <Avatar className="w-32 h-32">
                   <AvatarImage src={profileImage || "/placeholder.svg"} alt={form.watch("name")} />
-                  <AvatarFallback className="text-xl">{form.watch("name").substring(0, 2).toUpperCase()}</AvatarFallback>
+                  <AvatarFallback className="text-xl">
+                    {(form.watch("name") || user?.name || "Dr").substring(0, 2).toUpperCase()}
+                  </AvatarFallback>
                 </Avatar>
                 
                 <div className="w-full">
@@ -291,7 +252,7 @@ const TherapistProfile = () => {
                   
                   {profileImage && !isUploading && (
                     <p className="mt-2 text-xs text-muted-foreground truncate">
-                      {new URL(profileImage).pathname.split('/').pop()}
+                      {new URL(profileImage).pathname.split('/').pop() || t('image_uploaded')}
                     </p>
                   )}
                 </div>
