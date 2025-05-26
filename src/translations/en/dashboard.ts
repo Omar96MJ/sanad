@@ -34,8 +34,8 @@ const dashboardTranslations = {
   'recent_articles': 'Recent Articles',
   'your_appointments': 'Your Appointments',
   'past_appointments': 'Past Appointments',
-
-
+  'your_progress': 'Your Progress',
+  'therapy_program': 'Therapy Program',
   // Admin Dashboard
   'admin_dashboard': 'Admin Dashboard',
   'manage_users': 'Manage Users',

@@ -18,11 +18,12 @@ interface MessagingLayoutProps {
 }
 
 const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true }) => {
-  const { t } = useLanguage();
+  const { t,language } = useLanguage();
   const [activeTab, setActiveTab] = useState("messages");
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
   
+  const isRTL = language === "ar";
   const {
     messages,
     conversations,
@@ -72,7 +73,7 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
 
   if (!currentUser) {
     return (
-      <Card className="border border-border/50">
+      <Card className="border border-border/50" >
         <CardHeader>
           <CardTitle>{t('messaging') || "Messaging"}</CardTitle>
         </CardHeader>
@@ -87,11 +88,11 @@ const MessagingLayout: React.FC<MessagingLayoutProps> = ({ isTherapist = true })
   }
 
   return (
-    <Card className="border border-border/50">
+    <Card className="border border-border/50" dir={isRTL ? "rtl" : "ltr"}>
       <CardHeader>
         <CardTitle>{t('messaging') || "Messaging"}</CardTitle>
       </CardHeader>
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs value={activeTab} onValueChange={setActiveTab} dir={isRTL ? "rtl" : "ltr"}>
         <CardContent>
           <TabsList className="grid w-full grid-cols-2 mb-6">
             <TabsTrigger value="messages">{t('messages') || "Messages"}</TabsTrigger>

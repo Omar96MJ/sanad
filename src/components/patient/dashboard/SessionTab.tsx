@@ -24,7 +24,8 @@ export const SessionTab = ({
   const { toast } = useToast();
   const [videoEnabled, setVideoEnabled] = useState(true);
   const [inSession, setInSession] = useState(false);
-  
+  const { language } = useLanguage();
+  const isRTL = language === 'ar';
   // Find the next upcoming appointment
   const upcomingAppointment = appointments.find(apt => apt.status === 'upcoming');
   
@@ -66,7 +67,7 @@ export const SessionTab = ({
   return (
     <div className="space-y-8">
       {inSession ? (
-        <Card className="border border-border/50">
+        <Card className="border border-border/50" dir={isRTL ? "rtl" : "ltr"}>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <div>{t('live_session')}</div>
@@ -92,7 +93,7 @@ export const SessionTab = ({
               </div>
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent >
             <div className="aspect-video bg-muted rounded-lg overflow-hidden flex items-center justify-center">
               {videoEnabled ? (
                 <div className="text-center p-8">
@@ -127,7 +128,7 @@ export const SessionTab = ({
           </CardContent>
         </Card>
       ) : (
-        <Card className="border border-border/50">
+        <Card className="border border-border/50" dir={isRTL ? "rtl" : "ltr"}>
           <CardHeader>
             <CardTitle>{t('video_session')}</CardTitle>
           </CardHeader>
@@ -167,7 +168,7 @@ export const SessionTab = ({
         </Card>
       )}
 
-      <Card className="border border-border/50">
+      <Card className="border border-border/50" dir={isRTL ? "rtl" : "ltr"}>
         <CardHeader>
           <CardTitle>{t('session_tips')}</CardTitle>
         </CardHeader>

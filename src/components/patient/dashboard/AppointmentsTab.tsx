@@ -102,7 +102,7 @@ export const AppointmentsTab = ({
   };
 
   return (
-    <Card className="border border-border/50">
+    <Card className="border border-border/50" dir={isRTL ? "rtl" : "ltr"}>
       <CardHeader>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <CardTitle>{t('your_appointments')}</CardTitle>
