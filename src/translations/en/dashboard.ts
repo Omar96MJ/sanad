@@ -24,10 +24,11 @@ const dashboardTranslations = {
   'selfhelptools': 'Self-Help Tools',
   'exploreexercises': 'Explore exercises and techniques for managing everyday stress',
   'accesstools': 'Access Tools',
-  'educationalmaterial': 'Educational Material',
+  'educat ionalmaterial': 'Educational Material',
   'learnaboutmentalhealth': 'Learn about mental health conditions, treatments, and coping strategies',
   'startlearning': 'Start Learning',
-
+  'track_your_progr ess': 'Manage appointments, access sessions, and access resources for your mental health',
+  
   // Admin Dashboard
   'admin_dashboard': 'Admin Dashboard',
   'manage_users': 'Manage Users',
