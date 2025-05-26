@@ -7,6 +7,7 @@ import { formatDistanceToNow } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
 
 interface ConversationListProps {
   conversations: Conversation[];
@@ -34,6 +35,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
     const otherParticipantId = conversation.participantIds.find(id => id !== currentUserId);
     return patients.find(patient => patient.id === otherParticipantId) || { id: "", name: "Unknown User" };
   };
+  const { t, language } = useLanguage();
 
   // Get the last message for a conversation
   const getLastMessage = (conversation: Conversation) => {
@@ -70,7 +72,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search conversations..."
+            placeholder={t("search_conversations")}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -80,7 +82,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       
       {sortedConversations.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-          No conversations yet
+         {t('no_conversations_yet')} 
         </div>
       ) : (
         <ScrollArea className="h-[calc(100vh-350px)] pr-4">

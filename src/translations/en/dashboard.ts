@@ -27,8 +27,15 @@ const dashboardTranslations = {
   'educat ionalmaterial': 'Educational Material',
   'learnaboutmentalhealth': 'Learn about mental health conditions, treatments, and coping strategies',
   'startlearning': 'Start Learning',
-  'track_your_progr ess': 'Manage appointments, access sessions, and access resources for your mental health',
-  
+  'track_your_progress': 'Manage Appointments, Access To Sessions, and Access Resources For Your Mental Health',
+  'your_therapist': 'Your Therapist',
+  'no_therapist_assigned': 'No therapist assigned yet',
+  'find_therapist': 'Find a Therapist',
+  'recent_articles': 'Recent Articles',
+  'your_appointments': 'Your Appointments',
+  'past_appointments': 'Past Appointments',
+
+
   // Admin Dashboard
   'admin_dashboard': 'Admin Dashboard',
   'manage_users': 'Manage Users',

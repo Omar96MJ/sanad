@@ -82,7 +82,11 @@ const sessionTranslations = {
   'failed_send_message': 'Failed to send message',
   'failed_create_conversation': 'Failed to start new conversation',
   'failed_add_participants': 'Failed to add participants to conversation',
-  'conversation_started': 'New conversation started'
+  'conversation_started': 'New conversation started',
+  'no_doctors_available': 'No doctors available',
+  'doctors_will_appear_here': 'Doctors will appear here when available',
+  'no_conversations_yet': 'No conversation yet',
+  
 };
 
 export default sessionTranslations;

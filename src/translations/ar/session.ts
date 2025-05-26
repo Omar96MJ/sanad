@@ -43,7 +43,14 @@ const sessionTranslations = {
   "appointment_created": "تم إنشاء الموعد",
   "appointment_created_success": "تم إنشاء الموعد بنجاح",
   "error": "خطأ",
-  
+  'messages': 'الرسائل',
+  'no_doctors_available': 'لا يوجد أطباء متاحين',
+  'no_doctors_found': 'لم يتم العثور على أطباء',
+  'doctors_will_appear_here': 'سيظهر الأطباء هنا عند توفرهم',
+  'search_doctors': 'البحث عن أطباء',
+  'search_conversations': 'البحث في المحادثات',
+  "no_conversations_yet": "لا توجد محادثات حتى الآن",
+  "select_conversation": "اختر محادثة لبدء الدردشة",
   // Video session
   "video_session": "جلسة فيديو",
   "join_session": "الانضمام للجلسة",

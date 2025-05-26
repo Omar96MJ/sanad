@@ -2,7 +2,7 @@
 const dashboardTranslations = {
   // Patient Dashboard translations
   "unauthorized_access": "وصول غير مصرح به",
-  "track_your_progress": "تتبع تقدمك، إدارة المواعيد، والوصول إلى موارد لصحتك النفسية",
+  "track_your_progress": "إدارة المواعيد والوصول إلى الجلسات والوصول إلى الموارد اللازمة لصحتك العقلية",
   "your_progress": "تقدمك",
   "therapy_program": "برنامج العلاج",
   "completed_sessions": "الجلسات المكتملة",
