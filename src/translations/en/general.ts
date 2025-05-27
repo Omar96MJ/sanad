@@ -163,7 +163,7 @@ export const general = {
   'support': 'Support',
   'help': 'Help',
   'faq': 'FAQ',
-  'feedback': 'Feedback',
+  'feedback_general': 'Feedback',
   
   // Social Media
   'follow_us': 'Follow Us',
@@ -175,7 +175,7 @@ export const general = {
   'rating': 'Rating',
   'review': 'Review',
   'reviews': 'Reviews',
-  'feedback': 'Feedback',
+  'feedback_rating': 'Feedback',
   'quality': 'Quality',
   'excellent': 'Excellent',
   'good': 'Good',
@@ -195,5 +195,42 @@ export const general = {
   'urgent': 'Urgent',
   'priority': 'Priority',
   'normal': 'Normal',
-  'low_priority': 'Low Priority'
+  'low_priority': 'Low Priority',
+
+  // Patient Management specific translations
+  'my_patients': 'My Patients',
+  'search_patients_placeholder': 'Search patients by name, email, or medical record number...',
+  'last_session': 'Last Session',
+  'next_session': 'Next Session',
+  'actions': 'Actions',
+  'view_notes': 'View Notes',
+  'no_patients_match_search': 'No patients match your search criteria',
+  'no_patients_assigned_yet': 'No patients assigned yet',
+  'patient_notes_for': 'Patient Notes for',
+  'view_and_add_patient_notes': 'View existing notes and add new ones for this patient',
+  'no_notes_found_for_this_patient': 'No notes found for this patient',
+  'note_dated': 'Note dated',
+  'authored_by': 'Authored by',
+  'created_on_db': 'Created on',
+  'add_new_note_for_patient': 'Add New Note for Patient',
+  'enter_note_details_here': 'Enter note details here...',
+  'adding_note_progress': 'Adding note...',
+  'add_note_button': 'Add Note',
+  'close_dialog': 'Close',
+  'error_fetching_patients': 'Error fetching patients',
+  'error_fetching_patient_notes': 'Error fetching patient notes',
+  'error_adding_note': 'Error adding note',
+  'note_added_successfully': 'Note added successfully',
+  'doctor_info_not_available_contact_support': 'Doctor information not available. Please contact support.',
+  'name_not_set': 'Name not set',
+  'email_not_set': 'Email not set',
+  'unexpected_error_fetching_patients': 'Unexpected error fetching patients',
+  'unexpected_error_fetching_notes': 'Unexpected error fetching notes',
+  'invalid_patient_selected': 'Invalid patient selected',
+  'note_content_required_or_patient_doctor_missing': 'Note content is required and patient/doctor information must be available',
+  'unexpected_error_adding_note': 'Unexpected error adding note',
+  'unknown_author': 'Unknown Author',
+  'unknown_patient': 'Unknown Patient'
 };
+
+export default general;

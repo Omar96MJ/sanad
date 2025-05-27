@@ -163,7 +163,7 @@ export const general = {
   'support': 'الدعم',
   'help': 'مساعدة',
   'faq': 'الأسئلة الشائعة',
-  'feedback': 'تعليقات',
+  'feedback_general': 'تعليقات',
   
   // Social Media
   'follow_us': 'تابعنا',
@@ -175,7 +175,7 @@ export const general = {
   'rating': 'التقييم',
   'review': 'مراجعة',
   'reviews': 'مراجعات',
-  'feedback': 'تعليقات',
+  'feedback_rating': 'تعليقات',
   'quality': 'الجودة',
   'excellent': 'ممتاز',
   'good': 'جيد',
@@ -195,5 +195,42 @@ export const general = {
   'urgent': 'عاجل',
   'priority': 'أولوية',
   'normal': 'عادي',
-  'low_priority': 'أولوية منخفضة'
+  'low_priority': 'أولوية منخفضة',
+
+  // Patient Management specific translations
+  'my_patients': 'مرضاي',
+  'search_patients_placeholder': 'البحث في المرضى بالاسم أو البريد الإلكتروني أو رقم السجل الطبي...',
+  'last_session': 'آخر جلسة',
+  'next_session': 'الجلسة القادمة',
+  'actions': 'الإجراءات',
+  'view_notes': 'عرض الملاحظات',
+  'no_patients_match_search': 'لا يوجد مرضى يطابقون معايير البحث',
+  'no_patients_assigned_yet': 'لم يتم تعيين مرضى بعد',
+  'patient_notes_for': 'ملاحظات المريض لـ',
+  'view_and_add_patient_notes': 'عرض الملاحظات الموجودة وإضافة ملاحظات جديدة لهذا المريض',
+  'no_notes_found_for_this_patient': 'لم يتم العثور على ملاحظات لهذا المريض',
+  'note_dated': 'ملاحظة مؤرخة في',
+  'authored_by': 'بقلم',
+  'created_on_db': 'تم إنشاؤها في',
+  'add_new_note_for_patient': 'إضافة ملاحظة جديدة للمريض',
+  'enter_note_details_here': 'أدخل تفاصيل الملاحظة هنا...',
+  'adding_note_progress': 'جاري إضافة الملاحظة...',
+  'add_note_button': 'إضافة ملاحظة',
+  'close_dialog': 'إغلاق',
+  'error_fetching_patients': 'خطأ في جلب المرضى',
+  'error_fetching_patient_notes': 'خطأ في جلب ملاحظات المريض',
+  'error_adding_note': 'خطأ في إضافة الملاحظة',
+  'note_added_successfully': 'تمت إضافة الملاحظة بنجاح',
+  'doctor_info_not_available_contact_support': 'معلومات الطبيب غير متاحة. يرجى الاتصال بالدعم.',
+  'name_not_set': 'الاسم غير محدد',
+  'email_not_set': 'البريد الإلكتروني غير محدد',
+  'unexpected_error_fetching_patients': 'خطأ غير متوقع في جلب المرضى',
+  'unexpected_error_fetching_notes': 'خطأ غير متوقع في جلب الملاحظات',
+  'invalid_patient_selected': 'مريض غير صالح مُختار',
+  'note_content_required_or_patient_doctor_missing': 'محتوى الملاحظة مطلوب ويجب أن تكون معلومات المريض/الطبيب متاحة',
+  'unexpected_error_adding_note': 'خطأ غير متوقع في إضافة الملاحظة',
+  'unknown_author': 'مؤلف غير معروف',
+  'unknown_patient': 'مريض غير معروف'
 };
+
+export default general;

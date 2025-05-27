@@ -84,3 +84,71 @@ export interface PatientDetails {
     profile_image?: string;
   };
 }
+
+// Messaging types
+export interface Message {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  content: string;
+  created_at: string;
+  read: boolean;
+  sender?: {
+    name: string;
+    profile_image?: string;
+  };
+}
+
+export interface Conversation {
+  id: string;
+  participant_1_id: string;
+  participant_2_id: string;
+  created_at: string;
+  updated_at: string;
+  last_message?: Message;
+  participant_1?: {
+    name: string;
+    profile_image?: string;
+    role: UserRole;
+  };
+  participant_2?: {
+    name: string;
+    profile_image?: string;
+    role: UserRole;
+  };
+}
+
+// Evaluation form types
+export interface EvaluationForm {
+  id: string;
+  title: string;
+  description?: string;
+  questions: FormQuestion[];
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+  is_active: boolean;
+}
+
+export interface FormQuestion {
+  id: string;
+  question_text: string;
+  question_type: 'text' | 'multiple_choice' | 'scale' | 'yes_no';
+  options?: string[];
+  required: boolean;
+  order_index: number;
+}
+
+export interface FormSubmission {
+  id: string;
+  form_id: string;
+  patient_id: string;
+  responses: FormResponse[];
+  submitted_at: string;
+  score?: number;
+}
+
+export interface FormResponse {
+  question_id: string;
+  answer: string | number;
+}
