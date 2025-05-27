@@ -9,13 +9,19 @@ export interface TherapistProfile extends User {
 }
 
 export interface PatientRecord {
-  id: string;
-  patientId: string;
-  patientName: string;
-  creationDate: string;
-  author: string;
+  id: string; // UUID للسجل/الملاحظة
+  patient_id: string; // UUID للمريض
+  doctor_id: string; // UUID للطبيب
   content: string;
+  note_date: string; //  سيعود كتاريخ بصيغة YYYY-MM-DD
+  created_at?: string; //  اختياري إذا لم تكن دائمًا تجلبه أو تستخدمه في الواجهة
+  updated_at?: string; //  اختياري
+
+  // حقول اختيارية يمكنك إضافتها بعد عمل JOIN عند جلب البيانات (إذا لزم الأمر)
+  patient_name?: string; //  اسم المريض (يُجلب من profiles)
+  doctor_name?: string;  //  اسم الطبيب الكاتب (يُجلب من doctors)
 }
+
 
 export interface SessionNote {
   id: string;

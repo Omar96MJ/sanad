@@ -337,6 +337,51 @@ export type Database = {
           },
         ]
       }
+      patient_notes: {
+        Row: {
+          content: string
+          created_at: string
+          doctor_id: string
+          id: string
+          note_date: string
+          patient_id: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          doctor_id: string
+          id?: string
+          note_date?: string
+          patient_id: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          doctor_id?: string
+          id?: string
+          note_date?: string
+          patient_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "patient_notes_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "patient_notes_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           assigned_doctor_id: string | null
