@@ -38,10 +38,15 @@ export async function fetchPatientAppointments(patientId: string): Promise<Patie
     const { data, error } = await supabase
       .from('appointments')
       .select(`
-        *,
-        profiles!appointments_doctor_id_fkey (
-          name
-        )
+        id,
+        patient_id,
+        doctor_id,
+        session_date,
+        session_type,
+        status,
+        created_at,
+        updated_at,
+        notes
       `)
       .eq('patient_id', patientId)
       .order('session_date', { ascending: true });
@@ -51,11 +56,26 @@ export async function fetchPatientAppointments(patientId: string): Promise<Patie
       throw error;
     }
 
+    // Get doctor names separately
+    const doctorIds = Array.from(new Set(data?.map(apt => apt.doctor_id) || []));
+    const { data: doctorProfiles, error: doctorError } = await supabase
+      .from('profiles')
+      .select('id, name')
+      .in('id', doctorIds);
+
+    if (doctorError) {
+      console.error("Error fetching doctor profiles:", doctorError);
+    }
+
+    const doctorMap = Object.fromEntries(
+      (doctorProfiles || []).map(doc => [doc.id, doc.name || "Doctor"])
+    );
+
     const typedAppointments = (data || []).map(appointment => ({
       id: appointment.id,
       patient_id: appointment.patient_id,
       doctor_id: appointment.doctor_id,
-      doctor_name: appointment.profiles?.name || "Doctor",
+      doctor_name: doctorMap[appointment.doctor_id] || "Doctor",
       session_date: appointment.session_date,
       session_type: appointment.session_type,
       status: appointment.status === 'scheduled' ? 'upcoming' as const : 
@@ -144,10 +164,14 @@ export async function updateAppointmentStatus(
       .update(updateData)
       .eq('id', appointmentId)
       .select(`
-        *,
-        profiles!appointments_doctor_id_fkey (
-          name
-        )
+        id,
+        patient_id,
+        doctor_id,
+        session_date,
+        session_type,
+        status,
+        created_at,
+        updated_at
       `)
       .single();
 
@@ -156,11 +180,20 @@ export async function updateAppointmentStatus(
       throw error;
     }
 
+    // Get doctor name separately
+    const { data: doctorProfile, error: doctorError } = await supabase
+      .from('profiles')
+      .select('name')
+      .eq('id', data.doctor_id)
+      .single();
+
+    const doctorName = doctorProfile?.name || "Doctor";
+
     return {
       id: data.id,
       patient_id: data.patient_id,
       doctor_id: data.doctor_id,
-      doctor_name: data.profiles?.name || "Doctor",
+      doctor_name: doctorName,
       session_date: data.session_date,
       session_type: data.session_type,
       status: data.status === 'scheduled' ? 'upcoming' as const : 
