@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Message, Conversation } from "@/lib/therapist-types";
 import { supabase } from "@/integrations/supabase/client";
@@ -129,48 +130,25 @@ export const useMessaging = (isTherapist: boolean = true) => {
         payload => {
           const newMessage = payload.new as any;
           
-          // Only add message to state if it's relevant to current user
-          if (newMessage.sender_id === user.id || newMessage.recipient_id === user.id) {
+          // Only add message to state if it's for the active conversation
+          if (newMessage.conversation_id === activeConversationId) {
             // Convert to our Message type
             const formattedMessage: Message = {
               id: newMessage.id,
               senderId: newMessage.sender_id,
-              senderName: "", // We'll populate this separately
-              senderRole: "",
-              recipientId: newMessage.recipient_id,
+              senderName: newMessage.sender_id === user.id ? (user.name || "You") : "Unknown",
+              senderRole: newMessage.sender_id === user.id ? (user.role || "unknown") : "unknown",
+              recipientId: "", // We'll determine this from conversation participants
               content: newMessage.content,
-              timestamp: newMessage.timestamp,
-              isRead: newMessage.is_read
+              timestamp: newMessage.created_at,
+              isRead: true // New messages are considered read if they're in the active conversation
             };
             
-            // Fetch sender name if needed
-            if (newMessage.sender_id !== user.id) {
-              supabase
-                .from('profiles')
-                .select('name, role')
-                .eq('id', newMessage.sender_id)
-                .single()
-                .then(({ data }) => {
-                  if (data) {
-                    formattedMessage.senderName = data.name || "Unknown User";
-                    formattedMessage.senderRole = data.role || "unknown";
-                    setMessages(prevMessages => [...prevMessages, formattedMessage]);
-                  }
-                });
-            } else {
-              formattedMessage.senderName = user.name || "You";
-              formattedMessage.senderRole = user.role || "unknown";
-              setMessages(prevMessages => [...prevMessages, formattedMessage]);
-            }
-            
-            // Update unread count in conversations if message is received
-            if (newMessage.recipient_id === user.id && !newMessage.is_read) {
-              updateUnreadCount(formattedMessage);
-            }
-            
-            // Update conversation last timestamp
-            updateConversationTimestamp(newMessage.sender_id, newMessage.recipient_id);
+            setMessages(prevMessages => [...prevMessages, formattedMessage]);
           }
+          
+          // Update conversation last timestamp
+          updateConversationTimestamp(newMessage.conversation_id);
         }
       )
       .subscribe();
@@ -194,23 +172,15 @@ export const useMessaging = (isTherapist: boolean = true) => {
   }, [user, isTherapist, activeConversationId]);
 
   // Update conversation timestamp when messages are sent
-  const updateConversationTimestamp = (senderId: string, recipientId: string) => {
-    // Find conversation with these participants
-    const conversation = conversations.find(c => 
-      c.participantIds.includes(senderId) && 
-      c.participantIds.includes(recipientId)
+  const updateConversationTimestamp = (conversationId: string) => {
+    // Update local state
+    setConversations(prevConversations => 
+      prevConversations.map(conv => 
+        conv.id === conversationId 
+          ? { ...conv, lastMessageTimestamp: new Date().toISOString() }
+          : conv
+      )
     );
-    
-    if (conversation) {
-      // Update local state
-      setConversations(prevConversations => 
-        prevConversations.map(conv => 
-          conv.id === conversation.id 
-            ? { ...conv, lastMessageTimestamp: new Date().toISOString() }
-            : conv
-        )
-      );
-    }
   };
   
   // Fetch messages for active conversation
@@ -218,20 +188,13 @@ export const useMessaging = (isTherapist: boolean = true) => {
     if (!user || !activeConversationId) return;
     
     const fetchMessages = async () => {
-      const activeConversation = conversations.find(c => c.id === activeConversationId);
-      if (!activeConversation) return;
-      
-      const otherParticipantId = activeConversation.participantIds.find(id => id !== user.id);
-      if (!otherParticipantId) return;
-      
       try {
-        // Get all messages between these two users
+        // Get all messages for this conversation
         const { data, error } = await supabase
           .from('messages')
           .select('*')
-          .or(`sender_id.eq.${user.id},recipient_id.eq.${user.id}`)
-          .or(`sender_id.eq.${otherParticipantId},recipient_id.eq.${otherParticipantId}`)
-          .order('timestamp', { ascending: true });
+          .eq('conversation_id', activeConversationId)
+          .order('created_at', { ascending: true });
           
         if (error) {
           console.error("Error fetching messages:", error);
@@ -242,50 +205,17 @@ export const useMessaging = (isTherapist: boolean = true) => {
           const formattedMessages: Message[] = data.map(msg => ({
             id: msg.id,
             senderId: msg.sender_id,
-            senderName: "", // We'll populate this below
-            senderRole: "", // We'll populate this below
-            recipientId: msg.recipient_id,
+            senderName: msg.sender_id === user.id ? (user.name || "You") : "Unknown",
+            senderRole: msg.sender_id === user.id ? (user.role || "unknown") : "unknown",
+            recipientId: "", // Will be determined from conversation participants
             content: msg.content,
-            timestamp: msg.timestamp,
-            isRead: msg.is_read
+            timestamp: msg.created_at,
+            isRead: true // All fetched messages are considered read
           }));
-          
-          // Mark messages as read
-          const unreadMessages = data.filter(
-            msg => msg.recipient_id === user.id && !msg.is_read
-          );
-          
-          if (unreadMessages.length > 0) {
-            const messageIds = unreadMessages.map(msg => msg.id);
-            
-            await supabase
-              .from('messages')
-              .update({ is_read: true })
-              .in('id', messageIds);
-              
-            // Reset unread count for this conversation
-            await supabase
-              .from('conversation_participants')
-              .update({ unread_count: 0 })
-              .eq('conversation_id', activeConversationId)
-              .eq('user_id', user.id);
-              
-            // Update conversations state to reflect read messages
-            setConversations(prevConversations => 
-              prevConversations.map(conv => 
-                conv.id === activeConversationId 
-                  ? { ...conv, unreadCount: 0 }
-                  : conv
-              )
-            );
-          }
           
           // Get user profiles to populate sender names
           const userIds = Array.from(
-            new Set([
-              ...formattedMessages.map(msg => msg.senderId),
-              ...formattedMessages.map(msg => msg.recipientId)
-            ])
+            new Set(formattedMessages.map(msg => msg.senderId))
           );
           
           const { data: profilesData, error: profilesError } = await supabase
@@ -315,46 +245,7 @@ export const useMessaging = (isTherapist: boolean = true) => {
     };
     
     fetchMessages();
-  }, [user, activeConversationId, conversations]);
-  
-  const updateUnreadCount = async (newMessage: Message) => {
-    // Find conversation for this message
-    const otherParticipantId = newMessage.senderId;
-    
-    // Find conversation with both users
-    const conversation = conversations.find(conv => 
-      conv.participantIds.includes(user!.id) && 
-      conv.participantIds.includes(otherParticipantId)
-    );
-    
-    if (conversation) {
-      // If message belongs to active conversation, mark as read
-      if (conversation.id === activeConversationId) {
-        await supabase
-          .from('messages')
-          .update({ is_read: true })
-          .eq('id', newMessage.id);
-      } else {
-        // Otherwise increment unread count
-        await supabase
-          .from('conversation_participants')
-          .update({ 
-            unread_count: conversation.unreadCount + 1 
-          })
-          .eq('conversation_id', conversation.id)
-          .eq('user_id', user!.id);
-          
-        // Update local state
-        setConversations(prevConversations => 
-          prevConversations.map(conv => 
-            conv.id === conversation.id 
-              ? { ...conv, unreadCount: conv.unreadCount + 1 }
-              : conv
-          )
-        );
-      }
-    }
-  };
+  }, [user, activeConversationId]);
 
   const handleSelectConversation = (conversationId: string) => {
     setActiveConversationId(conversationId);
@@ -426,12 +317,6 @@ export const useMessaging = (isTherapist: boolean = true) => {
 
   const handleSendMessage = async (content: string): Promise<boolean> => {
     if (!user || !activeConversationId) return false;
-
-    const activeConversation = conversations.find(c => c.id === activeConversationId);
-    if (!activeConversation) return false;
-    
-    const recipientId = activeConversation.participantIds.find(id => id !== user.id);
-    if (!recipientId) return false;
     
     try {
       // Insert message into database
@@ -439,7 +324,7 @@ export const useMessaging = (isTherapist: boolean = true) => {
         .from('messages')
         .insert({
           sender_id: user.id,
-          recipient_id: recipientId,
+          conversation_id: activeConversationId,
           content
         })
         .select()

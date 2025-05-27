@@ -35,7 +35,7 @@ const Profile = () => {
             {t('profile')}
           </h1>
           
-          {user.role === 'doctor' && <TherapistProfile />}
+          {user.role === 'doctor' && <TherapistProfile initialDoctorProfile={null} />}
           {user.role === 'admin' && <AdminProfile />}
           {user.role === 'patient' && <PatientProfile />}
         </div>

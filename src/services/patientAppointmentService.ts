@@ -39,7 +39,7 @@ export async function fetchPatientAppointments(patientId: string): Promise<Patie
       .from('appointments')
       .select(`
         *,
-        doctors!appointments_doctor_id_fkey (
+        profiles!appointments_doctor_id_fkey (
           name
         )
       `)
@@ -55,7 +55,7 @@ export async function fetchPatientAppointments(patientId: string): Promise<Patie
       id: appointment.id,
       patient_id: appointment.patient_id,
       doctor_id: appointment.doctor_id,
-      doctor_name: appointment.doctors?.name || "Doctor",
+      doctor_name: appointment.profiles?.name || "Doctor",
       session_date: appointment.session_date,
       session_type: appointment.session_type,
       status: appointment.status === 'scheduled' ? 'upcoming' as const : 
@@ -143,7 +143,12 @@ export async function updateAppointmentStatus(
       .from('appointments')
       .update(updateData)
       .eq('id', appointmentId)
-      .select()
+      .select(`
+        *,
+        profiles!appointments_doctor_id_fkey (
+          name
+        )
+      `)
       .single();
 
     if (error) {
@@ -152,9 +157,16 @@ export async function updateAppointmentStatus(
     }
 
     return {
-      ...data,
+      id: data.id,
+      patient_id: data.patient_id,
+      doctor_id: data.doctor_id,
+      doctor_name: data.profiles?.name || "Doctor",
+      session_date: data.session_date,
+      session_type: data.session_type,
       status: data.status === 'scheduled' ? 'upcoming' as const : 
-              data.status === 'completed' ? 'completed' as const : 'cancelled' as const
+              data.status === 'completed' ? 'completed' as const : 'cancelled' as const,
+      created_at: data.created_at,
+      updated_at: data.updated_at
     } as PatientAppointment;
 
   } catch (error) {
