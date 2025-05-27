@@ -85,7 +85,7 @@ export interface PatientDetails {
   };
 }
 
-// Messaging types
+// Messaging types - Updated to match code usage
 export interface Message {
   id: string;
   conversation_id: string;
@@ -93,6 +93,13 @@ export interface Message {
   content: string;
   created_at: string;
   read: boolean;
+  // Additional properties used by the frontend
+  senderId: string;
+  senderName: string;
+  senderRole: string;
+  recipientId: string;
+  timestamp: string;
+  isRead: boolean;
   sender?: {
     name: string;
     profile_image?: string;
@@ -106,6 +113,10 @@ export interface Conversation {
   created_at: string;
   updated_at: string;
   last_message?: Message;
+  // Additional properties used by the frontend
+  participantIds: string[];
+  lastMessageTimestamp: string;
+  unreadCount: number;
   participant_1?: {
     name: string;
     profile_image?: string;
@@ -118,16 +129,19 @@ export interface Conversation {
   };
 }
 
-// Evaluation form types
+// Evaluation form types - Updated to match code usage
 export interface EvaluationForm {
   id: string;
   title: string;
-  description?: string;
+  description: string;
   questions: FormQuestion[];
   created_by: string;
   created_at: string;
   updated_at: string;
   is_active: boolean;
+  // Additional properties used by the frontend
+  therapistId: string;
+  createdAt: string;
 }
 
 export interface FormQuestion {
@@ -137,6 +151,10 @@ export interface FormQuestion {
   options?: string[];
   required: boolean;
   order_index: number;
+  // Additional properties used by the frontend
+  type: string;
+  question: string;
+  scaleRange?: { min: number; max: number };
 }
 
 export interface FormSubmission {
@@ -146,6 +164,11 @@ export interface FormSubmission {
   responses: FormResponse[];
   submitted_at: string;
   score?: number;
+  // Additional properties used by the frontend
+  formId: string;
+  patientId: string;
+  submissionDate: string;
+  answers: { questionId: string; answer: string | number }[];
 }
 
 export interface FormResponse {
