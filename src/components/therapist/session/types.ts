@@ -1,23 +1,23 @@
 
-import * as z from "zod";
-
-export type Appointment = {
+export interface Appointment {
   id: string;
+  doctor_id: string;
   patient_id: string;
-  patient_name: string;
   session_date: string;
   session_type: string;
   status: string;
   notes?: string;
-};
+  created_at: string;
+  updated_at: string;
+  // These will be fetched separately or computed
+  patient_name?: string;
+}
 
-export const appointmentFormSchema = z.object({
-  patient_name: z.string().min(2),
-  patient_id: z.string().optional(),
-  session_date: z.date(),
-  session_time: z.string(),
-  session_type: z.string(),
-  notes: z.string().optional(),
-});
-
-export type AppointmentFormValues = z.infer<typeof appointmentFormSchema>;
+export interface AppointmentFormValues {
+  patient_id: string;
+  patient_name: string;
+  session_date: Date;
+  session_time: string;
+  session_type: string;
+  notes?: string;
+}

@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { toast } from "sonner";
 
-
 export interface PatientAppointment {
   id?: string;
   patient_id: string;
@@ -20,7 +19,7 @@ export interface PatientAppointment {
 // دالة جلب اسم المريض
 async function fetchPatientName(patientId: string): Promise<string | null> {
   const { data, error } = await supabase
-    .from("profiles") // تأكد من أن اسم الجدول "profile" وليس "profiles"
+    .from("profiles")
     .select("name")
     .eq("id", patientId)
     .single();
@@ -33,12 +32,17 @@ async function fetchPatientName(patientId: string): Promise<string | null> {
   return data?.name ?? null;
 }
 
-// جلب مواعيد المريض
+// جلب مواعيد المريض - we'll use the main appointments table instead
 export async function fetchPatientAppointments(patientId: string): Promise<PatientAppointment[]> {
   try {
     const { data, error } = await supabase
-      .from('patient_appointments')
-      .select('*')
+      .from('appointments')
+      .select(`
+        *,
+        doctors!appointments_doctor_id_fkey (
+          name
+        )
+      `)
       .eq('patient_id', patientId)
       .order('session_date', { ascending: true });
 
@@ -48,17 +52,26 @@ export async function fetchPatientAppointments(patientId: string): Promise<Patie
     }
 
     const typedAppointments = (data || []).map(appointment => ({
-      ...appointment,
-      status: appointment.status as 'upcoming' | 'completed' | 'cancelled'
+      id: appointment.id,
+      patient_id: appointment.patient_id,
+      doctor_id: appointment.doctor_id,
+      doctor_name: appointment.doctors?.name || "Doctor",
+      session_date: appointment.session_date,
+      session_type: appointment.session_type,
+      status: appointment.status === 'scheduled' ? 'upcoming' as const : 
+              appointment.status === 'completed' ? 'completed' as const : 'cancelled' as const,
+      created_at: appointment.created_at,
+      updated_at: appointment.updated_at
     }));
 
-    return typedAppointments as PatientAppointment[];
+    return typedAppointments;
 
   } catch (error) {
     console.error("Exception fetching appointments:", error);
     throw error;
   }
 }
+
 export async function createAppointment(appointment: Omit<PatientAppointment, 'id' | 'created_at' | 'updated_at'>) {
   try {
     if (!appointment.patient_id || !appointment.doctor_id || !appointment.session_date) {
@@ -68,52 +81,43 @@ export async function createAppointment(appointment: Omit<PatientAppointment, 'i
     // جلب اسم المريض
     const patientName = await fetchPatientName(appointment.patient_id) || "Patient";
 
-    console.log("📥 Creating patient appointment with:", appointment);
+    console.log("📥 Creating appointment with:", appointment);
 
-    // إنشاء موعد في جدول patient_appointments
+    // إنشاء موعد في جدول appointments الرئيسي
     const { data, error } = await supabase
-      .from("patient_appointments")
-      .insert([appointment]) // ← لاحظ أننا نرسل كمصفوفة
-      .select()
-      .single();
-
-    if (error) {
-      console.error("❌ Error creating patient appointment:", error);
-      toast.error("فشل إنشاء الموعد للمريض");
-      throw error;
-    }
-
-    console.log("✅ Patient appointment created:", data);
-
-    // إنشاء موعد في جدول appointments للطبيب
-    const { error: doctorApptError } = await supabase
       .from("appointments")
       .insert([{
         doctor_id: appointment.doctor_id,
         patient_id: appointment.patient_id,
-        patient_name: patientName,
         session_date: appointment.session_date,
         session_type: appointment.session_type,
-        status: 'scheduled'
-      }]);
+        status: appointment.status === 'upcoming' ? 'scheduled' : appointment.status
+      }])
+      .select()
+      .single();
 
-      console.log("Appointment for doctor:", {
-  doctor_id: appointment.doctor_id,
-  patient_id: appointment.patient_id,
-  patient_name: patientName,
-  session_date: appointment.session_date,
-  session_type: appointment.session_type,
-  status: 'scheduled'
-});
-    if (doctorApptError) {
-      console.error("❌ Error creating doctor appointment:", doctorApptError);
-      toast.warning("تم إنشاء الموعد للمريض ولكن فشل للطبيب");
-    } else {
-      console.log("✅ Doctor appointment created");
+    if (error) {
+      console.error("❌ Error creating appointment:", error);
+      toast.error("فشل إنشاء الموعد");
+      throw error;
     }
 
+    console.log("✅ Appointment created:", data);
     toast.success("تم حجز الموعد بنجاح");
-    return data as PatientAppointment;
+    
+    // Return the appointment in the expected format
+    return {
+      id: data.id,
+      patient_id: data.patient_id,
+      doctor_id: data.doctor_id,
+      doctor_name: appointment.doctor_name,
+      session_date: data.session_date,
+      session_type: data.session_type,
+      status: data.status === 'scheduled' ? 'upcoming' as const : 
+              data.status === 'completed' ? 'completed' as const : 'cancelled' as const,
+      created_at: data.created_at,
+      updated_at: data.updated_at
+    } as PatientAppointment;
 
   } catch (error) {
     console.error("❗ Exception creating appointment:", error);
@@ -121,6 +125,7 @@ export async function createAppointment(appointment: Omit<PatientAppointment, 'i
     throw error;
   }
 }
+
 // تحديث حالة الموعد (والتاريخ عند إعادة الجدولة)
 export async function updateAppointmentStatus(
   appointmentId: string,
@@ -128,13 +133,14 @@ export async function updateAppointmentStatus(
   sessionDate?: string
 ) {
   try {
-    const updateData: any = { status };
+    const dbStatus = status === 'upcoming' ? 'scheduled' : status;
+    const updateData: any = { status: dbStatus };
     if (sessionDate) {
       updateData.session_date = sessionDate;
     }
 
     const { data, error } = await supabase
-      .from('patient_appointments')
+      .from('appointments')
       .update(updateData)
       .eq('id', appointmentId)
       .select()
@@ -145,28 +151,11 @@ export async function updateAppointmentStatus(
       throw error;
     }
 
-    if (data) {
-      const doctorStatus = status === 'upcoming' ? 'scheduled' :
-        status === 'completed' ? 'completed' : 'cancelled';
-
-      const doctorUpdateData: any = { status: doctorStatus };
-      if (sessionDate) {
-        doctorUpdateData.session_date = sessionDate;
-      }
-
-      const { error: doctorApptError } = await supabase
-        .from('appointments')
-        .update(doctorUpdateData)
-        .eq('doctor_id', data.doctor_id)
-        .eq('patient_id', data.patient_id)
-        .eq('session_date', data.session_date);
-
-      if (doctorApptError) {
-        console.error("Error updating doctor appointment:", doctorApptError);
-      }
-    }
-
-    return data as PatientAppointment;
+    return {
+      ...data,
+      status: data.status === 'scheduled' ? 'upcoming' as const : 
+              data.status === 'completed' ? 'completed' as const : 'cancelled' as const
+    } as PatientAppointment;
 
   } catch (error) {
     console.error("Exception updating appointment:", error);

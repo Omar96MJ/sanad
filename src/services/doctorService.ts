@@ -35,7 +35,7 @@ export const fetchDoctorById = async (doctorId: string): Promise<DoctorProfile |
     specialization: data.specialization,
     bio: data.bio,
     profile_image: data.profile_image,
-    patients_count: data.patients, // Map 'patients' to 'patients_count'
+    patients_count: data.patients_count,
     years_of_experience: data.years_of_experience
   };
 };
@@ -63,7 +63,7 @@ export const fetchDoctorByUserId = async (userId: string): Promise<DoctorProfile
     specialization: data.specialization,
     bio: data.bio,
     profile_image: data.profile_image,
-    patients_count: data.patients, // Map 'patients' to 'patients_count'
+    patients_count: data.patients_count,
     years_of_experience: data.years_of_experience
   };
 };
@@ -100,7 +100,7 @@ export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
         specialization: doctor.specialization,
         bio: doctor.bio,
         profile_image: doctor.profile_image,
-        patients_count: doctor.patients, // Map 'patients' to 'patients_count'
+        patients_count: doctor.patients_count,
         years_of_experience: doctor.years_of_experience
       })) : [];
     }
@@ -128,7 +128,7 @@ export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
           specialization: existingDoctor?.specialization || "Mental Health Specialist",
           bio: existingDoctor?.bio || "Experienced mental health professional dedicated to helping patients achieve their wellness goals.",
           profile_image: profile.profile_image || existingDoctor?.profile_image,
-          patients: existingDoctor?.patients || 0, // Use 'patients' for database
+          patients_count: existingDoctor?.patients_count || 0,
           years_of_experience: existingDoctor?.years_of_experience || 5
         };
 
@@ -161,7 +161,7 @@ export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
           specialization: doctor.specialization,
           bio: doctor.bio,
           profile_image: doctor.profile_image,
-          patients_count: doctor.patients, // Map 'patients' to 'patients_count'
+          patients_count: doctor.patients_count,
           years_of_experience: doctor.years_of_experience
         })) : [];
       }
@@ -175,7 +175,7 @@ export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
         specialization: doctor.specialization,
         bio: doctor.bio,
         profile_image: doctor.profile_image,
-        patients_count: doctor.patients, // Map 'patients' to 'patients_count'
+        patients_count: doctor.patients_count,
         years_of_experience: doctor.years_of_experience
       })) : [];
     }
@@ -188,7 +188,7 @@ export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
       specialization: doctor.specialization,
       bio: doctor.bio,
       profile_image: doctor.profile_image,
-      patients_count: doctor.patients, // Map 'patients' to 'patients_count'
+      patients_count: doctor.patients_count,
       years_of_experience: doctor.years_of_experience
     })) : [];
   } catch (error) {
@@ -215,7 +215,7 @@ export const ensureDoctorRecord = async (userId: string, userName: string): Prom
       name: userName || "Doctor",
       specialization: "Mental Health Specialist",
       bio: "Experienced mental health professional",
-      patients: 0, // Use 'patients' for database
+      patients_count: 0,
       years_of_experience: 5
     })
     .select()
@@ -235,7 +235,7 @@ export const ensureDoctorRecord = async (userId: string, userName: string): Prom
     specialization: data.specialization,
     bio: data.bio,
     profile_image: data.profile_image,
-    patients_count: data.patients, // Map 'patients' to 'patients_count'
+    patients_count: data.patients_count,
     years_of_experience: data.years_of_experience
   };
 };
