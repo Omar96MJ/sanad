@@ -113,7 +113,7 @@ export const TherapistDashboardTabs = ({
       </TabsContent>
       
       <TabsContent value="availability">
-        <AvailabilityManagement />
+        <AvailabilityManagement doctorId={doctorProfile?.id} />
       </TabsContent>
     </Tabs>
   );

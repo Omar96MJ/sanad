@@ -3,19 +3,10 @@ import { useState } from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { Availability } from "@/lib/therapist-types";
-import { Calendar as CalendarIcon, Clock, Check } from "lucide-react";
-
-// Mock availability data
-const initialAvailability: Availability[] = [
-  { id: '1', therapistId: '1', dayOfWeek: 1, startTime: '09:00', endTime: '12:00', isAvailable: true },
-  { id: '2', therapistId: '1', dayOfWeek: 1, startTime: '14:00', endTime: '17:00', isAvailable: true },
-  { id: '3', therapistId: '1', dayOfWeek: 2, startTime: '10:00', endTime: '15:00', isAvailable: true },
-  { id: '4', therapistId: '1', dayOfWeek: 3, startTime: '09:00', endTime: '17:00', isAvailable: true },
-  { id: '5', therapistId: '1', dayOfWeek: 4, startTime: '14:00', endTime: '18:00', isAvailable: true },
-  { id: '6', therapistId: '1', dayOfWeek: 5, startTime: '09:00', endTime: '13:00', isAvailable: true }
-];
+import { useAvailability, AvailabilitySlot } from "@/hooks/useAvailability";
+import { Calendar as CalendarIcon, Clock, Check, Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 
 const daysOfWeek = [
   'sunday',
@@ -29,79 +20,123 @@ const daysOfWeek = [
 
 const timeSlots = Array.from({ length: 12 }, (_, i) => {
   const hour = i + 8; // Starting from 8 AM
-  return `${hour}:00`;
+  return `${hour.toString().padStart(2, '0')}:00`;
 });
 
-const AvailabilityManagement = () => {
+interface AvailabilityManagementProps {
+  doctorId?: string;
+}
+
+const AvailabilityManagement = ({ doctorId }: AvailabilityManagementProps) => {
   const { t, language } = useLanguage();
+  const { user } = useAuth();
   const isRTL = language === 'ar';
-  
-  const [availability, setAvailability] = useState<Availability[]>(initialAvailability);
   const [editMode, setEditMode] = useState(false);
   
+  // Get doctor ID from props or fetch from current user
+  const [currentDoctorId, setCurrentDoctorId] = useState<string | null>(doctorId || null);
+  
+  // Fetch doctor ID if not provided
+  useState(() => {
+    if (!doctorId && user) {
+      const fetchDoctorId = async () => {
+        const { data, error } = await supabase
+          .from('doctors')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+        
+        if (data) {
+          setCurrentDoctorId(data.id);
+        }
+      };
+      fetchDoctorId();
+    }
+  });
+
+  const { availability, isLoading, isSaving, saveAvailability } = useAvailability(currentDoctorId);
+  
   // Create a 2D array to represent the availability grid (days x hours)
-  const availabilityGrid = daysOfWeek.map(day => {
-    const dayIndex = daysOfWeek.indexOf(day);
-    return timeSlots.map(time => {
+  const availabilityGrid = daysOfWeek.map((_, dayIndex) => {
+    return timeSlots.map((time) => {
       const hour = parseInt(time.split(':')[0]);
       const slot = availability.find(a => 
-        a.dayOfWeek === dayIndex && 
-        parseInt(a.startTime.split(':')[0]) <= hour && 
-        parseInt(a.endTime.split(':')[0]) > hour
+        a.day_of_week === dayIndex && 
+        parseInt(a.start_time.split(':')[0]) <= hour && 
+        parseInt(a.end_time.split(':')[0]) > hour
       );
       return slot ? true : false;
     });
   });
   
+  const [tempGrid, setTempGrid] = useState<boolean[][]>([]);
+  
+  // Initialize temp grid when entering edit mode
+  const startEdit = () => {
+    setTempGrid(availabilityGrid.map(row => [...row]));
+    setEditMode(true);
+  };
+  
   const toggleSlot = (dayIndex: number, hourIndex: number) => {
     if (!editMode) return;
     
-    const newGrid = [...availabilityGrid];
+    const newGrid = tempGrid.map(row => [...row]);
     newGrid[dayIndex][hourIndex] = !newGrid[dayIndex][hourIndex];
-    
+    setTempGrid(newGrid);
+  };
+  
+  const saveChanges = async () => {
+    if (!currentDoctorId) {
+      console.error("No doctor ID available");
+      return;
+    }
+
     // Convert grid back to availability array
-    const newAvailability: Availability[] = [];
+    const newAvailability: AvailabilitySlot[] = [];
     
-    for (let day = 0; day < newGrid.length; day++) {
+    for (let day = 0; day < tempGrid.length; day++) {
       let start = -1;
       
-      for (let hour = 0; hour < newGrid[day].length; hour++) {
-        if (newGrid[day][hour] && start === -1) {
+      for (let hour = 0; hour <= tempGrid[day].length; hour++) {
+        const isAvailable = hour < tempGrid[day].length ? tempGrid[day][hour] : false;
+        
+        if (isAvailable && start === -1) {
           start = hour;
-        } else if (!newGrid[day][hour] && start !== -1) {
+        } else if (!isAvailable && start !== -1) {
           newAvailability.push({
-            id: `new-${day}-${start}`,
-            therapistId: '1',
-            dayOfWeek: day,
-            startTime: `${hour + 8 - (hour - start)}:00`,
-            endTime: `${hour + 8}:00`,
-            isAvailable: true
+            doctor_id: currentDoctorId,
+            day_of_week: day,
+            start_time: `${(start + 8).toString().padStart(2, '0')}:00`,
+            end_time: `${(hour + 8).toString().padStart(2, '0')}:00`,
+            is_available: true
           });
           start = -1;
         }
       }
-      
-      // If the day ends with available slots
-      if (start !== -1) {
-        newAvailability.push({
-          id: `new-${day}-${start}`,
-          therapistId: '1',
-          dayOfWeek: day,
-          startTime: `${start + 8}:00`,
-          endTime: `${timeSlots.length + 8}:00`,
-          isAvailable: true
-        });
-      }
     }
     
-    setAvailability(newAvailability);
+    const success = await saveAvailability(newAvailability);
+    if (success) {
+      setEditMode(false);
+      setTempGrid([]);
+    }
   };
-  
-  const saveAvailability = () => {
-    // In a real app, send to backend
-    toast.success(t('availability_updated'));
+
+  const cancelEdit = () => {
     setEditMode(false);
+    setTempGrid([]);
   };
+
+  const currentGrid = editMode ? tempGrid : availabilityGrid;
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin" />
+        <span className="ml-2">{t('loading')}...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -115,19 +150,20 @@ const AvailabilityManagement = () => {
             <div>
               {editMode ? (
                 <div className="flex gap-2">
-                  <Button variant="outline" onClick={() => {
-                    setAvailability(initialAvailability);
-                    setEditMode(false);
-                  }}>
+                  <Button variant="outline" onClick={cancelEdit} disabled={isSaving}>
                     {t('cancel')}
                   </Button>
-                  <Button onClick={saveAvailability}>
-                    <Check className="h-4 w-4 mr-1" />
+                  <Button onClick={saveChanges} disabled={isSaving}>
+                    {isSaving ? (
+                      <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                    ) : (
+                      <Check className="h-4 w-4 mr-1" />
+                    )}
                     {t('save_changes')}
                   </Button>
                 </div>
               ) : (
-                <Button onClick={() => setEditMode(true)}>
+                <Button onClick={startEdit}>
                   {t('edit_availability')}
                 </Button>
               )}
@@ -161,13 +197,13 @@ const AvailabilityManagement = () => {
                     <div 
                       key={hourIndex}
                       className={`
-                        h-12 rounded-md border flex items-center justify-center
-                        ${availabilityGrid[dayIndex][hourIndex] ? 'bg-primary/20 border-primary/50' : 'bg-muted/20 border-muted/50'}
+                        h-12 rounded-md border flex items-center justify-center transition-colors
+                        ${currentGrid[dayIndex]?.[hourIndex] ? 'bg-primary/20 border-primary/50' : 'bg-muted/20 border-muted/50'}
                         ${editMode ? 'cursor-pointer hover:opacity-80' : ''}
                       `}
                       onClick={() => toggleSlot(dayIndex, hourIndex)}
                     >
-                      {availabilityGrid[dayIndex][hourIndex] && (
+                      {currentGrid[dayIndex]?.[hourIndex] && (
                         <Check className="h-4 w-4 text-primary" />
                       )}
                     </div>
@@ -184,7 +220,7 @@ const AvailabilityManagement = () => {
                 <p className="text-muted-foreground">{t('no_availability_set')}</p>
               ) : (
                 daysOfWeek.map((day, dayIndex) => {
-                  const dayAvailability = availability.filter(a => a.dayOfWeek === dayIndex);
+                  const dayAvailability = availability.filter(a => a.day_of_week === dayIndex);
                   if (dayAvailability.length === 0) return null;
                   
                   return (
@@ -192,9 +228,9 @@ const AvailabilityManagement = () => {
                       <span className="font-medium w-24">{t(day)}:</span>
                       <span>
                         {dayAvailability.map((slot, i) => (
-                          <span key={slot.id}>
+                          <span key={slot.id || i}>
                             {i > 0 && ", "}
-                            {slot.startTime} - {slot.endTime}
+                            {slot.start_time} - {slot.end_time}
                           </span>
                         ))}
                       </span>
