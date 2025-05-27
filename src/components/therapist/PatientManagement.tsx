@@ -70,6 +70,8 @@ const PatientManagement = ({ currentDoctor /*, onDataChange */ }: PatientManagem
 
       setIsLoadingPatients(true);
       try {
+        console.log('Fetching patients for doctor ID:', currentDoctor.id); // <--- أضف هذا
+
         const { data, error } = await supabase
           .from('profiles')
           .select('id, name, email')
@@ -322,7 +324,6 @@ const handleAddNote = async () => {
       </Card>
 
       {/* Dialog عرض وإضافة السجلات/الملاحظات */}
-      // داخل PatientManagement.tsx، في جزء الـ return
 {/* Dialog عرض وإضافة السجلات/الملاحظات */}
 {selectedPatient && (
   <Dialog open={showPatientRecordsDialog} onOpenChange={setShowPatientRecordsDialog}>
