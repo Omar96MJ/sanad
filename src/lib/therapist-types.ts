@@ -1,153 +1,86 @@
-import { User, UserRole } from "./types";
 
-export interface TherapistProfile extends User {
-  specialization: string;
-  bio: string;
-  patients: number;
-  yearsOfExperience: number;
-  introductionVideo?: string;
+import { UserRole } from './types';
+
+export interface DoctorProfile {
+  id: string;
+  user_id: string;
+  name: string;
+  specialization?: string;
+  bio?: string;
+  profile_image?: string;
+  status?: 'pending' | 'approved' | 'rejected';
+  years_of_experience?: number;
+  weekly_available_hours?: number;
+  patients_count?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface PatientListItem {
+  id: string;
+  name: string;
+  email: string;
+  lastSession: string;
+  nextSession: string;
+  medicalRecordNumber?: string;
+  phoneNumber?: string;
+  dateOfBirth?: string;
+}
+
+export interface CurrentDoctorProp {
+  id: string;
+  user_id: string;
+  name: string;
 }
 
 export interface PatientNote {
-  id: string; // UUID للسجل/الملاحظة
-  patient_id: string; // UUID للمريض
-  doctor_id: string; // UUID للطبيب
+  id: string;
+  patient_id: string;
+  doctor_id: string;
   content: string;
-  note_date: string; //  سيعود كتاريخ بصيغة YYYY-MM-DD
-  created_at?: string; //  اختياري إذا لم تكن دائمًا تجلبه أو تستخدمه في الواجهة
-  updated_at?: string; //  اختياري
-
-  // حقول اختيارية يمكنك إضافتها بعد عمل JOIN عند جلب البيانات (إذا لزم الأمر)
-  patient_name?: string; //  اسم المريض (يُجلب من profiles)
-  doctor_name?: string;  //  اسم الطبيب الكاتب (يُجلب من doctors)
+  note_date: string;
+  created_at: string;
+  updated_at: string;
+  doctor_name: string;
+  patient_name: string;
 }
 
-
-export interface SessionNote {
+export interface PatientDiagnosis {
   id: string;
-  patientId: string;
-  creationDate: string;
-  author: string;
-  content: string;
-}
-
-export interface Appointment {
-  id: string;
-  therapistId: string;
-  patientId: string;
-  patientName: string;
-  date: string;
-  time: string;
-  duration: number; // in minutes
-  status: 'scheduled' | 'completed' | 'cancelled';
+  patient_id: string;
+  doctor_id?: string;
+  condition_tag: string;
   notes?: string;
+  diagnosis_date: string;
+  created_at: string;
+  updated_at: string;
 }
 
-export interface Availability {
+export interface PatientDetails {
   id: string;
-  therapistId: string;
-  dayOfWeek: number; // 0-6 (Sunday-Saturday)
-  startTime: string; // HH:MM format
-  endTime: string; // HH:MM format
-  isAvailable: boolean;
+  user_id: string;
+  profile_id: string;
+  medical_record_number?: string;
+  date_of_birth?: string;
+  phone_number?: string;
+  emergency_contact_name?: string;
+  emergency_contact_phone?: string;
+  insurance_provider?: string;
+  insurance_policy_number?: string;
+  allergies?: string;
+  current_medications?: string;
+  medical_history?: string;
+  assigned_doctor_id?: string;
+  registration_date: string;
+  last_appointment_date?: string;
+  next_appointment_date?: string;
+  status: 'active' | 'inactive' | 'discharged';
+  created_at: string;
+  updated_at: string;
+  profile?: {
+    name: string;
+    email: string;
+    role: UserRole;
+    profile_image?: string;
+  };
 }
-
-export interface TransferRequest {
-  id: string;
-  patientId: string;
-  patientName: string;
-  fromTherapistId: string;
-  toTherapistId: string;
-  requestDate: string;
-  status: 'pending' | 'accepted' | 'rejected';
-  reason?: string;
-}
-
-export interface EvaluationForm {
-  id: string;
-  therapistId: string;
-  title: string;
-  description: string;
-  questions: EvaluationQuestion[];
-  createdAt: string;
-}
-
-export interface EvaluationQuestion {
-  id: string;
-  type: 'text' | 'multiple-choice' | 'scale' | 'boolean';
-  question: string;
-  options?: string[]; // For multiple-choice questions
-  scaleRange?: { min: number; max: number }; // For scale questions
-}
-
-export interface FormSubmission {
-  id: string;
-  formId: string;
-  patientId: string;
-  submissionDate: string;
-  answers: {
-    questionId: string;
-    answer: string | number | boolean;
-  }[];
-}
-
-export interface Notification {
-  id: string;
-  userId: string;
-  title: string;
-  message: string;
-  type: 'appointment' | 'transfer' | 'form' | 'system';
-  isRead: boolean;
-  createdAt: string;
-}
-
-export interface Message {
-  id: string;
-  senderId: string;
-  senderName: string;
-  senderRole: string;
-  recipientId: string;
-  content: string;
-  timestamp: string;
-  isRead: boolean;
-}
-
-export interface Conversation {
-  id: string;
-  participantIds: string[];
-  lastMessageTimestamp: string;
-  unreadCount: number;
-}
-
-
-// نفس تعريف  نوع الطبيب
-export type DoctorProfile = {
-  id: string;
-  user_id: string; // هذا هو user_id من auth.users
-  name: string;
-  specialization: string;
-  bio: string;
-  years_of_experience: number;
-  patients_count: number; // سنقوم بحسابه ونخزنه هنا أيضًا لتمريره للمكونات الفرعية
-  profile_image: string;
-  weekly_available_hours: number; // افترضنا أن هذا الحقل موجود في profileData
-};
-
-
-
-export type PatientListItem = {
-  id: string; // هذا سيكون id المريض من جدول profiles (الذي هو نفسه user_id الخاص به)
-  name: string | null; // اسم المريض، قد يكون فارغًا (null) إذا لم يتم إدخاله في profiles
-  email: string | null; // إيميل المريض، قد يكون فارغًا أيضًا
-  lastSession: string; // تاريخ آخر جلسة. مبدئيًا، سنجعل قيمته "N/A"
-  nextSession: string; // تاريخ الجلسة القادمة. مبدئيًا، سنجعل قيمته "N/A"
-  // يمكنك إضافة أي حقول أخرى من جدول profiles تحتاج لعرضها في القائمة هنا
-  // مثال: profile_image?: string | null;
-};
-
-export type CurrentDoctorProp = {
-  id: string; // id من جدول doctors (المفتاح الأساسي لجدول doctors)
-  user_id: string; // user_id المرتبط بـ auth.users (اختياري هنا، لكنه جزء من بيانات الطبيب)
-  name: string; // اسم الطبيب
-  // ... يمكنك إضافة أي حقول أخرى من نوع DoctorProfile قد تحتاجها في PatientManagement
-};
