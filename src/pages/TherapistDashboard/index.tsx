@@ -91,6 +91,7 @@ const TherapistDashboard = () => {
         if (profileData) {
           const currentDoctorProfile: DoctorProfile = {
             id: profileData.id,
+            user_id: profileData.user_id, // هذا هو user_id من auth.users
             name: profileData.name,
             specialization: profileData.specialization,
             bio: profileData.bio,

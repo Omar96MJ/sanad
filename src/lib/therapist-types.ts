@@ -8,7 +8,7 @@ export interface TherapistProfile extends User {
   introductionVideo?: string;
 }
 
-export interface PatientRecord {
+export interface PatientNote {
   id: string; // UUID للسجل/الملاحظة
   patient_id: string; // UUID للمريض
   doctor_id: string; // UUID للطبيب
@@ -123,6 +123,7 @@ export interface Conversation {
 // نفس تعريف  نوع الطبيب
 export type DoctorProfile = {
   id: string;
+  user_id: string; // هذا هو user_id من auth.users
   name: string;
   specialization: string;
   bio: string;
@@ -130,4 +131,23 @@ export type DoctorProfile = {
   patients_count: number; // سنقوم بحسابه ونخزنه هنا أيضًا لتمريره للمكونات الفرعية
   profile_image: string;
   weekly_available_hours: number; // افترضنا أن هذا الحقل موجود في profileData
+};
+
+
+
+export type PatientListItem = {
+  id: string; // هذا سيكون id المريض من جدول profiles (الذي هو نفسه user_id الخاص به)
+  name: string | null; // اسم المريض، قد يكون فارغًا (null) إذا لم يتم إدخاله في profiles
+  email: string | null; // إيميل المريض، قد يكون فارغًا أيضًا
+  lastSession: string; // تاريخ آخر جلسة. مبدئيًا، سنجعل قيمته "N/A"
+  nextSession: string; // تاريخ الجلسة القادمة. مبدئيًا، سنجعل قيمته "N/A"
+  // يمكنك إضافة أي حقول أخرى من جدول profiles تحتاج لعرضها في القائمة هنا
+  // مثال: profile_image?: string | null;
+};
+
+export type CurrentDoctorProp = {
+  id: string; // id من جدول doctors (المفتاح الأساسي لجدول doctors)
+  user_id: string; // user_id المرتبط بـ auth.users (اختياري هنا، لكنه جزء من بيانات الطبيب)
+  name: string; // اسم الطبيب
+  // ... يمكنك إضافة أي حقول أخرى من نوع DoctorProfile قد تحتاجها في PatientManagement
 };

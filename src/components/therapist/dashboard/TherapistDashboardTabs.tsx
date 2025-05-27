@@ -10,6 +10,7 @@ import MessagingLayout from "@/components/messaging/MessagingLayout";
 import { DashboardOverview } from "@/components/therapist/dashboard/DashboardOverview";
 import TherapistVideoSession from "@/components/therapist/TherapistVideoSession";
 import {DoctorProfile as DoctorProfileType} from "@/lib/therapist-types";
+import { CurrentDoctorProp } from "@/lib/therapist-types";
 
 interface TherapistDashboardTabsProps {
   isLoading: boolean;
@@ -38,6 +39,7 @@ export const TherapistDashboardTabs = ({
   activeTab,
   setActiveTab,
   doctorProfile,
+  
 }: TherapistDashboardTabsProps) => {
   const { t } = useLanguage();
 
@@ -55,6 +57,13 @@ export const TherapistDashboardTabs = ({
   const handleMessagesTabClick = () => {
     setActiveTab("messages");
   };
+
+  const currentDoctorForPatientManagement: CurrentDoctorProp | null = doctorProfile ? {
+      id: doctorProfile.id, //  id من جدول doctors
+      user_id: doctorProfile.user_id, //  user_id من جدول doctors (المرتبط بـ auth.users)
+      name: doctorProfile.name,
+  } : null;
+
   const { language } = useLanguage();
   const isRTL = language === "ar";
   
@@ -86,7 +95,9 @@ export const TherapistDashboardTabs = ({
       </TabsContent>
       
       <TabsContent value="patients">
-        <PatientManagement />
+        <PatientManagement 
+              currentDoctor={currentDoctorForPatientManagement} />
+     
       </TabsContent>
       
       <TabsContent value="sessions">
