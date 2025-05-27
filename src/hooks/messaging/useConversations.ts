@@ -59,7 +59,7 @@ export const useConversations = (user: any) => {
           .filter(p => p.conversation_id === conv.id)
           .map(p => p.user_id);
           
-        const unreadCount = participantData.find(p => p.conversation_id === conv.id)?.unreadCount || 0;
+        const unreadCount = participantData.find(p => p.conversation_id === conv.id)?.unread_count || 0;
         
         return {
           id: conv.id,
