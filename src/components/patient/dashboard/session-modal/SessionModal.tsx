@@ -25,7 +25,7 @@ export const SessionModal = ({ isOpen, onClose, onSessionBooked }: SessionModalP
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent>
+      <DialogContent className="max-h-[80vh] overflow-y-auto md:max-h-[calc(100vh-7rem)]">
         <DialogHeader>
           <DialogTitle>
             {isRTL ? "احجز جلسة جديدة" : "Schedule a New Session"}

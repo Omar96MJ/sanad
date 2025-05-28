@@ -3,28 +3,17 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { ProgressSection } from "./ProgressSection";
 import { TherapistCard } from "./TherapistCard";
 import { CalendarAndArticles } from "./CalendarAndArticles";
-
-interface AssignedDoctor {
-  id: string;
-  name: string;
-  specialization: string;
-  image: string;
-  rating: number;
-  reviewsCount: number;
-  bio: string;
-  patients: number;
-  yearsOfExperience: number;
-  email: string;
-  role: "doctor";
-}
+import { DoctorProfile } from "@/lib/therapist-types";
+import { PatientAppointment } from "@/services/patientAppointmentService"; // <-- ✅ استيراد للتحسين
+import { BlogPost } from "@/lib/types"; // <-- ✅ استيراد للتحسين
 
 interface DashboardOverviewProps {
   isVisible: boolean;
   progress: number;
-  doctor: AssignedDoctor | null;
+  doctor: DoctorProfile | null;
   isLoadingDoctor?: boolean;
-  upcomingAppointments: any[];
-  mockArticles: any[];
+  upcomingAppointments: PatientAppointment[];
+  mockArticles: BlogPost[];
   date: Date | undefined;
   setDate: (date: Date | undefined) => void;
   onStartTherapy: () => void;

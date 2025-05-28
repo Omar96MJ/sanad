@@ -5,25 +5,12 @@ import { BlogPost } from "@/lib/types";
 import { TabsList } from "./tabs/TabsList";
 import { TabContents } from "./tabs/TabContents";
 import { PatientAppointment } from "@/services/patientAppointmentService";
-
-interface AssignedDoctor {
-  id: string;
-  name: string;
-  specialization: string;
-  image: string;
-  rating: number;
-  reviewsCount: number;
-  bio: string;
-  patients: number;
-  yearsOfExperience: number;
-  email: string;
-  role: "doctor";
-}
+import { DoctorProfile } from "@/lib/therapist-types";
 
 interface PatientDashboardTabsProps {
   isVisible: boolean;
   progress: number;
-  assignedDoctor: AssignedDoctor | null;
+  assignedDoctor: DoctorProfile | null;
   isLoadingDoctor?: boolean;
   appointments: PatientAppointment[];
   isLoadingAppointments?: boolean;

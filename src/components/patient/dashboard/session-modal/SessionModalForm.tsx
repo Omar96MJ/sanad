@@ -11,6 +11,7 @@ import { DatePickerField } from "./form-fields/DatePickerField";
 import { TimePickerField } from "./form-fields/TimePickerField";
 import { NotesField } from "./form-fields/NotesField";
 import { FormActions } from "./form-fields/FormActions";
+import {DoctorProfile} from "@/lib/therapist-types";
 
 // Form schema for validation - export it for use in field components
 export const formSchema = z.object({
@@ -24,6 +25,9 @@ export const formSchema = z.object({
     required_error: "Please select a time",
   }),
   notes: z.string().optional(),
+  doctorId: z.string({ // <-- تم إضافة doctorId
+    required_error: "Please select a doctor",
+  }),
 });
 
 export type FormValues = z.infer<typeof formSchema>;
@@ -39,60 +43,73 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
   const { language } = useLanguage();
   const isRTL = language === "ar";
   
-  const { selectedDoctor, isLoadingDoctors, doctors } = useSessionForm({ onClose: onCancel });
-  
-  // Initialize form with React Hook Form
+  const {
+    selectedDoctor,     // كائن الطبيب المختار للعرض
+    isLoadingDoctors,
+    doctors,
+    setSelectedDoctor,  // دالة لتحديث كائن الطبيب المختار في useSessionForm
+  } = useSessionForm({ onClose: onCancel });
+
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
+    // 2. تحديث القيم الافتراضية للنموذج
     defaultValues: {
       sessionType: "",
       sessionTime: "",
       notes: "",
+      doctorId: "", // <-- إضافة قيمة افتراضية لـ doctorId
     },
-    mode: "onSubmit",
+    mode: "onSubmit", // أو "onChange" إذا أردت التحقق أثناء الكتابة
   });
+
   
   // Handle form submission
-  const handleFormSubmit = async (values: FormValues) => {
+  const handleFormSubmit = async (values: FormValues) => { // values الآن تحتوي على doctorId
     try {
-      // Format the data and submit
       setIsLoading(true);
-      
+      // onSubmit تتوقع الآن SessionFormData التي تحتوي على doctorId
       await onSubmit({
         sessionDate: values.sessionDate,
         sessionTime: values.sessionTime,
         sessionType: values.sessionType,
         notes: values.notes || "",
+        doctorId: values.doctorId, // <-- تمرير doctorId
       });
     } catch (error) {
       console.error("Error submitting form:", error);
-      setIsLoading(false);
+      // setIsLoading(false) سيتم التعامل معها في finally block الخاص بـ onSubmit (handleBookSession)
+    } finally {
+      // setIsLoading(false) يُفضل أن تتم في finally الخاص بالهوك useSessionForm
+      // أو أن يتم تمريرها بشكل صحيح إذا كان هذا المكون مسؤولاً عنها مباشرة
     }
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 py-4">
-        {/* Therapist info */}
-        <TherapistInfo 
-          doctor={selectedDoctor} 
-          isLoading={isLoadingDoctors} 
+        {/* 5. تمرير الخصائص اللازمة إلى TherapistInfo */}
+        <TherapistInfo
           doctors={doctors}
+          isLoading={isLoadingDoctors}
+          // doctorObject={selectedDoctor} // هذا لعرض تفاصيل الطبيب المختار (إذا كان TherapistInfo يفعل ذلك)
+          selectedDoctorIdFromForm={form.watch('doctorId')} // القيمة الحالية لـ doctorId من النموذج
+          onDoctorChange={(doctorId, doctorObject) => { // دالة يتم استدعاؤها عند اختيار طبيب
+            form.setValue('doctorId', doctorId, { shouldValidate: true }); // تحديث النموذج
+            if (doctorObject) {
+              setSelectedDoctor(doctorObject); // تحديث كائن الطبيب المختار في useSessionForm
+            } else {
+              // إذا كان doctorId فارغًا (مثلاً "اختر طبيبًا")، يمكننا مسح selectedDoctor
+              const foundDoctor = doctors.find(d => d.id === doctorId);
+              setSelectedDoctor(foundDoctor || null);
+            }
+          }}
         />
-        
-        {/* Session type */}
+
+        {/* باقي حقول النموذج */}
         <SessionTypeField control={form.control} />
-        
-        {/* Date selection */}
         <DatePickerField control={form.control} />
-        
-        {/* Time selection */}
         <TimePickerField control={form.control} />
-        
-        {/* Notes */}
         <NotesField control={form.control} />
-        
-        {/* Action buttons */}
         <FormActions isLoading={isLoading} onCancel={onCancel} />
       </form>
     </Form>

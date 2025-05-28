@@ -14,7 +14,8 @@ import { DashboardHeader } from "@/components/patient/dashboard/DashboardHeader"
 import { SessionModal } from "@/components/patient/dashboard/session-modal/SessionModal";
 import { fetchPatientAppointments, PatientAppointment } from "@/services/patientAppointmentService";
 import { fetchPatientProgress } from "@/services/fetchPatientProgress";
-import { fetchAllDoctors, DoctorProfile } from "@/services/doctorService";
+import { fetchAllDoctors } from "@/services/doctorService";
+import { DoctorProfile } from "@/lib/therapist-types";
 
 // Import mockBlogs instead of mockArticles
 import { mockBlogs } from "@/data/mockBlogs";
@@ -117,9 +118,10 @@ const PatientDashboard = () => {
       </div>
     );
   }
-  
-const upcomingAppointment = appointments.find(app => app.status === 'upcoming');
-const assignedDoctor = upcomingAppointment?.doctor ?? null;
+
+  const upcomingAppointment = appointments.find(app => app.status === 'scheduled');
+
+  const assignedDoctor = upcomingAppointment?.doctor ?? null;
 
   
   // Format appointment date for display
@@ -175,7 +177,7 @@ const assignedDoctor = upcomingAppointment?.doctor ?? null;
             isVisible={isVisible}
             progress={progress ?? 0}
             assignedDoctor={assignedDoctor}
-            isLoadingDoctor={isLoadingDoctors}
+            isLoadingDoctor={isLoading}
             appointments={appointments}
             isLoadingAppointments={isLoading}
             mockArticles={mockBlogs.slice(0, 3)}

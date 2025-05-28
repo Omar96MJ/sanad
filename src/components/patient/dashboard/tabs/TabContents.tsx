@@ -7,26 +7,13 @@ import MessagingLayout from "@/components/messaging/MessagingLayout";
 import { BlogPost } from "@/lib/types";
 import { PatientAppointment } from "@/services/patientAppointmentService";
 import { useLanguage } from "@/hooks/useLanguage";
-
-interface AssignedDoctor {
-  id: string;
-  name: string;
-  specialization: string;
-  image: string;
-  rating: number;
-  reviewsCount: number;
-  bio: string;
-  patients: number;
-  yearsOfExperience: number;
-  email: string;
-  role: "doctor";
-}
+import { DoctorProfile } from "@/lib/therapist-types";
 
 interface TabContentsProps {
   activeTab: string;
   isVisible: boolean;
   progress: number;
-  assignedDoctor: AssignedDoctor | null;
+  assignedDoctor: DoctorProfile | null;
   isLoadingDoctor?: boolean;
   appointments: PatientAppointment[];
   isLoadingAppointments?: boolean;
@@ -62,7 +49,7 @@ export const TabContents = ({
   const { t } = useLanguage();
   
   // Get upcoming appointments for overview tab
-  const upcomingAppointments = appointments.filter(apt => apt.status === 'upcoming');
+const upcomingAppointments = appointments.filter(apt => apt.status === 'scheduled');
   
   return (
     <>

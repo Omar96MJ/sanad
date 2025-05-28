@@ -4,24 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DoctorCard } from "@/components/UserCard";
-
-interface AssignedDoctor {
-  id: string;
-  name: string;
-  specialization: string;
-  image: string;
-  rating: number;
-  reviewsCount: number;
-  bio: string;
-  patients: number;
-  yearsOfExperience: number;
-  email: string;
-  role: "doctor";
-}
+import { DoctorProfile } from "@/lib/therapist-types";
 
 interface TherapistCardProps {
   isVisible: boolean;
-  doctor: AssignedDoctor | null;
+  doctor: DoctorProfile | null;
   isLoadingDoctor?: boolean;
   onBookAppointment: () => void;
 }
@@ -59,8 +46,13 @@ export const TherapistCard = ({
         ) : doctor ? (
           <>
             <DoctorCard doctor={{
-              ...doctor,
-              profileImage: doctor.image
+              id: doctor.id,            
+              name: doctor.name,                     
+              profileImage: doctor.profile_image,    
+              specialization: doctor.specialization,
+              bio: doctor.bio,                        
+              patients: doctor.patients_count,      
+              yearsOfExperience: doctor.years_of_experience,
             }} />
             <Button 
               onClick={onBookAppointment} 
