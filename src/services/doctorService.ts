@@ -1,7 +1,87 @@
 
 import { supabase } from "@/integrations/supabase/client";
 import { DoctorProfile } from "@/lib/therapist-types";  
+import { format, parseISO, getDay, startOfDay, endOfDay } from 'date-fns';
+import { toZonedTime, fromZonedTime } from 'date-fns-tz';
 
+const APP_TIME_ZONE = 'Africa/Khartoum';
+
+export const fetchAvailableTimeSlots = async (
+  doctorId: string,
+  selectedDateString: string // e.g., "2025-06-02"
+): Promise<string[]> => {
+  if (!doctorId || !selectedDateString) {
+    console.error("Doctor ID and selected date are required.");
+    return [];
+  }
+
+  try {
+    // 2. حساب dayOfWeek بشكل صحيح للتاريخ المحدد في منطقة الطبيب الزمنية
+    const dateForDayOfWeek = parseISO(selectedDateString); // يُرجع كائن Date يمثل بداية اليوم بتوقيت UTC
+    const zonedDateForDayOfWeek = toZonedTime(dateForDayOfWeek, APP_TIME_ZONE); // تحويله لمنطقة الطبيب الزمنية
+    const dayOfWeek = getDay(zonedDateForDayOfWeek); // 0 for Sunday ... 6 for Saturday
+
+    // 3. جلب "البلوكات الساعية" المحددة كمتوفرة
+    const { data: potentialSlotsData, error: availabilityError } = await supabase
+      .from('therapist_availability')
+      .select('start_time')
+      .eq('doctor_id', doctorId)
+      .eq('day_of_week', dayOfWeek)
+      .eq('is_available', true)
+      .order('start_time');
+
+    if (availabilityError) {
+      console.error("Error fetching doctor's availability:", availabilityError.message);
+      return [];
+    }
+    if (!potentialSlotsData || potentialSlotsData.length === 0) {
+      return [];
+    }
+    const potentialStartTimes: string[] = potentialSlotsData.map(slot => slot.start_time);
+
+    // 4. جلب المواعيد المحجوزة بالفعل للطبيب في التاريخ المحدد
+    //    نحتاج لتحديد بداية ونهاية اليوم المحدد بالتوقيت العالمي المنسق (UTC)
+    //    بناءً على المنطقة الزمنية للتطبيق (APP_TIME_ZONE)
+    const dayStartInAppZoneAsUTC = fromZonedTime(`${selectedDateString}T00:00:00`, APP_TIME_ZONE);
+    const dayEndInAppZoneAsUTC = fromZonedTime(`${selectedDateString}T23:59:59.999`, APP_TIME_ZONE);
+    
+    const { data: bookedAppointments, error: appointmentsError } = await supabase
+      .from('appointments')
+      .select('session_date') // هذا timestamptz (مخزن كـ UTC)
+      .eq('doctor_id', doctorId)
+      .in('status', ['scheduled', 'rescheduled'])
+      .gte('session_date', dayStartInAppZoneAsUTC.toISOString())
+      .lt('session_date', dayEndInAppZoneAsUTC.toISOString()); // أو .lte إذا أردت تضمين 23:59:59.999
+
+    if (appointmentsError) {
+      console.error("Error fetching booked appointments:", appointmentsError.message);
+      return potentialStartTimes; 
+    }
+
+    const bookedStartTimesLocal = new Set<string>();
+    if (bookedAppointments) {
+      bookedAppointments.forEach(appt => {
+        // session_date هو UTC string. قم بتحويله إلى كائن Date ثم إلى وقت محلي في APP_TIME_ZONE
+        const sessionDateUTC = parseISO(appt.session_date);
+        const sessionDateInAppTZ = toZonedTime(sessionDateUTC, APP_TIME_ZONE); // ✅ استخدام toZonedTime
+        // تنسيق الوقت المحلي كـ HH:mm:ss
+        bookedStartTimesLocal.add(format(sessionDateInAppTZ, 'HH:mm:ss'));
+      });
+    }
+
+    // 5. فلترة الخانات الزمنية المحتملة لإزالة المحجوزة
+    const availableTimeSlots = potentialStartTimes.filter(
+      slotStartTime => !bookedStartTimesLocal.has(slotStartTime)
+    );
+    
+    return availableTimeSlots;
+
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+    console.error("Exception in fetchAvailableTimeSlots:", errorMessage);
+    return [];
+  }
+};
 
 export const fetchDoctorById = async (doctorId: string): Promise<DoctorProfile | null> => {
   console.log("Fetching doctor with ID:", doctorId);

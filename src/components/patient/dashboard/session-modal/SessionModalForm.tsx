@@ -12,6 +12,8 @@ import { TimePickerField } from "./form-fields/TimePickerField";
 import { NotesField } from "./form-fields/NotesField";
 import { FormActions } from "./form-fields/FormActions";
 import {DoctorProfile} from "@/lib/therapist-types";
+import { useEffect } from "react";
+
 
 // Form schema for validation - export it for use in field components
 export const formSchema = z.object({
@@ -48,6 +50,9 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
     isLoadingDoctors,
     doctors,
     setSelectedDoctor,  // دالة لتحديث كائن الطبيب المختار في useSessionForm
+    availableTimeSlots,
+    isLoadingTimeSlots,
+    loadAvailableTimeSlots,
   } = useSessionForm({ onClose: onCancel });
 
   const form = useForm<FormValues>({
@@ -62,6 +67,21 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
     mode: "onSubmit", // أو "onChange" إذا أردت التحقق أثناء الكتابة
   });
 
+    // --- 👇 2. useEffect لمراقبة doctorId و sessionDate واستدعاء loadAvailableTimeSlots 👇 ---
+  const watchedDoctorId = form.watch('doctorId');
+  const watchedSessionDate = form.watch('sessionDate');
+
+  useEffect(() => {
+    if (watchedDoctorId && watchedSessionDate) {
+      // عندما يتم اختيار طبيب وتاريخ، قم بجلب الأوقات المتاحة
+      loadAvailableTimeSlots(watchedDoctorId, watchedSessionDate);
+      // قد ترغب في مسح sessionTime المختار سابقًا عند تغيير الطبيب أو التاريخ
+      form.setValue('sessionTime', ''); 
+    } else {
+      // إذا لم يتم اختيار طبيب أو تاريخ، لا توجد أوقات لعرضها
+      // يمكنك هنا مسح availableTimeSlots إذا أردت (عادةً ما يتم ذلك في loadAvailableTimeSlots)
+    }
+  }, [watchedDoctorId, watchedSessionDate, loadAvailableTimeSlots, form]);
   
   // Handle form submission
   const handleFormSubmit = async (values: FormValues) => { // values الآن تحتوي على doctorId
@@ -76,12 +96,8 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
         doctorId: values.doctorId, // <-- تمرير doctorId
       });
     } catch (error) {
-      console.error("Error submitting form:", error);
-      // setIsLoading(false) سيتم التعامل معها في finally block الخاص بـ onSubmit (handleBookSession)
-    } finally {
-      // setIsLoading(false) يُفضل أن تتم في finally الخاص بالهوك useSessionForm
-      // أو أن يتم تمريرها بشكل صحيح إذا كان هذا المكون مسؤولاً عنها مباشرة
-    }
+        console.error("Error submitting form from SessionModalForm:", error);      // setIsLoading(false) سيتم التعامل معها في finally block الخاص بـ onSubmit (handleBookSession)
+    } 
   };
 
   return (
@@ -92,23 +108,22 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
           doctors={doctors}
           isLoading={isLoadingDoctors}
           // doctorObject={selectedDoctor} // هذا لعرض تفاصيل الطبيب المختار (إذا كان TherapistInfo يفعل ذلك)
-          selectedDoctorIdFromForm={form.watch('doctorId')} // القيمة الحالية لـ doctorId من النموذج
-          onDoctorChange={(doctorId, doctorObject) => { // دالة يتم استدعاؤها عند اختيار طبيب
-            form.setValue('doctorId', doctorId, { shouldValidate: true }); // تحديث النموذج
-            if (doctorObject) {
-              setSelectedDoctor(doctorObject); // تحديث كائن الطبيب المختار في useSessionForm
-            } else {
-              // إذا كان doctorId فارغًا (مثلاً "اختر طبيبًا")، يمكننا مسح selectedDoctor
-              const foundDoctor = doctors.find(d => d.id === doctorId);
-              setSelectedDoctor(foundDoctor || null);
-            }
-          }}
-        />
+          selectedDoctorIdFromForm={watchedDoctorId} // القيمة الحالية لـ doctorId من النموذج
+        // دالة يتم استدعاؤها عند اختيار طبيب
+          onDoctorChange={(selectedId, selectedObject) => { 
+            form.setValue('doctorId', selectedId, { shouldValidate: true });
+            }}
+          />
 
         {/* باقي حقول النموذج */}
         <SessionTypeField control={form.control} />
         <DatePickerField control={form.control} />
-        <TimePickerField control={form.control} />
+        <TimePickerField 
+          control={form.control} 
+          availableSlots={availableTimeSlots} // قائمة الأوقات المتاحة (HH:MM:SS)
+          isLoadingSlots={isLoadingTimeSlots} // حالة تحميل الأوقات
+          disabled={!watchedDoctorId || !watchedSessionDate || isLoadingTimeSlots} // تعطيل الحقل إذا لم يتم اختيار طبيب/تاريخ أو أثناء التحميل
+        />
         <NotesField control={form.control} />
         <FormActions isLoading={isLoading} onCancel={onCancel} />
       </form>

@@ -63,27 +63,48 @@ export const useAvailability = (doctorId: string | null) => {
       if (deleteError) {
         console.error("Error deleting old availability:", deleteError);
         toast.error("Failed to update availability");
+        setIsSaving(false);
         return false;
       }
 
       // Insert new availability slots
       if (newAvailability.length > 0) {
+        const slotsToInsert = newAvailability.map(slot => ({
+          doctor_id: doctorId, // التأكد من doctorId الصحيح
+          day_of_week: slot.day_of_week,
+          start_time: slot.start_time,
+          end_time: slot.end_time,
+          is_available: true // بما أن newAvailability تمثل الخانات المفعلة
+        }));
+
         const { error: insertError } = await supabase
           .from('therapist_availability')
-          .insert(newAvailability.map(slot => ({
-            doctor_id: doctorId,
-            day_of_week: slot.day_of_week,
-            start_time: slot.start_time,
-            end_time: slot.end_time,
-            is_available: slot.is_available
-          })));
+          .insert(slotsToInsert);
 
         if (insertError) {
           console.error("Error inserting new availability:", insertError);
           toast.error("Failed to save availability");
+          setIsSaving(false);
           return false;
         }
       }
+
+      const totalWeeklyHours = newAvailability.filter(slot => slot.is_available === true).length;
+
+      const { error: updateDoctorError } = await supabase
+        .from('doctors')
+        .update({ weekly_available_hours: totalWeeklyHours })
+        .eq('id', doctorId); // نفترض أن doctorId هنا هو الـ ID من جدول doctors
+
+      if (updateDoctorError) {
+        console.error("Error updating doctor's weekly_available_hours:", updateDoctorError);
+        // يمكنك إظهار تحذير هنا أن تفاصيل التوفر تم حفظها ولكن تحديث الإحصائية فشل
+        toast.warning("Availability details saved, but weekly hours statistic update failed.");
+        // مع ذلك، العملية الأساسية (حفظ التوفر) نجحت، لذا قد لا نرغب في إرجاع false بالكامل
+      } else {
+        console.log(`Updated weekly_available_hours for doctor ${doctorId} to ${totalWeeklyHours}`);
+      }
+
 
       await fetchAvailability(); // Refresh data
       toast.success("Availability updated successfully");
@@ -98,7 +119,12 @@ export const useAvailability = (doctorId: string | null) => {
   };
 
   useEffect(() => {
-    fetchAvailability();
+   if (doctorId) { // تأكد من جلب التوفر فقط إذا كان doctorId موجودًا
+        fetchAvailability();
+    } else {
+        setAvailability([]); // مسح التوفر إذا لم يكن هناك doctorId
+        setIsLoading(false);
+    }
   }, [doctorId]);
 
   return {

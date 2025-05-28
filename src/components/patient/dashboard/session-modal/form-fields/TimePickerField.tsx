@@ -1,6 +1,6 @@
 
 import { useLanguage } from "@/hooks/useLanguage";
-import { Control, useWatch } from "react-hook-form";
+import { Control } from "react-hook-form";
 import { z } from "zod";
 import {
   FormField,
@@ -16,45 +16,33 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Form schema type
 export type FormValues = z.infer<typeof import("../SessionModalForm").formSchema>;
 
 interface TimePickerFieldProps {
   control: Control<FormValues>;
+  availableSlots: string[];     // قائمة الأوقات المتاحة (HH:MM:SS)
+  isLoadingSlots: boolean;    // حالة تحميل الأوقات
+  disabled: boolean;          // لتعطيل الحقل
 }
 
-export const TimePickerField = ({ control }: TimePickerFieldProps) => {
-  const { language } = useLanguage();
+export const TimePickerField = ({
+  control,
+  availableSlots, 
+  isLoadingSlots,
+  disabled
+ }: TimePickerFieldProps) => {
+  const { language, t } = useLanguage();
   const isRTL = language === "ar";
   
-  // Watch for date changes
-  const selectedDate = useWatch({
-    control,
-    name: "sessionDate",
-  });
-  
-  // Get available time slots based on selected date
-  const getAvailableTimeSlots = (date?: Date) => {
-    if (!date) return [];
-    
-    const today = new Date();
-    const isSameCurrentDay = date.toDateString() === today.toDateString();
-    
-    // For today, only show times that are at least 2 hours from now
-    const startHour = isSameCurrentDay ? Math.max(9, today.getHours() + 2) : 9;
-    const endHour = 17; // 5 PM
-    
-    const slots = [];
-    for (let hour = startHour; hour < endHour; hour++) {
-      slots.push(`${hour.toString().padStart(2, '0')}:00`);
+  const formatTimeForDisplay = (timeStringWithSeconds: string): string => {
+    if (timeStringWithSeconds && timeStringWithSeconds.length >= 5) {
+      return timeStringWithSeconds.substring(0, 5);
     }
-    
-    return slots;
+    return timeStringWithSeconds;
   };
-  
-  // Get time slots based on selected date
-  const timeSlots = getAvailableTimeSlots(selectedDate);
 
   return (
     <FormField
@@ -67,8 +55,9 @@ export const TimePickerField = ({ control }: TimePickerFieldProps) => {
           </FormLabel>
           <Select 
             onValueChange={field.onChange} 
-            defaultValue={field.value}
-            disabled={!selectedDate || timeSlots.length === 0}
+            value={field.value || ""} // استخدام field.value وتوفير قيمة افتراضية للسلسلة الفارغة
+            disabled={disabled || isLoadingSlots || availableSlots.length === 0} // تعطيل إضافي إذا لم تكن هناك أوقات
+            dir={isRTL ? "rtl" : "ltr"}
           >
             <FormControl>
               <SelectTrigger>
@@ -76,15 +65,19 @@ export const TimePickerField = ({ control }: TimePickerFieldProps) => {
               </SelectTrigger>
             </FormControl>
             <SelectContent>
-              {timeSlots.length > 0 ? (
-                timeSlots.map((time) => (
-                  <SelectItem key={time} value={time}>
-                    {time}
+              {isLoadingSlots ? (
+                <div className="flex items-center justify-center p-4">
+                  <Skeleton className="h-4 w-20" />
+                </div>
+              ) : availableSlots.length > 0 ? (
+                availableSlots.map((time) => ( // time هنا هو HH:MM:SS
+                  <SelectItem key={time} value={time.substring(0,5)}> {/* ⭐ القيمة المحفوظة في النموذج هي HH:MM */}
+                    {formatTimeForDisplay(time)} {/* ✅ العرض هو HH:MM */}
                   </SelectItem>
                 ))
               ) : (
-                <SelectItem value="none" disabled>
-                  {isRTL ? "لا توجد أوقات متاحة" : "No available times"}
+                <SelectItem value="no-time" disabled>
+                  {disabled && !isLoadingSlots ? t('selectDate_And_DoctorFirst') : t('no_Available_Times')}
                 </SelectItem>
               )}
             </SelectContent>

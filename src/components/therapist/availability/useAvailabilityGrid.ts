@@ -39,31 +39,41 @@ export const useAvailabilityGrid = (availability: AvailabilitySlot[]) => {
   };
 
   const convertGridToAvailability = (doctorId: string): AvailabilitySlot[] => {
-    const newAvailability: AvailabilitySlot[] = [];
-    
-    for (let day = 0; day < tempGrid.length; day++) {
-      let start = -1;
-      
-      for (let hour = 0; hour <= tempGrid[day].length; hour++) {
-        const isAvailable = hour < tempGrid[day].length ? tempGrid[day][hour] : false;
+  const newAvailability: AvailabilitySlot[] = [];
+
+  // tempGrid هو الشبكة التي تحتوي على تحديدات الطبيب (true/false لكل خانة)
+  tempGrid.forEach((daySlots, dayIndex) => {
+    // dayIndex يمثل يوم الأسبوع (0 للأحد، 1 للإثنين، ...)
+    daySlots.forEach((isSlotAvailable, hourSlotIndex) => {
+      // hourSlotIndex هو مؤشر الخانة الزمنية لهذا اليوم (0 لـ timeSlots[0] وهو "08:00")
+      if (isSlotAvailable) { // قم بإنشاء سجل فقط إذا كانت الخانة الزمنية محددة كمتاحة
         
-        if (isAvailable && start === -1) {
-          start = hour;
-        } else if (!isAvailable && start !== -1) {
-          newAvailability.push({
-            doctor_id: doctorId,
-            day_of_week: day,
-            start_time: `${(start + 8).toString().padStart(2, '0')}:00`,
-            end_time: `${(hour + 8).toString().padStart(2, '0')}:00`,
-            is_available: true
-          });
-          start = -1;
-        }
+        const startTimeHHMM = timeSlots[hourSlotIndex]; // مثال: "08:00", "09:00", ..., "19:00"
+
+        // 1. تجهيز start_time بالتنسيق الصحيح (HH:MM:SS)
+        const formattedStartTime = `${startTimeHHMM}:00`; // مثال: "08:00:00"
+
+        // 2. حساب end_time (بإضافة ساعة واحدة إلى startTime)
+        const startHour = parseInt(startTimeHHMM.split(':')[0]); // مثال: 8
+        const endHour = startHour + 1;                         // مثال: 9
+
+        // تجهيز end_time بالتنسيق الصحيح (HH:MM:SS)
+        // بما أن أقصى قيمة في timeSlots هي "19:00"، فإن أقصى endHour سيكون 20
+        // وبالتالي formattedEndTime سيكون "20:00:00"، وهو صالح.
+        const formattedEndTime = `${endHour.toString().padStart(2, '0')}:00:00`; // مثال: "09:00:00"
+
+        newAvailability.push({
+          doctor_id: doctorId,
+          day_of_week: dayIndex, // يطابق مباشرة ترميز قاعدة البيانات (0-6)
+          start_time: formattedStartTime,
+          end_time: formattedEndTime,
+          is_available: true, // بما أننا نمر فقط على الخانات المتاحة
+        });
       }
-    }
-    
-    return newAvailability;
-  };
+    });
+  });
+  return newAvailability;
+};
 
   const currentGrid = editMode ? tempGrid : availabilityGrid;
 

@@ -4,8 +4,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
 import { createAppointment, PatientAppointment } from "@/services/patientAppointmentService";
-import { fetchAllDoctors } from "@/services/doctorService";
+import { fetchAllDoctors, fetchAvailableTimeSlots } from "@/services/doctorService";
 import { DoctorProfile } from "@/lib/therapist-types";
+import { format, isValid, parseISO } from 'date-fns';
 
 export interface SessionFormData {
    sessionDate: Date | undefined;
@@ -31,6 +32,8 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
   // selectedDoctor لا يزال مفيدًا لعرض تفاصيل الطبيب المختار في الواجهة (داخل Modal)
   // ويتم تحديثه بواسطة setSelectedDoctor التي ستُمرر من SessionModalForm إلى TherapistInfo
   const [selectedDoctor, setSelectedDoctor] = useState<DoctorProfile | null>(null);
+  const [availableTimeSlots, setAvailableTimeSlots] = useState<string[]>([]); // ستخزن 'HH:MM:SS'
+  const [isLoadingTimeSlots, setIsLoadingTimeSlots] = useState(false);
 
   // 2. تعديل useEffect لجلب الأطباء وإزالة الاختيار التلقائي
   useEffect(() => {
@@ -61,6 +64,26 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
         loadDoctors();
     }
   }, [user, isRTL]); // أضفت user كإعتمادية، قد تحتاج لمراجعتها حسب منطقك
+
+  const loadAvailableTimeSlots = async (doctorIdForSlots: string, sessionDateForSlots: Date | undefined) => {
+    if (!doctorIdForSlots || !sessionDateForSlots || !isValid(sessionDateForSlots)) {
+      setAvailableTimeSlots([]);
+      return;
+    }
+    setIsLoadingTimeSlots(true);
+    setAvailableTimeSlots([]); // مسح الأوقات القديمة عند بدء جلب جديد
+    try {
+      const dateStringYYYYMMDD = format(sessionDateForSlots, 'yyyy-MM-dd');
+      const slots = await fetchAvailableTimeSlots(doctorIdForSlots, dateStringYYYYMMDD);
+      setAvailableTimeSlots(slots);
+    } catch (error) {
+      console.error("Error fetching available time slots:", error);
+      toast.error(isRTL ? "خطأ في جلب الأوقات المتاحة" : "Error fetching available slots");
+      setAvailableTimeSlots([]);
+    } finally {
+      setIsLoadingTimeSlots(false);
+    }
+  };
 
   // 3. تعديل دالة handleBookSession
   const handleBookSession = async (formValues: SessionFormData) => { // formValues الآن تحتوي على doctorId
@@ -139,5 +162,8 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
     isLoadingDoctors,
     selectedDoctor,    // لا يزال مفيدًا لعرض تفاصيل الطبيب المختار في واجهة المستخدم
     setSelectedDoctor, // مهم لـ TherapistInfo لتحديث هذا المتغير وأيضًا لتحديث doctorId في النموذج
+    availableTimeSlots,
+    isLoadingTimeSlots,
+    loadAvailableTimeSlots,
   };
 };
