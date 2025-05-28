@@ -22,6 +22,7 @@ import Profile from './pages/Profile';
 import BlogPost from './pages/BlogPost';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import CookiePolicy from './pages/CookiePolicy';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/hooks/useTheme';
 import { LanguageProvider } from '@/hooks/language';
@@ -57,6 +58,7 @@ const App = () => {
               <Route path="/profile" element={<Profile />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/cookie-policy" element={<CookiePolicy />} />
               <Route path="/create-admin" element={<CreateAdmin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

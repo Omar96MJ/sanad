@@ -1,4 +1,3 @@
-
 import { HelpingHand } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -133,9 +132,9 @@ const Footer = () => {
             <Link to="/terms-of-service" className="text-sm text-muted-foreground hover:text-primary transition-custom">
               {t('terms_of_service')}
             </Link>
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-custom">
+            <Link to="/cookie-policy" className="text-sm text-muted-foreground hover:text-primary transition-custom">
               {t('cookie_policy')}
-            </a>
+            </Link>
           </div>
         </div>
       </div>
