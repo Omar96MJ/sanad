@@ -32,7 +32,7 @@ export async function fetchPatients(): Promise<Patient[]> {
           role
         )
       `)
-      .order('profiles.name', { ascending: true });
+      .order('name', { ascending: true, referencedTable: 'profiles' });
     
     console.log("Patients query result:", { data: patientsData, error: patientsError });
     
@@ -91,7 +91,7 @@ export async function searchPatients(query: string): Promise<Patient[]> {
         )
       `)
       .or(`profiles.name.ilike.%${query}%,profiles.email.ilike.%${query}%,medical_record_number.ilike.%${query}%`)
-      .order('profiles.name', { ascending: true })
+      .order('name', { ascending: true, referencedTable: 'profiles' })
       .limit(20);
     
     console.log("Patient search query result:", { data: patientsData, error: patientsError });
