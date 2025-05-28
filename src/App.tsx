@@ -20,6 +20,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import PsychologicalTests from './pages/PsychologicalTests';
 import Profile from './pages/Profile';
 import BlogPost from './pages/BlogPost';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/hooks/useTheme';
 import { LanguageProvider } from '@/hooks/language';
@@ -53,6 +54,7 @@ const App = () => {
               <Route path="/tests" element={<PsychologicalTests />} />
               <Route path="/psychological-tests" element={<PsychologicalTests />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/create-admin" element={<CreateAdmin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>

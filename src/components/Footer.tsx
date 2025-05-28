@@ -1,3 +1,4 @@
+
 import { HelpingHand } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -126,9 +127,9 @@ const Footer = () => {
             © {currentYear} {t('sanad_copyright')}
           </p>
           <div className="flex gap-x-6">
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-custom">
+            <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-custom">
               {t('privacy_policy')}
-            </a>
+            </Link>
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-custom">
               {t('terms_of_service')}
             </a>
