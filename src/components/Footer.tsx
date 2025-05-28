@@ -130,9 +130,9 @@ const Footer = () => {
             <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-custom">
               {t('privacy_policy')}
             </Link>
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-custom">
+            <Link to="/terms-of-service" className="text-sm text-muted-foreground hover:text-primary transition-custom">
               {t('terms_of_service')}
-            </a>
+            </Link>
             <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-custom">
               {t('cookie_policy')}
             </a>

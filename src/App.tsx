@@ -21,6 +21,7 @@ import PsychologicalTests from './pages/PsychologicalTests';
 import Profile from './pages/Profile';
 import BlogPost from './pages/BlogPost';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/hooks/useTheme';
 import { LanguageProvider } from '@/hooks/language';
@@ -55,6 +56,7 @@ const App = () => {
               <Route path="/psychological-tests" element={<PsychologicalTests />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
               <Route path="/create-admin" element={<CreateAdmin />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
