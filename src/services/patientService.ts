@@ -11,44 +11,44 @@ export const defaultPatients: Patient[] = [
 ];
 
 /**
- * Fetch patients from the database with their profile information
+ * Fetch patients from the database
  */
 export async function fetchPatients(): Promise<Patient[]> {
   try {
-    console.log("Fetching patients from patients table...");
+    console.log("Fetching all patients from database...");
     
-    // Join patients table with profiles to get complete information
-    const { data: patientsData, error: patientsError } = await supabase
-      .from('patients')
-      .select(`
-        id,
-        user_id,
-        medical_record_number,
-        profiles!inner (
-          id,
-          name,
-          email,
-          profile_image,
-          role
-        )
-      `)
-      .order('name', { ascending: true, referencedTable: 'profiles' });
+    // First try to get profiles with patient role
+    const { data: patientData, error: patientError } = await supabase
+      .from('profiles')
+      .select('id, name, email, profile_image, role')
+      .eq('role', 'patient')
+      .order('name', { ascending: true });
     
-    console.log("Patients query result:", { data: patientsData, error: patientsError });
+    console.log("Patient-specific query result:", { data: patientData, error: patientError });
     
-    if (patientsError) {
-      console.error("Error fetching patients:", patientsError);
+    // Also fetch all profiles as fallback
+    const { data: allProfilesData, error: allProfilesError } = await supabase
+      .from('profiles')
+      .select('id, name, email, profile_image, role')
+      .order('name', { ascending: true });
+    
+    console.log("All profiles query result:", { data: allProfilesData, error: allProfilesError });
+    
+    if (patientError && allProfilesError) {
+      console.error("Error fetching patients:", patientError, allProfilesError);
       return [];
     }
     
-    if (patientsData && patientsData.length > 0) {
-      const formattedPatients: Patient[] = patientsData.map(patient => ({
-        id: patient.user_id, // Use user_id for messaging compatibility
-        name: patient.profiles?.name || 'Unknown Patient',
-        email: patient.profiles?.email || 'No email',
-        profile_image: patient.profiles?.profile_image || undefined,
-        role: patient.profiles?.role || "patient",
-        medical_record_number: patient.medical_record_number
+    // Use patient data if available, otherwise use all profiles
+    const dataToUse = patientData && patientData.length > 0 ? patientData : (allProfilesData || []);
+    
+    if (dataToUse && dataToUse.length > 0) {
+      const formattedPatients: Patient[] = dataToUse.map(patient => ({
+        id: patient.id,
+        name: patient.name || 'Unknown Patient',
+        email: patient.email || 'No email',
+        profile_image: patient.profile_image || undefined,
+        role: patient.role || "patient"
       }));
       
       console.log("Formatted patients from database:", formattedPatients);
@@ -64,7 +64,7 @@ export async function fetchPatients(): Promise<Patient[]> {
 }
 
 /**
- * Search for patients by name, email, or medical record number
+ * Search for patients by name or email
  */
 export async function searchPatients(query: string): Promise<Patient[]> {
   try {
@@ -75,40 +75,45 @@ export async function searchPatients(query: string): Promise<Patient[]> {
 
     console.log("Searching patients with query:", query);
 
-    // Search in patients table with profile information
-    const { data: patientsData, error: patientsError } = await supabase
-      .from('patients')
-      .select(`
-        id,
-        user_id,
-        medical_record_number,
-        profiles!inner (
-          id,
-          name,
-          email,
-          profile_image,
-          role
-        )
-      `)
-      .or(`profiles.name.ilike.%${query}%,profiles.email.ilike.%${query}%,medical_record_number.ilike.%${query}%`)
-      .order('name', { ascending: true, referencedTable: 'profiles' })
+    // Search both patient-specific and all profiles
+    const { data: patientData, error: patientError } = await supabase
+      .from('profiles')
+      .select('id, name, email, profile_image, role')
+      .eq('role', 'patient')
+      .or(`name.ilike.%${query}%,email.ilike.%${query}%`)
+      .order('name', { ascending: true })
       .limit(20);
     
-    console.log("Patient search query result:", { data: patientsData, error: patientsError });
+    const { data: allData, error: allError } = await supabase
+      .from('profiles')
+      .select('id, name, email, profile_image, role')
+      .or(`name.ilike.%${query}%,email.ilike.%${query}%`)
+      .order('name', { ascending: true })
+      .limit(20);
     
-    if (patientsError) {
-      console.error("Error searching patients:", patientsError);
+    console.log("Patient search query result:", { data: patientData, error: patientError });
+    console.log("All profiles search query result:", { data: allData, error: allError });
+    
+    if (patientError && allError) {
+      console.error("Error searching patients:", patientError, allError);
       return [];
     }
     
-    if (patientsData && patientsData.length > 0) {
-      const formattedPatients: Patient[] = patientsData.map(patient => ({
-        id: patient.user_id, // Use user_id for messaging compatibility
-        name: patient.profiles?.name || 'Unknown Patient',
-        email: patient.profiles?.email || 'No email',
-        profile_image: patient.profiles?.profile_image || undefined,
-        role: patient.profiles?.role || "patient",
-        medical_record_number: patient.medical_record_number
+    // Combine results, prioritizing patient role users
+    const patientResults = patientData || [];
+    const otherResults = (allData || []).filter(profile => 
+      !patientResults.some(p => p.id === profile.id)
+    );
+    
+    const combinedData = [...patientResults, ...otherResults];
+    
+    if (combinedData && combinedData.length > 0) {
+      const formattedPatients: Patient[] = combinedData.map(patient => ({
+        id: patient.id,
+        name: patient.name || 'Unknown Patient',
+        email: patient.email || 'No email',
+        profile_image: patient.profile_image || undefined,
+        role: patient.role || "patient"
       }));
       
       console.log("Search results formatted:", formattedPatients);
@@ -160,20 +165,10 @@ export async function getPatientById(patientId: string): Promise<Patient | null>
     }
 
     const { data, error } = await supabase
-      .from('patients')
-      .select(`
-        id,
-        user_id,
-        medical_record_number,
-        profiles!inner (
-          id,
-          name,
-          email,
-          profile_image,
-          role
-        )
-      `)
-      .eq('user_id', patientId)
+      .from('profiles')
+      .select('id, name, email, profile_image')
+      .eq('id', patientId)
+      .eq('role', 'patient')
       .single();
     
     if (error) {
@@ -183,12 +178,11 @@ export async function getPatientById(patientId: string): Promise<Patient | null>
     
     if (data) {
       return {
-        id: data.user_id,
-        name: data.profiles?.name || 'Unknown Patient',
-        email: data.profiles?.email || 'No email',
-        profile_image: data.profiles?.profile_image || undefined,
-        role: "patient",
-        medical_record_number: data.medical_record_number
+        id: data.id,
+        name: data.name || 'Unknown Patient',
+        email: data.email || 'No email',
+        profile_image: data.profile_image || undefined,
+        role: "patient"
       };
     }
     

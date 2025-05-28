@@ -11,31 +11,17 @@ export const mockForms: EvaluationForm[] = [
     questions: [
       {
         id: '1-1',
-        question_text: 'Little interest or pleasure in doing things',
-        question_type: 'scale',
-        options: [],
-        required: true,
-        order_index: 1,
         type: 'scale',
         question: 'Little interest or pleasure in doing things',
         scaleRange: { min: 0, max: 3 }
       },
       {
         id: '1-2',
-        question_text: 'Feeling down, depressed, or hopeless',
-        question_type: 'scale',
-        options: [],
-        required: true,
-        order_index: 2,
         type: 'scale',
         question: 'Feeling down, depressed, or hopeless',
         scaleRange: { min: 0, max: 3 }
       }
     ],
-    created_by: '1',
-    created_at: '2023-09-01',
-    updated_at: '2023-09-01',
-    is_active: true,
     createdAt: '2023-09-01'
   },
   {
@@ -46,31 +32,17 @@ export const mockForms: EvaluationForm[] = [
     questions: [
       {
         id: '2-1',
-        question_text: 'Feeling nervous, anxious, or on edge',
-        question_type: 'scale',
-        options: [],
-        required: true,
-        order_index: 1,
         type: 'scale',
         question: 'Feeling nervous, anxious, or on edge',
         scaleRange: { min: 0, max: 3 }
       },
       {
         id: '2-2',
-        question_text: 'Not being able to stop or control worrying',
-        question_type: 'scale',
-        options: [],
-        required: true,
-        order_index: 2,
         type: 'scale',
         question: 'Not being able to stop or control worrying',
         scaleRange: { min: 0, max: 3 }
       }
     ],
-    created_by: '1',
-    created_at: '2023-09-05',
-    updated_at: '2023-09-05',
-    is_active: true,
     createdAt: '2023-09-05'
   }
 ];
@@ -79,13 +51,6 @@ export const mockForms: EvaluationForm[] = [
 export const mockSubmissions: FormSubmission[] = [
   {
     id: '1',
-    form_id: '1',
-    patient_id: '1',
-    responses: [
-      { question_id: '1-1', answer: 2 },
-      { question_id: '1-2', answer: 3 }
-    ],
-    submitted_at: '2023-10-20',
     formId: '1',
     patientId: '1',
     submissionDate: '2023-10-20',
@@ -96,13 +61,6 @@ export const mockSubmissions: FormSubmission[] = [
   },
   {
     id: '2',
-    form_id: '2',
-    patient_id: '2',
-    responses: [
-      { question_id: '2-1', answer: 1 },
-      { question_id: '2-2', answer: 2 }
-    ],
-    submitted_at: '2023-10-18',
     formId: '2',
     patientId: '2',
     submissionDate: '2023-10-18',

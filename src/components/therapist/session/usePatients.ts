@@ -20,7 +20,7 @@ export function usePatients() {
         setIsLoading(true);
         console.log("Loading patients for user:", user.id);
         
-        // Fetch real patients from the patients table
+        // Fetch real patients from the database
         const realPatients = await fetchPatients();
         console.log("Fetched real patients:", realPatients);
         

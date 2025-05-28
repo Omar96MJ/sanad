@@ -50,7 +50,7 @@ const PatientManagement = ({ currentDoctor }: PatientManagementProps) => {
   const [newNoteContent, setNewNoteContent] = useState("");
   const [isAddingNote, setIsAddingNote] = useState(false);
 
-  // Function to fetch patients from the new patients table
+  // Function to fetch patients from database with optional search
   const fetchPatients = async (searchQuery?: string) => {
     if (!currentDoctor || !currentDoctor.id) {
       setPatients([]);
@@ -64,31 +64,17 @@ const PatientManagement = ({ currentDoctor }: PatientManagementProps) => {
       console.log('Fetching patients for doctor ID:', currentDoctor.id, 'with search:', searchQuery);
 
       let query = supabase
-        .from('patients')
-        .select(`
-          id,
-          user_id,
-          medical_record_number,
-          date_of_birth,
-          phone_number,
-          assigned_doctor_id,
-          last_appointment_date,
-          next_appointment_date,
-          status,
-          profiles:profile_id (
-            name,
-            email
-          )
-        `)
+        .from('profiles')
+        .select('id, name, email')
         .eq('assigned_doctor_id', currentDoctor.id)
-        .eq('status', 'active');
+        .eq('role', 'patient');
 
       // Add search filters if search term is provided
       if (isSearchMode) {
-        query = query.or(`profiles.name.ilike.%${searchQuery}%,profiles.email.ilike.%${searchQuery}%,medical_record_number.ilike.%${searchQuery}%`);
+        query = query.or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
       }
 
-      const { data, error } = await query.order('profiles(name)', { ascending: true });
+      const { data, error } = await query.order('name', { ascending: true });
 
       if (error) {
         console.error("Error fetching patients:", error);
@@ -96,14 +82,11 @@ const PatientManagement = ({ currentDoctor }: PatientManagementProps) => {
         setPatients([]);
       } else if (data) {
         const formattedPatients: PatientListItem[] = data.map(p => ({
-          id: p.user_id, // Use user_id for compatibility with existing code
-          name: p.profiles?.name || t('name_not_set'),
-          email: p.profiles?.email || t('email_not_set'),
-          lastSession: p.last_appointment_date || "N/A",
-          nextSession: p.next_appointment_date || "N/A",
-          medicalRecordNumber: p.medical_record_number,
-          phoneNumber: p.phone_number,
-          dateOfBirth: p.date_of_birth,
+          id: p.id,
+          name: p.name || t('name_not_set'),
+          email: p.email || t('email_not_set'),
+          lastSession: "N/A",
+          nextSession: "N/A",
         }));
         setPatients(formattedPatients);
       }
@@ -315,7 +298,6 @@ const PatientManagement = ({ currentDoctor }: PatientManagementProps) => {
                   <TableRow>
                     <TableHead>{t('name')}</TableHead>
                     <TableHead>{t('email')}</TableHead>
-                    <TableHead>{t('medical_record_number')}</TableHead>
                     <TableHead>{t('last_session')}</TableHead>
                     <TableHead>{t('next_session')}</TableHead>
                     <TableHead className="text-right rtl:text-left">{t('actions')}</TableHead>
@@ -324,7 +306,7 @@ const PatientManagement = ({ currentDoctor }: PatientManagementProps) => {
                 <TableBody>
                   {patients.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center h-24">
+                      <TableCell colSpan={5} className="text-center h-24">
                         {searchTerm ? t('no_patients_match_search') : t('no_patients_assigned_yet')}
                       </TableCell>
                     </TableRow>
@@ -333,9 +315,6 @@ const PatientManagement = ({ currentDoctor }: PatientManagementProps) => {
                       <TableRow key={patient.id}>
                         <TableCell className="font-medium">{patient.name}</TableCell>
                         <TableCell>{patient.email}</TableCell>
-                        <TableCell className="font-mono text-sm">
-                          {patient.medicalRecordNumber || 'N/A'}
-                        </TableCell>
                         <TableCell>{patient.lastSession}</TableCell>
                         <TableCell>{patient.nextSession}</TableCell>
                         <TableCell className="text-right rtl:text-left">
@@ -368,11 +347,6 @@ const PatientManagement = ({ currentDoctor }: PatientManagementProps) => {
               <DialogTitle>{t('patient_notes_for')} {selectedPatient.name || t('unknown_patient')}</DialogTitle>
               <DialogDescription>
                 {t('view_and_add_patient_notes')}
-                {selectedPatient.medicalRecordNumber && (
-                  <span className="block text-sm text-muted-foreground mt-1">
-                    {t('medical_record_number')}: {selectedPatient.medicalRecordNumber}
-                  </span>
-                )}
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4 max-h-[calc(80vh-200px)] overflow-y-auto p-1 pr-3">
