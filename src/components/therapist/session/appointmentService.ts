@@ -2,7 +2,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import { AppointmentFormValues } from "./types";
 import { toast } from "sonner";
-import { v4 as uuidv4 } from "uuid";
 
 export const createAppointment = async (doctorId: string, values: AppointmentFormValues) => {
   // Combine date and time for session_date
@@ -30,7 +29,6 @@ export const createAppointment = async (doctorId: string, values: AppointmentFor
     console.log("Creating appointment with:", {
       doctor_id: doctorId,
       patient_id: patientId,
-      patient_name: values.patient_name,
       session_date: sessionDateTime.toISOString(),
       session_type: values.session_type
     });
@@ -40,14 +38,18 @@ export const createAppointment = async (doctorId: string, values: AppointmentFor
       .from('appointments')
       .insert({
         doctor_id: doctorId,
-        patient_id: patientId, // Now patientId can be null
-        patient_name: values.patient_name,
+        patient_id: patientId,
         session_date: sessionDateTime.toISOString(),
         session_type: values.session_type,
         notes: values.notes || null,
         status: 'scheduled'
       })
-      .select()
+      .select(`
+        *,
+        profiles!appointments_patient_id_fkey (
+          name
+        )
+      `)
       .single();
     
     if (error) {
@@ -55,39 +57,13 @@ export const createAppointment = async (doctorId: string, values: AppointmentFor
       throw error;
     }
     
-    // If we have a patient ID, also create a record in patient_appointments
-    if (patientId) {
-      let doctorName = "Doctor"; // Default name
-      
-      // Try to get doctor name from profiles
-      const { data: doctorProfile } = await supabase
-        .from('doctors')
-        .select('name')
-        .eq('user_id', doctorId)
-        .single();
-        
-      if (doctorProfile) {
-        doctorName = doctorProfile.name;
-      }
-      
-      const { error: patientApptError } = await supabase
-        .from('patient_appointments')
-        .insert({
-          patient_id: patientId,
-          doctor_id: doctorId,
-          doctor_name: doctorName,
-          session_date: sessionDateTime.toISOString(),
-          session_type: values.session_type,
-          status: 'upcoming'
-        });
-        
-      if (patientApptError) {
-        console.error("Error creating patient appointment:", patientApptError);
-        // We don't throw here as the main appointment was created successfully
-      }
-    }
+    // Add patient_name to the returned data
+    const appointmentWithPatientName = {
+      ...data,
+      patient_name: data.profiles?.name || values.patient_name || 'Unknown Patient'
+    };
     
-    return data;
+    return appointmentWithPatientName;
   } catch (error) {
     console.error("Error in appointment creation:", error);
     throw error;
@@ -111,25 +87,6 @@ export const updateAppointment = async (id: string, status: string, sessionDate?
     if (error) {
       console.error("Error updating appointment:", error);
       throw error;
-    }
-    
-    // Also update the corresponding patient appointment if applicable
-    if (data.patient_id) {
-      const patientStatus = status === "scheduled" ? "upcoming" : 
-                          status === "completed" ? "completed" : "cancelled";
-      
-      const { error: patientApptError } = await supabase
-        .from('patient_appointments')
-        .update({ 
-          status: patientStatus,
-          ...(sessionDate ? { session_date: sessionDate } : {})
-        })
-        .eq('patient_id', data.patient_id)
-        .eq('doctor_id', data.doctor_id);
-      
-      if (patientApptError) {
-        console.error("Error updating patient appointment:", patientApptError);
-      }
     }
     
     return data;

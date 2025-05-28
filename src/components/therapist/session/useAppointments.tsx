@@ -29,7 +29,12 @@ export function useAppointments() {
         setIsLoading(true);
         const { data, error } = await supabase
           .from('appointments')
-          .select('*')
+          .select(`
+            *,
+            profiles!appointments_patient_id_fkey (
+              name
+            )
+          `)
           .eq('doctor_id', user.id)
           .order('session_date', { ascending: true });
         
@@ -43,7 +48,12 @@ export function useAppointments() {
         }
         
         if (data) {
-          setAppointments(data);
+          // Map the data to include patient_name
+          const mappedAppointments: Appointment[] = data.map(apt => ({
+            ...apt,
+            patient_name: apt.profiles?.name || 'Unknown Patient'
+          }));
+          setAppointments(mappedAppointments);
         }
       } catch (error) {
         console.error("Error in appointments fetch:", error);
@@ -76,7 +86,7 @@ export function useAppointments() {
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter((apt) => 
-        apt.patient_name.toLowerCase().includes(query) || 
+        (apt.patient_name && apt.patient_name.toLowerCase().includes(query)) || 
         apt.session_type.toLowerCase().includes(query)
       );
     }
@@ -88,7 +98,7 @@ export function useAppointments() {
   const updateAppointmentStatus = async (id: string, status: string) => {
     try {
       setIsSaving(true);
-      const updatedAppointment = await updateAppointment(id, status);
+      await updateAppointment(id, status);
       
       // Update local state
       setAppointments(appointments.map(apt => 
@@ -101,7 +111,6 @@ export function useAppointments() {
       });
       
       setIsSaving(false);
-      return updatedAppointment;
     } catch (error) {
       console.error("Error in appointment update:", error);
       toast({

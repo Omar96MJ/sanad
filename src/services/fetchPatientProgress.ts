@@ -1,7 +1,5 @@
-// services/fetchPatientProgress.ts
 
 import { supabase } from "@/integrations/supabase/client";
-
 
 export const fetchPatientProgress = async (userId: string): Promise<number | null> => {
   const { data, error } = await supabase

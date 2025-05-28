@@ -126,15 +126,15 @@ const Footer = () => {
             © {currentYear} {t('sanad_copyright')}
           </p>
           <div className="flex gap-x-6">
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-custom">
+            <Link to="/privacy-policy" className="text-sm text-muted-foreground hover:text-primary transition-custom">
               {t('privacy_policy')}
-            </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-custom">
+            </Link>
+            <Link to="/terms-of-service" className="text-sm text-muted-foreground hover:text-primary transition-custom">
               {t('terms_of_service')}
-            </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-custom">
+            </Link>
+            <Link to="/cookie-policy" className="text-sm text-muted-foreground hover:text-primary transition-custom">
               {t('cookie_policy')}
-            </a>
+            </Link>
           </div>
         </div>
       </div>
