@@ -7,7 +7,7 @@ import { createAppointment, PatientAppointment } from "@/services/patientAppoint
 import { fetchAllDoctors, fetchAvailableTimeSlots } from "@/services/doctorService";
 import { DoctorProfile } from "@/lib/therapist-types";
 import { format, isValid, parseISO } from 'date-fns';
-
+import { useCallback } from 'react';
 export interface SessionFormData {
    sessionDate: Date | undefined;
   sessionTime: string;
@@ -65,25 +65,25 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
     }
   }, [user, isRTL]); // أضفت user كإعتمادية، قد تحتاج لمراجعتها حسب منطقك
 
-  const loadAvailableTimeSlots = async (doctorIdForSlots: string, sessionDateForSlots: Date | undefined) => {
-    if (!doctorIdForSlots || !sessionDateForSlots || !isValid(sessionDateForSlots)) {
-      setAvailableTimeSlots([]);
-      return;
-    }
-    setIsLoadingTimeSlots(true);
-    setAvailableTimeSlots([]); // مسح الأوقات القديمة عند بدء جلب جديد
-    try {
-      const dateStringYYYYMMDD = format(sessionDateForSlots, 'yyyy-MM-dd');
-      const slots = await fetchAvailableTimeSlots(doctorIdForSlots, dateStringYYYYMMDD);
-      setAvailableTimeSlots(slots);
-    } catch (error) {
-      console.error("Error fetching available time slots:", error);
-      toast.error(isRTL ? "خطأ في جلب الأوقات المتاحة" : "Error fetching available slots");
-      setAvailableTimeSlots([]);
-    } finally {
-      setIsLoadingTimeSlots(false);
-    }
-  };
+  const loadAvailableTimeSlots = useCallback(async (doctorIdForSlots: string, sessionDateForSlots: Date | undefined) => {
+  if (!doctorIdForSlots || !sessionDateForSlots || !isValid(sessionDateForSlots)) {
+    setAvailableTimeSlots([]);
+    return;
+  }
+  setIsLoadingTimeSlots(true);
+  setAvailableTimeSlots([]);
+  try {
+    const dateStringYYYYMMDD = format(sessionDateForSlots, 'yyyy-MM-dd');
+    const slots = await fetchAvailableTimeSlots(doctorIdForSlots, dateStringYYYYMMDD); // دالة الخدمة
+    setAvailableTimeSlots(slots);
+  } catch (error) {
+    console.error("Error fetching available time slots in hook:", error);
+    toast.error(isRTL ? "خطأ في جلب الأوقات المتاحة" : "Error fetching available slots");
+    setAvailableTimeSlots([]);
+  } finally {
+    setIsLoadingTimeSlots(false);
+  }
+}, [isRTL]);
 
   // 3. تعديل دالة handleBookSession
   const handleBookSession = async (formValues: SessionFormData) => { // formValues الآن تحتوي على doctorId

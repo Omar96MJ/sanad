@@ -10,6 +10,8 @@ export const fetchAvailableTimeSlots = async (
   doctorId: string,
   selectedDateString: string // e.g., "2025-06-02"
 ): Promise<string[]> => {
+    console.log("SERVICE: fetchAvailableTimeSlots called with:", { doctorId, selectedDateString }); // <--- Log 1
+
   if (!doctorId || !selectedDateString) {
     console.error("Doctor ID and selected date are required.");
     return [];
@@ -20,6 +22,7 @@ export const fetchAvailableTimeSlots = async (
     const dateForDayOfWeek = parseISO(selectedDateString); // يُرجع كائن Date يمثل بداية اليوم بتوقيت UTC
     const zonedDateForDayOfWeek = toZonedTime(dateForDayOfWeek, APP_TIME_ZONE); // تحويله لمنطقة الطبيب الزمنية
     const dayOfWeek = getDay(zonedDateForDayOfWeek); // 0 for Sunday ... 6 for Saturday
+    console.log("SERVICE: Calculated dayOfWeek:", dayOfWeek, "(0=Sun, 1=Mon, ...)"); // <--- Log 2
 
     // 3. جلب "البلوكات الساعية" المحددة كمتوفرة
     const { data: potentialSlotsData, error: availabilityError } = await supabase
@@ -31,13 +34,16 @@ export const fetchAvailableTimeSlots = async (
       .order('start_time');
 
     if (availabilityError) {
-      console.error("Error fetching doctor's availability:", availabilityError.message);
+      console.error("SERVICE: Error fetching doctor's availability:", availabilityError.message);
       return [];
     }
     if (!potentialSlotsData || potentialSlotsData.length === 0) {
+            console.log("SERVICE: No potential availability slots found in therapist_availability for this doctor/day."); // <--- Log 3
+
       return [];
     }
     const potentialStartTimes: string[] = potentialSlotsData.map(slot => slot.start_time);
+    console.log("SERVICE: Potential start times from therapist_availability:", potentialStartTimes); // <--- Log 4
 
     // 4. جلب المواعيد المحجوزة بالفعل للطبيب في التاريخ المحدد
     //    نحتاج لتحديد بداية ونهاية اليوم المحدد بالتوقيت العالمي المنسق (UTC)
@@ -54,8 +60,8 @@ export const fetchAvailableTimeSlots = async (
       .lt('session_date', dayEndInAppZoneAsUTC.toISOString()); // أو .lte إذا أردت تضمين 23:59:59.999
 
     if (appointmentsError) {
-      console.error("Error fetching booked appointments:", appointmentsError.message);
-      return potentialStartTimes; 
+      console.error("SERVICE: Error fetching booked appointments:", appointmentsError.message);
+      return []; 
     }
 
     const bookedStartTimesLocal = new Set<string>();
@@ -68,12 +74,14 @@ export const fetchAvailableTimeSlots = async (
         bookedStartTimesLocal.add(format(sessionDateInAppTZ, 'HH:mm:ss'));
       });
     }
+        console.log("SERVICE: Booked start times (local to app timezone):", Array.from(bookedStartTimesLocal)); // <--- Log 5
 
     // 5. فلترة الخانات الزمنية المحتملة لإزالة المحجوزة
     const availableTimeSlots = potentialStartTimes.filter(
       slotStartTime => !bookedStartTimesLocal.has(slotStartTime)
     );
-    
+        console.log("SERVICE: Final available slots being returned:", availableTimeSlots); // <--- Log 6
+
     return availableTimeSlots;
 
   } catch (error) {

@@ -73,6 +73,8 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
 
   useEffect(() => {
     if (watchedDoctorId && watchedSessionDate) {
+        console.log("SessionModalForm - Calling loadAvailableTimeSlots with:", watchedDoctorId, watchedSessionDate);
+
       // عندما يتم اختيار طبيب وتاريخ، قم بجلب الأوقات المتاحة
       loadAvailableTimeSlots(watchedDoctorId, watchedSessionDate);
       // قد ترغب في مسح sessionTime المختار سابقًا عند تغيير الطبيب أو التاريخ
@@ -81,7 +83,7 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
       // إذا لم يتم اختيار طبيب أو تاريخ، لا توجد أوقات لعرضها
       // يمكنك هنا مسح availableTimeSlots إذا أردت (عادةً ما يتم ذلك في loadAvailableTimeSlots)
     }
-  }, [watchedDoctorId, watchedSessionDate, loadAvailableTimeSlots, form]);
+  }, [watchedDoctorId, watchedSessionDate, loadAvailableTimeSlots, form.setValue]);
   
   // Handle form submission
   const handleFormSubmit = async (values: FormValues) => { // values الآن تحتوي على doctorId
@@ -99,7 +101,9 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
         console.error("Error submitting form from SessionModalForm:", error);      // setIsLoading(false) سيتم التعامل معها في finally block الخاص بـ onSubmit (handleBookSession)
     } 
   };
+  const isTimePickerDisabledByForm = !watchedDoctorId || !watchedSessionDate || isLoadingTimeSlots;
 
+  
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4 py-4">
@@ -122,7 +126,7 @@ export const SessionModalForm = ({ onSubmit, isLoading, setIsLoading, onCancel }
           control={form.control} 
           availableSlots={availableTimeSlots} // قائمة الأوقات المتاحة (HH:MM:SS)
           isLoadingSlots={isLoadingTimeSlots} // حالة تحميل الأوقات
-          disabled={!watchedDoctorId || !watchedSessionDate || isLoadingTimeSlots} // تعطيل الحقل إذا لم يتم اختيار طبيب/تاريخ أو أثناء التحميل
+          disabled={isTimePickerDisabledByForm} // تعطيل الحقل إذا لم يتم اختيار طبيب/تاريخ أو أثناء التحميل
         />
         <NotesField control={form.control} />
         <FormActions isLoading={isLoading} onCancel={onCancel} />
