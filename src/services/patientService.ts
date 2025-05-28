@@ -17,33 +17,21 @@ export async function fetchPatients(): Promise<Patient[]> {
   try {
     console.log("Fetching all patients from database...");
     
-    // First try to get profiles with patient role
     const { data: patientData, error: patientError } = await supabase
       .from('profiles')
       .select('id, name, email, profile_image, role')
       .eq('role', 'patient')
       .order('name', { ascending: true });
     
-    console.log("Patient-specific query result:", { data: patientData, error: patientError });
+    console.log("Patient query result:", { data: patientData, error: patientError });
     
-    // Also fetch all profiles as fallback
-    const { data: allProfilesData, error: allProfilesError } = await supabase
-      .from('profiles')
-      .select('id, name, email, profile_image, role')
-      .order('name', { ascending: true });
-    
-    console.log("All profiles query result:", { data: allProfilesData, error: allProfilesError });
-    
-    if (patientError && allProfilesError) {
-      console.error("Error fetching patients:", patientError, allProfilesError);
+    if (patientError) {
+      console.error("Error fetching patients:", patientError);
       return [];
     }
     
-    // Use patient data if available, otherwise use all profiles
-    const dataToUse = patientData && patientData.length > 0 ? patientData : (allProfilesData || []);
-    
-    if (dataToUse && dataToUse.length > 0) {
-      const formattedPatients: Patient[] = dataToUse.map(patient => ({
+    if (patientData && patientData.length > 0) {
+      const formattedPatients: Patient[] = patientData.map(patient => ({
         id: patient.id,
         name: patient.name || 'Unknown Patient',
         email: patient.email || 'No email',
@@ -75,7 +63,6 @@ export async function searchPatients(query: string): Promise<Patient[]> {
 
     console.log("Searching patients with query:", query);
 
-    // Search both patient-specific and all profiles
     const { data: patientData, error: patientError } = await supabase
       .from('profiles')
       .select('id, name, email, profile_image, role')
@@ -84,31 +71,15 @@ export async function searchPatients(query: string): Promise<Patient[]> {
       .order('name', { ascending: true })
       .limit(20);
     
-    const { data: allData, error: allError } = await supabase
-      .from('profiles')
-      .select('id, name, email, profile_image, role')
-      .or(`name.ilike.%${query}%,email.ilike.%${query}%`)
-      .order('name', { ascending: true })
-      .limit(20);
-    
     console.log("Patient search query result:", { data: patientData, error: patientError });
-    console.log("All profiles search query result:", { data: allData, error: allError });
     
-    if (patientError && allError) {
-      console.error("Error searching patients:", patientError, allError);
+    if (patientError) {
+      console.error("Error searching patients:", patientError);
       return [];
     }
     
-    // Combine results, prioritizing patient role users
-    const patientResults = patientData || [];
-    const otherResults = (allData || []).filter(profile => 
-      !patientResults.some(p => p.id === profile.id)
-    );
-    
-    const combinedData = [...patientResults, ...otherResults];
-    
-    if (combinedData && combinedData.length > 0) {
-      const formattedPatients: Patient[] = combinedData.map(patient => ({
+    if (patientData && patientData.length > 0) {
+      const formattedPatients: Patient[] = patientData.map(patient => ({
         id: patient.id,
         name: patient.name || 'Unknown Patient',
         email: patient.email || 'No email',

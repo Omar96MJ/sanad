@@ -16,23 +16,7 @@ export interface PatientAppointment {
   doctor?: any;
 }
 
-// دالة جلب اسم المريض
-async function fetchPatientName(patientId: string): Promise<string | null> {
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("name")
-    .eq("id", patientId)
-    .single();
-
-  if (error) {
-    console.error("Error fetching patient name:", error);
-    return null;
-  }
-
-  return data?.name ?? null;
-}
-
-// جلب مواعيد المريض - we'll use the main appointments table instead
+// جلب مواعيد المريض - we'll use the main appointments table
 export async function fetchPatientAppointments(patientId: string): Promise<PatientAppointment[]> {
   try {
     const { data, error } = await supabase
@@ -97,9 +81,6 @@ export async function createAppointment(appointment: Omit<PatientAppointment, 'i
     if (!appointment.patient_id || !appointment.doctor_id || !appointment.session_date) {
       throw new Error("Missing required appointment data");
     }
-
-    // جلب اسم المريض
-    const patientName = await fetchPatientName(appointment.patient_id) || "Patient";
 
     console.log("📥 Creating appointment with:", appointment);
 
