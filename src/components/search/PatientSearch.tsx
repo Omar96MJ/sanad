@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useLanguage } from "@/hooks/useLanguage";
-import { supabase } from "@/integrations/supabase/client";
+import { searchPatients } from "@/services/patientService";
 
 export interface Patient {
   id: string;
@@ -14,6 +14,7 @@ export interface Patient {
   email: string;
   profile_image?: string;
   role?: string;
+  medical_record_number?: string;
 }
 
 interface PatientSearchProps {
@@ -36,8 +37,8 @@ export const PatientSearch = ({
   useEffect(() => {
     if (searchQuery.trim().length > 0) {
       const timer = setTimeout(() => {
-        searchPatients();
-      }, 300); // Reduced debounce time
+        performSearch();
+      }, 300);
       
       return () => clearTimeout(timer);
     } else {
@@ -46,7 +47,7 @@ export const PatientSearch = ({
     }
   }, [searchQuery]);
 
-  const searchPatients = async () => {
+  const performSearch = async () => {
     if (searchQuery.trim().length === 0) {
       setPatients([]);
       setHasSearched(false);
@@ -59,54 +60,10 @@ export const PatientSearch = ({
     try {
       console.log("Searching for patients with query:", searchQuery);
       
-      // First, try to search for users with role 'patient'
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .select('id, name, email, profile_image, role')
-        .eq('role', 'patient')
-        .or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`)
-        .order('name', { ascending: true })
-        .limit(10);
-        
-      console.log("Profile search results:", profileData);
-      console.log("Profile search error:", profileError);
+      const searchResults = await searchPatients(searchQuery);
+      console.log("Search results:", searchResults);
       
-      // Also search in all profiles (in case role is not set correctly)
-      const { data: allProfilesData, error: allProfilesError } = await supabase
-        .from('profiles')
-        .select('id, name, email, profile_image, role')
-        .or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`)
-        .order('name', { ascending: true })
-        .limit(10);
-        
-      console.log("All profiles search results:", allProfilesData);
-      console.log("All profiles search error:", allProfilesError);
-      
-      if (profileError && allProfilesError) {
-        console.error("Error searching patients:", profileError, allProfilesError);
-        setPatients([]);
-        return;
-      }
-      
-      // Combine results, prioritizing those with patient role
-      const patientProfiles = profileData || [];
-      const otherProfiles = (allProfilesData || []).filter(profile => 
-        !patientProfiles.some(p => p.id === profile.id)
-      );
-      
-      const combinedResults = [...patientProfiles, ...otherProfiles];
-      
-      // Format the results
-      const formattedPatients: Patient[] = combinedResults.map(patient => ({
-        id: patient.id,
-        name: patient.name || 'Unknown Patient',
-        email: patient.email || 'No email',
-        profile_image: patient.profile_image || undefined,
-        role: patient.role || "patient"
-      }));
-      
-      console.log("Formatted patients:", formattedPatients);
-      setPatients(formattedPatients);
+      setPatients(searchResults);
     } catch (error) {
       console.error("Error in patient search:", error);
       setPatients([]);
@@ -117,7 +74,7 @@ export const PatientSearch = ({
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    searchPatients();
+    performSearch();
   };
 
   return (
@@ -126,7 +83,7 @@ export const PatientSearch = ({
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder={t('search_patients') || "Search patients by name or email..."}
+            placeholder={t('search_patients') || "Search patients by name, email, or medical record..."}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-8"
@@ -150,13 +107,10 @@ export const PatientSearch = ({
                 <p className="text-muted-foreground">
                   {searchQuery.trim() 
                     ? (t('no_patients_found') || "No patients found matching your search.") 
-                    : (t('enter_search_term') || "Enter a name or email to search for patients.")}
+                    : (t('enter_search_term') || "Enter a name, email, or medical record to search for patients.")}
                 </p>
                 <p className="text-xs text-muted-foreground mt-2">
-                  Debug: Query "{searchQuery}", Found {patients.length} patients
-                </p>
-                <p className="text-xs text-blue-600 mt-1">
-                  Tip: Try searching for common names like "ahmed", "sara", or "omar"
+                  Searched in patients table for: "{searchQuery}"
                 </p>
               </div>
             ) : (
@@ -173,8 +127,13 @@ export const PatientSearch = ({
                         {showEmail && (
                           <p className="text-xs text-muted-foreground">{patient.email}</p>
                         )}
+                        {patient.medical_record_number && (
+                          <p className="text-xs text-blue-600">
+                            MRN: {patient.medical_record_number}
+                          </p>
+                        )}
                         <p className="text-xs text-green-600">
-                          {patient.role === 'patient' ? 'Patient' : 'User'} (ID: {patient.id.substring(0, 8)}...)
+                          Patient (ID: {patient.id.substring(0, 8)}...)
                         </p>
                       </div>
                     </div>
@@ -196,7 +155,7 @@ export const PatientSearch = ({
       {!hasSearched && searchQuery.trim().length === 0 && (
         <div className="text-center py-4 text-muted-foreground text-sm">
           <p>{t('start_typing_to_search') || "Start typing to search for patients..."}</p>
-          <p className="text-xs mt-1">Try searching for names like "ahmed", "sara", "omar", or "test"</p>
+          <p className="text-xs mt-1">Search by name, email, or medical record number</p>
         </div>
       )}
     </div>

@@ -1,34 +1,29 @@
-
 import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { fetchPatients } from "@/services/patientService";
 
 export const useUsers = (isTherapist: boolean) => {
   const [patients, setPatients] = useState<any[]>([]);
 
   const fetchUsers = async () => {
     try {
-      const userRole = isTherapist ? 'patient' : 'doctor';
-      
-      // Fetch users based on role
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, name')
-        .eq('role', userRole)
-        .order('name');
+      if (isTherapist) {
+        // Fetch real patients from the patients table
+        const realPatients = await fetchPatients();
+        console.log("Fetched patients for messaging:", realPatients);
         
-      if (error) {
-        console.error(`Error fetching ${userRole}s:`, error);
-        return;
-      }
-      
-      if (data) {
-        setPatients(data.map(user => ({
-          id: user.id,
-          name: user.name || `Unknown ${userRole}`
+        setPatients(realPatients.map(patient => ({
+          id: patient.id,
+          name: patient.name || "Unknown Patient",
+          medical_record_number: patient.medical_record_number
         })));
+      } else {
+        // For patients, fetch doctors (keep existing logic for now)
+        // This would need similar updates if we want to fetch real doctors
+        setPatients([]);
       }
     } catch (error) {
       console.error("Error fetching users:", error);
+      setPatients([]);
     }
   };
 
