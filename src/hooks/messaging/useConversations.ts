@@ -9,6 +9,7 @@ export const useConversations = (user: any) => {
 
   const fetchConversations = async () => {
     if (!user) {
+      console.log("No user found, skipping conversation fetch");
       setIsLoading(false);
       return;
     }
@@ -66,7 +67,9 @@ export const useConversations = (user: any) => {
         
       if (allParticipantsError) {
         console.error("Error fetching all participants:", allParticipantsError);
-        // Continue without participant details rather than failing completely
+        setConversations([]);
+        setIsLoading(false);
+        return;
       }
       
       console.log("All participants data:", allParticipants);
@@ -77,7 +80,7 @@ export const useConversations = (user: any) => {
           ? allParticipants
               .filter(p => p.conversation_id === conv.id)
               .map(p => p.user_id)
-          : [user.id]; // Fallback to just current user if participants fetch failed
+          : [user.id];
           
         const unreadCount = participantData.find(p => p.conversation_id === conv.id)?.unread_count || 0;
         
@@ -111,7 +114,7 @@ export const useConversations = (user: any) => {
 
   useEffect(() => {
     fetchConversations();
-  }, [user?.id]); // Added optional chaining and dependency on user.id specifically
+  }, [user?.id]);
 
   return {
     conversations,

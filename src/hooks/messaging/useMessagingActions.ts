@@ -12,7 +12,12 @@ export const useMessagingActions = (
   const { t } = useLanguage();
 
   const startNewConversation = async (participantId: string) => {
-    if (!user) return null;
+    if (!user) {
+      console.error("No user found for conversation creation");
+      return null;
+    }
+    
+    console.log("Starting conversation with participant:", participantId, "current user:", user.id);
     
     // Check if conversation already exists
     const existingConversation = conversations.find(c => 
@@ -21,10 +26,13 @@ export const useMessagingActions = (
     );
 
     if (existingConversation) {
+      console.log("Existing conversation found:", existingConversation.id);
       return existingConversation.id;
     }
     
     try {
+      console.log("Creating new conversation...");
+      
       // Create new conversation
       const { data: conversationData, error: conversationError } = await supabase
         .from('conversations')
@@ -38,11 +46,15 @@ export const useMessagingActions = (
         return null;
       }
       
+      console.log("Conversation created:", conversationData);
+      
       // Add participants
       const participantsToAdd = [
         { conversation_id: conversationData.id, user_id: user.id },
         { conversation_id: conversationData.id, user_id: participantId }
       ];
+      
+      console.log("Adding participants:", participantsToAdd);
       
       const { error: participantError } = await supabase
         .from('conversation_participants')
@@ -53,6 +65,8 @@ export const useMessagingActions = (
         toast.error(t('failed_add_participants') || "Failed to add participants to conversation");
         return null;
       }
+      
+      console.log("Participants added successfully");
       
       // Create new conversation object for state
       const newConversation: ConversationWithParticipants = {
@@ -74,7 +88,12 @@ export const useMessagingActions = (
   };
 
   const handleSendMessage = async (content: string, activeConversationId: string | null): Promise<boolean> => {
-    if (!user || !activeConversationId) return false;
+    if (!user || !activeConversationId) {
+      console.error("Missing user or conversation ID for message sending");
+      return false;
+    }
+    
+    console.log("Sending message:", { content, conversationId: activeConversationId, senderId: user.id });
     
     try {
       // Insert message into database
@@ -94,8 +113,7 @@ export const useMessagingActions = (
         return false;
       }
       
-      // Message will be added to state via subscription
-      console.log("Message sent:", data);
+      console.log("Message sent successfully:", data);
       return true;
     } catch (error) {
       console.error("Error in send message:", error);

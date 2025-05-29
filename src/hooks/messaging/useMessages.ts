@@ -7,9 +7,15 @@ export const useMessages = (user: any, activeConversationId: string | null) => {
   const [messages, setMessages] = useState<Message[]>([]);
 
   const fetchMessages = async () => {
-    if (!user || !activeConversationId) return;
+    if (!user || !activeConversationId) {
+      console.log("No user or conversation ID, clearing messages");
+      setMessages([]);
+      return;
+    }
     
     try {
+      console.log("Fetching messages for conversation:", activeConversationId);
+      
       // Get all messages for this conversation
       const { data, error } = await supabase
         .from('messages')
@@ -21,6 +27,8 @@ export const useMessages = (user: any, activeConversationId: string | null) => {
         console.error("Error fetching messages:", error);
         return;
       }
+      
+      console.log("Raw messages data:", data);
       
       if (data) {
         const formattedMessages: Message[] = data.map(msg => ({
@@ -55,8 +63,10 @@ export const useMessages = (user: any, activeConversationId: string | null) => {
             senderRole: userProfiles[msg.senderId]?.role || 'unknown'
           }));
           
+          console.log("Formatted messages with user info:", messagesWithUserInfo);
           setMessages(messagesWithUserInfo);
         } else {
+          console.log("Formatted messages without user info:", formattedMessages);
           setMessages(formattedMessages);
         }
       }
