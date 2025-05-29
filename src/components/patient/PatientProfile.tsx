@@ -46,7 +46,6 @@ const PatientProfile = () => {
   }, [user]);
 
 
-    const [currentPassword, setCurrentPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
   
@@ -84,7 +83,7 @@ const PatientProfile = () => {
       toast.error(t('error_updating_password'));
     } else {
       toast.success(t('password_updated_successfully'));
-      setCurrentPassword(""); // مسح الحقول بعد النجاح
+      // مسح الحقول بعد النجاح
       setNewPassword("");
       setConfirmPassword("");
     }
@@ -209,17 +208,6 @@ const PatientProfile = () => {
             </CardHeader>
             <form onSubmit={handlePasswordUpdate}>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="currentPassword">{t('current_password')}</Label>
-                  <Input 
-                    id="currentPassword"
-                    type="password"
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    className={isRTL ? 'text-right' : 'text-left'}
-                  />
-                </div>
-                
                 <div className="space-y-2">
                   <Label htmlFor="newPassword">{t('new_password')}</Label>
                   <Input 
