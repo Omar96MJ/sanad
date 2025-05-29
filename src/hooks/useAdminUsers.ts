@@ -27,6 +27,21 @@ export const useAdminUsers = () => {
       setIsLoading(true);
       setError(null);
 
+      console.log('Fetching users from profiles table...');
+
+      // First, let's check if we can access the profiles table at all
+      const { data: profilesTest, error: testError } = await supabase
+        .from('profiles')
+        .select('count(*)')
+        .limit(1);
+
+      if (testError) {
+        console.error('Error accessing profiles table:', testError);
+        throw new Error(`Cannot access profiles table: ${testError.message}`);
+      }
+
+      console.log('Profiles table accessible, count test result:', profilesTest);
+
       // Fetch all profiles with doctor information if available
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
@@ -45,11 +60,15 @@ export const useAdminUsers = () => {
         throw profilesError;
       }
 
-      if (profiles) {
+      console.log('Fetched profiles:', profiles);
+
+      if (profiles && profiles.length > 0) {
         // For users with doctor role, fetch their doctor info
         const doctorUserIds = profiles
           .filter(profile => profile.role === 'doctor')
           .map(profile => profile.id);
+
+        console.log('Doctor user IDs found:', doctorUserIds);
 
         let doctorsData: any[] = [];
         if (doctorUserIds.length > 0) {
@@ -62,6 +81,7 @@ export const useAdminUsers = () => {
             console.error('Error fetching doctors data:', doctorsError);
           } else {
             doctorsData = doctors || [];
+            console.log('Fetched doctors data:', doctorsData);
           }
         }
 
@@ -87,9 +107,20 @@ export const useAdminUsers = () => {
           doctor_info: profile.role === 'doctor' ? doctorInfoMap.get(profile.id) : undefined
         }));
 
+        console.log('Final formatted users:', formattedUsers);
         setUsers(formattedUsers);
       } else {
+        console.log('No profiles found in database');
         setUsers([]);
+        
+        // Let's also check if there are users in auth but not in profiles
+        console.log('Checking current user session...');
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        if (userError) {
+          console.error('Error getting current user:', userError);
+        } else {
+          console.log('Current user:', user);
+        }
       }
     } catch (err: any) {
       console.error('Error fetching users:', err);
