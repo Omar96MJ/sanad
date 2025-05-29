@@ -58,7 +58,7 @@ const AdminDashboard = () => {
   const adminUsers = getUsersByRole('admin');
   const totalUsers = getTotalUsers();
 
-  // Real analytics data from Supabase - remove readonly constraint
+  // Real analytics data from Supabase
   const analyticsData: AnalyticsData[] = [
     { 
       label: t('new_users'), 
