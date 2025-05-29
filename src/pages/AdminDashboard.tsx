@@ -16,6 +16,13 @@ import { UsersTab } from "@/components/admin/dashboard/UsersTab";
 import { SettingsTab } from "@/components/admin/dashboard/SettingsTab";
 import { ReportsTab } from "@/components/admin/dashboard/ReportsTab";
 
+interface AnalyticsData {
+  label: string;
+  value: string;
+  change: string;
+  trend: 'up' | 'down';
+}
+
 const AdminDashboard = () => {
   const { user, isAdmin } = useAuth();
   const navigate = useNavigate();
@@ -51,8 +58,8 @@ const AdminDashboard = () => {
   const adminUsers = getUsersByRole('admin');
   const totalUsers = getTotalUsers();
 
-  // Real analytics data from Supabase
-  const analyticsData = [
+  // Real analytics data from Supabase - remove readonly constraint
+  const analyticsData: AnalyticsData[] = [
     { 
       label: t('new_users'), 
       value: isLoadingStats ? '...' : stats.newUsersThisMonth.toString(), 
@@ -71,7 +78,7 @@ const AdminDashboard = () => {
       change: stats.completedTestsChange, 
       trend: stats.completedTestsChange.startsWith('-') ? 'down' : 'up' 
     },
-  ] as const;
+  ];
 
   return (
     <div className="min-h-screen flex flex-col" dir={isRTL ? 'rtl' : 'ltr'}>
