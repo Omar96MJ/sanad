@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { User, Mail, Lock, Activity } from "lucide-react";
 import { fetchUserProfile, ProfileData, uploadProfileImage, updateUserProfileData, updateUserProfileImage } from "@/services/patientService";
+import { supabase } from "@/integrations/supabase/client";
 
 
 const PatientProfile = () => {
@@ -23,6 +24,7 @@ const PatientProfile = () => {
   const [about, setAbout] = useState("");
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(true); // حالة تحميل جديدة
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
@@ -60,24 +62,39 @@ const PatientProfile = () => {
     toast.success(t('profile_updated'));
   };
   
-  const handlePasswordUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePasswordUpdate = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (newPassword !== confirmPassword) {
+    toast.error(t('passwords_dont_match'));
+    return;
+  }
+  if (newPassword.length < 8) { // أو أي طول أدنى تحدده Supabase أو أنت
+    toast.error(t('password_too_short'));
+    return;
+  }
+
+  setIsUpdatingPassword(true);
+  try {
     
-    if (newPassword !== confirmPassword) {
-      toast.error(t('passwords_dont_match'));
-      return;
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+    if (error) {
+      console.error("Error updating password:", error);
+      toast.error(t('error_updating_password'));
+    } else {
+      toast.success(t('password_updated_successfully'));
+      setCurrentPassword(""); // مسح الحقول بعد النجاح
+      setNewPassword("");
+      setConfirmPassword("");
     }
-    
-    if (newPassword.length < 8) {
-      toast.error(t('password_too_short'));
-      return;
-    }
-    
-    toast.success(t('password_updated'));
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-  };
+  } catch (error) {
+    console.error("Exception updating password:", error);
+    toast.error(t('unexpected_error_password_update'));
+  } finally {
+    setIsUpdatingPassword(false);
+  }
+};
 
   return (
     <div className="space-y-6">

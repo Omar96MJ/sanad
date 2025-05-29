@@ -4,7 +4,6 @@ import { Patient } from "@/components/search/PatientSearch";
 import { toast } from "sonner";
 import { useLanguage } from '@/hooks/useLanguage';
 
-const { t } = useLanguage();
 export interface ProfileData {
   id: string;
   name: string;
@@ -45,6 +44,8 @@ export const updateUserProfileData = async (
     
   }
 ): Promise<{ data: ProfileData | null; error: any | null }> => {
+const { t } = useLanguage();
+
   if (!userId) return { data: null, error: new Error("User ID is required") };
   try {
     const { data, error } = await supabase
