@@ -38,6 +38,17 @@ const profileTranslations = {
   "permission_to_manage_content": "الإذن بإدارة محتوى الموقع",
   "system_settings": "إعدادات النظام",
   "permission_to_manage_settings": "الإذن بإدارة إعدادات النظام",
+  'bio': 'نبذة',
+  'changeavatar': 'تغيير الصورة',
+  'changepassword': 'تغيير كلمة المرور',
+  'editprofile': 'تعديل الملف الشخصي',
+  'gender': 'الجنس',
+  'logoutall': 'تسجيل الخروج من جميع الأجهزة',
+  'myprofile': 'ملفي الشخصي',
+  'phoneverified': 'تم التحقق من الهاتف',
+  'update': 'تحديث',
+  'verifyemail': 'تأكيد البريد الإلكتروني',
+  'verifyphone': 'تأكيد الهاتف',
 };
 
 export default profileTranslations;

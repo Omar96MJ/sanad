@@ -33,6 +33,14 @@ const aboutTranslations = {
   "Email": "البريد الإلكتروني",
   "Message": "الرسالة",
   "Send Message": "إرسال",
+  'abouttitle': 'عنّا',
+  'aboutsubtitle': 'ملتزمون بتحسين الصحة النفسية العالمیة',
+  'ourmission': 'مهمتنا',
+  'ourvision': 'رؤيتنا',
+  'ourvalues': 'قيمنا',
+  'ourteam': 'فريقنا',
+  'meetourtherapists': 'تعرف على معالجينا',
+  'ourapproach': 'نهجنا',
 };
 
 export default aboutTranslations;
