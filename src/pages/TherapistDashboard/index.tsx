@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -312,10 +311,6 @@ const TherapistDashboard = () => {
     setActiveTab("sessions");
   };
 
-  const handleScheduleSession = () => {
-    setActiveTab("sessions");
-  };
-
   const handleMessageClick = () => {
     setActiveTab("messages");
   };
@@ -339,7 +334,7 @@ const TherapistDashboard = () => {
             upcomingAppointments={upcomingAppointments}
             demographics={demographics}
             onViewSessionDetails={handleViewSessionDetails}
-            onScheduleSession={handleScheduleSession}
+            onScheduleSession={handleViewSessionDetails} // Changed to just redirect to sessions tab
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             doctorProfile={doctorProfile} // افترضنا أن doctorProfile هو اسم الحالة في TherapistDashboard

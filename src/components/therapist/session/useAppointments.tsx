@@ -18,7 +18,6 @@ export function useAppointments() {
   const [activeTab, setActiveTab] = useState("upcoming");
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>([]);
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Fetch doctor's appointments from Supabase
   useEffect(() => {
@@ -133,8 +132,6 @@ export function useAppointments() {
     appointments,
     setAppointments,
     filteredAppointments,
-    isDialogOpen,
-    setIsDialogOpen,
     updateAppointmentStatus
   };
 }

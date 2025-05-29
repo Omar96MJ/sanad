@@ -23,7 +23,7 @@ interface TherapistDashboardTabsProps {
   upcomingAppointments: any[];
   demographics: { name: string; percentage: number }[];
   onViewSessionDetails: () => void;
-  onScheduleSession: () => void;
+  onScheduleSession: () => void; // Keep for compatibility but redirect to sessions
   activeTab: string;
   setActiveTab: (tab: string) => void;
   doctorProfile: DoctorProfileType | null;
@@ -39,7 +39,6 @@ export const TherapistDashboardTabs = ({
   activeTab,
   setActiveTab,
   doctorProfile,
-  
 }: TherapistDashboardTabsProps) => {
   const { t } = useLanguage();
 
@@ -59,8 +58,8 @@ export const TherapistDashboardTabs = ({
   };
 
   const currentDoctorForPatientManagement: CurrentDoctorProp | null = doctorProfile ? {
-      id: doctorProfile.id, //  id من جدول doctors
-      user_id: doctorProfile.user_id, //  user_id من جدول doctors (المرتبط بـ auth.users)
+      id: doctorProfile.id,
+      user_id: doctorProfile.user_id,
       name: doctorProfile.name,
   } : null;
 
@@ -86,7 +85,7 @@ export const TherapistDashboardTabs = ({
           upcomingAppointments={upcomingAppointments}
           demographics={demographics}
           onViewSessionDetails={handleSessionsTabClick}
-          onScheduleSession={handleSessionsTabClick}
+          onScheduleSession={handleSessionsTabClick} // Redirect to sessions tab instead
         />
       </TabsContent>
       
@@ -96,8 +95,7 @@ export const TherapistDashboardTabs = ({
       
       <TabsContent value="patients">
         <PatientManagement 
-              currentDoctor={currentDoctorForPatientManagement} />
-     
+          currentDoctor={currentDoctorForPatientManagement} />
       </TabsContent>
       
       <TabsContent value="sessions">
