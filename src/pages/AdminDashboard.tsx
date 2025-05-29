@@ -5,6 +5,7 @@ import { useSettings } from "@/hooks/useSettings";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useTheme } from "@/hooks/useTheme";
 import { useAdminUsers } from "@/hooks/useAdminUsers";
+import { useAdminStats } from "@/hooks/useAdminStats";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -34,7 +35,8 @@ const AdminDashboard = () => {
   const { settings, updateSettings } = useSettings();
   const { t, language } = useLanguage();
   const { theme } = useTheme();
-  const { users, isLoading, error, refreshUsers, getUsersByRole, getTotalUsers } = useAdminUsers();
+  const { users, isLoading: isLoadingUsers, error, refreshUsers, getUsersByRole, getTotalUsers } = useAdminUsers();
+  const { stats, isLoading: isLoadingStats, refreshStats } = useAdminStats();
   const isRTL = language === 'ar';
 
   const [activeTab, setActiveTab] = useState("overview");
@@ -66,11 +68,26 @@ const AdminDashboard = () => {
   const adminUsers = getUsersByRole('admin');
   const totalUsers = getTotalUsers();
 
-  // Mock data for analytics (keeping these as they're not user-specific)
+  // Real analytics data from Supabase
   const analyticsData = [
-    { label: t('new_users'), value: '38', change: '+12%', trend: 'up' },
-    { label: t('active_sessions'), value: '156', change: '+24%', trend: 'up' },
-    { label: t('completed_tests'), value: '89', change: '+5%', trend: 'up' },
+    { 
+      label: t('new_users'), 
+      value: isLoadingStats ? '...' : stats.newUsersThisMonth.toString(), 
+      change: stats.newUsersChange, 
+      trend: stats.newUsersChange.startsWith('-') ? 'down' : 'up' 
+    },
+    { 
+      label: t('active_sessions'), 
+      value: isLoadingStats ? '...' : stats.activeSessions.toString(), 
+      change: stats.activeSessionsChange, 
+      trend: stats.activeSessionsChange.startsWith('-') ? 'down' : 'up' 
+    },
+    { 
+      label: t('completed_tests'), 
+      value: isLoadingStats ? '...' : stats.completedTests.toString(), 
+      change: stats.completedTestsChange, 
+      trend: stats.completedTestsChange.startsWith('-') ? 'down' : 'up' 
+    },
   ];
 
   const getRoleBadgeColor = (role: string) => {
@@ -105,6 +122,18 @@ const AdminDashboard = () => {
             <div className={`flex items-center mt-4 md:mt-0 ${isRTL ? 'md:mr-4' : 'md:ml-4'}`}>
               <Shield className={`text-primary ${isRTL ? 'ml-2' : 'mr-2'} h-5 w-5`} />
               <span className="text-sm font-medium">{user.name} - {t('admin_panel')}</span>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  refreshStats();
+                  refreshUsers();
+                }}
+                className={`${isRTL ? 'mr-4' : 'ml-4'}`}
+              >
+                <RefreshCw className={`h-4 w-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+                {t('refresh') || 'Refresh'}
+              </Button>
             </div>
           </div>
 
@@ -147,7 +176,7 @@ const AdminDashboard = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    {isLoading ? (
+                    {isLoadingUsers ? (
                       <Skeleton className="h-8 w-16" />
                     ) : (
                       <div className="text-3xl font-bold">{totalUsers}</div>
@@ -169,23 +198,19 @@ const AdminDashboard = () => {
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-xl flex items-center">
-                      <Activity className={`${isRTL ? 'ml-2' : 'mr-2'} h-5 w-5 text-primary`} />
-                      {t('recent_activities')}
+                      <CalendarIcon className={`${isRTL ? 'ml-2' : 'mr-2'} h-5 w-5 text-primary`} />
+                      {t('total_sessions')}
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="text-sm">
-                      <div className="font-medium">{t('system_update')}</div>
-                      <div className="text-xs text-muted-foreground">2 {t('hours_ago')}</div>
-                    </div>
-                    <div className="text-sm">
-                      <div className="font-medium">{t('new_user_registration')}</div>
-                      <div className="text-xs text-muted-foreground">{t('yesterday')}</div>
-                    </div>
-                    <div className="text-sm">
-                      <div className="font-medium">{t('payment_received')}</div>
-                      <div className="text-xs text-muted-foreground">2 {t('days_ago')}</div>
-                    </div>
+                  <CardContent>
+                    {isLoadingStats ? (
+                      <Skeleton className="h-8 w-16" />
+                    ) : (
+                      <div className="text-3xl font-bold">{stats.totalAppointments}</div>
+                    )}
+                    <p className="text-sm text-muted-foreground mt-1">
+                      {stats.activeSessions} {t('active_sessions')}
+                    </p>
                   </CardContent>
                 </Card>
 
@@ -234,9 +259,9 @@ const AdminDashboard = () => {
                       variant="outline" 
                       size="sm"
                       onClick={refreshUsers}
-                      disabled={isLoading}
+                      disabled={isLoadingUsers}
                     >
-                      <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''} ${isRTL ? 'ml-2' : 'mr-2'}`} />
+                      <RefreshCw className={`h-4 w-4 ${isLoadingUsers ? 'animate-spin' : ''} ${isRTL ? 'ml-2' : 'mr-2'}`} />
                       {t('refresh') || 'Refresh'}
                     </Button>
                   </div>
@@ -254,7 +279,7 @@ const AdminDashboard = () => {
                         <h3 className="font-medium">{t('authenticated_users')}</h3>
                         <p className="text-sm text-muted-foreground">{t('total_registered_users')}</p>
                       </div>
-                      {isLoading ? (
+                      {isLoadingUsers ? (
                         <Skeleton className="h-8 w-8" />
                       ) : (
                         <div className="text-3xl font-bold">{totalUsers}</div>
@@ -263,7 +288,7 @@ const AdminDashboard = () => {
                   </div>
 
                   <div className="space-y-4">
-                    {isLoading ? (
+                    {isLoadingUsers ? (
                       // Loading skeletons
                       Array.from({ length: 3 }).map((_, index) => (
                         <div key={index} className="border rounded-md p-4">
@@ -418,7 +443,11 @@ const AdminDashboard = () => {
                           <div className="flex items-center justify-between">
                             <div>
                               <p className="text-sm text-muted-foreground">{t('total_sessions')}</p>
-                              <p className="text-2xl font-bold">342</p>
+                              {isLoadingStats ? (
+                                <Skeleton className="h-8 w-16" />
+                              ) : (
+                                <p className="text-2xl font-bold">{stats.totalAppointments}</p>
+                              )}
                             </div>
                             <CalendarIcon className="h-10 w-10 text-primary/60" />
                           </div>
@@ -430,7 +459,11 @@ const AdminDashboard = () => {
                           <div className="flex items-center justify-between">
                             <div>
                               <p className="text-sm text-muted-foreground">{t('test_completions')}</p>
-                              <p className="text-2xl font-bold">128</p>
+                              {isLoadingStats ? (
+                                <Skeleton className="h-8 w-16" />
+                              ) : (
+                                <p className="text-2xl font-bold">{stats.completedTests}</p>
+                              )}
                             </div>
                             <FileText className="h-10 w-10 text-primary/60" />
                           </div>
@@ -442,7 +475,11 @@ const AdminDashboard = () => {
                           <div className="flex items-center justify-between">
                             <div>
                               <p className="text-sm text-muted-foreground">{t('active_users')}</p>
-                              <p className="text-2xl font-bold">75%</p>
+                              {isLoadingStats ? (
+                                <Skeleton className="h-8 w-16" />
+                              ) : (
+                                <p className="text-2xl font-bold">{Math.round((stats.activeSessions / stats.totalUsers) * 100) || 0}%</p>
+                              )}
                             </div>
                             <Users className="h-10 w-10 text-primary/60" />
                           </div>
