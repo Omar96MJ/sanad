@@ -1,16 +1,23 @@
-
 import { supabase } from "@/integrations/supabase/client";
-import { DoctorProfile } from "@/lib/therapist-types";  
-import { format, parseISO, getDay, startOfDay, endOfDay } from 'date-fns';
-import { toZonedTime, fromZonedTime } from 'date-fns-tz';
+import { toast } from "sonner";
 
-const APP_TIME_ZONE = 'Africa/Khartoum';
+export interface DoctorProfile {
+  id: string;
+  user_id: string;
+  name: string;
+  specialization: string;
+  bio: string;
+  years_of_experience: number;
+  patients_count: number;
+  profile_image: string;
+  weekly_available_hours: number;
+}
 
 export const fetchAvailableTimeSlots = async (
   doctorId: string,
   selectedDateString: string // e.g., "2025-06-02"
 ): Promise<string[]> => {
-    console.log("SERVICE: fetchAvailableTimeSlots called with:", { doctorId, selectedDateString }); // <--- Log 1
+  console.log("SERVICE: fetchAvailableTimeSlots called with:", { doctorId, selectedDateString }); // <--- Log 1
 
   if (!doctorId || !selectedDateString) {
     console.error("Doctor ID and selected date are required.");
@@ -248,7 +255,7 @@ export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
       .from("doctors")
       .upsert(doctorsToUpsert, {
         onConflict: 'user_id', // التأكد من أن هذا القيد موجود وفريد في جدول doctors
-        ignoreDuplicates: false, // أو true حسب ما تريد. false يعني أنه سيقوم بالتحديث.
+        ignoreDuplicates: false, // أو true حسبما تريد. false يعني أنه سيقوم بالتحديث.
       })
       // حدد الأعمدة اللازمة لـ DoctorProfile
       .select("id, user_id, name, specialization, bio, profile_image, patients_count, years_of_experience, weekly_available_hours");

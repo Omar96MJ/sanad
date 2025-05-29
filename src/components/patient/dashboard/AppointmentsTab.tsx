@@ -1,3 +1,4 @@
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,7 +68,7 @@ export const AppointmentsTab = ({
       
       await updateAppointmentStatus(
         isReschedulingId, 
-        'upcoming',
+        'scheduled',
         newDate.toISOString()
       );
       
@@ -120,10 +121,10 @@ export const AppointmentsTab = ({
           <div className="space-y-6">
             <div>
               <h3 className="font-semibold mb-3">{t('upcoming')}</h3>
-              {appointments.filter(apt => apt.status === 'upcoming').length > 0 ? (
+              {appointments.filter(apt => apt.status === 'scheduled').length > 0 ? (
                 <div className="space-y-3">
                   {appointments
-                    .filter(apt => apt.status === 'upcoming')
+                    .filter(apt => apt.status === 'scheduled')
                     .map(apt => (
                       <div 
                         key={apt.id} 
@@ -293,7 +294,7 @@ export const AppointmentsTab = ({
               )}
             </Button>
           </div>
-        </DialogContent>
+        </div>
       </Dialog>
     </Card>
   );

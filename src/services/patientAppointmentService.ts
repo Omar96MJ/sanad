@@ -1,8 +1,7 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { format } from "date-fns";
 import { toast } from "sonner";
-import {DoctorProfile} from "@/lib/therapist-types";
+import {DoctorProfile} from "@/services/doctorService";
 
 export interface PatientAppointment {
   id?: string;                 // من جدول public.appointments
@@ -15,6 +14,7 @@ export interface PatientAppointment {
   created_at?: string | null;  // من جدول public.appointments
   updated_at?: string | null;  // من جدول public.appointments
   doctor?: DoctorProfile | null; // هذا الكائن سيمتلئ بتفاصيل الطبيب بعد JOIN
+  doctor_name?: string; // Helper property for easier access to doctor name
 }
 
 interface SupabaseDoctorRecord { // يمثل الكائن المدمج للطبيب
@@ -38,8 +38,6 @@ interface SupabaseAppointmentRecord {
   updated_at: string | null;
   doctor: SupabaseDoctorRecord | null; // الكائن المدمج للطبيب
 }
-
-
 
 // دالة جلب اسم المريض
 async function fetchPatientName(patientId: string): Promise<string | null> {
@@ -104,6 +102,7 @@ export async function fetchPatientAppointments(patientId: string): Promise<Patie
         status: itemFromSupabase.status as PatientAppointment['status'], // تخصيص نوع status
         // خاصية 'doctor' موجودة، و DoctorProfile يجب أن تكون متوافقة مع SupabaseDoctorRecord
         doctor: itemFromSupabase.doctor as DoctorProfile | null,
+        doctor_name: itemFromSupabase.doctor?.name || 'Unknown Doctor', // Add helper property
       } as PatientAppointment;
     });
 

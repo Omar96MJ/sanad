@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,8 +25,8 @@ export const SessionTab = ({
   const [inSession, setInSession] = useState(false);
   const { language } = useLanguage();
   const isRTL = language === 'ar';
-  // Find the next upcoming appointment
-  const upcomingAppointment = appointments.find(apt => apt.status === 'upcoming');
+  // Find the next upcoming appointment - using 'scheduled' instead of 'upcoming'
+  const upcomingAppointment = appointments.find(apt => apt.status === 'scheduled');
   
   // Handle join session
   const handleJoinSession = () => {
