@@ -2,10 +2,10 @@
 import { TabsContent } from "@/components/ui/tabs";
 import { DashboardOverview } from "../DashboardOverview";
 import { AppointmentsTab } from "../AppointmentsTab";
-import { SessionTab } from "../SessionTab";
+import TherapistVideoSession from "../SessionTab";
 import MessagingLayout from "@/components/messaging/MessagingLayout";
 import { BlogPost } from "@/lib/types";
-import { PatientAppointment } from "@/services/appointments";
+import { PatientAppointment } from "@/services/patientAppointmentService";
 import { useLanguage } from "@/hooks/useLanguage";
 import { DoctorProfile } from "@/lib/therapist-types";
 
@@ -24,7 +24,7 @@ interface TabContentsProps {
   handleStartTherapy: () => void;
   formatAppointmentDate: (dateString: string) => string;
   formatAppointmentTime: (dateString: string) => string;
-  calendarLocale: any;
+  calendarLocale: string;
   onAppointmentUpdated: () => void;
 }
 
@@ -83,12 +83,7 @@ const upcomingAppointments = appointments.filter(apt => apt.status === 'schedule
       </TabsContent>
       
       <TabsContent value="session">
-        <SessionTab 
-          appointments={appointments}
-          formatAppointmentDate={formatAppointmentDate}
-          formatAppointmentTime={formatAppointmentTime}
-          isVisible={isVisible}
-        />
+        <TherapistVideoSession isVisible={isVisible} />
       </TabsContent>
 
       <TabsContent value="messaging">
