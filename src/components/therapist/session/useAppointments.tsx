@@ -15,7 +15,7 @@ export function useAppointments() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("upcoming");
+  const [activeTab, setActiveTab] = useState("all");
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>([]);
 
@@ -98,6 +98,7 @@ export function useAppointments() {
     } else if (activeTab === "cancelled") {
       filtered = filtered.filter((apt) => apt.status === "cancelled");
     }
+    // For "all" tab, we don't filter by status - show all appointments
     
     // Filter by search
     if (searchQuery.trim() !== "") {
