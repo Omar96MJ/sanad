@@ -22,40 +22,46 @@ export const fetchAvailableTimeSlots = async (
   doctorId: string,
   selectedDateString: string // e.g., "2025-06-02"
 ): Promise<string[]> => {
-  console.log("SERVICE: fetchAvailableTimeSlots called with:", { doctorId, selectedDateString }); // <--- Log 1
+  console.log("SERVICE_LOG_1: fetchAvailableTimeSlots called with:", { doctorId, selectedDateString });
 
   if (!doctorId || !selectedDateString) {
-    console.error("Doctor ID and selected date are required.");
+    console.error("SERVICE_LOG_ERROR: Doctor ID and selected date are required.");
     return [];
   }
 
   try {
     // 2. حساب dayOfWeek بشكل صحيح للتاريخ المحدد في منطقة الطبيب الزمنية
-    const dateForDayOfWeek = parseISO(selectedDateString); // يُرجع كائن Date يمثل بداية اليوم بتوقيت UTC
-    const zonedDateForDayOfWeek = toZonedTime(dateForDayOfWeek, APP_TIME_ZONE); // تحويله لمنطقة الطبيب الزمنية
-    const dayOfWeek = getDay(zonedDateForDayOfWeek); // 0 for Sunday ... 6 for Saturday
-    console.log("SERVICE: Calculated dayOfWeek:", dayOfWeek, "(0=Sun, 1=Mon, ...)"); // <--- Log 2
+    const startDateInKhartoum = fromZonedTime(selectedDateString, APP_TIME_ZONE, { timeZone: APP_TIME_ZONE });
+      console.log("SERVICE_LOG_2: startDateInKhartoum (Date object for dayOfWeek calc):", startDateInKhartoum.toISOString(), startDateInKhartoum.toString());
 
-    // 3. جلب "البلوكات الساعية" المحددة كمتوفرة
+    // 3. احصل على يوم الأسبوع من هذا الكائن (الذي يمثل بداية اليوم في الخرطوم)
+    const dayOfWeek = getDay(startDateInKhartoum); // 0 for Sunday, 1 for Monday, ...
+    console.log("SERVICE_LOG_3: Calculated dayOfWeek:", dayOfWeek);
+
+
+    // ... (باقي الكود لجلب potentialSlotsData كما هو، باستخدام dayOfWeek الجديد) ...
     const { data: potentialSlotsData, error: availabilityError } = await supabase
       .from('therapist_availability')
       .select('start_time')
       .eq('doctor_id', doctorId)
-      .eq('day_of_week', dayOfWeek)
+      .eq('day_of_week', dayOfWeek) // <--- سيستخدم dayOfWeek المحسوب بالطريقة الجديدة
       .eq('is_available', true)
       .order('start_time');
 
     if (availabilityError) {
-      console.error("SERVICE: Error fetching doctor's availability:", availabilityError.message);
+      console.error("SERVICE_LOG_ERROR: Supabase error fetching therapist_availability:", availabilityError);
       return [];
     }
+    console.log("SERVICE_LOG_4: Data from therapist_availability (potentialSlotsData):", potentialSlotsData);
+
+
     if (!potentialSlotsData || potentialSlotsData.length === 0) {
-            console.log("SERVICE: No potential availability slots found in therapist_availability for this doctor/day."); // <--- Log 3
+      console.log("SERVICE_LOG_INFO: No potential availability slots found in therapist_availability for this doctor/day.");
 
       return [];
     }
     const potentialStartTimes: string[] = potentialSlotsData.map(slot => slot.start_time);
-    console.log("SERVICE: Potential start times from therapist_availability:", potentialStartTimes); // <--- Log 4
+    console.log("SERVICE_LOG_5: Potential start times from therapist_availability (mapped):", potentialStartTimes);
 
     // 4. جلب المواعيد المحجوزة بالفعل للطبيب في التاريخ المحدد
     //    نحتاج لتحديد بداية ونهاية اليوم المحدد بالتوقيت العالمي المنسق (UTC)
@@ -72,9 +78,11 @@ export const fetchAvailableTimeSlots = async (
       .lt('session_date', dayEndInAppZoneAsUTC.toISOString()); // أو .lte إذا أردت تضمين 23:59:59.999
 
     if (appointmentsError) {
-      console.error("SERVICE: Error fetching booked appointments:", appointmentsError.message);
+      console.error("SERVICE_LOG_ERROR: Error fetching booked appointments:", appointmentsError.message);
       return []; 
     }
+    console.log("SERVICE_LOG_6: Raw bookedAppointments data from DB:", bookedAppointments);
+
 
     const bookedStartTimesLocal = new Set<string>();
     if (bookedAppointments) {
@@ -86,19 +94,19 @@ export const fetchAvailableTimeSlots = async (
         bookedStartTimesLocal.add(format(sessionDateInAppTZ, 'HH:mm:ss'));
       });
     }
-        console.log("SERVICE: Booked start times (local to app timezone):", Array.from(bookedStartTimesLocal)); // <--- Log 5
+    console.log("SERVICE_LOG_7: Processed booked start times (local to app timezone):", Array.from(bookedStartTimesLocal));
 
     // 5. فلترة الخانات الزمنية المحتملة لإزالة المحجوزة
     const availableTimeSlots = potentialStartTimes.filter(
       slotStartTime => !bookedStartTimesLocal.has(slotStartTime)
     );
-        console.log("SERVICE: Final available slots being returned:", availableTimeSlots); // <--- Log 6
+    console.log("SERVICE_LOG_8: Final available slots being returned:", availableTimeSlots);
 
     return availableTimeSlots;
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-    console.error("Exception in fetchAvailableTimeSlots:", errorMessage);
+    console.error("SERVICE_LOG_EXCEPTION: Exception in fetchAvailableTimeSlots:", errorMessage);
     return [];
   }
 };
