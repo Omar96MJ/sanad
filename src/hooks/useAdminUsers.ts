@@ -13,6 +13,7 @@ interface AdminUser {
   doctor_info?: {
     specialization?: string;
     status?: string;
+    doctor_id?: string;
   };
 }
 
@@ -35,11 +36,7 @@ export const useAdminUsers = () => {
           email,
           role,
           created_at,
-          assigned_doctor_id,
-          doctors:assigned_doctor_id (
-            specialization,
-            status
-          )
+          assigned_doctor_id
         `)
         .order('created_at', { ascending: false });
 
@@ -49,6 +46,37 @@ export const useAdminUsers = () => {
       }
 
       if (profiles) {
+        // For users with doctor role, fetch their doctor info
+        const doctorUserIds = profiles
+          .filter(profile => profile.role === 'doctor')
+          .map(profile => profile.id);
+
+        let doctorsData: any[] = [];
+        if (doctorUserIds.length > 0) {
+          const { data: doctors, error: doctorsError } = await supabase
+            .from('doctors')
+            .select('id, user_id, specialization, status')
+            .in('user_id', doctorUserIds);
+
+          if (doctorsError) {
+            console.error('Error fetching doctors data:', doctorsError);
+          } else {
+            doctorsData = doctors || [];
+          }
+        }
+
+        // Create a map of user_id to doctor info
+        const doctorInfoMap = new Map(
+          doctorsData.map(doctor => [
+            doctor.user_id,
+            {
+              specialization: doctor.specialization,
+              status: doctor.status,
+              doctor_id: doctor.id
+            }
+          ])
+        );
+
         const formattedUsers: AdminUser[] = profiles.map(profile => ({
           id: profile.id,
           name: profile.name,
@@ -56,10 +84,7 @@ export const useAdminUsers = () => {
           role: profile.role,
           created_at: profile.created_at,
           assigned_doctor_id: profile.assigned_doctor_id,
-          doctor_info: profile.doctors ? {
-            specialization: profile.doctors.specialization,
-            status: profile.doctors.status
-          } : undefined
+          doctor_info: profile.role === 'doctor' ? doctorInfoMap.get(profile.id) : undefined
         }));
 
         setUsers(formattedUsers);
