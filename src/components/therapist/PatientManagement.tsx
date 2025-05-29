@@ -1,4 +1,3 @@
-
 import { useState , useEffect} from "react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,7 +49,7 @@ const PatientManagement = ({ currentDoctor }: PatientManagementProps) => {
   const [newNoteContent, setNewNoteContent] = useState("");
   const [isAddingNote, setIsAddingNote] = useState(false);
 
-  // Function to fetch patients from database with optional search
+  // Function to fetch patients who have appointments with the doctor
   const fetchPatients = async (searchQuery?: string) => {
     if (!currentDoctor || !currentDoctor.id) {
       setPatients([]);
@@ -61,34 +60,91 @@ const PatientManagement = ({ currentDoctor }: PatientManagementProps) => {
     setIsSearching(isSearchMode);
 
     try {
-      console.log('Fetching patients for doctor ID:', currentDoctor.id, 'with search:', searchQuery);
+      console.log('Fetching patients with appointments for doctor ID:', currentDoctor.id, 'with search:', searchQuery);
 
-      let query = supabase
+      // First, get all unique patient IDs who have appointments with this doctor
+      let appointmentQuery = supabase
+        .from('appointments')
+        .select('patient_id')
+        .eq('doctor_id', currentDoctor.id);
+
+      const { data: appointmentData, error: appointmentError } = await appointmentQuery;
+
+      if (appointmentError) {
+        console.error("Error fetching appointments:", appointmentError);
+        toast.error(t('error_fetching_patients') + `: ${appointmentError.message}`);
+        setPatients([]);
+        return;
+      }
+
+      if (!appointmentData || appointmentData.length === 0) {
+        setPatients([]);
+        return;
+      }
+
+      // Get unique patient IDs
+      const uniquePatientIds = [...new Set(appointmentData.map(apt => apt.patient_id))];
+
+      // Now fetch patient profiles for these IDs
+      let profileQuery = supabase
         .from('profiles')
         .select('id, name, email')
-        .eq('assigned_doctor_id', currentDoctor.id)
-        .eq('role', 'patient');
+        .in('id', uniquePatientIds);
 
       // Add search filters if search term is provided
       if (isSearchMode) {
-        query = query.or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
+        profileQuery = profileQuery.or(`name.ilike.%${searchQuery}%,email.ilike.%${searchQuery}%`);
       }
 
-      const { data, error } = await query.order('name', { ascending: true });
+      const { data: profileData, error: profileError } = await profileQuery.order('name', { ascending: true });
 
-      if (error) {
-        console.error("Error fetching patients:", error);
-        toast.error(t('error_fetching_patients') + `: ${error.message}`);
+      if (profileError) {
+        console.error("Error fetching patient profiles:", profileError);
+        toast.error(t('error_fetching_patients') + `: ${profileError.message}`);
         setPatients([]);
-      } else if (data) {
-        const formattedPatients: PatientListItem[] = data.map(p => ({
-          id: p.id,
-          name: p.name || t('name_not_set'),
-          email: p.email || t('email_not_set'),
-          lastSession: "N/A",
-          nextSession: "N/A",
-        }));
-        setPatients(formattedPatients);
+        return;
+      }
+
+      if (profileData) {
+        // For each patient, get their latest and next appointment info
+        const patientsWithSessions = await Promise.all(
+          profileData.map(async (patient) => {
+            // Get last session
+            const { data: lastSession } = await supabase
+              .from('appointments')
+              .select('session_date, status')
+              .eq('doctor_id', currentDoctor.id)
+              .eq('patient_id', patient.id)
+              .in('status', ['completed'])
+              .order('session_date', { ascending: false })
+              .limit(1);
+
+            // Get next session
+            const { data: nextSession } = await supabase
+              .from('appointments')
+              .select('session_date, status')
+              .eq('doctor_id', currentDoctor.id)
+              .eq('patient_id', patient.id)
+              .in('status', ['scheduled', 'rescheduled'])
+              .gte('session_date', new Date().toISOString())
+              .order('session_date', { ascending: true })
+              .limit(1);
+
+            return {
+              id: patient.id,
+              name: patient.name || t('name_not_set'),
+              email: patient.email || t('email_not_set'),
+              lastSession: lastSession && lastSession.length > 0 
+                ? new Date(lastSession[0].session_date).toLocaleDateString(language)
+                : "N/A",
+              nextSession: nextSession && nextSession.length > 0 
+                ? new Date(nextSession[0].session_date).toLocaleDateString(language)
+                : "N/A",
+            };
+          })
+        );
+
+        setPatients(patientsWithSessions);
       }
     } catch (catchError: any) {
       console.error("Unexpected error fetching patients:", catchError);
@@ -268,7 +324,7 @@ const PatientManagement = ({ currentDoctor }: PatientManagementProps) => {
           <CardTitle className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <User className="h-5 w-5" />
-              {t('my_patients')}
+              {t('patients_with_appointments')}
             </div>
           </CardTitle>
           <CardDescription className="flex items-center space-x-4 rtl:space-x-reverse">
@@ -307,7 +363,7 @@ const PatientManagement = ({ currentDoctor }: PatientManagementProps) => {
                   {patients.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={5} className="text-center h-24">
-                        {searchTerm ? t('no_patients_match_search') : t('no_patients_assigned_yet')}
+                        {searchTerm ? t('no_patients_match_search') : t('no_patients_with_appointments_yet')}
                       </TableCell>
                     </TableRow>
                   ) : (
