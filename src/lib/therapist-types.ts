@@ -119,7 +119,7 @@ export interface Conversation {
   unreadCount: number;
 }
 
-
+export type DoctorAppStatus = 'pending' | 'approved' | 'rejected';
 // نفس تعريف  نوع الطبيب
 export type DoctorProfile = {
   id: string;
@@ -131,6 +131,7 @@ export type DoctorProfile = {
   patients_count: number; // سنقوم بحسابه ونخزنه هنا أيضًا لتمريره للمكونات الفرعية
   profile_image: string;
   weekly_available_hours: number; // افترضنا أن هذا الحقل موجود في profileData
+  status?: DoctorAppStatus | null;
 };
 
 

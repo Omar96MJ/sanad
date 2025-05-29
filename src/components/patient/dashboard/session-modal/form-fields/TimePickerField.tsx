@@ -44,6 +44,12 @@ export const TimePickerField = ({
     return timeStringWithSeconds;
   };
 
+
+  let specificNoSlotsMessage = "";
+  // الشرط: ليس في حالة تحميل، وليس معطلاً بسبب عدم اختيار طبيب/تاريخ، ولكن لا توجد أوقات متاحة
+  if (!isLoadingSlots && !disabled && availableSlots.length === 0) {
+    specificNoSlotsMessage = isRTL ? 'لا توجد أوقات متاحة' : 'No available times';
+  }
   return (
     <FormField
       control={control}
@@ -69,19 +75,23 @@ export const TimePickerField = ({
                 <div className="flex items-center justify-center p-4">
                   <Skeleton className="h-4 w-20" />
                 </div>
-              ) : availableSlots.length > 0 ? (
+              ) : availableSlots.length > 0 ?  (
                 availableSlots.map((time) => ( // time هنا هو HH:MM:SS
                   <SelectItem key={time} value={time.substring(0,5)}> {/* ⭐ القيمة المحفوظة في النموذج هي HH:MM */}
                     {formatTimeForDisplay(time)} {/* ✅ العرض هو HH:MM */}
                   </SelectItem>
                 ))
               ) : (
-                <SelectItem value="no-time" disabled>
-                  {disabled && !isLoadingSlots ? t('selectDate_And_DoctorFirst') : t('no_Available_Times')}
-                </SelectItem>
-              )}
+                // هذه الرسالة تظهر فقط إذا فتح المستخدم القائمة المنسدلة وهي فارغة ومعطلة
+                <SelectItem value="no-time-placeholder" disabled />
+              )
+              }
             </SelectContent>
           </Select>
+          {specificNoSlotsMessage && (
+            <p className="text-sm font-semibold text-red-700 pt-1">{specificNoSlotsMessage}</p>
+          )}
+
           <FormMessage />
         </FormItem>
       )}

@@ -1,22 +1,26 @@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { parseISO, getDay, format } from "date-fns";
-import { toZonedTime, fromZonedTime } from "date-fns-tz";
+import { parseISO, getDay } from "date-fns";
+import { format as formatInTimeZone, toZonedTime, fromZonedTime } from "date-fns-tz";
+import { DoctorProfile, DoctorAppStatus } from "@/lib/therapist-types"; 
+
+const mapToDoctorProfile = (doc: any): DoctorProfile => ({
+  id: doc.id,
+  user_id: doc.user_id,
+  name: doc.name ?? "Unknown Doctor", // توفير قيمة افتراضية لـ name أيضًا
+  specialization: doc.specialization ?? "General", // قيمة افتراضية
+  bio: doc.bio ?? "No bio available.",
+  profile_image: doc.profile_image ?? "/default-avatar.png", // مسار لصورة افتراضية
+  patients_count: doc.patients_count ?? 0,
+  years_of_experience: doc.years_of_experience ?? 0,
+  weekly_available_hours: doc.weekly_available_hours ?? 0,
+  status: doc.status as DoctorAppStatus | null ?? null, // ✅ التأكد من أن status يُعالج ويُعين
+});
 
 // Define the application's timezone
-const APP_TIME_ZONE = "UTC"; // You can change this to your desired timezone like "America/New_York"
+const APP_TIME_ZONE_OFFSET_HOURS = 2; 
+const APP_TIME_ZONE = 'africa/khartoum'; // منطقة التوقيت الخاصة بالتطبيق
 
-export interface DoctorProfile {
-  id: string;
-  user_id: string;
-  name: string;
-  specialization: string;
-  bio: string;
-  years_of_experience: number;
-  patients_count: number;
-  profile_image: string;
-  weekly_available_hours: number;
-}
 
 export const fetchAvailableTimeSlots = async (
   doctorId: string,
@@ -85,16 +89,36 @@ export const fetchAvailableTimeSlots = async (
 
 
     const bookedStartTimesLocal = new Set<string>();
-    if (bookedAppointments) {
+    if (bookedAppointments && bookedAppointments.length > 0) {
       bookedAppointments.forEach(appt => {
-        // session_date هو UTC string. قم بتحويله إلى كائن Date ثم إلى وقت محلي في APP_TIME_ZONE
-        const sessionDateUTC = parseISO(appt.session_date);
-        const sessionDateInAppTZ = toZonedTime(sessionDateUTC, APP_TIME_ZONE); // ✅ استخدام toZonedTime
-        // تنسيق الوقت المحلي كـ HH:mm:ss
-        bookedStartTimesLocal.add(format(sessionDateInAppTZ, 'HH:mm:ss'));
+       if (appt.session_date) {
+        const sessionDateUTC = parseISO(appt.session_date); // يمثل مثلاً 06:00:00Z
+
+            // --- 👇 بداية الحل اليدوي المؤقت 👇 ---
+            const utcHours = sessionDateUTC.getUTCHours();
+            const utcMinutes = sessionDateUTC.getUTCMinutes();
+            const utcSeconds = sessionDateUTC.getUTCSeconds();
+
+            let khartoumHour = utcHours + APP_TIME_ZONE_OFFSET_HOURS; // APP_TIME_ZONE_OFFSET_HOURS = 2
+            
+            // معالجة تجاوز اليوم (نادر الحدوث إذا كان APP_TIME_ZONE_OFFSET_HOURS صغيرًا)
+            if (khartoumHour >= 24) {
+                khartoumHour -= 24; 
+            } else if (khartoumHour < 0) { // في حالة المناطق الزمنية السالبة (غير حالتنا)
+                khartoumHour += 24;
+            }
+            
+            const manuallyFormattedKhartoumTime = 
+                `${khartoumHour.toString().padStart(2, '0')}:${utcMinutes.toString().padStart(2, '0')}:${utcSeconds.toString().padStart(2, '0')}`;
+            
+            console.log("FETCH_DEBUG_MANUAL: DB UTC String:", appt.session_date, "=> Manually Formatted Khartoum Time:", manuallyFormattedKhartoumTime);
+            // --- 👆 نهاية الحل اليدوي المؤقت 👆 ---
+
+            bookedStartTimesLocal.add(manuallyFormattedKhartoumTime);
+          }// استخدام الوقت المنسق الجديد
       });
     }
-    console.log("SERVICE_LOG_7: Processed booked start times (local to app timezone):", Array.from(bookedStartTimesLocal));
+    console.log("SERVICE_LOG_7: Processed booked start times (local to app timezone):", Array.from(bookedStartTimesLocal)); // هذا هو السجل الذي أعطيتني إياه
 
     // 5. فلترة الخانات الزمنية المحتملة لإزالة المحجوزة
     const availableTimeSlots = potentialStartTimes.filter(
@@ -179,135 +203,102 @@ export const fetchDoctorByUserId = async (userId: string): Promise<DoctorProfile
 };
 
 export const fetchAllDoctors = async (): Promise<DoctorProfile[]> => {
-  console.log("Fetching and synchronizing all doctors...");
+  console.log("Fetching and synchronizing all doctors, filtering for 'approved' status...");
 
   try {
-    // 1. جلب الأطباء الموجودين حاليًا من جدول 'doctors'
+    // 1. جلب الأطباء الموجودين حاليًا مع حقل status
     const { data: existingDoctorsData, error: doctorsError } = await supabase
       .from("doctors")
-      .select("id, user_id, name, specialization, bio, profile_image, patients_count, years_of_experience, weekly_available_hours") // تحديد الأعمدة
+      .select("id, user_id, name, specialization, bio, profile_image, patients_count, years_of_experience, weekly_available_hours, status") // ✅ 'status' مضافة هنا
       .order("name");
 
     if (doctorsError) {
       console.error("Error fetching from doctors table:", doctorsError.message);
-      // في حالة الخطأ هنا، قد ترغب في إرجاع مصفوفة فارغة أو رمي الخطأ
-      // بدلًا من المتابعة ببيانات قد تكون غير مكتملة.
-      // لكن منطقك الحالي هو المتابعة، لذلك سنبقيه حاليًا.
+      // في حالة الخطأ، نُرجع مصفوفة فارغة لأننا لا نستطيع ضمان صحة البيانات
+      return []; 
     }
     const existingDoctors = existingDoctorsData || [];
-    console.log("Existing doctors from doctors table:", existingDoctors);
 
     // 2. جلب المستخدمين الذين لديهم دور 'doctor' من جدول 'profiles'
     const { data: doctorProfilesData, error: profilesError } = await supabase
       .from("profiles")
-      // حدد الأعمدة التي تحتاجها فقط من 'profiles'
-      // (مثال: id, name, email, profile_image, وأي حقول أخرى قد تستخدمها للمزامنة)
-      .select("id, name, email, profile_image") // افترض أن 'id' هنا هو user_id
+      .select("id, name, email, profile_image") 
       .eq("role", "doctor");
 
     if (profilesError) {
       console.error("Error fetching doctor profiles from profiles table:", profilesError.message);
-      // إذا فشل جلب ملفات تعريف الأطباء، سنرجع قائمة الأطباء الموجودين حاليًا بعد تحويلها
-      return existingDoctors.map(doc => ({
-        id: doc.id,
-        user_id: doc.user_id,
-        name: doc.name,
-        specialization: doc.specialization ?? "Default Specialization",
-        bio: doc.bio ?? "No bio available",
-        profile_image: doc.profile_image ?? "default_avatar_url.png",
-        patients_count: doc.patients_count ?? 0, // <--- تم التصحيح
-        years_of_experience: doc.years_of_experience ?? 0,
-        weekly_available_hours: doc.weekly_available_hours ?? 0,
-      }));
+      // إذا فشل جلب ملفات التعريف، نعتمد على الأطباء الموجودين حاليًا فقط (بعد الفلترة)
+      return existingDoctors.map(mapToDoctorProfile).filter(doc => doc.status === 'approved');
     }
-    const doctorProfiles = doctorProfilesData || [];
-    console.log("Doctor profiles found from profiles table:", doctorProfiles);
+    const doctorProfilesFromProfilesTable = doctorProfilesData || [];
 
-    if (doctorProfiles.length === 0) {
-      console.log("No doctor profiles found in profiles table. Returning existing doctors from doctors table.");
-      // إذا لم يتم العثور على أي ملفات تعريف أطباء، ارجع القائمة الحالية من جدول doctors
-      return existingDoctors.map(doc => ({
-        id: doc.id,
-        user_id: doc.user_id,
-        name: doc.name,
-        specialization: doc.specialization ?? "Default Specialization",
-        bio: doc.bio ?? "No bio available",
-        profile_image: doc.profile_image ?? "default_avatar_url.png",
-        patients_count: doc.patients_count ?? 0, // <--- تم التصحيح
-        years_of_experience: doc.years_of_experience ?? 0,
-        weekly_available_hours: doc.weekly_available_hours ?? 0,
-      }));
+    if (doctorProfilesFromProfilesTable.length === 0 && existingDoctors.length === 0) {
+      console.log("No doctors found in 'doctors' table and no 'doctor' role users in 'profiles' table.");
+      return [];
     }
 
-    // 3. تجهيز بيانات الأطباء لعملية Upsert
-    const existingDoctorsMap = new Map(existingDoctors.map(doc => [doc.user_id, doc]));
-    const doctorsToUpsert = doctorProfiles.map(profile => {
-      const existingDoctor = existingDoctorsMap.get(profile.id); // نفترض profile.id هو user_id
-      
-      const doctorDataForUpsert = {
-        user_id: profile.id, // هذا هو user_id من جدول profiles
+    // 3. مزامنة البيانات: تجهيز بيانات الأطباء لعملية Upsert
+    // الهدف هو التأكد من أن كل طبيب في 'profiles' له سجل مطابق في 'doctors'
+    const existingDoctorsMapByUserId = new Map(existingDoctors.map(doc => [doc.user_id, doc]));
+    
+    const doctorsToUpsert = doctorProfilesFromProfilesTable.map(profile => {
+      const existingDoctorRecord = existingDoctorsMapByUserId.get(profile.id);
+      return {
+        user_id: profile.id, // هذا هو auth.users.id
         name: profile.name || `Dr. ${profile.email?.split('@')[0] || profile.id.substring(0,6)}`,
-        // القيم الافتراضية هنا مهمة إذا كان DoctorProfile يتطلبها وهي ليست في profile
-        // أو إذا أردت استخدام قيم existingDoctor كقاعدة
-        specialization: existingDoctor?.specialization ?? "Mental Health Specialist", // يمكنك استخدام القيمة الافتراضية من DB إذا فضلت
-        bio: existingDoctor?.bio ?? "Dedicated professional.",       // قيمة افتراضية
-        profile_image: profile.profile_image || existingDoctor?.profile_image /* ?? "default_avatar_url.png" */, // قد تفضل عدم وضع افتراضي هنا والاعتماد على DB أو null
-        patients_count: existingDoctor?.patients_count ?? 0,        // <--- تم التصحيح
-        years_of_experience: existingDoctor?.years_of_experience ?? 0, // قيمة افتراضية
-        weekly_available_hours: existingDoctor?.weekly_available_hours ?? 0, // <-- تم الإضافة
-        // إذا كان 'id' موجودًا (لتحديث سجل موجود)، قم بتضمينه
-        ...(existingDoctor && { id: existingDoctor.id })
+        profile_image: profile.profile_image || existingDoctorRecord?.profile_image, // استخدم صورة البروفايل من profiles أولاً
+        // القيم الافتراضية للحقول الأخرى إذا لم يكن الطبيب موجودًا في جدول 'doctors'
+        specialization: existingDoctorRecord?.specialization ?? "General Psychiatrist",
+        bio: existingDoctorRecord?.bio ?? "No bio yet",
+        years_of_experience: existingDoctorRecord?.years_of_experience ?? 0,
+        patients_count: existingDoctorRecord?.patients_count ?? 0,
+        weekly_available_hours: existingDoctorRecord?.weekly_available_hours ?? 0,
+        // لا نقوم بتعيين 'status' هنا أثناء الـ upsert إلا إذا كان هناك منطق محدد لذلك
+        // سيعتمد على القيمة الافتراضية في قاعدة البيانات ('pending') للسجلات الجديدة
+        // أو سيحتفظ بالقيمة الحالية للسجلات الموجودة
+        ...(existingDoctorRecord && { id: existingDoctorRecord.id }) // لتحديث السجل الموجود بدلاً من إنشاء جديد إذا كان id موجودًا
       };
-      return doctorDataForUpsert;
-    });
+    }).filter(doc => doc.user_id); // التأكد من أن user_id موجود
 
-    console.log("Upserting doctors:", doctorsToUpsert);
+    if (doctorsToUpsert.length > 0) {
+        // 4. تنفيذ عملية Upsert
+        const { error: upsertError } = await supabase
+        .from("doctors")
+        .upsert(doctorsToUpsert, { onConflict: 'user_id', ignoreDuplicates: false });
 
-    // 4. تنفيذ عملية Upsert
-    const { data: upsertedDoctorsData, error: upsertError } = await supabase
-      .from("doctors")
-      .upsert(doctorsToUpsert, {
-        onConflict: 'user_id', // التأكد من أن هذا القيد موجود وفريد في جدول doctors
-        ignoreDuplicates: false, // أو true حسبما تريد. false يعني أنه سيقوم بالتحديث.
-      })
-      // حدد الأعمدة اللازمة لـ DoctorProfile
-      .select("id, user_id, name, specialization, bio, profile_image, patients_count, years_of_experience, weekly_available_hours");
-
-    if (upsertError) {
-      console.error("Error upserting doctor records:", upsertError.message);
-      // في حالة فشل Upsert، ارجع قائمة الأطباء الموجودين قبل محاولة Upsert
-      return existingDoctors.map(doc => ({
-        id: doc.id,
-        user_id: doc.user_id,
-        name: doc.name,
-        specialization: doc.specialization ?? "Default Specialization",
-        bio: doc.bio ?? "No bio available",
-        profile_image: doc.profile_image ?? "default_avatar_url.png",
-        patients_count: doc.patients_count ?? 0, // <--- تم التصحيح
-        years_of_experience: doc.years_of_experience ?? 0,
-        weekly_available_hours: doc.weekly_available_hours ?? 0,
-      }));
+        if (upsertError) {
+        console.error("Error upserting doctor records:", upsertError.message);
+        // في حالة فشل الـ upsert، لا يزال بإمكاننا محاولة إرجاع الأطباء الموجودين المعتمدين
+        // ولكن قد تكون البيانات غير محدثة بالكامل
+        return existingDoctors.map(mapToDoctorProfile).filter(doc => doc.status === 'approved');
+        }
     }
-    const upsertedDoctors = upsertedDoctorsData || [];
-    console.log("Successfully upserted doctors:", upsertedDoctors);
+    
+    // 5. جلب جميع الأطباء مرة أخرى بعد عملية المزامنة (Upsert) للتأكد من أننا نحصل على أحدث البيانات بما في ذلك status
+    const { data: finalDoctorsData, error: finalDoctorsError } = await supabase
+      .from("doctors")
+      .select("id, user_id, name, specialization, bio, profile_image, patients_count, years_of_experience, weekly_available_hours, status") // ✅ 'status' مضافة هنا
+      .order("name");
 
-    // 5. تحويل قائمة الأطباء (بعد Upsert) إلى DoctorProfile[]
-    return upsertedDoctors.map(doc => ({
-      id: doc.id,
-      user_id: doc.user_id,
-      name: doc.name,
-      specialization: doc.specialization ?? "Default Specialization",
-      bio: doc.bio ?? "No bio available",
-      profile_image: doc.profile_image ?? "default_avatar_url.png",
-      patients_count: doc.patients_count ?? 0, // <--- تم التصحيح
-      years_of_experience: doc.years_of_experience ?? 0,
-      weekly_available_hours: doc.weekly_available_hours ?? 0,
-    }));
+    if (finalDoctorsError) {
+        console.error("Error fetching final list of doctors after upsert:", finalDoctorsError.message);
+        return []; // إرجاع فارغ في حالة الخطأ
+    }
+
+    const allDoctorsAfterSync = finalDoctorsData || [];
+
+    // 6. تحويل وفلترة قائمة الأطباء النهائية
+    const approvedDoctors = allDoctorsAfterSync
+                            .map(mapToDoctorProfile)
+                            .filter(doc => doc.status === 'approved');
+    
+    console.log(`Fetched ${approvedDoctors.length} approved doctor(s).`);
+    return approvedDoctors;
 
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error in fetchAllDoctors";
     console.error("Error in fetchAllDoctors:", errorMessage);
-    return []; // إرجاع مصفوفة فارغة في حالة أي خطأ غير متوقع
+    return []; // إرجاع مصفوفة فارغة في حالة حدوث أي خطأ غير متوقع
   }
 };
 

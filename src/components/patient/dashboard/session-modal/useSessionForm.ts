@@ -6,8 +6,10 @@ import { createAppointment, PatientAppointment } from "@/services/appointments";
 import { fetchAllDoctors, fetchAvailableTimeSlots } from "@/services/doctorService";
 import { DoctorProfile } from "@/lib/therapist-types";
 import { format, isValid, parseISO } from 'date-fns';
+import { fromZonedTime } from 'date-fns-tz';
 import { useCallback } from 'react';
 
+const APP_TIME_ZONE = 'Africa/Khartoum';
 export interface SessionFormData {
    sessionDate: Date | undefined;
   sessionTime: string;
@@ -96,14 +98,32 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
         return;
       }
 
-      // لا حاجة لمنطق doctorToUse السابق، doctorId يأتي مباشرة من النموذج
-      // selectedDoctor (كائن) يُستخدم لعرض تفاصيل الطبيب في الواجهة (TherapistInfo)
-      // و TherapistInfo هو الذي سيقوم بتحديث حقل doctorId في النموذج (عبر form.setValue)
-      // وفي نفس الوقت يمكنه استدعاء setSelectedDoctor لتحديث هذا الكائن للعرض
+          // 1. احصل على التاريخ من formValues.sessionDate (وهو كائن Date) وقم بتنسيقه كسلسلة "yyyy-MM-dd"
+          //    هذا يمثل اليوم الذي اختاره المستخدم.
+      const localDateString = format(formValues.sessionDate, 'yyyy-MM-dd'); // مثال: "2025-06-02"
+      
+          // 2. formValues.sessionTime هو بالفعل "HH:MM" (مثال: "08:00")
+      const localTimeString = formValues.sessionTime;
 
-      const sessionDateTime = new Date(formValues.sessionDate);
-      const [hours, minutes] = formValues.sessionTime.split(':').map(Number);
-      sessionDateTime.setHours(hours, minutes, 0, 0);
+        // 3. قم بدمج التاريخ والوقت المحليين للحصول على سلسلة تاريخ ووقت كاملة تمثل الوقت المحلي في الخرطوم
+        //    نفترض أن الثواني هي 00
+    const dateTimeStringInKhartoum = `${localDateString}T${localTimeString}:00`; // مثال: "2025-06-02T08:00:00"
+
+    console.log("SAVE_DEBUG: formValues.sessionDate (from picker):", formValues.sessionDate.toString());
+    console.log("SAVE_DEBUG: formValues.sessionTime (from picker):", formValues.sessionTime);
+    console.log("SAVE_DEBUG: Constructed localDateString:", localDateString);
+    console.log("SAVE_DEBUG: Constructed localTimeString:", localTimeString);
+    console.log("SAVE_DEBUG: Combined dateTimeStringInKhartoum:", dateTimeStringInKhartoum);
+    console.log("SAVE_DEBUG: APP_TIME_ZONE being used for fromZonedTime:", APP_TIME_ZONE);
+    // --- 👆 نهاية الأسطر المضافة 👆 ---
+     // 4. قم بتحويل سلسلة تاريخ ووقت الخرطوم المحلية هذه إلى كائن Date يمثل التوقيت العالمي المنسق (UTC)
+    const sessionDateObjectInUTC = fromZonedTime(dateTimeStringInKhartoum, APP_TIME_ZONE);
+
+      console.log("SAVE_DEBUG: sessionDateObjectInUTC (JS Date object after fromZonedTime):", sessionDateObjectInUTC.toString());
+    const finalISOStringToSave = sessionDateObjectInUTC.toISOString();
+    console.log("SAVE_DEBUG: finalISOStringToSave (to be sent to DB):", finalISOStringToSave);
+    // --- 👆 نهاية الأسطر المضافة 👆 ---
+  
 
       // تجهيز البيانات لدالة createAppointment بالصيغة الجديدة المتوقعة
       // نوع البيانات المتوقع من createAppointment هو CreateAppointmentPayload
@@ -111,12 +131,13 @@ export const useSessionForm = ({ onClose, onSessionBooked }: UseSessionFormProps
       const appointmentDataForService = {
         patient_id: user.id,
         doctor_id: formValues.doctorId, // <-- استخدام doctorId من النموذج
-        session_date: sessionDateTime.toISOString(),
+        session_date: finalISOStringToSave,
         session_type: formValues.sessionType,
         status: 'scheduled' as PatientAppointment['status'], // <-- استخدام status صحيح ('scheduled')
         notes: formValues.notes, // <-- تمرير الملاحظات
-        // لا يوجد doctor_name هنا
       };
+
+      console.log("Submitting appointment data:", appointmentDataForService);
 
       // استدعاء دالة createAppointment المحدثة
       // والتي سترجع PatientAppointment مع doctor:null
