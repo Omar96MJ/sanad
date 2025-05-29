@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -11,7 +12,7 @@ import Footer from "@/components/Footer";
 import { PatientDashboardTabs } from "@/components/patient/dashboard/PatientDashboardTabs";
 import { DashboardHeader } from "@/components/patient/dashboard/DashboardHeader";
 import { SessionModal } from "@/components/patient/dashboard/session-modal/SessionModal";
-import { fetchPatientAppointments, PatientAppointment } from "@/services/patientAppointmentService";
+import { fetchPatientAppointments, PatientAppointment } from "@/services/appointments";
 import { fetchPatientProgress } from "@/services/fetchPatientProgress";
 import { fetchAllDoctors } from "@/services/doctorService";
 import { DoctorProfile } from "@/lib/therapist-types";

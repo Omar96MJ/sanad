@@ -1,3 +1,4 @@
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { format } from "date-fns";
 import { CalendarIcon, Loader2 } from "lucide-react";
-import { PatientAppointment, updateAppointmentStatus } from "@/services/patientAppointmentService";
+import { PatientAppointment, updateAppointmentStatus } from "@/services/appointments";
 import { toast } from "sonner";
 
 interface AppointmentsTabProps {

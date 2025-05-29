@@ -1,13 +1,13 @@
-
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { toast } from "sonner";
-import { createAppointment, PatientAppointment } from "@/services/patientAppointmentService";
+import { createAppointment, PatientAppointment } from "@/services/appointments";
 import { fetchAllDoctors, fetchAvailableTimeSlots } from "@/services/doctorService";
 import { DoctorProfile } from "@/lib/therapist-types";
 import { format, isValid, parseISO } from 'date-fns';
 import { useCallback } from 'react';
+
 export interface SessionFormData {
    sessionDate: Date | undefined;
   sessionTime: string;

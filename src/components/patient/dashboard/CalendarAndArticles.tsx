@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Calendar } from "@/components/ui/calendar";
 import { useLanguage } from "@/hooks/useLanguage";
-import { PatientAppointment } from "@/services/patientAppointmentService";
+import { PatientAppointment } from "@/services/appointments";
 import { parseISO } from "date-fns";
 
 interface CalendarAndArticlesProps {

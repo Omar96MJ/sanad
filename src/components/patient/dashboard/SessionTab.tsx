@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useToast } from "@/hooks/use-toast";
 import { VideoIcon, VideoOffIcon, PhoneCallIcon } from "lucide-react";
-import { PatientAppointment } from "@/services/patientAppointmentService";
+import { PatientAppointment } from "@/services/appointments";
 
 interface SessionTabProps {
   appointments: PatientAppointment[];
