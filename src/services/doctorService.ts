@@ -1,5 +1,10 @@
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { parseISO, getDay, format } from "date-fns";
+import { toZonedTime, fromZonedTime } from "date-fns-tz";
+
+// Define the application's timezone
+const APP_TIME_ZONE = "UTC"; // You can change this to your desired timezone like "America/New_York"
 
 export interface DoctorProfile {
   id: string;
