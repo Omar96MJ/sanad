@@ -4,7 +4,7 @@ import { ProgressSection } from "./ProgressSection";
 import { TherapistCard } from "./TherapistCard";
 import { CalendarAndArticles } from "./CalendarAndArticles";
 import { DoctorProfile } from "@/lib/therapist-types";
-import { PatientAppointment } from "@/services/patientAppointmentService"; // <-- ✅ استيراد للتحسين
+import { PatientAppointment } from "@/services/appointments"; // <-- ✅ استيراد محدث
 import { BlogPost } from "@/lib/types"; // <-- ✅ استيراد للتحسين
 
 interface DashboardOverviewProps {

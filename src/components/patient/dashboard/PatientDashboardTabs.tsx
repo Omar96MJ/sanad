@@ -4,7 +4,7 @@ import { Tabs } from "@/components/ui/tabs";
 import { BlogPost } from "@/lib/types";
 import { TabsList } from "./tabs/TabsList";
 import { TabContents } from "./tabs/TabContents";
-import { PatientAppointment } from "@/services/patientAppointmentService";
+import { PatientAppointment } from "@/services/appointments"; // <-- ✅ استيراد محدث
 import { DoctorProfile } from "@/lib/therapist-types";
 
 interface PatientDashboardTabsProps {
