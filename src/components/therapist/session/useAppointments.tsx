@@ -19,22 +19,40 @@ export function useAppointments() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [filteredAppointments, setFilteredAppointments] = useState<Appointment[]>([]);
 
-  // Fetch doctor's appointments from Supabase
+  // Fetch doctor's appointments from Supabase with patient details
   useEffect(() => {
     const fetchAppointments = async () => {
       if (!user) return;
       
       try {
         setIsLoading(true);
+        
+        // First get the doctor profile to get the doctor ID
+        const { data: doctorData, error: doctorError } = await supabase
+          .from('doctors')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+
+        if (doctorError) {
+          console.error("Error fetching doctor profile:", doctorError);
+          toast({
+            title: t('error_loading_appointments'),
+            variant: "destructive",
+          });
+          return;
+        }
+
         const { data, error } = await supabase
           .from('appointments')
           .select(`
             *,
             profiles!appointments_patient_id_fkey (
-              name
+              name,
+              profile_image
             )
           `)
-          .eq('doctor_id', user.id)
+          .eq('doctor_id', doctorData.id)
           .order('session_date', { ascending: true });
         
         if (error) {
