@@ -4,17 +4,19 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/hooks/useLanguage";
-import { useSettings } from "@/hooks/useSettings";
+import { useSystemSettings } from "@/hooks/useSystemSettings";
 import { toast } from "sonner";
 
 export const SettingsTab = () => {
   const { t } = useLanguage();
-  const { settings, updateSettings } = useSettings();
+  const { settings, isLoading, updateSetting } = useSystemSettings();
 
-  const handleSettingToggle = (setting: keyof typeof settings) => {
-    if (typeof settings[setting] === 'boolean') {
-      updateSettings({ [setting]: !settings[setting] });
+  const handleSettingToggle = async (setting: keyof typeof settings) => {
+    const success = await updateSetting(setting, !settings[setting]);
+    if (success) {
       toast.success(t('setting_updated'));
+    } else {
+      toast.error(t('setting_update_failed') || 'Failed to update setting');
     }
   };
 
@@ -39,6 +41,7 @@ export const SettingsTab = () => {
               id="enable-registration"
               checked={settings.enableRegistration}
               onCheckedChange={() => handleSettingToggle('enableRegistration')}
+              disabled={isLoading}
             />
           </div>
 
@@ -53,6 +56,7 @@ export const SettingsTab = () => {
               id="maintenance-mode"
               checked={settings.maintenanceMode}
               onCheckedChange={() => handleSettingToggle('maintenanceMode')}
+              disabled={isLoading}
             />
           </div>
           
@@ -65,15 +69,19 @@ export const SettingsTab = () => {
             </div>
             <Switch
               id="email-notifications"
-              checked={true}
-              onCheckedChange={() => toast.success(t('setting_updated'))}
+              checked={settings.emailNotifications}
+              onCheckedChange={() => handleSettingToggle('emailNotifications')}
+              disabled={isLoading}
             />
           </div>
         </div>
 
         <div className="pt-4 border-t">
-          <Button onClick={() => toast.success(t('settings_saved'))}>
-            {t('save_changes')}
+          <Button 
+            onClick={() => toast.success(t('settings_saved'))}
+            disabled={isLoading}
+          >
+            {isLoading ? t('saving') || 'Saving...' : t('save_changes')}
           </Button>
         </div>
       </CardContent>

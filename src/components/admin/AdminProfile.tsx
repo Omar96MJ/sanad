@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useAdminProfile } from "@/hooks/useAdminProfile";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -9,30 +10,27 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
-import { User, Mail, Lock, Shield, Settings } from "lucide-react";
+import { User, Mail, Lock, Shield } from "lucide-react";
 
 const AdminProfile = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
+  const { adminSettings, isLoading, updateProfile, updatePermissions, uploadProfileImage } = useAdminProfile();
   const isRTL = language === 'ar';
   
   const [name, setName] = useState(user?.name || "");
   const [email, setEmail] = useState(user?.email || "");
-  const [profileImage, setProfileImage] = useState(user?.profileImage || "");
   
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   
-  const [permissions, setPermissions] = useState({
-    manageUsers: true,
-    manageContent: true,
-    manageSettings: true
-  });
-  
-  const handleProfileUpdate = (e: React.FormEvent) => {
+  const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success(t('profile_updated'));
+    const success = await updateProfile(name);
+    if (success) {
+      // Update will be reflected through the auth context
+    }
   };
   
   const handlePasswordUpdate = (e: React.FormEvent) => {
@@ -54,13 +52,28 @@ const AdminProfile = () => {
     setConfirmPassword("");
   };
 
-  const togglePermission = (permission: keyof typeof permissions) => {
-    setPermissions({
-      ...permissions,
-      [permission]: !permissions[permission]
-    });
-    toast.success(`${permission} ${permissions[permission] ? t('disabled') : t('enabled')}`);
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const imageUrl = await uploadProfileImage(file);
+    if (imageUrl) {
+      await updateProfile(name, imageUrl);
+    }
   };
+
+  const togglePermission = async (permission: keyof typeof adminSettings.permissions) => {
+    if (!adminSettings) return;
+    
+    const newPermissions = {
+      ...adminSettings.permissions,
+      [permission]: !adminSettings.permissions[permission]
+    };
+    
+    await updatePermissions(newPermissions);
+  };
+
+  const currentProfileImage = user?.profileImage || user?.profile_image;
 
   return (
     <div className="space-y-6">
@@ -78,31 +91,20 @@ const AdminProfile = () => {
             <CardContent className="space-y-4">
               <div className="flex flex-col items-center mb-6">
                 <Avatar className="h-24 w-24 mb-4">
-                  <AvatarImage src={profileImage} alt={name} />
+                  <AvatarImage src={currentProfileImage} alt={name} />
                   <AvatarFallback className="text-lg">{name.substring(0, 2).toUpperCase()}</AvatarFallback>
                 </Avatar>
                 <div className="flex items-center">
                   <Label htmlFor="profileImage" className="cursor-pointer bg-primary text-primary-foreground px-3 py-1 rounded-md text-sm hover:bg-primary/90">
-                    {t('change_picture')}
+                    {isLoading ? t('uploading') || 'Uploading...' : t('change_picture')}
                   </Label>
                   <input
                     id="profileImage"
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      if (file) {
-                        // Mock upload
-                        const reader = new FileReader();
-                        reader.onload = () => {
-                          if (typeof reader.result === 'string') {
-                            setProfileImage(reader.result);
-                          }
-                        };
-                        reader.readAsDataURL(file);
-                      }
-                    }}
+                    onChange={handleImageUpload}
+                    disabled={isLoading}
                   />
                 </div>
               </div>
@@ -114,11 +116,14 @@ const AdminProfile = () => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className={isRTL ? 'text-right' : 'text-left'}
+                  disabled={isLoading}
                 />
               </div>
             </CardContent>
             <CardFooter>
-              <Button type="submit">{t('save_changes')}</Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? t('saving') || 'Saving...' : t('save_changes')}
+              </Button>
             </CardFooter>
           </form>
         </Card>
@@ -142,7 +147,11 @@ const AdminProfile = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className={isRTL ? 'text-right' : 'text-left'}
+                  disabled
                 />
+                <p className="text-sm text-muted-foreground">
+                  {t('email_cannot_be_changed') || 'Email cannot be changed through this interface'}
+                </p>
               </div>
             </CardContent>
             <CardFooter>
@@ -213,44 +222,51 @@ const AdminProfile = () => {
           <CardDescription>{t('manage_your_admin_permissions')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>{t('manage_users')}</Label>
-              <p className="text-sm text-muted-foreground">
-                {t('permission_to_manage_users')}
-              </p>
-            </div>
-            <Switch 
-              checked={permissions.manageUsers}
-              onCheckedChange={() => togglePermission('manageUsers')}
-            />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>{t('manage_content')}</Label>
-              <p className="text-sm text-muted-foreground">
-                {t('permission_to_manage_content')}
-              </p>
-            </div>
-            <Switch 
-              checked={permissions.manageContent}
-              onCheckedChange={() => togglePermission('manageContent')}
-            />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="space-y-0.5">
-              <Label>{t('system_settings')}</Label>
-              <p className="text-sm text-muted-foreground">
-                {t('permission_to_manage_settings')}
-              </p>
-            </div>
-            <Switch 
-              checked={permissions.manageSettings}
-              onCheckedChange={() => togglePermission('manageSettings')}
-            />
-          </div>
+          {adminSettings && (
+            <>
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>{t('manage_users')}</Label>
+                  <p className="text-sm text-muted-foreground">
+                    {t('permission_to_manage_users')}
+                  </p>
+                </div>
+                <Switch 
+                  checked={adminSettings.permissions.manageUsers}
+                  onCheckedChange={() => togglePermission('manageUsers')}
+                  disabled={isLoading}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>{t('manage_content')}</Label>
+                  <p className="text-sm text-muted-foreground">
+                    {t('permission_to_manage_content')}
+                  </p>
+                </div>
+                <Switch 
+                  checked={adminSettings.permissions.manageContent}
+                  onCheckedChange={() => togglePermission('manageContent')}
+                  disabled={isLoading}
+                />
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label>{t('system_settings')}</Label>
+                  <p className="text-sm text-muted-foreground">
+                    {t('permission_to_manage_settings')}
+                  </p>
+                </div>
+                <Switch 
+                  checked={adminSettings.permissions.manageSettings}
+                  onCheckedChange={() => togglePermission('manageSettings')}
+                  disabled={isLoading}
+                />
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
     </div>
