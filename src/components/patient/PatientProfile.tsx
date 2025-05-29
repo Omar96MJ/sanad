@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,23 +10,53 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { User, Mail, Lock, Activity } from "lucide-react";
+import { fetchUserProfile, ProfileData, uploadProfileImage, updateUserProfileData, updateUserProfileImage } from "@/services/patientService";
+
 
 const PatientProfile = () => {
   const { user } = useAuth();
   const { t, language } = useLanguage();
   const isRTL = language === 'ar';
   
-  const [name, setName] = useState(user?.name || "");
-  const [email, setEmail] = useState(user?.email || "");
-  const [about, setAbout] = useState("I'm interested in therapy to help with anxiety and stress management.");
-  const [profileImage, setProfileImage] = useState(user?.profileImage || "");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState(""); // سيبقى من user.email عادةً
+  const [about, setAbout] = useState("");
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true); // حالة تحميل جديدة
+
+  useEffect(() => {
+    if (user?.id) {
+      const loadProfile = async () => {
+        setIsLoadingProfile(true);
+        const profileData = await fetchUserProfile(user.id);
+        if (profileData) {
+          setName(profileData.name || "");
+          setEmail(user.email || ""); // البريد من auth.user هو المصدر الرئيسي عادةً
+          setAbout(profileData.about_me || "");
+          setProfileImage(profileData.profile_image || null);
+        }
+        setIsLoadingProfile(false);
+      };
+      loadProfile();
+    } else {
+      setIsLoadingProfile(false); // لا يوجد مستخدم، أوقف التحميل
+    }
+  }, [user]);
+
+
+    const [currentPassword, setCurrentPassword] = useState("");
+    const [newPassword, setNewPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
   
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  
-  const handleProfileUpdate = (e: React.FormEvent) => {
+    const handleProfileUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user?.id) return;
+
+  const updates = {
+    name: name,
+    about_me: about,
+    };
+    await updateUserProfileData(user.id, updates);
     toast.success(t('profile_updated'));
   };
   
@@ -77,18 +107,21 @@ const PatientProfile = () => {
                     type="file"
                     accept="image/*"
                     className="hidden"
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const file = e.target.files?.[0];
-                      if (file) {
-                        // Mock upload
-                        const reader = new FileReader();
-                        reader.onload = () => {
-                          if (typeof reader.result === 'string') {
-                            setProfileImage(reader.result);
+                      if (file && user?.id) {
+                        // يمكنك عرض مؤشر تحميل هنا
+                        const publicUrl = await uploadProfileImage(user.id, file);
+                        if (publicUrl) {
+                          const success = await updateUserProfileImage(user.id, publicUrl);
+                          if (success) {
+                            setProfileImage(publicUrl); // تحديث الواجهة فورًا بالصورة الجديدة
                           }
-                        };
-                        reader.readAsDataURL(file);
+                        }
+                        // إيقاف مؤشر التحميل
                       }
+                      // لمنع إعادة إرسال الملف عند تحديث الصفحة، قم بإعادة تعيين قيمة حقل الإدخال
+                      e.target.value = ""; 
                     }}
                   />
                 </div>
