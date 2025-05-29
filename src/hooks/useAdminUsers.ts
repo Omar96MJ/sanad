@@ -29,20 +29,7 @@ export const useAdminUsers = () => {
 
       console.log('Fetching users from profiles table...');
 
-      // First, let's check if we can access the profiles table at all
-      const { data: profilesTest, error: testError } = await supabase
-        .from('profiles')
-        .select('count(*)')
-        .limit(1);
-
-      if (testError) {
-        console.error('Error accessing profiles table:', testError);
-        throw new Error(`Cannot access profiles table: ${testError.message}`);
-      }
-
-      console.log('Profiles table accessible, count test result:', profilesTest);
-
-      // Fetch all profiles with doctor information if available
+      // Fetch all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select(`
