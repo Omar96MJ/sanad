@@ -38,7 +38,17 @@ export const useAdminProfile = () => {
       }
 
       if (data) {
-        setAdminSettings(data);
+        // Properly handle the Json type from Supabase
+        const permissions = data.permissions as {
+          manageUsers: boolean;
+          manageContent: boolean;
+          manageSettings: boolean;
+        };
+        
+        setAdminSettings({
+          ...data,
+          permissions
+        });
       } else {
         // Create default admin settings if they don't exist
         const defaultSettings = {
@@ -59,7 +69,17 @@ export const useAdminProfile = () => {
         if (insertError) {
           console.error('Error creating admin settings:', insertError);
         } else {
-          setAdminSettings(newSettings);
+          // Properly handle the Json type from Supabase
+          const permissions = newSettings.permissions as {
+            manageUsers: boolean;
+            manageContent: boolean;
+            manageSettings: boolean;
+          };
+          
+          setAdminSettings({
+            ...newSettings,
+            permissions
+          });
         }
       }
     } catch (err) {

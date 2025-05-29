@@ -73,7 +73,8 @@ const AdminProfile = () => {
     await updatePermissions(newPermissions);
   };
 
-  const currentProfileImage = user?.profileImage || user?.profile_image;
+  // Fix: Use profileImage instead of profile_image
+  const currentProfileImage = user?.profileImage;
 
   return (
     <div className="space-y-6">
