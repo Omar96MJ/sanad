@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { User, Mail, Lock, Activity } from "lucide-react";
 import { fetchUserProfile, ProfileData, uploadProfileImage, updateUserProfileData, updateUserProfileImage } from "@/services/patientService";
 import { supabase } from "@/integrations/supabase/client";
+import {  Loader2 } from "lucide-react";
 
 
 const PatientProfile = () => {
@@ -164,7 +165,12 @@ const PatientProfile = () => {
               </div>
             </CardContent>
             <CardFooter>
-              <Button type="submit">{t('save_changes')}</Button>
+              <Button type="submit" disabled={isLoadingProfile}>
+                {isLoadingProfile ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+                    ) : null}
+                    {t('save_changes')}
+                </Button>
             </CardFooter>
           </form>
         </Card>
@@ -231,7 +237,12 @@ const PatientProfile = () => {
                 </div>
               </CardContent>
               <CardFooter>
-                <Button type="submit">{t('update_password')}</Button>
+                <Button type="submit" disabled={isUpdatingPassword}>  
+                  {isUpdatingPassword ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" /> // مثال لمؤشر تحميل
+                    ) : null}
+                    {t('update_password')}
+                  </Button>
               </CardFooter>
             </form>
           </Card>

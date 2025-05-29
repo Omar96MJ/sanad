@@ -44,7 +44,6 @@ export const updateUserProfileData = async (
     
   }
 ): Promise<{ data: ProfileData | null; error: any | null }> => {
-const { t } = useLanguage();
 
   if (!userId) return { data: null, error: new Error("User ID is required") };
   try {
@@ -56,9 +55,13 @@ const { t } = useLanguage();
       .single();
 
     if (error) {
+      const { t } = useLanguage();
+
       console.error("Error updating user profile data:", error);
       toast.error(t('Failed to update profile'));
     } else {
+      const { t } = useLanguage();
+
       toast.success(t('Profile updated successfully!')); 
     }
     return { data, error };
