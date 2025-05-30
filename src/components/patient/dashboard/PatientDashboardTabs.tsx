@@ -46,7 +46,7 @@ export const PatientDashboardTabs = ({
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-      <TabsList />
+      <TabsList  />
       
       <TabContents
         activeTab={activeTab}
