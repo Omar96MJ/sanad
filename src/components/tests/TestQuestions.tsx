@@ -9,7 +9,7 @@ interface TestQuestionsProps {
   currentQuestionIndex: number;
   questionText: string;
   totalQuestions: number;
-  responseOptions: Array<{ text: string; score: number }>;
+  responseOptions: Array<{ text: string; score: number }>; // Received from TestContent with translated text
   onAnswer: (score: number) => void;
 }
 
@@ -23,13 +23,16 @@ const TestQuestions: React.FC<TestQuestionsProps> = ({
 }) => {
   const { t } = useLanguage();
 
-  if (!questionText || responseOptions.length === 0) {
-    // Or some other loading/error state, though TestContent should prevent this
-    return <p>Error: Question data missing.</p>;
+  // Basic check, though TestContent should ideally prevent rendering this component
+  // if questionText or responseOptions are not ready.
+  if (!questionText || !responseOptions || responseOptions.length === 0) {
+    // This could be a loading indicator or an error message
+    // For now, returning null or a simple message:
+    return <p>{t('loading_test') || 'Loading question...'}</p>;
   }
 
   return (
-    <Card className="w-full max-w-lg">
+    <Card className="w-full max-w-lg animate-fade-in"> {/* Added a simple animation class example */}
       <CardHeader>
         <CardTitle>{testName}</CardTitle>
         <CardDescription>
@@ -37,18 +40,19 @@ const TestQuestions: React.FC<TestQuestionsProps> = ({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-lg mb-6">{questionText}</p>
-        <div className="flex flex-col space-y-2">
+        <p className="text-lg mb-6 min-h-[3em]">{questionText}</p> {/* Added min-height for layout consistency */}
+        <div className="flex flex-col space-y-3"> {/* Increased space slightly */}
           {responseOptions.map((option) => (
             <Button
-              key={option.score + option.text} // More robust key
+              key={`${option.score}-${option.text}`} // More unique key
               variant="outline"
+              className="justify-start text-left py-3 px-4 whitespace-normal h-auto hover:bg-accent focus:bg-accent" // Improved styling for readability
               onClick={() => {
-                console.log("TestQuestions: Answered with score:", option.score); // DEBUG
+                // console.log("TestQuestions: Answered with score:", option.score); // Optional: for debugging
                 onAnswer(option.score);
               }}
             >
-              {option.text} {/* Use the translated text from the prop */}
+              {option.text}
             </Button>
           ))}
         </div>
