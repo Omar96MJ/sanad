@@ -54,7 +54,7 @@ const App = () => {
               <Route path="/therapist-dashboard/*" element={<TherapistDashboard />} />
               <Route path="/admin-dashboard" element={<AdminDashboard />} />
               <Route path="/tests" element={<PsychologicalTests />} />
-              <Route path="/psychological-tests" element={<PsychologicalTestsPage />} />
+              <Route path="/psychological-tests" element={<PsychologicalTests />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms-of-service" element={<TermsOfService />} />
