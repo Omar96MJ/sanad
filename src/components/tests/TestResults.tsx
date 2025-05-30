@@ -30,7 +30,7 @@ const TestResults: React.FC<TestResultsProps> = ({
     <Card className="w-full max-w-lg">
       <CardHeader>
         <CardTitle>{t('test_results')}</CardTitle>
-        <CardDescription>{tests.find(t => t.id === selectedTest)?.name}</CardDescription>
+        <CardDescription>{testName}</CardDescription>
       </CardHeader>
       <CardContent>
         <p className="text-lg mb-4">{result}</p>
