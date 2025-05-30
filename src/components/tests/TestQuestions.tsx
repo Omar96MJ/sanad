@@ -11,10 +11,11 @@ interface Test {
 }
 
 interface TestQuestionsProps {
-  selectedTest: string;
-  tests: Test[];
-  currentQuestion: number;
-  questions: string[];
+  testName: string;
+  currentQuestionIndex: number;
+  questionText: string;
+  totalQuestions: number;
+  responseOptions: Array<{ text: string; score: number }>;
   onAnswer: (score: number) => void;
 }
 
