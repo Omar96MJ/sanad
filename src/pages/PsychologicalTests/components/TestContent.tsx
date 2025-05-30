@@ -48,10 +48,10 @@ const TestContent = () => {
     }
   };
 
-  // In TestContent.tsx
 const calculateResult = (finalAnswers: number[]) => {
   const sum = finalAnswers.reduce((a, b) => a + b, 0);
   let resultText = '';
+  let percentage = 0; // Initialize, or calculate as needed per block
 
   if (selectedTest === 'phq9') {
     if (sum <= 4) resultText = t('phq9_result_minimal');
@@ -60,22 +60,25 @@ const calculateResult = (finalAnswers: number[]) => {
     else if (sum <= 19) resultText = t('phq9_result_moderately_severe');
     else resultText = t('phq9_result_severe');
   } else if (selectedTest === 'depression') {
-      if (percentage < 25) resultText = t('depression_result_minimal');
-      else if (percentage < 50) resultText = t('depression_result_mild');
-      else if (percentage < 75) resultText = t('depression_result_moderate');
-      else resultText = t('depression_result_severe');
-    } else if (selectedTest === 'anxiety') {
-      if (percentage < 25) resultText = t('anxiety_result_minimal');
-      else if (percentage < 50) resultText = t('anxiety_result_mild');
-      else if (percentage < 75) resultText = t('anxiety_result_moderate');
-      else resultText = t('anxiety_result_severe');
-    } else {
-      resultText = t('your_score_is') + ` ${percentage.toFixed(1)}%. ` + t('consult_professional');
-    }
+    // Assuming 'depression' test questions also have a max score, e.g., 3 per question
+    const maxDepressionScore = finalAnswers.length * 3; // Adjust if max score per question differs
+    percentage = (maxDepressionScore > 0) ? (sum / maxDepressionScore) * 100 : 0;
+    if (percentage < 25) resultText = t('depression_result_minimal');
+    else if (percentage < 50) resultText = t('depression_result_mild');
+    else if (percentage < 75) resultText = t('depression_result_moderate');
+    else resultText = t('depression_result_severe');
+  } else if (selectedTest === 'anxiety') {
+    // Assuming 'anxiety' test questions also have a max score
+    const maxAnxietyScore = finalAnswers.length * 3; // Adjust if max score per question differs
+    percentage = (maxAnxietyScore > 0) ? (sum / maxAnxietyScore) * 100 : 0;
+    if (percentage < 25) resultText = t('anxiety_result_minimal');
+    else if (percentage < 50) resultText = t('anxiety_result_mild');
+    else if (percentage < 75) resultText = t('anxiety_result_moderate');
+    else resultText = t('anxiety_result_severe');
   } else {
     // Fallback for other tests or general scoring
-    const max = finalAnswers.length * 3; // Assuming 3 is max score for other tests
-    const percentage = (sum / max) * 100;
+    const maxScoreDefault = finalAnswers.length * 3; // General assumption
+    percentage = (maxScoreDefault > 0) ? (sum / maxScoreDefault) * 100 : 0;
     resultText = t('your_score_is') + ` ${percentage.toFixed(1)}%. ` + t('consult_professional');
   }
 
