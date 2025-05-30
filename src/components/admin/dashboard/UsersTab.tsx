@@ -233,47 +233,7 @@ export const UsersTab = ({
           </div>
         </div>
 
-        {/* Patients Section */}
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold mb-4 flex items-center">
-            <User className={`h-5 w-5 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-            {t('patients')} ({patients.length})
-          </h3>
-          <div className="space-y-4">
-            {isLoading ? (
-              Array.from({ length: 2 }).map((_, index) => (
-                <div key={index} className="border rounded-md p-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <Skeleton className="h-5 w-32" />
-                    <Skeleton className="h-6 w-16" />
-                  </div>
-                  <Skeleton className="h-4 w-48 mb-2" />
-                </div>
-              ))
-            ) : patients.length === 0 ? (
-              <div className="text-center py-4 text-muted-foreground">
-                {t('no_patients_found') || 'No patients found'}
-              </div>
-            ) : (
-              patients.map((user) => (
-                <div key={user.id} className="border rounded-md p-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <div className="font-medium">{user.name}</div>
-                    <Badge className={getRoleBadgeColor(user.role)}>
-                      {t(user.role) || user.role}
-                    </Badge>
-                  </div>
-                  <div className="text-sm text-muted-foreground mb-2">
-                    {user.email || 'No email provided'}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    {t('joined') || 'Joined'}: {formatDate(user.created_at)}
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        
 
         {/* Admins Section */}
         {admins.length > 0 && (
