@@ -1,4 +1,4 @@
-/ src/translations/ar/tests.ts
+// src/translations/ar/tests.ts
 const testsTranslations = {
   // --- General Test UI ---
   "psychological_tests_title": "الاختبارات النفسية",
