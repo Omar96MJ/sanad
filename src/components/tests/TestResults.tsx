@@ -11,9 +11,8 @@ interface Test {
 }
 
 interface TestResultsProps {
-  selectedTest: string | null;
-  tests: Test[];
-  result: string;
+  testName: string;
+  result: string; // This is the translated result text
   onRestart: () => void;
   onChooseAnother: () => void;
 }
