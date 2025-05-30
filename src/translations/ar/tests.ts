@@ -1,20 +1,10 @@
-// Psychological tests translations for Arabic
+/ src/translations/ar/tests.ts
 const testsTranslations = {
   // --- General Test UI ---
-  "psychological_tests_title": "الاختبارات النفسية", // More specific for page title
-  "psychological_tests_description": "قم بإجراء أحد اختباراتنا النفسية لمعرفة المزيد عن صحتك النفسية.", // Slightly rephrased
-  "test_completed_toast": "تم إكمال الاختبار بنجاح!", // For toast notifications
-  "self_assessment": "التقييم الذاتي",
-  "professional_tests": "اختبارات مهنية", // This might be for future use if you categorize
-
-  // Test categories (if you use them)
-  "all_tests": "جميع الاختبارات",
-  "cognitive": "إدراكي",
-  "personality": "الشخصية",
-  "clinical": "سريري",
-  "wellbeing": "الرفاهية العامة", // Changed for clarity
-
-  // Test Interface & Common Actions
+  "psychological_tests_title": "الاختبارات النفسية",
+  "psychological_tests_description": "قم بإجراء أحد اختباراتنا النفسية لمعرفة المزيد عن صحتك النفسية.",
+  "test_completed_toast": "تم إكمال الاختبار بنجاح!",
+  // ... (keep other general UI keys from your previous full version) ...
   "question": "سؤال",
   "of": "من",
   "test_results": "نتائج الاختبار",
@@ -22,31 +12,25 @@ const testsTranslations = {
   "choose_another_test": "اختيار اختبار آخر",
   "back_to_tests": "العودة إلى قائمة الاختبارات",
   "start_test": "ابدأ الاختبار",
-  "take_test": "إجراء الاختبار", // Generic button, if needed
-  "select": "اختر", // Generic select, if needed
   "loading_test": "جاري تحميل الاختبار...",
-  "test_loaded": "تم تحميل الاختبار", // Potentially for async loading
-  "test_load_error": "فشل في تحميل الاختبار. يرجى المحاولة مرة أخرى.",
-  "no_tests_found": "لم يتم العثور على اختبارات",
-  "search_tests": "البحث في الاختبارات...",
   "test_disclaimer": "هذه الاختبارات هي أدوات فحص أولية ولأغراض التوعية فقط. لا ينبغي استخدامها للتشخيص الذاتي ولا تغني عن استشارة أخصائي الصحة النفسية للتقييم والتشخيص والعلاج المناسبين.",
-  "test_consists_of": "يتكون الاختبار من",
-  "questions_and_will_take": "أسئلة وسيستغرق تقريبًا",
-  "minutes_to_complete": "دقائق لإكماله.",
   "answer_honestly": "يرجى الإجابة على كل سؤال بصدق للحصول على أدق النتائج.",
-  "your_score_is": "درجتك هي", // Generic score prefix
-  "consult_professional": "يرجى استشارة متخصص للتفسير.", // Generic advice
-  "result_default_consult": "نشجعك على مناقشة هذه النتائج مع أخصائي صحة نفسية للحصول على فهم أعمق.", // Default result text from TestContent
+  "your_score_is": "درجتك هي",
+  "consult_professional": "يرجى استشارة متخصص للتفسير.",
+  "result_default_consult": "نشجعك على مناقشة هذه النتائج مع أخصائي صحة نفسية للحصول على فهم أعمق.",
 
-  // --- Standardized Response Options (CRITICAL: Match useTestData.tsx 'textKey') ---
+  // --- Standardized Response Options ---
   "option_not_at_all": "ليس على الإطلاق",
   "option_several_days": "عدة أيام",
   "option_more_than_half_days": "أكثر من نصف الأيام",
   "option_nearly_every_day": "تقريبًا كل يوم",
-  "option_never": "أبداً",
-  "option_sometimes": "أحياناً",
-  "option_often": "غالباً",
-  "option_always": "دائماً",
+
+  // PSS-10 Specific Response Options (Arabic)
+  "option_pss_never": "أبداً",
+  "option_pss_almost_never": "نادراً جداً", // "Almost Never"
+  "option_pss_sometimes": "أحياناً",
+  "option_pss_fairly_often": "غالباً إلى حد ما", // "Fairly Often"
+  "option_pss_very_often": "غالباً جداً",   // "Very Often"
 
   // --- PHQ-9 Depression Test ---
   "phq9_test_name": "PHQ-9 | اختبار مقياس صحة المريض للاكتئاب",
@@ -81,16 +65,22 @@ const testsTranslations = {
   "gad7_result_moderate": "قلق متوسط. قد يكون من المناسب النظر في خطة علاجية أو علاج نفسي.",
   "gad7_result_severe": "قلق شديد. يُنصح عادةً بالعلاج وقد يشمل العلاج النفسي و/أو الأدوية.",
 
-  // --- Stress Screener (Example Test) ---
-  "stress_screener_name": "مقياس فحص مستوى التوتر",
-  "stress_screener_description": "تقييم سريع لمستوى التوتر الحالي لديك.",
-  "stress_q1_text": "هل تشعر بالإرهاق بسبب مسؤولياتك؟",
-  "stress_q2_text": "هل تجد صعوبة في التأقلم مع الضغوط اليومية؟",
-  // Result keys for stress_screener (assuming text for these will be added if used)
-  "stress_result_low": "مستوى التوتر لديك منخفض.",
-  "stress_result_moderate": "مستوى التوتر لديك متوسط. قد تستفيد من تقنيات إدارة الإجهاد.",
-  "stress_result_high": "مستوى التوتر لديك مرتفع. من المهم البحث عن استراتيجيات للتخفيف من التوتر وربما طلب الدعم.",
-
+  // --- Perceived Stress Scale (PSS-10) ---
+  "pss10_test_name": "مقياس الإجهاد المدرك (PSS-10)",
+  "pss10_description": "مقياس من 10 أسئلة لقياس مدى إدراكك للتوتر خلال الشهر الماضي.",
+  "pss10_q1_text": "في الشهر الماضي، كم مرة شعرت بالانزعاج بسبب شيء حدث بشكل غير متوقع؟",
+  "pss10_q2_text": "في الشهر الماضي، كم مرة شعرت بأنك غير قادر على التحكم في الأشياء المهمة في حياتك؟",
+  "pss10_q3_text": "في الشهر الماضي، كم مرة شعرت بالتوتر والعصبية؟",
+  "pss10_q4_text": "في الشهر الماضي، كم مرة شعرت بالثقة في قدرتك على التعامل مع مشاكلك الشخصية؟", // Reverse Scored
+  "pss10_q5_text": "في الشهر الماضي، كم مرة شعرت بأن الأمور تسير في صالحك؟", // Reverse Scored
+  "pss10_q6_text": "في الشهر الماضي، كم مرة وجدت أنك لا تستطيع التأقلم مع كل الأشياء التي كان عليك القيام بها؟",
+  "pss10_q7_text": "في الشهر الماضي، كم مرة تمكنت من التحكم في المضايقات في حياتك؟", // Reverse Scored
+  "pss10_q8_text": "في الشهر الماضي، كم مرة شعرت بأنك مسيطر على الأمور؟", // Reverse Scored
+  "pss10_q9_text": "في الشهر الماضي، كم مرة شعرت بالغضب بسبب أشياء خارجة عن إرادتك؟",
+  "pss10_q10_text": "في الشهر الماضي، كم مرة شعرت بأن الصعوبات تتراكم لدرجة أنك لا تستطيع التغلب عليها؟",
+  "pss10_result_low_stress": "إجهاد مدرك منخفض. يبدو أن مستويات التوتر لديك منخفضة نسبيًا.",
+  "pss10_result_moderate_stress": "إجهاد مدرك متوسط. إنك تعاني من مستوى متوسط من التوتر.",
+  "pss10_result_high_stress": "إجهاد مدرك مرتفع. يبدو أن مستويات التوتر لديك مرتفعة، وقد تستفيد من استراتيجيات إدارة الإجهاد.",
 
   // --- Other Test Names & Descriptions (User Added - good for TestSelection) ---
   // For these to be fully functional, their questions, response options, and scoring result keys
