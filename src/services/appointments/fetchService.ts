@@ -1,7 +1,6 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { PatientAppointment, SupabaseAppointmentRecord } from "./types";
-import { DoctorProfile } from "@/services/doctorService";
+import { DoctorProfile } from "@/lib/therapist-types";
 
 // جلب مواعيد المريض
 export async function fetchPatientAppointments(patientId: string): Promise<PatientAppointment[]> {

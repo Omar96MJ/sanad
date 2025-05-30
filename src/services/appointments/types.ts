@@ -1,5 +1,4 @@
-
-import {DoctorProfile} from "@/services/doctorService";
+import { DoctorProfile } from "@/lib/therapist-types";
 
 export interface PatientAppointment {
   id?: string;                 // من جدول public.appointments
