@@ -20,7 +20,7 @@ const testsTranslations = {
   "result_default_consult": "نشجعك على مناقشة هذه النتائج مع أخصائي صحة نفسية للحصول على فهم أعمق.",
 
   // --- Standardized Response Options ---
-  "option_not_at_all": "ليس على الإطلاق",
+  "option_not_at_all": "على الإطلاق",
   "option_several_days": "عدة أيام",
   "option_more_than_half_days": "أكثر من نصف الأيام",
   "option_nearly_every_day": "تقريبًا كل يوم",
@@ -33,7 +33,7 @@ const testsTranslations = {
   "option_pss_very_often": "غالباً جداً",   // "Very Often"
 
   // --- PHQ-9 Depression Test ---
-  "phq9_test_name": "PHQ-9 | اختبار مقياس صحة المريض للاكتئاب",
+  "phq9_test_name": "اختبار مقياس شدة للاكتئاب",
   "phq9_description": "أداة فحص مكونة من 9 أسئلة لتقييم شدة أعراض الاكتئاب.",
   "phq9_q1_text": "قلة الاهتمام أو المتعة في فعل الأشياء",
   "phq9_q2_text": "الشعور بالإحباط، الاكتئاب، أو اليأس",
@@ -51,7 +51,7 @@ const testsTranslations = {
   "phq9_result_severe": "اكتئاب شديد. يُنصح بشدة بالعلاج بالأدوية و/أو العلاج النفسي.",
 
   // --- GAD-7 Anxiety Test ---
-  "gad7_test_name": "GAD-7 | اختبار اضطراب القلق العام",
+  "gad7_test_name": "اختبار اضطراب القلق العام",
   "gad7_description": "أداة فحص مكونة من 7 أسئلة لتقييم شدة أعراض القلق.",
   "gad7_q1_text": "الشعور بالعصبية أو القلق أو التوتر الشديد",
   "gad7_q2_text": "عدم القدرة على إيقاف أو التحكم في القلق",
@@ -66,7 +66,7 @@ const testsTranslations = {
   "gad7_result_severe": "قلق شديد. يُنصح عادةً بالعلاج وقد يشمل العلاج النفسي و/أو الأدوية.",
 
   // --- Perceived Stress Scale (PSS-10) ---
-  "pss10_test_name": "مقياس الإجهاد المدرك (PSS-10)",
+  "pss10_test_name": "مقياس الإجهاد المدرك",
   "pss10_description": "مقياس من 10 أسئلة لقياس مدى إدراكك للتوتر خلال الشهر الماضي.",
   "pss10_q1_text": "في الشهر الماضي، كم مرة شعرت بالانزعاج بسبب شيء حدث بشكل غير متوقع؟",
   "pss10_q2_text": "في الشهر الماضي، كم مرة شعرت بأنك غير قادر على التحكم في الأشياء المهمة في حياتك؟",

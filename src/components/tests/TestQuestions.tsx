@@ -26,13 +26,11 @@ const TestQuestions: React.FC<TestQuestionsProps> = ({
   // Basic check, though TestContent should ideally prevent rendering this component
   // if questionText or responseOptions are not ready.
   if (!questionText || !responseOptions || responseOptions.length === 0) {
-    // This could be a loading indicator or an error message
-    // For now, returning null or a simple message:
     return <p>{t('loading_test') || 'Loading question...'}</p>;
   }
 
   return (
-    <Card className="w-full max-w-lg animate-fade-in"> {/* Added a simple animation class example */}
+    <Card className="w-full max-w-lg animate-fade-in">
       <CardHeader>
         <CardTitle>{testName}</CardTitle>
         <CardDescription>
