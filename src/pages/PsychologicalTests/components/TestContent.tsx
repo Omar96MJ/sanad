@@ -84,31 +84,6 @@ const calculateResult = (finalAnswers: number[]) => {
   toast.success(t('test_completed'));
 };
 
-  const calculateResult = (finalAnswers: number[]) => {
-    const sum = finalAnswers.reduce((a, b) => a + b, 0);
-    const max = finalAnswers.length * 3;
-    const percentage = (sum / max) * 100;
-
-    let resultText = '';
-    if (selectedTest === 'depression') {
-      if (percentage < 25) resultText = t('depression_result_minimal');
-      else if (percentage < 50) resultText = t('depression_result_mild');
-      else if (percentage < 75) resultText = t('depression_result_moderate');
-      else resultText = t('depression_result_severe');
-    } else if (selectedTest === 'anxiety') {
-      if (percentage < 25) resultText = t('anxiety_result_minimal');
-      else if (percentage < 50) resultText = t('anxiety_result_mild');
-      else if (percentage < 75) resultText = t('anxiety_result_moderate');
-      else resultText = t('anxiety_result_severe');
-    } else {
-      resultText = t('your_score_is') + ` ${percentage.toFixed(1)}%. ` + t('consult_professional');
-    }
-
-    setResult(resultText);
-    setTestCompleted(true);
-    toast.success(t('test_completed'));
-  };
-
   const restartTest = () => {
     setTestStarted(false);
     setTestCompleted(false);
