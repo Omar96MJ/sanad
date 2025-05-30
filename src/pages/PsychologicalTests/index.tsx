@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import TestContent from './components/TestContent'; // Path might be different based on your structure
 
-const PsychologicalTestsPage = () => { // Renamed for clarity if it's a page component
+const PsychologicalTests = () => { // Renamed for clarity if it's a page component
   const { language, t } = useLanguage(); // 't' might be used for page-specific titles
   const [isVisible, setIsVisible] = useState(false);
 
@@ -39,4 +39,4 @@ const PsychologicalTestsPage = () => { // Renamed for clarity if it's a page com
   );
 };
 
-export default PsychologicalTestsPage;
+export default PsychologicalTests;
