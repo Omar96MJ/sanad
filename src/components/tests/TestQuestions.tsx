@@ -1,14 +1,8 @@
-
+// src/components/tests/TestQuestions.tsx
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
-
-interface Test {
-  id: string;
-  name: string;
-  icon: string;
-}
 
 interface TestQuestionsProps {
   testName: string;
@@ -20,33 +14,43 @@ interface TestQuestionsProps {
 }
 
 const TestQuestions: React.FC<TestQuestionsProps> = ({
-  selectedTest,
-  tests,
-  currentQuestion,
-  questions,
+  testName,
+  currentQuestionIndex,
+  questionText,
+  totalQuestions,
+  responseOptions,
   onAnswer,
 }) => {
   const { t } = useLanguage();
 
-  if (currentQuestion >= questions.length) return null;
-
-  const currentQ = questions[currentQuestion];
+  if (!questionText || responseOptions.length === 0) {
+    // Or some other loading/error state, though TestContent should prevent this
+    return <p>Error: Question data missing.</p>;
+  }
 
   return (
     <Card className="w-full max-w-lg">
       <CardHeader>
-        <CardTitle>{tests.find(t => t.id === selectedTest)?.name}</CardTitle>
+        <CardTitle>{testName}</CardTitle>
         <CardDescription>
-          {t('question')} {currentQuestion + 1} {t('of')} {questions.length}
+          {t('question')} {currentQuestionIndex + 1} {t('of')} {totalQuestions}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-lg mb-6">{currentQ}</p>
+        <p className="text-lg mb-6">{questionText}</p>
         <div className="flex flex-col space-y-2">
-          <Button variant="outline" onClick={() => onAnswer(0)}>{t('not_at_all')}</Button>
-          <Button variant="outline" onClick={() => onAnswer(1)}>{t('several_days')}</Button>
-          <Button variant="outline" onClick={() => onAnswer(2)}>{t('more_than_half_days')}</Button>
-          <Button variant="outline" onClick={() => onAnswer(3)}>{t('nearly_every_day')}</Button>
+          {responseOptions.map((option) => (
+            <Button
+              key={option.score + option.text} // More robust key
+              variant="outline"
+              onClick={() => {
+                console.log("TestQuestions: Answered with score:", option.score); // DEBUG
+                onAnswer(option.score);
+              }}
+            >
+              {option.text} {/* Use the translated text from the prop */}
+            </Button>
+          ))}
         </div>
       </CardContent>
     </Card>
