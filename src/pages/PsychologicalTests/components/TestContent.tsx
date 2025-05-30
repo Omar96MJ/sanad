@@ -1,132 +1,140 @@
-
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useMemo } from 'react';
+// Removed useNavigate as it wasn't used in the provided snippet for core logic
 import { useLanguage } from '@/hooks/useLanguage';
 import { toast } from "sonner";
-import TestSelection from '@/components/tests/TestSelection';
-import TestQuestions from '@/components/tests/TestQuestions';
-import TestResults from '@/components/tests/TestResults';
-import { useTestData } from '../hooks/useTestData';
+import TestSelection from '@/components/tests/TestSelection'; // Assuming this component is adapted
+import TestQuestions from '@/components/tests/TestQuestions'; // Assuming this component is adapted
+import TestResults from '@/components/tests/TestResults';   // Assuming this component is adapted
+import { useTestData, PsychTest, TestQuestion, ResponseOption } from '../hooks/useTestData';
 
 const TestContent = () => {
-  const { t } = useLanguage();
-  const navigate = useNavigate();
-  const [selectedTest, setSelectedTest] = useState<string | null>(null);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const { t } = useLanguage(); // Primary 't' for this component's own text
+  const { tests } = useTestData(); // Get all test definitions
+
+  const [selectedTestId, setSelectedTestId] = useState<string | null>(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<number[]>([]);
   const [testStarted, setTestStarted] = useState(false);
   const [testCompleted, setTestCompleted] = useState(false);
-  const [result, setResult] = useState('');
-  
-  const { tests, testQuestions } = useTestData();
+  const [resultText, setResultText] = useState('');
+
+  // Memoize the currently selected test data to avoid re-calculating
+  const currentTestData: PsychTest | undefined = useMemo(() => {
+    return tests.find(test => test.id === selectedTestId);
+  }, [selectedTestId, tests]);
 
   const handleSelectTest = (testId: string) => {
-    setSelectedTest(testId);
+    setSelectedTestId(testId);
     setTestStarted(false);
     setTestCompleted(false);
-    setCurrentQuestion(0);
+    setCurrentQuestionIndex(0);
     setAnswers([]);
-    setResult('');
+    setResultText('');
   };
 
   const startTest = () => {
-    if (!selectedTest) return;
+    if (!currentTestData) return;
     setTestStarted(true);
     setTestCompleted(false);
-    setCurrentQuestion(0);
+    setCurrentQuestionIndex(0);
     setAnswers([]);
   };
 
   const handleAnswer = (score: number) => {
+    if (!currentTestData) return;
     const newAnswers = [...answers, score];
     setAnswers(newAnswers);
 
-    if (selectedTest && currentQuestion < testQuestions[selectedTest as keyof typeof testQuestions].length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+    if (currentQuestionIndex < currentTestData.questions.length - 1) {
+      setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      calculateResult(newAnswers);
+      calculateResult(newAnswers, currentTestData);
     }
   };
 
-const calculateResult = (finalAnswers: number[]) => {
-  const sum = finalAnswers.reduce((a, b) => a + b, 0);
-  let resultText = '';
-  let percentage = 0; // Initialize, or calculate as needed per block
+  const calculateResult = (finalAnswers: number[], testData: PsychTest) => {
+    const sum = finalAnswers.reduce((a, b) => a + b, 0);
+    let calculatedResultKey = 'result_default_consult'; // Fallback translation key
 
-  if (selectedTest === 'phq9') {
-    if (sum <= 4) resultText = t('phq9_result_minimal');
-    else if (sum <= 9) resultText = t('phq9_result_mild');
-    else if (sum <= 14) resultText = t('phq9_result_moderate');
-    else if (sum <= 19) resultText = t('phq9_result_moderately_severe');
-    else resultText = t('phq9_result_severe');
-  } else if (selectedTest === 'depression') {
-    // Assuming 'depression' test questions also have a max score, e.g., 3 per question
-    const maxDepressionScore = finalAnswers.length * 3; // Adjust if max score per question differs
-    percentage = (maxDepressionScore > 0) ? (sum / maxDepressionScore) * 100 : 0;
-    if (percentage < 25) resultText = t('depression_result_minimal');
-    else if (percentage < 50) resultText = t('depression_result_mild');
-    else if (percentage < 75) resultText = t('depression_result_moderate');
-    else resultText = t('depression_result_severe');
-  } else if (selectedTest === 'anxiety') {
-    // Assuming 'anxiety' test questions also have a max score
-    const maxAnxietyScore = finalAnswers.length * 3; // Adjust if max score per question differs
-    percentage = (maxAnxietyScore > 0) ? (sum / maxAnxietyScore) * 100 : 0;
-    if (percentage < 25) resultText = t('anxiety_result_minimal');
-    else if (percentage < 50) resultText = t('anxiety_result_mild');
-    else if (percentage < 75) resultText = t('anxiety_result_moderate');
-    else resultText = t('anxiety_result_severe');
-  } else {
-    // Fallback for other tests or general scoring
-    const maxScoreDefault = finalAnswers.length * 3; // General assumption
-    percentage = (maxScoreDefault > 0) ? (sum / maxScoreDefault) * 100 : 0;
-    resultText = t('your_score_is') + ` ${percentage.toFixed(1)}%. ` + t('consult_professional');
-  }
-
-  setResult(resultText);
-  setTestCompleted(true);
-  toast.success(t('test_completed'));
-};
-
-  const restartTest = () => {
-    setTestStarted(false);
-    setTestCompleted(false);
-    setCurrentQuestion(0);
-    setAnswers([]);
-    setResult('');
+    for (const threshold of testData.scoringThresholds) {
+      if (sum <= threshold.upperBound) {
+        calculatedResultKey = threshold.resultKey;
+        break;
+      }
+    }
+    setResultText(t(calculatedResultKey));
+    setTestCompleted(true);
+    toast.success(t('test_completed_toast')); // e.g., "Test completed!"
   };
 
-  if (selectedTest && testStarted && !testCompleted) {
+  const restartTest = () => {
+    if (!currentTestData) return; // Should ideally not happen if test was started
+    setTestStarted(true); // Or false if you want them to see the start button again
+    setTestCompleted(false);
+    setCurrentQuestionIndex(0);
+    setAnswers([]);
+    setResultText('');
+     // If you want to go back to selection on restart, uncomment next line
+    // setSelectedTestId(null);
+  };
+
+  const chooseAnotherTest = () => {
+    setSelectedTestId(null);
+    setTestStarted(false);
+    setTestCompleted(false);
+    setCurrentQuestionIndex(0);
+    setAnswers([]);
+    setResultText('');
+  };
+
+  // Prepare props for TestQuestions component
+  const questionsForComponent: string[] | undefined = useMemo(() =>
+    currentTestData?.questions.map(q => t(q.textKey)),
+    [currentTestData, t]
+  );
+
+  const responseOptionsForComponent: { text: string; score: number }[] | undefined = useMemo(() =>
+    currentTestData?.responseOptions.map(opt => ({ ...opt, text: t(opt.textKey) })),
+    [currentTestData, t]
+  );
+
+  if (currentTestData && testStarted && !testCompleted) {
     return (
-      <TestQuestions 
-        selectedTest={selectedTest}
-        tests={tests}
-        currentQuestion={currentQuestion}
-        questions={testQuestions[selectedTest as keyof typeof testQuestions]}
+      <TestQuestions
+        testName={t(currentTestData.nameKey)}
+        currentQuestionIndex={currentQuestionIndex}
+        questionText={questionsForComponent ? questionsForComponent[currentQuestionIndex] : ''}
+        totalQuestions={currentTestData.questions.length}
+        responseOptions={responseOptionsForComponent || []}
         onAnswer={handleAnswer}
       />
     );
   }
 
-  if (testCompleted) {
+  if (testCompleted && currentTestData) {
     return (
-      <TestResults 
-        selectedTest={selectedTest}
-        tests={tests}
-        result={result}
+      <TestResults
+        testName={t(currentTestData.nameKey)}
+        result={resultText}
         onRestart={restartTest}
-        onChooseAnother={() => setSelectedTest(null)}
+        onChooseAnother={chooseAnotherTest}
       />
     );
   }
 
   return (
-    <TestSelection 
-      tests={tests}
-      selectedTest={selectedTest}
+    <TestSelection
+      tests={tests.map(test => ({
+        id: test.id,
+        name: t(test.nameKey),
+        icon: test.icon,
+        description: t(test.descriptionKey),
+      }))}
+      selectedTestId={selectedTestId}
       onSelectTest={handleSelectTest}
       onStartTest={startTest}
-      onBack={() => setSelectedTest(null)}
-      testQuestions={testQuestions}
+      // onBack is not defined in the original, so removed unless TestSelection uses it
+      // testQuestions is not needed by TestSelection directly with this model
     />
   );
 };
