@@ -48,6 +48,13 @@ const testsTranslations = {
   'option_often': 'Often',
   'option_always': 'Always',
 
+  // PSS-10 Specific Response Options
+  'option_pss_never': 'Never',
+  'option_pss_almost_never': 'Almost Never',
+  'option_pss_sometimes': 'Sometimes',
+  'option_pss_fairly_often': 'Fairly Often',
+  'option_pss_very_often': 'Very Often',
+
   // --- PHQ-9 Depression Test ---
   'phq9_test_name': 'PHQ-9 Depression Screening',
   'phq9_description': 'A 9-question screening tool to assess the severity of depression symptoms.',
