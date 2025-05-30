@@ -1,11 +1,11 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useAuth } from "@/hooks/useAuth";
 import { format, isSameDay } from "date-fns";
 import { toast } from "sonner";
-import { fetchAllDoctors, DoctorProfile } from "@/services/doctorService";
+import { fetchAllDoctors } from "@/services/doctorService";
+import { DoctorProfile } from "@/lib/therapist-types";
 
 interface UseSessionBookingProps {
   onSuccess?: () => void;

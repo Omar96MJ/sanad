@@ -1,7 +1,6 @@
-
 import { useLanguage } from "@/hooks/useLanguage";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DoctorProfile } from "@/services/doctorService";
+import { DoctorProfile } from "@/lib/therapist-types";
 
 interface TherapistSelectProps {
   therapists: DoctorProfile[];

@@ -96,16 +96,14 @@ export const useMessagingActions = (
     console.log("Sending message:", { content, conversationId: activeConversationId, senderId: user.id });
     
     try {
-      // Insert message into database
-      const { data, error } = await supabase
+      // Insert message into database - the real-time subscription will handle adding it to state
+      const { error } = await supabase
         .from('messages')
         .insert({
           sender_id: user.id,
           conversation_id: activeConversationId,
           content
-        })
-        .select()
-        .single();
+        });
       
       if (error) {
         console.error("Error sending message:", error);
@@ -113,7 +111,14 @@ export const useMessagingActions = (
         return false;
       }
       
-      console.log("Message sent successfully:", data);
+      console.log("Message sent successfully");
+      
+      // Update conversation timestamp
+      await supabase
+        .from('conversations')
+        .update({ updated_at: new Date().toISOString() })
+        .eq('id', activeConversationId);
+      
       return true;
     } catch (error) {
       console.error("Error in send message:", error);
