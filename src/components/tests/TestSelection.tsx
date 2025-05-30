@@ -40,6 +40,7 @@ const TestSelection: React.FC<TestSelectionProps> = ({
         </CardHeader>
         <CardContent>
           <p className="mb-4">
+            // This line uses 'testQuestions' which is not provided by the new TestContent
             {t('test_consists_of')} {testQuestions[selectedTest]?.length || 5} {t('questions_and_will_take')} {testQuestions[selectedTest]?.length || 5} {t('minutes_to_complete')}
           </p>
           <p className="text-sm text-muted-foreground mb-4">
