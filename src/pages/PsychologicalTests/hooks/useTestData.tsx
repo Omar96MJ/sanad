@@ -6,10 +6,11 @@ export interface ResponseOption {
   score: number;
 }
 
-// Define the structure for a test question
+// Updated: Define the structure for a test question
 export interface TestQuestion {
   id: string; // Unique ID for the question (e.g., 'phq9_q1')
   textKey: string; // Translation key for the question text
+  reverseScored?: boolean; // Optional: True if this question's score should be reversed
 }
 
 // Define the structure for scoring thresholds
@@ -30,88 +31,97 @@ export interface PsychTest {
 }
 
 export const useTestData = () => {
-  const { t } = useLanguage(); // Assuming t function is available for translations
+  const { t } = useLanguage();
 
-  // Common response options for PHQ-9 and GAD-7
-  const commonLikertOptions: ResponseOption[] = [
+  const commonLikertOptionsPHQGAD: ResponseOption[] = [
     { textKey: 'option_not_at_all', score: 0 },
     { textKey: 'option_several_days', score: 1 },
     { textKey: 'option_more_than_half_days', score: 2 },
     { textKey: 'option_nearly_every_day', score: 3 },
   ];
 
+  const pss10ResponseOptions: ResponseOption[] = [
+    { textKey: 'option_pss_never', score: 0 },           // 0 - Never
+    { textKey: 'option_pss_almost_never', score: 1 }, // 1 - Almost Never
+    { textKey: 'option_pss_sometimes', score: 2 },    // 2 - Sometimes
+    { textKey: 'option_pss_fairly_often', score: 3 }, // 3 - Fairly Often
+    { textKey: 'option_pss_very_often', score: 4 },   // 4 - Very Often
+  ];
+
   const tests: PsychTest[] = [
     {
       id: 'phq9',
-      nameKey: 'phq9_test_name', // e.g., "PHQ-9 Depression Test"
+      nameKey: 'phq9_test_name',
       icon: '📝',
-      descriptionKey: 'phq9_description', // e.g., "Screens for symptoms of depression."
+      descriptionKey: 'phq9_description',
       questions: [
-        { id: 'phq9_q1', textKey: 'phq9_q1_text' }, // "Little interest or pleasure in doing things"
-        { id: 'phq9_q2', textKey: 'phq9_q2_text' }, // "Feeling down, depressed, or hopeless"
-        { id: 'phq9_q3', textKey: 'phq9_q3_text' }, // "Trouble falling or staying asleep, or sleeping too much"
-        { id: 'phq9_q4', textKey: 'phq9_q4_text' }, // "Feeling tired or having little energy"
-        { id: 'phq9_q5', textKey: 'phq9_q5_text' }, // "Poor appetite or overeating"
-        { id: 'phq9_q6', textKey: 'phq9_q6_text' }, // "Feeling bad about yourself - or that you are a failure or have let yourself or your family down"
-        { id: 'phq9_q7', textKey: 'phq9_q7_text' }, // "Trouble concentrating on things, such as reading the newspaper or watching television"
-        { id: 'phq9_q8', textKey: 'phq9_q8_text' }, // "Moving or speaking so slowly that other people could have noticed. Or the opposite - being so fidgety or restless that you have been moving around a lot more than usual"
-        { id: 'phq9_q9', textKey: 'phq9_q9_text' }, // "Thoughts that you would be better off dead, or of hurting yourself in some way"
+        { id: 'phq9_q1', textKey: 'phq9_q1_text' },
+        { id: 'phq9_q2', textKey: 'phq9_q2_text' },
+        { id: 'phq9_q3', textKey: 'phq9_q3_text' },
+        { id: 'phq9_q4', textKey: 'phq9_q4_text' },
+        { id: 'phq9_q5', textKey: 'phq9_q5_text' },
+        { id: 'phq9_q6', textKey: 'phq9_q6_text' },
+        { id: 'phq9_q7', textKey: 'phq9_q7_text' },
+        { id: 'phq9_q8', textKey: 'phq9_q8_text' },
+        { id: 'phq9_q9', textKey: 'phq9_q9_text' },
       ],
-      responseOptions: commonLikertOptions,
-      scoringThresholds: [ // Total score 0-27
-        { upperBound: 4, resultKey: 'phq9_result_minimal' }, // Minimal depression
-        { upperBound: 9, resultKey: 'phq9_result_mild' },    // Mild depression
-        { upperBound: 14, resultKey: 'phq9_result_moderate' },// Moderate depression
-        { upperBound: 19, resultKey: 'phq9_result_moderately_severe' }, // Moderately severe depression
-        { upperBound: 27, resultKey: 'phq9_result_severe' }, // Severe depression
+      responseOptions: commonLikertOptionsPHQGAD,
+      scoringThresholds: [
+        { upperBound: 4, resultKey: 'phq9_result_minimal' },
+        { upperBound: 9, resultKey: 'phq9_result_mild' },
+        { upperBound: 14, resultKey: 'phq9_result_moderate' },
+        { upperBound: 19, resultKey: 'phq9_result_moderately_severe' },
+        { upperBound: 27, resultKey: 'phq9_result_severe' },
       ],
     },
     {
       id: 'gad7',
-      nameKey: 'gad7_test_name', // e.g., "GAD-7 Anxiety Test"
+      nameKey: 'gad7_test_name',
       icon: '😟',
-      descriptionKey: 'gad7_description', // e.g., "Screens for symptoms of generalized anxiety disorder."
+      descriptionKey: 'gad7_description',
       questions: [
-        { id: 'gad7_q1', textKey: 'gad7_q1_text' }, // "Feeling nervous, anxious, or on edge"
-        { id: 'gad7_q2', textKey: 'gad7_q2_text' }, // "Not being able to stop or control worrying"
-        { id: 'gad7_q3', textKey: 'gad7_q3_text' }, // "Worrying too much about different things"
-        { id: 'gad7_q4', textKey: 'gad7_q4_text' }, // "Trouble relaxing"
-        { id: 'gad7_q5', textKey: 'gad7_q5_text' }, // "Being so restless that it is hard to sit still"
-        { id: 'gad7_q6', textKey: 'gad7_q6_text' }, // "Becoming easily annoyed or irritable"
-        { id: 'gad7_q7', textKey: 'gad7_q7_text' }, // "Feeling afraid as if something awful might happen"
+        { id: 'gad7_q1', textKey: 'gad7_q1_text' },
+        { id: 'gad7_q2', textKey: 'gad7_q2_text' },
+        { id: 'gad7_q3', textKey: 'gad7_q3_text' },
+        { id: 'gad7_q4', textKey: 'gad7_q4_text' },
+        { id: 'gad7_q5', textKey: 'gad7_q5_text' },
+        { id: 'gad7_q6', textKey: 'gad7_q6_text' },
+        { id: 'gad7_q7', textKey: 'gad7_q7_text' },
       ],
-      responseOptions: commonLikertOptions,
-      scoringThresholds: [ // Total score 0-21
-        { upperBound: 4, resultKey: 'gad7_result_minimal' },  // Minimal anxiety
-        { upperBound: 9, resultKey: 'gad7_result_mild' },     // Mild anxiety
-        { upperBound: 14, resultKey: 'gad7_result_moderate' }, // Moderate anxiety
-        { upperBound: 21, resultKey: 'gad7_result_severe' },   // Severe anxiety
+      responseOptions: commonLikertOptionsPHQGAD,
+      scoringThresholds: [
+        { upperBound: 4, resultKey: 'gad7_result_minimal' },
+        { upperBound: 9, resultKey: 'gad7_result_mild' },
+        { upperBound: 14, resultKey: 'gad7_result_moderate' },
+        { upperBound: 21, resultKey: 'gad7_result_severe' },
       ],
     },
-    // Example: Adding another (fictional) simple test
     {
-      id: 'stress_screener',
-      nameKey: 'stress_screener_name',
-      icon: '🤯',
-      descriptionKey: 'stress_screener_description',
+      id: 'pss10',
+      nameKey: 'pss10_test_name',
+      icon: '😥', // Icon for stress
+      descriptionKey: 'pss10_description',
       questions: [
-        { id: 'stress_q1', textKey: 'stress_q1_text' },
-        { id: 'stress_q2', textKey: 'stress_q2_text' },
+        { id: 'pss10_q1', textKey: 'pss10_q1_text' }, // Upset by unexpected
+        { id: 'pss10_q2', textKey: 'pss10_q2_text' }, // Unable to control important things
+        { id: 'pss10_q3', textKey: 'pss10_q3_text' }, // Felt nervous and stressed
+        { id: 'pss10_q4', textKey: 'pss10_q4_text', reverseScored: true }, // Confident handling personal problems (R)
+        { id: 'pss10_q5', textKey: 'pss10_q5_text', reverseScored: true }, // Things going your way (R)
+        { id: 'pss10_q6', textKey: 'pss10_q6_text' }, // Could not cope with things to do
+        { id: 'pss10_q7', textKey: 'pss10_q7_text', reverseScored: true }, // Able to control irritations (R)
+        { id: 'pss10_q8', textKey: 'pss10_q8_text', reverseScored: true }, // Felt on top of things (R)
+        { id: 'pss10_q9', textKey: 'pss10_q9_text' }, // Angered by things outside your control
+        { id: 'pss10_q10', textKey: 'pss10_q10_text' },// Difficulties piling up
       ],
-      responseOptions: [ // Could have different options
-        { textKey: 'option_never', score: 0 },
-        { textKey: 'option_sometimes', score: 1 },
-        { textKey: 'option_often', score: 2 },
-        { textKey: 'option_always', score: 3 },
-      ],
-      scoringThresholds: [
-        { upperBound: 2, resultKey: 'stress_result_low' },
-        { upperBound: 4, resultKey: 'stress_result_moderate' },
-        { upperBound: 6, resultKey: 'stress_result_high' },
+      responseOptions: pss10ResponseOptions,
+      scoringThresholds: [ // Total score 0-40
+        { upperBound: 13, resultKey: 'pss10_result_low_stress' },    // Low stress
+        { upperBound: 26, resultKey: 'pss10_result_moderate_stress' },// Moderate stress
+        { upperBound: 40, resultKey: 'pss10_result_high_stress' },    // High stress
       ],
     }
-    // Add more standardized tests here following the PsychTest structure
+    // Removed stress_screener
   ];
 
-  return { tests, t }; // Exposing 't' can be helpful for components if they need to translate option texts directly
+  return { tests };
 };
