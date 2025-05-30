@@ -35,14 +35,13 @@ const ConversationList: React.FC<ConversationListProps> = ({
     const otherParticipantId = conversation.participantIds.find(id => id !== currentUserId);
     return patients.find(patient => patient.id === otherParticipantId) || { id: "", name: "Unknown User" };
   };
-  const { t, language } = useLanguage();
+  const { t } = useLanguage();
 
-  // Get the last message for a conversation
+  // Get the last message for a conversation by looking at messages for that conversation
   const getLastMessage = (conversation: Conversation) => {
-    // Filter messages for this conversation
+    // Filter messages that belong to this conversation
     const conversationMessages = messages.filter(m => 
-      conversation.participantIds.includes(m.senderId) && 
-      conversation.participantIds.includes(m.recipientId)
+      conversation.participantIds.includes(m.senderId)
     );
     
     if (conversationMessages.length === 0) {
@@ -72,7 +71,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
         <div className="relative">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder={t("search_conversations")}
+            placeholder={t("search_conversations") || "Search conversations"}
             className="pl-8"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -82,7 +81,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
       
       {sortedConversations.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground">
-         {t('no_conversations_yet')} 
+         {t('no_conversations_yet') || "No conversations yet"} 
         </div>
       ) : (
         <ScrollArea className="h-[calc(100vh-350px)] pr-4">

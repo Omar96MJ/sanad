@@ -26,16 +26,11 @@ const MessageList: React.FC<MessageListProps> = ({ messages, currentUserId }) =>
   const formatMessageTime = (timestamp: string) => {
     return format(new Date(timestamp), "h:mm a");
   };
-  
-  // Filter messages for the current conversation
-  const conversationMessages = messages.filter((message) => 
-    message.senderId === currentUserId || message.recipientId === currentUserId
-  );
 
   return (
     <ScrollArea ref={scrollAreaRef} className="h-[calc(100vh-450px)] px-4 py-4">
       <div className="space-y-4">
-        {conversationMessages.map((message) => {
+        {messages.map((message) => {
           const isCurrentUser = message.senderId === currentUserId;
           
           return (
@@ -73,7 +68,7 @@ const MessageList: React.FC<MessageListProps> = ({ messages, currentUserId }) =>
           );
         })}
         
-        {conversationMessages.length === 0 && (
+        {messages.length === 0 && (
           <div className="flex justify-center items-center h-32 text-muted-foreground text-sm">
             No messages yet. Start the conversation!
           </div>

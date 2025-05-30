@@ -13,28 +13,39 @@ export const useRealtimeSubscriptions = (
   useEffect(() => {
     if (!user) return;
 
+    console.log("Setting up realtime subscriptions for user:", user.id);
+
     // Subscribe to new messages
     const messagesChannel = supabase
       .channel('public:messages')
       .on('postgres_changes', 
         { event: 'INSERT', schema: 'public', table: 'messages' }, 
-        payload => {
+        async payload => {
           const newMessage = payload.new as any;
+          console.log("New message received:", newMessage);
           
           // Only add message to state if it's for the active conversation
           if (newMessage.conversation_id === activeConversationId) {
+            // Get sender profile info
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('name, role')
+              .eq('id', newMessage.sender_id)
+              .single();
+            
             // Convert to our Message type
             const formattedMessage: Message = {
               id: newMessage.id,
               senderId: newMessage.sender_id,
-              senderName: newMessage.sender_id === user.id ? (user.name || "You") : "Unknown",
-              senderRole: newMessage.sender_id === user.id ? (user.role || "unknown") : "unknown",
-              recipientId: "", // We'll determine this from conversation participants
+              senderName: profileData?.name || "Unknown",
+              senderRole: profileData?.role || "unknown",
+              recipientId: "",
               content: newMessage.content,
               timestamp: newMessage.created_at,
-              isRead: true // New messages are considered read if they're in the active conversation
+              isRead: true
             };
             
+            console.log("Adding formatted message to state:", formattedMessage);
             setMessages(prevMessages => [...prevMessages, formattedMessage]);
           }
           
@@ -50,13 +61,14 @@ export const useRealtimeSubscriptions = (
       .on('postgres_changes', 
         { event: 'UPDATE', schema: 'public', table: 'conversations' }, 
         () => {
-          // Refresh conversations when updated
+          console.log("Conversation updated, refreshing list");
           fetchConversations();
         }
       )
       .subscribe();
       
     return () => {
+      console.log("Cleaning up realtime subscriptions");
       supabase.removeChannel(messagesChannel);
       supabase.removeChannel(conversationsChannel);
     };

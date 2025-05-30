@@ -1,3 +1,4 @@
+
 // Dashboard related translations for English
 const dashboardTranslations = {
   // Patient Dashboard
@@ -196,7 +197,24 @@ const dashboardTranslations = {
   'patient': 'Patient',
   'error_connecting_to_session': 'Error connecting to session',
   'error_starting_session': 'Error starting session',
-  'session_with': 'Session with'
+  'session_with': 'Session with',
+
+  // Messaging specific translations
+  'messages': 'Messages',
+  'conversation': 'Conversation',
+  'search_conversations': 'Search conversations',
+  'no_conversations_yet': 'No conversations yet',
+  'select_conversation': 'Select a conversation to start messaging',
+  'message': 'Message',
+  'failed_send_message': 'Failed to send message',
+  'conversation_started': 'Conversation started',
+  'failed_start_conversation': 'Failed to start conversation',
+  'failed_create_conversation': 'Failed to create conversation',
+  'failed_add_participants': 'Failed to add participants',
+  'unexpected_error': 'An unexpected error occurred',
+  'auth_required': 'Authentication Required',
+  'login_to_message': 'Please login to access messaging',
+  'search_patients_hint': 'Search for patients by name to start a conversation'
 };
 
 export default dashboardTranslations;
