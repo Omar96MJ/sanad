@@ -1,37 +1,52 @@
-// src/translations/en/tests.ts
+// Psychological tests translations for English
 const testsTranslations = {
   // --- General Test UI & Page Titles ---
-  'psychological_tests_title': 'Psychological Tests',
-  'psychological_tests_description': 'Take one of our psychological tests to learn more about your mental well-being.',
-  'test_completed_toast': 'Test completed successfully!',
+  'psychological_tests_title': 'Psychological Tests', // For main page title
+  'psychological_tests_description': 'Take one of our psychological tests to learn more about your mental well-being.', // For main page subtitle
+  'test_completed_toast': 'Test completed successfully!', // For toast notifications
   'self_assessment': 'Self-Assessment',
-  // ... (keep other general UI keys from your previous full version) ...
+  'professional_tests': 'Professional Tests', // If you categorize
+
+  // Test categories (if you use them)
+  'all_tests': 'All Tests',
+  'cognitive': 'Cognitive',
+  'personality': 'Personality',
+  'clinical': 'Clinical',
+  'wellbeing': 'Well-being', // Consistent naming
+
+  // Test Interface & Common Actions
   'question': 'Question',
-  'of': 'of',
+  'of': 'of', // e.g., Question 1 'of' 9
   'test_results': 'Test Results',
   'restart_test': 'Restart Test',
   'choose_another_test': 'Choose Another Test',
   'back_to_tests': 'Back to Test List',
   'start_test': 'Start Test',
+  'take_test': 'Take Test', // Generic button
+  'select': 'Select', // Generic select
   'loading_test': 'Loading test...',
+  'test_loaded': 'Test loaded.',
+  'test_load_error': 'Failed to load the test. Please try again.',
+  'no_tests_found': 'No tests found.',
+  'search_tests': 'Search tests...',
   'test_disclaimer': 'These tests are screening tools for educational and informational purposes only. They are not intended for self-diagnosis and do not replace consultation with a qualified mental health professional for accurate diagnosis and appropriate treatment.',
+  'test_consists_of': 'This test consists of',
+  'questions_and_will_take': 'questions and will take approximately',
+  'minutes_to_complete': 'minutes to complete.',
   'answer_honestly': 'Please answer each question honestly for the most accurate results.',
-  'your_score_is': 'Your score is',
-  'consult_professional': 'Please consult a professional for interpretation.',
-  'result_default_consult': 'We encourage you to discuss these results with a mental health professional for a deeper understanding.',
+  'your_score_is': 'Your score is', // Generic score prefix
+  'consult_professional': 'Please consult a professional for interpretation.', // Generic advice
+  'result_default_consult': 'We encourage you to discuss these results with a mental health professional for a deeper understanding.', // Default result text from TestContent
 
-  // --- Standardized Response Options ---
+  // --- Standardized Response Options (CRITICAL: Match useTestData.tsx 'textKey') ---
   'option_not_at_all': 'Not at all',
   'option_several_days': 'Several days',
   'option_more_than_half_days': 'More than half the days',
   'option_nearly_every_day': 'Nearly every day',
-
-  // PSS-10 Specific Response Options
-  'option_pss_never': 'Never',
-  'option_pss_almost_never': 'Almost Never',
-  'option_pss_sometimes': 'Sometimes',
-  'option_pss_fairly_often': 'Fairly Often',
-  'option_pss_very_often': 'Very Often',
+  'option_never': 'Never',
+  'option_sometimes': 'Sometimes',
+  'option_often': 'Often',
+  'option_always': 'Always',
 
   // --- PHQ-9 Depression Test ---
   'phq9_test_name': 'PHQ-9 Depression Screening',
@@ -83,17 +98,56 @@ const testsTranslations = {
   'pss10_result_moderate_stress': 'Moderate perceived stress. You are experiencing a moderate level of stress.',
   'pss10_result_high_stress': 'High perceived stress. Your stress levels appear to be high, and you may benefit from stress management strategies.',
 
-  // Remove Stress Screener specific translations
-  // 'stress_screener_name': 'Stress Level Screener',
-  // 'stress_screener_description': 'A quick assessment of your current stress levels.',
-  // 'stress_q1_text': 'Do you feel overwhelmed by your responsibilities?',
-  // 'stress_q2_text': 'Do you find it difficult to cope with daily pressures?',
-  // 'stress_result_low': 'Your stress level appears to be low.',
-  // 'stress_result_moderate': 'Your stress level appears to be moderate. You might benefit from stress management techniques.',
-  // 'stress_result_high': 'Your stress level appears to be high. It is important to find strategies to reduce stress and potentially seek support.',
+  // Mental Health Info
+  'mentalhealthtitle': 'Understanding Mental Health',
+  'mentalhealthsubtitle': 'Education is the first step toward healing',
+  'anxietytitle': 'Anxiety Disorders', // Note: This key is also used for old anxiety test name. Disambiguate if needed.
+  'anxietydesc': 'Learn about various types of anxiety disorders and their symptoms',
+  'depressiontitle': 'Depression', // Note: This key is also used for old depression test name.
+  'depressiondesc': 'Understand the causes, symptoms, and treatments for depression',
+  'traumatitle': 'Trauma & PTSD',
+  'traumadesc': 'Information about trauma responses and recovery paths',
+  'wellnesstitle': 'General Wellness',
+  'wellnessdesc': 'Strategies for maintaining good mental health in daily life',
+  'anxiety': 'Anxiety', // Tag or category
+  'depression': 'Depression', // Tag or category
+  'stress': 'Stress', // Tag or category
+  'other': 'Other', // Tag or category
 
-  // ... (Keep other existing sections like "Mental Health Info", "Therapy Types", "Blog", etc. from your previous full version) ...
-  // Make sure to merge this new content with your existing English translation file carefully.
+  // Therapy Types
+  'therapytypestitle': 'Specialized Therapy Services',
+  'therapytypessubtitle': 'We offer a range of evidence-based therapy options',
+  'cbttitle': 'Cognitive Behavioral Therapy',
+  'cbtdesc': 'Focuses on changing negative thought patterns to improve mood and behavior',
+  'psychotherapytitle': 'Psychodynamic Therapy',
+  'psychotherapydesc': 'Explores unconscious processes to gain insight into behavior',
+  'mindfulnesstitle': 'Mindfulness-Based Therapy',
+  'mindfulnessdesc': 'Incorporates meditation practices to reduce stress and anxiety',
+  'familytitle': 'Family Therapy',
+  'familydesc': 'Addresses issues affecting the family system and relationships',
+
+  // Blog
+  'blogtitle': 'Mental Health Blog',
+  'blogsubtitle': 'Expert insights and guidance for your mental wellness journey',
+  'readtime': 'min read',
+  'popularposts': 'Popular Posts',
+  'recentposts': 'Recent Posts',
+  'categories': 'Categories',
+  'tags': 'Tags',
+  'author': 'Author',
+  'publishedon': 'Published on',
+  'share': 'Share', // General share
+  'relatedposts': 'Related Posts',
+
+  // Featured Content
+  'featuredcontenttitle': 'Latest Mental Health Resources',
+  'featuredcontentsubtitle': 'Articles and guides to support your mental well-being',
+  'viewallposts': 'View All Posts',
+
+  // 404 Page
+  'notfound': 'Page Not Found',
+  'pagenotfound': 'The page you are looking for doesn\'t exist or has been moved.',
+  'gohome': 'Go to Homepage',
 };
 
 export default testsTranslations;
