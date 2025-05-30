@@ -28,8 +28,8 @@ const AboutUs = () => {
               </h1>
               <p className="text-lg text-muted-foreground mb-8">
                 {isRTL 
-                  ? 'نحن منصة رعاية صحية نفسية ملتزمة بتوفير الدعم والموارد للمساعدة في رحلتك نحو الرفاهية النفسية.'
-                  : 'We are a mental health care platform committed to providing support and resources to help you on your journey to mental wellness.'}
+                  ? 'نحن منصة متخصصة في تقديم الدعم والرعاية في مجال الصحة النفسية، نؤمن بأهمية الرفاه النفسي للجميع، خاصة في أوقات المحن والتحديات الكبرى. مهمتنا الأساسية هي توفير مساندة نفسية متخصصة ومتاحة لأهلنا في السودان، الذين يواجهون ظروفًا استثنائية تتطلب تكاتفنا جميعًا.'
+                  : 'We are a specialized platform dedicated to providing support and care in the field of mental health. We believe in the importance of mental well-being for everyone, especially in times of adversity and major challenges. Our core mission is to provide specialized and accessible psychological support to our people in Sudan, who are facing exceptional circumstances that require our collective solidarity.'}
               </p>
             </div>
           </div>
