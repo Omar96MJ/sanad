@@ -30,6 +30,8 @@ const dashboardTranslations = {
   "no_therapist_assigned": "لم يتم تعيين معالج حتى الآن",
   "find_therapist": "إيجاد معالج",
   "recent_articles": "المقالات الحديثة",
+
+
   // Admin Dashboard translations
   "admin_dashboard": "لوحة تحكم المسؤول",
   "manage_system_wide_settings": "إدارة إعدادات النظام بأكمله",
@@ -148,7 +150,27 @@ const dashboardTranslations = {
   "profile_updated": "تم تحديث الملف الشخصي بنجاح",
   "search_patient": "بحث عن مريض",
   "select": "اختيار",
-  
+  "profile_image": "صورة ملفك",
+  "upload_image" : "تحميل صورة",
+  "patients_with_appointments": "المرضى الذين لديهم مواعيد",
+  "name": "الاسم",
+  "email": "البريد الإلكتروني",
+  "last_session": "آخر جلسة",
+  "actions": "الإجراءات",
+  "no_patients_with_appointments_yet": "لا يوجد مرضى لديهم مواعيد حتى الآن",
+  "all_sessions": "جميع الجلسات",
+  "scheduled_sessions": "الجلسات المجدولة",
+  "availability_management": "إدارة التوفر",
+  "view_your_availability": "عرض مواعيد توفرك الخاصة ",
+  "edit_availability": "تعديل التوفر",
+  "current_availability": "التوفر الحالي",
+  "sunday": "الأحد",
+  "monday": "الاثنين",
+  "tuesday": "الثلاثاء",
+  "wednesday": "الأربعاء",
+  "thursday": "الخميس",
+  "friday": "الجمعة",
+  "saturday": "السبت",
   // Video Session translations
   "join_session": "الانضمام للجلسة",
   "end_session": "إنهاء الجلسة",

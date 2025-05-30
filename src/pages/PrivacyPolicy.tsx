@@ -2,15 +2,19 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useLanguage } from "@/hooks/useLanguage";
+import { useEffect } from "react";
 
 const PrivacyPolicy = () => {
   const { t, language } = useLanguage();
   const isRTL = language === 'ar';
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <div className="min-h-screen flex flex-col bg-background" dir={isRTL ? 'rtl' : 'ltr'}>
       <Navbar />
-      <main className="flex-grow container-custom py-12">
+      <main className="flex-grow container-custom py-16 lg:py-24">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold mb-8 text-center">
             {isRTL ? 'سياسة الخصوصية' : 'Privacy Policy'}
@@ -22,7 +26,7 @@ const PrivacyPolicy = () => {
                 {isRTL ? 'آخر تحديث' : 'Last Updated'}
               </h2>
               <p className="text-muted-foreground">
-                {isRTL ? 'تم آخر تحديث لهذه السياسة في يناير 2024' : 'This Privacy Policy was last updated in January 2024'}
+                {isRTL ? 'تم آخر تحديث لهذه السياسة في مايو 2025' : 'This Privacy Policy was last updated in May 2025'}
               </p>
             </section>
 

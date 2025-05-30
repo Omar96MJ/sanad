@@ -5,11 +5,15 @@ import { Card } from '@/components/ui/card';
 import { AlertTriangle, Phone, MessageSquare, LifeBuoy, HelpingHand } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import Footer from '@/components/Footer';
+import { useEffect } from 'react';
 
 const CrisisSupport = () => {
   const { t, language } = useLanguage();
   const isRTL = language === 'ar';
-  
+
+  useEffect(() => {
+      window.scrollTo(0, 0);
+    }, []);
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
