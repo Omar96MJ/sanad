@@ -1,17 +1,15 @@
-// src/pages/PsychologicalTests/components/TestContent.tsx:
-import React, { useState, useMemo, useEffect } from 'react'; // Added useEffect for logging
+import React, { useState, useMemo, useEffect } from 'react';
 import { useLanguage } from '@/hooks/useLanguage';
 import { toast } from "sonner";
-import TestSelection from '@/components/tests/TestSelection'; 
-import TestQuestions from '@/components/tests/TestQuestions'; 
-import TestResults from '@/components/tests/TestResults';   
-import { useTestData, PsychTest } from '../hooks/useTestData'; // Removed unused TestQuestion, ResponseOption imports here
+import TestSelection from '@/components/tests/TestSelection';
+import TestQuestions from '@/components/tests/TestQuestions';
+import TestResults from '@/components/tests/TestResults';
+import { useTestData, PsychTest } from '../hooks/useTestData'; // TestQuestion, ResponseOption not directly needed here
 
 const TestContent = () => {
-  const { t } = useLanguage(); 
-  const { tests } = useTestData(); 
-  
-  // DEBUG: Log if tests are loaded correctly from the hook
+  const { t } = useLanguage();
+  const { tests } = useTestData();
+
   useEffect(() => {
     console.log("TestContent mounted. Tests from useTestData:", tests);
   }, [tests]);
@@ -24,7 +22,6 @@ const TestContent = () => {
   const [resultText, setResultText] = useState('');
 
   const currentTestData: PsychTest | undefined = useMemo(() => {
-    // DEBUG: Log when this memo recalculates
     console.log("TestContent: Recalculating currentTestData. selectedTestId:", selectedTestId);
     const foundTest = tests.find(test => test.id === selectedTestId);
     console.log("TestContent: currentTestData resolved to:", foundTest ? foundTest.id : 'undefined');
@@ -32,7 +29,7 @@ const TestContent = () => {
   }, [selectedTestId, tests]);
 
   const handleSelectTest = (testId: string) => {
-    console.log("TestContent: handleSelectTest called with ID:", testId); // DEBUG
+    console.log("TestContent: handleSelectTest called with ID:", testId);
     setSelectedTestId(testId);
     setTestStarted(false);
     setTestCompleted(false);
@@ -42,65 +39,80 @@ const TestContent = () => {
   };
 
   const startTest = () => {
-    console.log("TestContent: startTest called."); // DEBUG
+    console.log("TestContent: startTest called.");
     if (!currentTestData) {
-      console.error("TestContent: startTest called but no currentTestData! selectedTestId might be wrong or tests not loaded. selectedTestId:", selectedTestId); // DEBUG
+      console.error("TestContent: startTest called but no currentTestData! selectedTestId:", selectedTestId);
       return;
     }
-    console.log("TestContent: Starting test - ", currentTestData.id); // DEBUG
+    console.log("TestContent: Starting test - ", currentTestData.id);
     setTestStarted(true);
     setTestCompleted(false);
     setCurrentQuestionIndex(0);
     setAnswers([]);
   };
 
-  const handleAnswer = (score: number) => {
-    console.log("TestContent: handleAnswer called with score:", score); // DEBUG
-    if (!currentTestData) {
-      console.error("TestContent: handleAnswer called but no currentTestData!"); // DEBUG
+  const handleAnswer = (originalScore: number) => { // Renamed to originalScore for clarity
+    console.log("TestContent: handleAnswer called with original score:", originalScore);
+    if (!currentTestData || !currentTestData.questions[currentQuestionIndex]) {
+      console.error("TestContent: handleAnswer called but no currentTestData or question!");
       return;
     }
-    const newAnswers = [...answers, score];
+
+    const currentQuestionData = currentTestData.questions[currentQuestionIndex];
+    let scoreToStore = originalScore;
+
+    if (currentQuestionData.reverseScored) {
+      // Assuming responseOptions scores are 0-indexed (e.g., 0, 1, 2, 3, 4 for a 5-point scale)
+      const maxScoreValue = currentTestData.responseOptions.length - 1;
+      scoreToStore = maxScoreValue - originalScore;
+      console.log(`TestContent: Question ${currentQuestionData.id} reverse scored. Original: ${originalScore}, Stored: ${scoreToStore}`);
+    }
+
+    const newAnswers = [...answers, scoreToStore];
     setAnswers(newAnswers);
 
     if (currentQuestionIndex < currentTestData.questions.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      console.log("TestContent: All questions answered. Calculating result."); // DEBUG
+      console.log("TestContent: All questions answered. Calculating result.");
       calculateResult(newAnswers, currentTestData);
     }
   };
 
   const calculateResult = (finalAnswers: number[], testData: PsychTest) => {
     const sum = finalAnswers.reduce((a, b) => a + b, 0);
-    let calculatedResultKey = 'result_default_consult'; 
-    console.log(`TestContent: Calculating result for ${testData.id}. Sum: ${sum}, Answers:`, finalAnswers); // DEBUG
+    let calculatedResultKey = 'result_default_consult';
+    console.log(`TestContent: Calculating result for ${testData.id}. Sum of adjusted scores: ${sum}, Answers:`, finalAnswers);
 
-    for (const threshold of testData.scoringThresholds) {
+    // Ensure thresholds are sorted by upperBound if not already guaranteed
+    const sortedThresholds = [...testData.scoringThresholds].sort((a,b) => a.upperBound - b.upperBound);
+
+    for (const threshold of sortedThresholds) {
       if (sum <= threshold.upperBound) {
         calculatedResultKey = threshold.resultKey;
         break;
       }
     }
-    console.log("TestContent: Result key:", calculatedResultKey, "Translated:", t(calculatedResultKey)); // DEBUG
+    console.log("TestContent: Result key:", calculatedResultKey, "Translated:", t(calculatedResultKey));
     setResultText(t(calculatedResultKey));
     setTestCompleted(true);
-    toast.success(t('test_completed_toast')); 
+    toast.success(t('test_completed_toast'));
   };
 
   const restartTest = () => {
-    console.log("TestContent: restartTest called."); // DEBUG
-    if (!currentTestData) return; 
-    // setTestStarted(true); // Keep them in the question view if restarting the same test
+    console.log("TestContent: restartTest called.");
+    if (!currentTestData) return;
     setTestCompleted(false);
     setCurrentQuestionIndex(0);
     setAnswers([]);
     setResultText('');
+    // Keep testStarted true to go back to the first question
+    setTestStarted(true); 
   };
 
   const chooseAnotherTest = () => {
-    console.log("TestContent: chooseAnotherTest called."); // DEBUG
-    setSelectedTestId(null); // This will hide details/questions and show TestSelection list
+    console.log("TestContent: chooseAnotherTest called.");
+    setSelectedTestId(null);
     setTestStarted(false);
     setTestCompleted(false);
     setCurrentQuestionIndex(0);
@@ -118,19 +130,25 @@ const TestContent = () => {
     [currentTestData, t]
   );
   
-  // DEBUG: Log what view should be rendered
   useEffect(() => {
     console.log("TestContent RENDER CHECK: selectedTestId:", selectedTestId, "testStarted:", testStarted, "testCompleted:", testCompleted, "currentTestData:", currentTestData ? currentTestData.id : "none");
   }, [selectedTestId, testStarted, testCompleted, currentTestData]);
 
 
   if (currentTestData && testStarted && !testCompleted) {
-    console.log("TestContent: Rendering TestQuestions for", currentTestData.id); // DEBUG
+    console.log("TestContent: Rendering TestQuestions for", currentTestData.id);
+    const currentQText = questionsForComponent ? questionsForComponent[currentQuestionIndex] : '';
+    if (currentQText === undefined) { // Additional safety check
+        console.error("TestContent: currentQuestionText is undefined before rendering TestQuestions!");
+        return <p>{t('test_load_error') || 'Error loading question data.'}</p>; 
+    }
     return (
       <TestQuestions
         testName={t(currentTestData.nameKey)}
         currentQuestionIndex={currentQuestionIndex}
-        questionText={questionsForComponent ? questionsForComponent[currentQuestionIndex] : ''}
+        // Pass the specific question data for more robust handling in TestQuestions if needed in future
+        // currentQuestionFullData={currentTestData.questions[currentQuestionIndex]} 
+        questionText={currentQText}
         totalQuestions={currentTestData.questions.length}
         responseOptions={responseOptionsForComponent || []}
         onAnswer={handleAnswer}
@@ -139,7 +157,7 @@ const TestContent = () => {
   }
 
   if (testCompleted && currentTestData) {
-    console.log("TestContent: Rendering TestResults for", currentTestData.id); // DEBUG
+    console.log("TestContent: Rendering TestResults for", currentTestData.id);
     return (
       <TestResults
         testName={t(currentTestData.nameKey)}
@@ -150,7 +168,7 @@ const TestContent = () => {
     );
   }
 
-  console.log("TestContent: Rendering TestSelection."); // DEBUG
+  console.log("TestContent: Rendering TestSelection.");
   return (
     <TestSelection
       tests={tests.map(test => ({
@@ -158,14 +176,14 @@ const TestContent = () => {
         name: t(test.nameKey),
         icon: test.icon,
         description: t(test.descriptionKey),
-        // If you want questionCount in TestSelection's detail view, you'd add:
-        // questionCount: test.questions.length, 
-        // typicalDurationMinutes: Math.ceil(test.questions.length * 0.5) // Example duration
+        // Example for passing question count and duration for the detail view in TestSelection
+        // questionCount: test.questions.length,
+        // typicalDurationMinutes: Math.ceil(test.questions.length * 0.5) 
       }))}
       selectedTestId={selectedTestId}
       onSelectTest={handleSelectTest}
       onStartTest={startTest}
-      onBack={chooseAnotherTest} // Pass chooseAnotherTest as onBack
+      onBack={chooseAnotherTest} 
     />
   );
 };
