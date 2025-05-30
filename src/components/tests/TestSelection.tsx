@@ -4,24 +4,22 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/hooks/useLanguage';
 
-// This interface now reflects what TestContent provides for the list
 interface TestDisplayInfo {
   id: string;
   name: string;
   icon: string;
   description: string;
-  // To display question count/duration here, TestContent would need to pass it.
-  // For example, add:
+  // If you added questionCount/typicalDurationMinutes to the map in TestContent, define them here:
   // questionCount?: number;
   // typicalDurationMinutes?: number;
 }
 
 interface TestSelectionProps {
-  tests: TestDisplayInfo[]; // Updated to use TestDisplayInfo
-  selectedTestId: string | null; // Renamed from selectedTest for clarity
+  tests: TestDisplayInfo[];
+  selectedTestId: string | null;
   onSelectTest: (testId: string) => void;
   onStartTest: () => void;
-  onBack?: () => void; // Optional: TestContent's chooseAnotherTest can be passed as onBack
+  onBack?: () => void; 
 }
 
 const TestSelection: React.FC<TestSelectionProps> = ({
@@ -29,15 +27,24 @@ const TestSelection: React.FC<TestSelectionProps> = ({
   selectedTestId,
   onSelectTest,
   onStartTest,
-  onBack, // This will be chooseAnotherTest from TestContent if passed
+  onBack,
 }) => {
   const { t } = useLanguage();
+  // DEBUG: Log props received by TestSelection
+  console.log("TestSelection PROPS: selectedTestId:", selectedTestId, "Number of tests:", tests.length, "onBack provided:", !!onBack);
 
   const currentSelectedTest = tests.find(test => test.id === selectedTestId);
+  // DEBUG: Log the found selected test
+  if (selectedTestId) {
+    console.log("TestSelection: currentSelectedTest object:", currentSelectedTest);
+  }
+
 
   if (selectedTestId && currentSelectedTest) {
+    // This is the "Selected Test Detail" view
+    console.log("TestSelection: Rendering DETAILED view for test:", currentSelectedTest.id); // DEBUG
     return (
-      <Card className="w-full max-w-lg animate-fade-in"> {/* Added a simple animation class example */}
+      <Card className="w-full max-w-lg animate-fade-in">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <span className="text-2xl">{currentSelectedTest.icon}</span>
@@ -49,26 +56,34 @@ const TestSelection: React.FC<TestSelectionProps> = ({
         </CardHeader>
         <CardContent>
           {/*
-            To display question count & duration here, the 'TestDisplayInfo' interface and
-            the 'tests' prop from TestContent would need to include 'questionCount'
-            and 'typicalDurationMinutes'. For example:
-            <p className="mb-1">
-              {t('test_consists_of')} {currentSelectedTest.questionCount || 'N/A'}{' '}
-              {t('questions_and_will_take')} {currentSelectedTest.typicalDurationMinutes || 'a few'}{' '}
-              {t('minutes_to_complete')}
-            </p>
+            To display question count & duration here, you'd need TestContent to pass
+            'questionCount' and 'typicalDurationMinutes' in the 'tests' prop's objects.
+            Example:
+            {currentSelectedTest.questionCount && (
+              <p className="mb-1">
+                {t('test_consists_of')} {currentSelectedTest.questionCount}{' '}
+                {t('questions_and_will_take')} {currentSelectedTest.typicalDurationMinutes || 'a few'}{' '}
+                {t('minutes_to_complete')}
+              </p>
+            )}
           */}
           <p className="text-sm text-muted-foreground mt-4">
             {t('answer_honestly')}
           </p>
         </CardContent>
         <CardFooter className="flex flex-col sm:flex-row justify-between gap-3">
-          {onBack && ( // Only show Back button if onBack prop is provided
-            <Button variant="outline" onClick={onBack} className="w-full sm:w-auto">
-              {t('back_to_tests')} {/* Or a more generic 'back' key */}
+          {onBack && (
+            <Button variant="outline" onClick={() => {
+                console.log("TestSelection: Back button clicked"); // DEBUG
+                onBack();
+            }} className="w-full sm:w-auto">
+              {t('back_to_tests')}
             </Button>
           )}
-          <Button onClick={onStartTest} className="w-full sm:w-auto">
+          <Button onClick={() => {
+              console.log("TestSelection: Start Test button clicked from detail view"); // DEBUG
+              onStartTest();
+          }} className="w-full sm:w-auto">
             {t('start_test')}
           </Button>
         </CardFooter>
@@ -76,19 +91,21 @@ const TestSelection: React.FC<TestSelectionProps> = ({
     );
   }
 
+  // This is the "Test List" view
+  console.log("TestSelection: Rendering LIST view."); // DEBUG
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl animate-fade-in">
       {tests.map((test) => (
         <Card
           key={test.id}
-          className="cursor-pointer hover:shadow-lg transition-shadow duration-200 ease-in-out flex flex-col" // Added flex for consistent footer
+          className="cursor-pointer hover:shadow-lg transition-shadow duration-200 ease-in-out flex flex-col"
           onClick={() => {
-            console.log("TestSelection: Card Clicked - ID:", test.id); // DEBUG: Keep for testing
+            console.log("TestSelection: Card (list item) Clicked - ID:", test.id); // DEBUG
             onSelectTest(test.id);
           }}
         >
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-start gap-3"> {/* items-start for better icon align */}
+            <CardTitle className="flex items-start gap-3">
               <span className="text-3xl mt-1">{test.icon}</span>
               <span className="text-xl font-semibold">{test.name}</span>
             </CardTitle>
@@ -97,9 +114,8 @@ const TestSelection: React.FC<TestSelectionProps> = ({
             <p className="text-sm text-muted-foreground">{test.description}</p>
           </CardContent>
           <CardFooter>
-            {/* The entire card is clickable, this button is more of a visual cue or can be removed */}
             <Button variant="ghost" className="w-full text-primary hover:text-primary/90" tabIndex={-1}> 
-              {t('select')} {/* Or "View Details" / "Prepare Test" */}
+              {t('select')}
             </Button>
           </CardFooter>
         </Card>
