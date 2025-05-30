@@ -5,7 +5,7 @@ import { AppointmentsTab } from "../AppointmentsTab";
 import TherapistVideoSession from "../SessionTab";
 import MessagingLayout from "@/components/messaging/MessagingLayout";
 import { BlogPost } from "@/lib/types";
-import { PatientAppointment } from "@/services/patientAppointmentService";
+import { PatientAppointment } from "@/services/appointments";;
 import { useLanguage } from "@/hooks/useLanguage";
 import { DoctorProfile } from "@/lib/therapist-types";
 
