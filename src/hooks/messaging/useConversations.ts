@@ -9,25 +9,30 @@ export const useConversations = (user: any) => {
 
   const fetchConversations = async () => {
     if (!user) {
-      console.log("No user found, skipping conversation fetch");
+      console.log("No user, clearing conversations");
+      setConversations([]);
       setIsLoading(false);
       return;
     }
     
-    setIsLoading(true);
     try {
       console.log("Fetching conversations for user:", user.id);
       
-      // Get conversations where the current user is a participant
+      // Get conversations where user is a participant
       const { data: participantData, error: participantError } = await supabase
         .from('conversation_participants')
-        .select('conversation_id, unread_count')
+        .select(`
+          conversation_id,
+          conversations!inner (
+            id,
+            created_at,
+            updated_at
+          )
+        `)
         .eq('user_id', user.id);
         
       if (participantError) {
         console.error("Error fetching participant data:", participantError);
-        setConversations([]);
-        setIsLoading(false);
         return;
       }
       
@@ -40,26 +45,9 @@ export const useConversations = (user: any) => {
         return;
       }
       
-      const conversationIds = participantData.map(p => p.conversation_id);
-      console.log("Conversation IDs:", conversationIds);
-      
-      // Get conversation details
-      const { data: conversationData, error: conversationError } = await supabase
-        .from('conversations')
-        .select('*')
-        .in('id', conversationIds)
-        .order('updated_at', { ascending: false });
-        
-      if (conversationError) {
-        console.error("Error fetching conversation details:", conversationError);
-        setConversations([]);
-        setIsLoading(false);
-        return;
-      }
-      
-      console.log("Conversation data:", conversationData);
-      
       // Get all participants for these conversations
+      const conversationIds = participantData.map(p => p.conversation_id);
+      
       const { data: allParticipants, error: allParticipantsError } = await supabase
         .from('conversation_participants')
         .select('conversation_id, user_id')
@@ -67,54 +55,79 @@ export const useConversations = (user: any) => {
         
       if (allParticipantsError) {
         console.error("Error fetching all participants:", allParticipantsError);
-        setConversations([]);
-        setIsLoading(false);
         return;
       }
       
-      console.log("All participants data:", allParticipants);
+      // Group participants by conversation
+      const participantsByConversation: Record<string, string[]> = {};
+      allParticipants?.forEach(p => {
+        if (!participantsByConversation[p.conversation_id]) {
+          participantsByConversation[p.conversation_id] = [];
+        }
+        participantsByConversation[p.conversation_id].push(p.user_id);
+      });
       
-      // Build conversations with participant IDs
-      const conversationsWithParticipants: ConversationWithParticipants[] = conversationData?.map(conv => {
-        const participants = allParticipants
-          ? allParticipants
-              .filter(p => p.conversation_id === conv.id)
-              .map(p => p.user_id)
-          : [user.id];
-          
-        const unreadCount = participantData.find(p => p.conversation_id === conv.id)?.unread_count || 0;
+      // Get last message for each conversation
+      const { data: lastMessages, error: lastMessagesError } = await supabase
+        .from('messages')
+        .select('conversation_id, created_at, content')
+        .in('conversation_id', conversationIds)
+        .order('created_at', { ascending: false });
+        
+      if (lastMessagesError) {
+        console.error("Error fetching last messages:", lastMessagesError);
+      }
+      
+      // Group last messages by conversation
+      const lastMessageByConversation: Record<string, any> = {};
+      lastMessages?.forEach(msg => {
+        if (!lastMessageByConversation[msg.conversation_id]) {
+          lastMessageByConversation[msg.conversation_id] = msg;
+        }
+      });
+      
+      const formattedConversations: ConversationWithParticipants[] = participantData.map(p => {
+        const conversation = p.conversations;
+        const participants = participantsByConversation[p.conversation_id] || [];
+        const lastMessage = lastMessageByConversation[p.conversation_id];
         
         return {
-          id: conv.id,
+          id: conversation.id,
           participantIds: participants,
-          lastMessageTimestamp: conv.updated_at,
-          unreadCount
+          lastMessageTimestamp: lastMessage?.created_at || conversation.updated_at || conversation.created_at,
+          unreadCount: 0 // We'll implement this later if needed
         };
-      }) || [];
+      });
       
-      console.log("Final conversations:", conversationsWithParticipants);
-      setConversations(conversationsWithParticipants);
+      // Sort by last message timestamp
+      formattedConversations.sort((a, b) => 
+        new Date(b.lastMessageTimestamp).getTime() - new Date(a.lastMessageTimestamp).getTime()
+      );
+      
+      console.log("Formatted conversations:", formattedConversations);
+      setConversations(formattedConversations);
     } catch (error) {
       console.error("Error in conversation fetch:", error);
-      setConversations([]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const updateConversationTimestamp = (conversationId: string) => {
-    setConversations(prevConversations => 
-      prevConversations.map(conv => 
+    setConversations(prevConversations => {
+      return prevConversations.map(conv => 
         conv.id === conversationId 
           ? { ...conv, lastMessageTimestamp: new Date().toISOString() }
           : conv
-      )
-    );
+      ).sort((a, b) => 
+        new Date(b.lastMessageTimestamp).getTime() - new Date(a.lastMessageTimestamp).getTime()
+      );
+    });
   };
 
   useEffect(() => {
     fetchConversations();
-  }, [user?.id]);
+  }, [user]);
 
   return {
     conversations,

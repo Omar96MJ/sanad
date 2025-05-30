@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Send, Loader2 } from "lucide-react";
 
 interface MessageInputProps {
-  onSendMessage: (content: string) => void;
+  onSendMessage: (content: string) => Promise<boolean>;
 }
 
 const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
@@ -17,8 +17,12 @@ const MessageInput: React.FC<MessageInputProps> = ({ onSendMessage }) => {
     if (trimmedMessage && !isSending) {
       setIsSending(true);
       try {
-        await onSendMessage(trimmedMessage);
-        setMessage("");
+        const success = await onSendMessage(trimmedMessage);
+        if (success) {
+          setMessage(""); // Only clear if successful
+        }
+      } catch (error) {
+        console.error("Error sending message:", error);
       } finally {
         setIsSending(false);
       }
