@@ -20,7 +20,7 @@ const testsTranslations = {
   "result_default_consult": "نشجعك على مناقشة هذه النتائج مع أخصائي صحة نفسية للحصول على فهم أعمق.",
 
   // --- Standardized Response Options ---
-  "option_not_at_all": "ليس على الإطلاق",
+  "option_not_at_all": "على الإطلاق",
   "option_several_days": "عدة أيام",
   "option_more_than_half_days": "أكثر من نصف الأيام",
   "option_nearly_every_day": "تقريبًا كل يوم",
