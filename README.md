@@ -1,22 +1,26 @@
-# Welcome to your Lovable project
+# Welcome to Sanad project
 
-## Project info
+Sanad – Sudan's Digital Mental Health Platform
 
-**URL**: https://lovable.dev/projects/a7864527-7af2-48f2-9313-01386788fadb
+Sanad is the first fully digital mental health platform in Sudan, created to provide accessible, stigma-free, and culturally sensitive psychological care—especially for individuals affected by war, trauma, and displacement.
 
-## How can I edit this code?
+Features
 
-There are several ways of editing your application.
+🩺 Online Therapy SessionsSecure video consultations with licensed Sudanese therapists.
 
-**Use Lovable**
+📝 Psychological Self-AssessmentsTools to help users evaluate symptoms like depression, anxiety, and PTSD.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/a7864527-7af2-48f2-9313-01386788fadb) and start prompting.
+📬 Private MessagingDirect, secure messaging between patients and mental health professionals.
 
-Changes made via Lovable will be committed automatically to this repo.
+📅 Appointment Booking SystemReal-time availability of therapists for flexible session scheduling.
+
+📚 Educational BlogMental health content in Arabic to raise awareness and break stigma.
+
+
 
 **Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If you want to work locally using your own IDE, you can clone this repo and push changes.
 
 The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
@@ -36,34 +40,24 @@ npm i
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
 
 ## What technologies are used for this project?
 
-This project is built with .
+This project is built with this Tech Stack .
+
+##Frontend:
 
 - Vite
 - TypeScript
 - React
 - shadcn-ui
 - Tailwind CSS
+  
+##Backend:
 
-## How can I deploy this project?
+Supabase – Backend-as-a-Service for:
 
-Simply open [Lovable](https://lovable.dev/projects/a7864527-7af2-48f2-9313-01386788fadb) and click on Share -> Publish.
+-Authentication
+-Realtime PostgreSQL database
+-File storage
 
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
