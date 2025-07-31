@@ -57,7 +57,7 @@ This project is built with this Tech Stack .
 
 Supabase – Backend-as-a-Service for:
 
--Authentication
--Realtime PostgreSQL database
--File storage
+- Authentication
+- Realtime PostgreSQL database
+- File storage
 
