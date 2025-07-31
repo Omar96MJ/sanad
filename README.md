@@ -4,7 +4,7 @@ Sanad – Sudan's Digital Mental Health Platform
 
 Sanad is the first fully digital mental health platform in Sudan, created to provide accessible, stigma-free, and culturally sensitive psychological care—especially for individuals affected by war, trauma, and displacement.
 
-Features
+# Features
 
 🩺 Online Therapy SessionsSecure video consultations with licensed Sudanese therapists.
 
@@ -45,7 +45,7 @@ npm run dev
 
 This project is built with this Tech Stack .
 
-##Frontend:
+# Frontend:
 
 - Vite
 - TypeScript
@@ -53,7 +53,7 @@ This project is built with this Tech Stack .
 - shadcn-ui
 - Tailwind CSS
   
-##Backend:
+# Backend:
 
 Supabase – Backend-as-a-Service for:
 
